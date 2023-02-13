@@ -33,4 +33,8 @@
 /app/assets/builds/*
 !/app/assets/builds/.keep
 
+# remove storage from git since we are using GCP and Hatchbox
+/uploads/
+/storage/
+
 /config/skylight.yml
