@@ -56,15 +56,15 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .button_label {
-    @apply text-sm font-medium leading-4 text-gray-550 font-montserrat;
+    @apply text-sm font-medium leading-4 text-gray-500 font-montserrat;
   }
 
   .caption {
-    @apply text-sm font-semibold leading-4 italic text-gray-550;
+    @apply text-sm font-semibold leading-4 italic text-gray-500;
   }
 
   .breadcrumb {
-    @apply text-sm font-medium leading-4 text-gray-550;
+    @apply text-sm font-medium leading-4 text-gray-500;
   }
 
   .text_field_label {
