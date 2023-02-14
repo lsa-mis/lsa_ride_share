@@ -1,0 +1,37 @@
+<div id="<%= dom_id site %>">
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Title:</strong>
+    <%= site.title %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Address1:</strong>
+    <%= site.address1 %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Address2:</strong>
+    <%= site.address2 %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">City:</strong>
+    <%= site.city %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">State:</strong>
+    <%= site.state %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Zip code:</strong>
+    <%= site.zip_code %>
+  </p>
+
+  <% if action_name != "show" %>
+    <%= link_to "Show this site", site, class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
+    <%= link_to 'Edit this site', edit_site_path(site), class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
+    <hr class="mt-6">
+  <% end %>
+</div>

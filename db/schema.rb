@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_14_210509) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_14_213720) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -84,6 +84,27 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_14_210509) do
     t.index ["instructor_id"], name: "index_programs_on_instructor_id"
   end
 
+  create_table "programs_sites", force: :cascade do |t|
+    t.bigint "program_id", null: false
+    t.bigint "site_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["program_id"], name: "index_programs_sites_on_program_id"
+    t.index ["site_id"], name: "index_programs_sites_on_site_id"
+  end
+
+  create_table "sites", force: :cascade do |t|
+    t.string "title"
+    t.string "address1"
+    t.string "address2"
+    t.string "city"
+    t.string "state"
+    t.string "zip_code"
+    t.integer "updated_by"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -104,4 +125,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_14_210509) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "programs", "program_managers", column: "instructor_id"
+  add_foreign_key "programs_sites", "programs"
+  add_foreign_key "programs_sites", "sites"
 end
