@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_14_213720) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_14_215720) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -93,6 +93,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_14_213720) do
     t.index ["site_id"], name: "index_programs_sites_on_site_id"
   end
 
+  create_table "programs_students", force: :cascade do |t|
+    t.bigint "program_id", null: false
+    t.bigint "student_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["program_id"], name: "index_programs_students_on_program_id"
+    t.index ["student_id"], name: "index_programs_students_on_student_id"
+  end
+
   create_table "sites", force: :cascade do |t|
     t.string "title"
     t.string "address1"
@@ -100,6 +109,19 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_14_213720) do
     t.string "city"
     t.string "state"
     t.string "zip_code"
+    t.integer "updated_by"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "students", force: :cascade do |t|
+    t.string "uniqname"
+    t.string "last_name"
+    t.string "first_name"
+    t.date "mvr_expiration_date"
+    t.date "class_training_date"
+    t.date "canvas_course_complete_date"
+    t.string "meeting_with_admin_date"
     t.integer "updated_by"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -127,4 +149,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_14_213720) do
   add_foreign_key "programs", "program_managers", column: "instructor_id"
   add_foreign_key "programs_sites", "programs"
   add_foreign_key "programs_sites", "sites"
+  add_foreign_key "programs_students", "programs"
+  add_foreign_key "programs_students", "students"
 end
