@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_13_164938) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_14_210509) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -52,6 +52,38 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_13_164938) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "program_managers", force: :cascade do |t|
+    t.string "uniqname"
+    t.string "first_name"
+    t.string "last_name"
+    t.integer "updated_by"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "program_id"
+    t.index ["program_id"], name: "index_program_managers_on_program_id"
+  end
+
+  create_table "programs", force: :cascade do |t|
+    t.boolean "active", default: true
+    t.string "title"
+    t.date "term_start", null: false
+    t.date "term_end", null: false
+    t.string "term_code", null: false
+    t.string "subject", null: false
+    t.string "catalog_number", null: false
+    t.string "class_section", null: false
+    t.integer "number_of_students"
+    t.integer "number_of_students_using_ride_share"
+    t.boolean "pictures_required_start", default: false
+    t.boolean "pictures_required_end", default: false
+    t.boolean "non_uofm_passengers", default: false
+    t.bigint "instructor_id", null: false
+    t.integer "updated_by"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["instructor_id"], name: "index_programs_on_instructor_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -71,4 +103,5 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_13_164938) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "programs", "program_managers", column: "instructor_id"
 end

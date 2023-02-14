@@ -1,0 +1,72 @@
+<div id="<%= dom_id program %>">
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Active:</strong>
+    <%= program.active %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Title:</strong>
+    <%= program.title %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Term start:</strong>
+    <%= program.term_start %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Term end:</strong>
+    <%= program.term_end %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Term code:</strong>
+    <%= program.term_code %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Subject:</strong>
+    <%= program.subject %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Catalog number:</strong>
+    <%= program.catalog_number %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Class section:</strong>
+    <%= program.class_section %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Number of students:</strong>
+    <%= program.number_of_students %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Number of students using ride share:</strong>
+    <%= program.number_of_students_using_ride_share %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Pictures required start:</strong>
+    <%= program.pictures_required_start %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Pictures required end:</strong>
+    <%= program.pictures_required_end %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Non uofm passengers:</strong>
+    <%= program.non_uofm_passengers %>
+  </p>
+
+  <% if action_name != "show" %>
+    <%= link_to "Show this program", program, class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
+    <%= link_to 'Edit this program', edit_program_path(program), class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
+    <hr class="mt-6">
+  <% end %>
+</div>
