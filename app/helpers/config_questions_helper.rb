@@ -1,0 +1,2 @@
+module ConfigQuestionsHelper
+end

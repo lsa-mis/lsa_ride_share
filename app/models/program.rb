@@ -28,4 +28,6 @@ class Program < ApplicationRecord
   has_and_belongs_to_many :students
   has_and_belongs_to_many :cars
   has_many :reservations
+  has_many :config_questions
+  
 end
