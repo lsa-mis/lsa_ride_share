@@ -21,4 +21,5 @@
 class Car < ApplicationRecord
   has_and_belongs_to_many :programs
   has_rich_text :note
+  has_many :reservations
 end

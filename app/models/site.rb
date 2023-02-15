@@ -15,5 +15,6 @@
 #
 class Site < ApplicationRecord
   has_and_belongs_to_many :programs
+	has_many :reservations
 	has_rich_text :note
 end

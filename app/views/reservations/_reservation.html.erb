@@ -1,0 +1,42 @@
+<div id="<%= dom_id reservation %>">
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Status:</strong>
+    <%= reservation.status %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Start date:</strong>
+    <%= reservation.start_date %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">End date:</strong>
+    <%= reservation.end_date %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Recurring:</strong>
+    <%= reservation.recurring %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Driver phone:</strong>
+    <%= reservation.driver_phone %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Backup driver phone:</strong>
+    <%= reservation.backup_driver_phone %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Number of people on trip:</strong>
+    <%= reservation.number_of_people_on_trip %>
+  </p>
+
+  <% if action_name != "show" %>
+    <%= link_to "Show this reservation", reservation, class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
+    <%= link_to 'Edit this reservation', edit_reservation_path(reservation), class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
+    <hr class="mt-6">
+  <% end %>
+</div>
