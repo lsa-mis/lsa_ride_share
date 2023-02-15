@@ -1,0 +1,52 @@
+<div id="<%= dom_id vehicle_report %>">
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Reservation:</strong>
+    <%= vehicle_report.reservation_id %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Mileage start:</strong>
+    <%= vehicle_report.mileage_start %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Mileage end:</strong>
+    <%= vehicle_report.mileage_end %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Gas start:</strong>
+    <%= vehicle_report.gas_start %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Gas end:</strong>
+    <%= vehicle_report.gas_end %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Parking spot:</strong>
+    <%= vehicle_report.parking_spot %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Created by:</strong>
+    <%= vehicle_report.created_by %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Updated by:</strong>
+    <%= vehicle_report.updated_by %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Status:</strong>
+    <%= vehicle_report.status %>
+  </p>
+
+  <% if action_name != "show" %>
+    <%= link_to "Show this vehicle report", vehicle_report, class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
+    <%= link_to 'Edit this vehicle report', edit_vehicle_report_path(vehicle_report), class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
+    <hr class="mt-6">
+  <% end %>
+</div>

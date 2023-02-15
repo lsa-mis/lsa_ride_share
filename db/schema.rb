@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_15_160424) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_15_164839) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -211,6 +211,21 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_15_160424) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "vehicle_reports", force: :cascade do |t|
+    t.bigint "reservation_id", null: false
+    t.float "mileage_start"
+    t.float "mileage_end"
+    t.float "gas_start"
+    t.float "gas_end"
+    t.string "parking_spot"
+    t.integer "created_by"
+    t.integer "updated_by"
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["reservation_id"], name: "index_vehicle_reports_on_reservation_id"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "cars_programs", "cars"
@@ -229,4 +244,5 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_15_160424) do
   add_foreign_key "reservations", "sites"
   add_foreign_key "reservations", "students", column: "backup_driver_id"
   add_foreign_key "reservations", "students", column: "driver_id"
+  add_foreign_key "vehicle_reports", "reservations"
 end

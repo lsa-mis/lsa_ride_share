@@ -27,6 +27,10 @@ class Reservation < ApplicationRecord
   belongs_to :backup_driver, optional: true, class_name: 'Student', foreign_key: :backup_driver_id
   has_many :reservation_passengers
   has_many :passengers, through: :reservation_passengers, source: :student
+  has_one :vehicle_report
+  
+  has_rich_text :note
 
   scope :with_passengers, -> { Reservation.includes(:passengers) }
+
 end
