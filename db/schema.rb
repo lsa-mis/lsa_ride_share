@@ -130,8 +130,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_15_182553) do
     t.integer "updated_by"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "admin_accesses_id"
-    t.index ["admin_accesses_id"], name: "index_programs_on_admin_accesses_id"
+    t.bigint "admin_access_id"
+    t.index ["admin_access_id"], name: "index_programs_on_admin_access_id"
     t.index ["instructor_id"], name: "index_programs_on_instructor_id"
   end
 

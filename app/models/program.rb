@@ -20,7 +20,7 @@
 #  updated_by                          :integer
 #  created_at                          :datetime         not null
 #  updated_at                          :datetime         not null
-#  admin_accesses_id                   :bigint
+#  admin_access_id                     :bigint
 #
 class Program < ApplicationRecord
   belongs_to :instructor, class_name: 'ProgramManager', foreign_key: :instructor_id
@@ -30,6 +30,6 @@ class Program < ApplicationRecord
   has_and_belongs_to_many :cars
   has_many :reservations
   has_many :config_questions
-  belongs_to :admin_accesses
+  belongs_to :admin_access
 
 end

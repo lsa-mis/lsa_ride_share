@@ -20,7 +20,7 @@
 #  updated_by                          :integer
 #  created_at                          :datetime         not null
 #  updated_at                          :datetime         not null
-#  admin_accesses_id                   :bigint
+#  admin_access_id                     :bigint
 #
 FactoryBot.define do
   factory :program do
