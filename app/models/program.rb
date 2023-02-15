@@ -26,4 +26,5 @@ class Program < ApplicationRecord
   has_many :program_managers
   has_and_belongs_to_many :sites
   has_and_belongs_to_many :students
+  has_and_belongs_to_many :cars
 end
