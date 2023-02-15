@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_15_142235) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_15_160424) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -87,6 +87,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_15_142235) do
     t.datetime "updated_at", null: false
     t.bigint "program_id"
     t.index ["program_id"], name: "index_program_managers_on_program_id"
+  end
+
+  create_table "program_managers_programs", force: :cascade do |t|
+    t.bigint "program_manager_id", null: false
+    t.bigint "program_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["program_id"], name: "index_program_managers_programs_on_program_id"
+    t.index ["program_manager_id"], name: "index_program_managers_programs_on_program_manager_id"
   end
 
   create_table "programs", force: :cascade do |t|
@@ -206,6 +215,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_15_142235) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "cars_programs", "cars"
   add_foreign_key "cars_programs", "programs"
+  add_foreign_key "program_managers_programs", "program_managers"
+  add_foreign_key "program_managers_programs", "programs"
   add_foreign_key "programs", "program_managers", column: "instructor_id"
   add_foreign_key "programs_sites", "programs"
   add_foreign_key "programs_sites", "sites"

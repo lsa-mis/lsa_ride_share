@@ -23,7 +23,7 @@
 #
 class Program < ApplicationRecord
   belongs_to :instructor, class_name: 'ProgramManager', foreign_key: :instructor_id
-  has_many :program_managers
+  has_and_belongs_to_many :program_managers
   has_and_belongs_to_many :sites
   has_and_belongs_to_many :students
   has_and_belongs_to_many :cars

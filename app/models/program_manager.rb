@@ -12,5 +12,17 @@
 #  program_id :bigint
 #
 class ProgramManager < ApplicationRecord
-  belongs_to :program
+  has_and_belongs_to_many :programs
+
+  def instructor
+    Program.where(instructor: self)
+  end
+
+  def manager
+    Program.includes(:program_managers).where(program_managers_programs: [self])
+  end
+
+  def programs
+    manager + instructor
+  end
 end
