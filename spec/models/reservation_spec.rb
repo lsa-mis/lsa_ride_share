@@ -18,6 +18,7 @@
 #  updated_by               :integer
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
+#  reserved_by              :integer
 #
 require 'rails_helper'
 

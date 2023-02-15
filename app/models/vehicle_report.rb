@@ -18,14 +18,14 @@
 class VehicleReport < ApplicationRecord
   belongs_to :reservation
 
-  has_one_attached :imagefrontstart
-  has_one_attached :imagefrontstart
-  has_one_attached :imagefrontstart
-  has_one_attached :imagefrontstart
-  has_one_attached :imagefrontend
-  has_one_attached :imagedriverend
-  has_one_attached :imagepassengerend
-  has_one_attached :imagebackend
+  has_one_attached :image_front_start
+  has_one_attached :image_driver_start
+  has_one_attached :image_passenger_start
+  has_one_attached :image_back_start
+  has_one_attached :image_front_end
+  has_one_attached :image_driver_end
+  has_one_attached :image_passenger_end
+  has_one_attached :image_back_end
   has_rich_text :note
 
   def car

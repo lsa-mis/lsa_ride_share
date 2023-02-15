@@ -32,8 +32,7 @@ class Student < ApplicationRecord
     Reservation.with_passengers.where(reservation_passengers: [self])
   end
 
-  def all_reservations
-    rwp = Reservation.with_passengers
-    rwp.where(backup_driver: self).or(rwp.where(driver: self)).or(rwp.where(reservation_passengers: [self]))
+  def reservations
+    driver + backup_driver + passenger
   end
 end

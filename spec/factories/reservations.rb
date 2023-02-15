@@ -18,6 +18,7 @@
 #  updated_by               :integer
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
+#  reserved_by              :integer
 #
 FactoryBot.define do
   factory :reservation do
