@@ -21,6 +21,9 @@
 #  created_at                          :datetime         not null
 #  updated_at                          :datetime         not null
 #  admin_access_id                     :bigint
+#  mvr_link                            :string
+#  canvas_link                         :string
+#  canvas_course_id                    :string
 #
 FactoryBot.define do
   factory :program do
