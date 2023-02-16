@@ -23,7 +23,7 @@
 #  admin_access_id                     :bigint
 #  mvr_link                            :string
 #  canvas_link                         :string
-#  canvas_course_id                    :string
+#  canvas_course_id                    :integer
 #
 class Program < ApplicationRecord
   belongs_to :instructor, class_name: 'ProgramManager', foreign_key: :instructor_id

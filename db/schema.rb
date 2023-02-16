@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_16_220933) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_16_221330) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -133,7 +133,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_16_220933) do
     t.bigint "admin_access_id"
     t.string "mvr_link"
     t.string "canvas_link"
-    t.string "canvas_course_id"
+    t.integer "canvas_course_id"
     t.index ["admin_access_id"], name: "index_programs_on_admin_access_id"
     t.index ["instructor_id"], name: "index_programs_on_instructor_id"
   end
