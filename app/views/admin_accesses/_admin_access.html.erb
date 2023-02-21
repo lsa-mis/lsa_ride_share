@@ -1,0 +1,17 @@
+<div id="<%= dom_id admin_access %>">
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Department:</strong>
+    <%= admin_access.department %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Ldap group:</strong>
+    <%= admin_access.ldap_group %>
+  </p>
+
+  <% if action_name != "show" %>
+    <%= link_to "Show this admin access", admin_access, class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
+    <%= link_to 'Edit this admin access', edit_admin_access_path(admin_access), class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
+    <hr class="mt-6">
+  <% end %>
+</div>
