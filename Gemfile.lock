@@ -87,6 +87,8 @@ GEM
       xpath (~> 3.2)
     concurrent-ruby (1.2.0)
     crass (1.0.6)
+    dartsass-rails (0.4.1)
+      railties (>= 6.0.0)
     date (3.3.3)
     debug (1.7.1)
       irb (>= 1.5.0)
@@ -271,6 +273,7 @@ DEPENDENCIES
   annotate (~> 3.2)
   bootsnap
   capybara
+  dartsass-rails (~> 0.4.1)
   debug
   devise
   factory_bot_rails
