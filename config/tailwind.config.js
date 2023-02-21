@@ -13,9 +13,9 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter var', ...defaultTheme.fontFamily.sans],
-        oswald: ['Oswald'],
-        montserrat: ['Montserrat'],
+        sans: ['Inter var'],
+        oswald: ['Oswald', 'sans-serif'],
+        montserrat: ['Montserrat', 'sans-serif'],
       },
     },
     colors: {
@@ -72,7 +72,8 @@ module.exports = {
         750: '#9D691B',
         800: '#975a16',
         900: '#744210',
-        umyellow: '#ffcb05'
+        umyellow: '#ffcb05',
+        ummaze: '#FFCF01'
       },
       green: {
         100: '#f0fff4',
