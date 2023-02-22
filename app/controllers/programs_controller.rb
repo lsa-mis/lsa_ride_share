@@ -1,6 +1,6 @@
 class ProgramsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_program, only: %i[ show edit update destroy ]
+  before_action :set_program, only: %i[ show edit update destroy duplicate]
 
   # GET /programs or /programs.json
   def index
@@ -22,6 +22,11 @@ class ProgramsController < ApplicationController
       @term_code = ''
     end
 
+  end
+
+  def duplicate
+    @program = @program.dup
+    render :new
   end
 
   # GET /programs/1 or /programs/1.json
@@ -83,6 +88,8 @@ class ProgramsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def program_params
-      params.require(:program).permit(:active, :title, :term_start, :term_end, :term_code, :subject, :catalog_number, :class_section, :number_of_students, :number_of_students_using_ride_share, :pictures_required_start, :pictures_required_end, :non_uofm_passengers)
+      params.require(:program).permit(:active, :title, :term_start, :term_end, :term_code, :subject, :catalog_number, :class_section, 
+                                     :number_of_students, :number_of_students_using_ride_share, :pictures_required_start, :pictures_required_end, 
+                                     :non_uofm_passengers, :instructor_id, :admin_access_id)
     end
 end

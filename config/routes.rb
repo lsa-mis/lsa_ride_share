@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   resources :students
   resources :sites
   resources :programs
+  get 'programs/duplicate/:id', to: 'programs#duplicate', as: :duplicate
   resources :program_managers
   devise_for :users
   get 'static_pages/home'

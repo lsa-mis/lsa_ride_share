@@ -24,6 +24,7 @@
 #  mvr_link                            :string
 #  canvas_link                         :string
 #  canvas_course_id                    :integer
+#  term                                :string
 #
 class Program < ApplicationRecord
   belongs_to :instructor, class_name: 'ProgramManager', foreign_key: :instructor_id
@@ -37,5 +38,20 @@ class Program < ApplicationRecord
   
   scope :active, -> { where(active: true) }
   scope :archived, -> { where(active: false) }
+
+  def dup
+    super.tap do |new_program|
+
+      new_program.term_start = ""
+      new_program.term_end = ""
+      new_program.term_code = ""
+      new_program.number_of_students = ""
+      new_program.number_of_students_using_ride_share = ""
+      new_program.updated_by = ""
+      new_program.term_code = ""
+      new_program.active = true
+
+    end
+  end
 
 end
