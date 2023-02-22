@@ -24,6 +24,7 @@
 #  mvr_link                            :string
 #  canvas_link                         :string
 #  canvas_course_id                    :integer
+#  term                                :string
 #
 FactoryBot.define do
   factory :program do
