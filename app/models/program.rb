@@ -34,5 +34,8 @@ class Program < ApplicationRecord
   has_many :reservations
   has_many :config_questions
   belongs_to :admin_access
+  
+  scope :active, -> { where(active: true) }
+  scope :archived, -> { where(active: false) }
 
 end

@@ -1,14 +1,29 @@
-<div class="w-full">
-  <% if notice.present? %>
-    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
-  <% end %>
 
-  <div class="flex justify-between items-center">
-    <h1 class="font-bold text-4xl">Programs</h1>
-    <%= link_to 'New program', new_program_path, class: "rounded-lg py-3 px-5 bg-blue-600 text-white block font-medium" %>
-  </div>
+<div class="container px-1 mb-20" data-controller='autosubmit'>
+  <h1>Programs</h1>
+  <div>
+    <%= form_with url: programs_path, method: :get, class: "", data: { autosubmit_target: "form", turbo_frame: "turbo-rooms" } do |form| %>
+  
+      <div class="px-1">
+        <label for="term_code">Select a Term</label>
+          <%= select_tag "term_code", options_for_select(term_codes, selected: @term_code), include_blank: "Select ...", class: "block rounded-none rounded-l-md text-xs border-gray-300",
+                    :"data-action" => "change->autosubmit#search" %>
+      </div>
 
-  <div id="programs" class="min-w-full">
-    <%= render @programs %>
+      <%= turbo_frame_tag "turbo-rooms" do %>
+        <div id="maincontent"></div>
+        <div class="mb-10" id="programs_listing">
+          <div class="">
+            <ul role="list" class="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-4 m-4">
+              <% @programs.each do |program| %>
+                <li class="col-span-1 bg-white rounded-lg shadow-md divide-y divide-gray-400 px-2 grid place-items-stretch bg-white border border-gray-300 rounded-lg">
+                  <%= render 'program_card', program: program %>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
   </div>
 </div>

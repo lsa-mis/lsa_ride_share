@@ -1,9 +1,27 @@
 class ProgramsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_program, only: %i[ show edit update destroy ]
 
   # GET /programs or /programs.json
   def index
-    @programs = Program.all
+    if params[:active].present?
+      @programs = Program.where(active: params[:active])
+    else
+      @programs = Program.active
+    end
+
+    if params[:term_code].present?
+      @programs = Program.where(term_code: params[:term_code])
+    else
+      @programs = Program.active
+    end
+
+    if @programs.present?
+      @term_code = @programs.last.term_code
+    else
+      @term_code = ''
+    end
+
   end
 
   # GET /programs/1 or /programs/1.json
