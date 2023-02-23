@@ -28,5 +28,13 @@ module ApplicationHelper
     return File.read(file_path).html_safe if File.exist?(file_path)
     file_path
   end
-  
+
+  def show_date(field)
+    field.strftime("%m/%d/%Y") unless field.blank?
+  end
+
+  def show_user_name_by_id(id)
+    User.find(id).email
+  end
+
 end

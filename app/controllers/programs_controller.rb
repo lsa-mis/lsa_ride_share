@@ -90,6 +90,6 @@ class ProgramsController < ApplicationController
     def program_params
       params.require(:program).permit(:active, :title, :term_start, :term_end, :term_code, :subject, :catalog_number, :class_section, 
                                      :number_of_students, :number_of_students_using_ride_share, :pictures_required_start, :pictures_required_end, 
-                                     :non_uofm_passengers, :instructor_id, :admin_access_id)
+                                     :non_uofm_passengers, :instructor_id, :admin_access_id, :updated_by)
     end
 end
