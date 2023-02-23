@@ -5,9 +5,6 @@
 #  id                                  :bigint           not null, primary key
 #  active                              :boolean          default(TRUE)
 #  title                               :string
-#  term_start                          :date             not null
-#  term_end                            :date             not null
-#  term_code                           :string           not null
 #  subject                             :string           not null
 #  catalog_number                      :string           not null
 #  class_section                       :string           not null
@@ -24,7 +21,7 @@
 #  mvr_link                            :string
 #  canvas_link                         :string
 #  canvas_course_id                    :integer
-#  term                                :string
+#  term_id                             :integer
 #
 require 'rails_helper'
 

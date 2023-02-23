@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :terms
   resources :admin_accesses
   resources :config_questions
   resources :vehicle_reports

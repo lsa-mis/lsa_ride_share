@@ -4,22 +4,24 @@ class ProgramsController < ApplicationController
 
   # GET /programs or /programs.json
   def index
+    @terms = Term.all
     if params[:active].present?
       @programs = Program.where(active: params[:active])
     else
       @programs = Program.active
     end
-
-    if params[:term_code].present?
-      @programs = Program.where(term_code: params[:term_code])
+    if params[:term_id].present?
+      @programs = Program.where(term_id: params[:term_id])
     else
       @programs = Program.active
     end
 
+    
+
     if @programs.present?
-      @term_code = @programs.last.term_code
+      @term_id = @programs.last.term_id
     else
-      @term_code = ''
+      @term_id = nil
     end
 
   end
@@ -36,6 +38,7 @@ class ProgramsController < ApplicationController
   # GET /programs/new
   def new
     @program = Program.new
+    @terms = Term.all
   end
 
   # GET /programs/1/edit
@@ -84,11 +87,12 @@ class ProgramsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_program
       @program = Program.find(params[:id])
+      @terms = Term.all
     end
 
     # Only allow a list of trusted parameters through.
     def program_params
-      params.require(:program).permit(:active, :title, :term_start, :term_end, :term_code, :subject, :catalog_number, :class_section, 
+      params.require(:program).permit(:active, :title, :term_start, :term_end, :term_id, :subject, :catalog_number, :class_section, 
                                      :number_of_students, :number_of_students_using_ride_share, :pictures_required_start, :pictures_required_end, 
                                      :non_uofm_passengers, :instructor_id, :admin_access_id, :updated_by)
     end

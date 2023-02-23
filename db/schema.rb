@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_22_203630) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_23_042717) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -115,9 +115,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_22_203630) do
   create_table "programs", force: :cascade do |t|
     t.boolean "active", default: true
     t.string "title"
-    t.date "term_start", null: false
-    t.date "term_end", null: false
-    t.string "term_code", null: false
     t.string "subject", null: false
     t.string "catalog_number", null: false
     t.string "class_section", null: false
@@ -134,7 +131,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_22_203630) do
     t.string "mvr_link"
     t.string "canvas_link"
     t.integer "canvas_course_id"
-    t.string "term"
+    t.integer "term_id"
     t.index ["admin_access_id"], name: "index_programs_on_admin_access_id"
     t.index ["instructor_id"], name: "index_programs_on_instructor_id"
   end
@@ -211,6 +208,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_22_203630) do
     t.date "canvas_course_complete_date"
     t.string "meeting_with_admin_date"
     t.integer "updated_by"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "terms", force: :cascade do |t|
+    t.string "code"
+    t.string "name"
+    t.date "term_start"
+    t.date "term_end"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

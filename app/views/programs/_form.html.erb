@@ -22,18 +22,8 @@
   </div>
 
   <div class="my-5">
-    <%= form.label :term_start %>
-    <%= form.date_field :term_start, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :term_end %>
-    <%= form.date_field :term_end, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :term_code %>
-    <%= form.text_field :term_code, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.label :term_id %>
+    <%= form.collection_select :term_id, @terms, :id, :name, { include_blank: "Select ...", required: true }, { class: "block rounded-none rounded-l-md text-base border-gray-300" } %>
   </div>
 
   <div class="my-5">
