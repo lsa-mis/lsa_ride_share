@@ -7,7 +7,9 @@ Rails.application.routes.draw do
   resources :cars
   resources :students
   resources :sites
-  resources :programs
+  resources :programs do
+    resources :cars, module: :programs
+  end
   get 'programs/duplicate/:id', to: 'programs#duplicate', as: :duplicate
   resources :program_managers
   devise_for :users

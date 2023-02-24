@@ -33,6 +33,7 @@ class ProgramsController < ApplicationController
 
   # GET /programs/1 or /programs/1.json
   def show
+    @cars = @program.cars
   end
 
   # GET /programs/new

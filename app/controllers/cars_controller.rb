@@ -25,11 +25,14 @@ class CarsController < ApplicationController
 
     respond_to do |format|
       if @car.save
-        format.html { redirect_to car_url(@car), notice: "Car was successfully created." }
-        format.json { render :show, status: :created, location: @car }
+        @car_program.cars << @car
+        format.turbo_stream { redirect_to @car_program, 
+                              notice: "The cas was added" 
+                            }
       else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @car.errors, status: :unprocessable_entity }
+        format.turbo_stream { redirect_to @car_program, 
+          alert: "Fail: you need to enter a car data" 
+        }
       end
     end
   end
