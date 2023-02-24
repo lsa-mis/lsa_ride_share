@@ -22,7 +22,7 @@ class ConfigQuestionsController < ApplicationController
   # POST /config_questions or /config_questions.json
   def create
     @config_question = ConfigQuestion.new(config_question_params)
-
+fail
     respond_to do |format|
       if @config_question.save
         format.html { redirect_to config_question_url(@config_question), notice: "Config question was successfully created." }
@@ -36,6 +36,7 @@ class ConfigQuestionsController < ApplicationController
 
   # PATCH/PUT /config_questions/1 or /config_questions/1.json
   def update
+    fail
     respond_to do |format|
       if @config_question.update(config_question_params)
         format.html { redirect_to config_question_url(@config_question), notice: "Config question was successfully updated." }

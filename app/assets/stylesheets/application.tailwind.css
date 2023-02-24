@@ -103,6 +103,10 @@ from https://tailwindcss.com/docs/adding-custom-styles
     @aply block shadow rounded-md border border-gray-200 outline-none
   }
 
+  .checkbox-filter [type="checkbox"], .checkbox-filter label {
+    cursor: pointer; 
+  }
+
   /* ... */
 }
 
