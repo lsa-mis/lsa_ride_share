@@ -31,7 +31,7 @@ class CarsController < ApplicationController
       if @car.save
         @car_program.cars << @car
         format.turbo_stream { redirect_to @car_program, 
-                              notice: "The cas was added" 
+                              notice: "The car was added" 
                             }
       else
         format.turbo_stream { redirect_to @car_program, 

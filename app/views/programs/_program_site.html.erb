@@ -1,0 +1,70 @@
+<%= form_for [@program, Site.new], html: { class: "sm:flex sm:items-center" } do |form| %>
+
+
+  <div class="px-1">
+    <label for="site_id">Select a Site</label>
+      <%= select_tag "site_id", options_from_collection_for_select(Site.all, :id, :title), include_blank: "Select ...", class: "block rounded-none rounded-l-md text-xs border-gray-300" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :title %>
+    <%= form.text_field :title, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :address1 %>
+    <%= form.text_field :address1, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :address2 %>
+    <%= form.text_field :address2, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :city %>
+    <%= form.text_field :city, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :state %>
+    <%= form.text_field :state, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :zip_code %>
+    <%= form.text_field :zip_code, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="inline">
+    <%= form.submit "Add Site", class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+  </div>
+<% end %>
+
+
+<% if @program.sites.present? %>
+  <% @program.sites.each do |site| %>
+    <li class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
+      <div class="w-0 flex-1 flex items-center">
+        <i class="fas fa-link text-gray-400"></i>
+        <span class="ml-2 flex-1 w-0 truncate">
+          <%= link_to site.title, site_path(site) %>
+        </span>
+      </div>
+      
+        <div class="ml-4 flex-shrink-0 flex space-x-4">
+          <button type="button" class="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            <%= link_to 'Remove', remove_site_path(@program, site), method: :delete, data: { confirm: 'Are you sure?' } %>
+          </button>
+        </div>
+    </li>
+  <% end %>
+<% else %>
+  <li class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
+    <div class="w-0 flex-1 flex items-center">
+      <span class="ml-2 flex-1 w-0 truncate">
+        you currently do not have any sites.
+      </span>
+    </div>
+  </li>
+<% end %>

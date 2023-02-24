@@ -7,8 +7,12 @@ Rails.application.routes.draw do
   resources :cars
   resources :students
   resources :sites
+  get 'programs/remove_site/:id/:site_id', to: 'programs#remove_site', as: :remove_site
   resources :programs do
     resources :cars, module: :programs
+  end
+  resources :programs do
+    resources :sites, module: :programs
   end
   get 'programs/duplicate/:id', to: 'programs#duplicate', as: :duplicate
   get 'programs/remove_car/:id/:car_id', to: 'programs#remove_car', as: :remove_car

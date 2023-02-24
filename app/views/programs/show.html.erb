@@ -3,6 +3,17 @@
     <%= render @program %>
   </div>
 </div>
+<hr>
+
+<div>
   <%= turbo_frame_tag "new_car" do %>
     <%= render "program_car", locals: { program: @program} %>
   <% end %>
+</div>
+
+<hr>
+<div>
+  <%= turbo_frame_tag "new_site" do %>
+    <%= render "program_site", locals: { program: @program} %>
+  <% end %>
+</div>

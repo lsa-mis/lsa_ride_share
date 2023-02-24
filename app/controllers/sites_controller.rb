@@ -21,17 +21,36 @@ class SitesController < ApplicationController
 
   # POST /sites or /sites.json
   def create
-    @site = Site.new(site_params)
+    if params[:site_id].present?
+      @site = Site.find(params[:site_id])
+    else
+     @site = Site.new(site_params)
+    end
 
     respond_to do |format|
       if @site.save
-        format.html { redirect_to site_url(@site), notice: "Site was successfully created." }
-        format.json { render :show, status: :created, location: @site }
+        @site_program.sites << @site
+        format.turbo_stream { redirect_to @site_program, 
+                              notice: "The site was added" 
+                            }
       else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @site.errors, status: :unprocessable_entity }
+        format.turbo_stream { redirect_to @site_program, 
+          alert: "Fail: you need to enter a site data" 
+        }
       end
     end
+
+    # @site = Site.new(site_params)
+
+    # respond_to do |format|
+    #   if @site.save
+    #     format.html { redirect_to site_url(@site), notice: "Site was successfully created." }
+    #     format.json { render :show, status: :created, location: @site }
+    #   else
+    #     format.html { render :new, status: :unprocessable_entity }
+    #     format.json { render json: @site.errors, status: :unprocessable_entity }
+    #   end
+    # end
   end
 
   # PATCH/PUT /sites/1 or /sites/1.json
