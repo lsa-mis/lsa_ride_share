@@ -3,8 +3,7 @@
 
   <div class="px-1">
     <label for="car_id">Select a Car</label>
-      <%= select_tag "car_id", options_from_collection_for_select(Car.all, :id, :car_number), include_blank: "Select ...", class: "block rounded-none rounded-l-md text-xs border-gray-300",
-                :"data-action" => "change->autosubmit#search" %>
+      <%= select_tag "car_id", options_from_collection_for_select(Car.all, :id, :car_number), include_blank: "Select ...", class: "block rounded-none rounded-l-md text-xs border-gray-300"%>
   </div>
 
   <div class="my-5">
@@ -59,7 +58,7 @@
       <li class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
         <div class="w-0 flex-1 flex items-center">
           <span class="ml-2 flex-1 w-0 truncate">
-            you currently do not have any links.
+            you currently do not have any cars.
           </span>
         </div>
       </li>
