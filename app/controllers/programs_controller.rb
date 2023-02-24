@@ -1,6 +1,6 @@
 class ProgramsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_program, only: %i[ show edit update destroy duplicate]
+  before_action :set_program, only: %i[ show edit update destroy duplicate remove_car]
 
   # GET /programs or /programs.json
   def index
@@ -82,6 +82,11 @@ class ProgramsController < ApplicationController
       format.html { redirect_to programs_url, notice: "Program was successfully destroyed." }
       format.json { head :no_content }
     end
+  end
+
+  def remove_car
+    @program.cars.delete(Car.find(params[:car_id]))
+    redirect_to @program
   end
 
   private

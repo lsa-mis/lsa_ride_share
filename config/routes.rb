@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     resources :cars, module: :programs
   end
   get 'programs/duplicate/:id', to: 'programs#duplicate', as: :duplicate
+  get 'programs/remove_car/:id/:car_id', to: 'programs#remove_car', as: :remove_car
   resources :program_managers
   devise_for :users
   get 'static_pages/home'
