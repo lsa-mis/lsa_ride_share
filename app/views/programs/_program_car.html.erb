@@ -1,6 +1,12 @@
 <%= form_for [@program, Car.new], html: { class: "sm:flex sm:items-center" } do |form| %>
 
 
+  <div class="px-1">
+    <label for="car_id">Select a Car</label>
+      <%= select_tag "car_id", options_from_collection_for_select(Car.all, :id, :car_number), include_blank: "Select ...", class: "block rounded-none rounded-l-md text-xs border-gray-300",
+                :"data-action" => "change->autosubmit#search" %>
+  </div>
+
   <div class="my-5">
     <%= form.label :car_number %>
     <%= form.text_field :car_number, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
@@ -27,7 +33,7 @@
   </div>
 
   <div class="inline">
-    <%= form.submit class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+    <%= form.submit "Add Car", class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
   </div>
 <% end %>
 

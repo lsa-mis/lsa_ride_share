@@ -21,7 +21,11 @@ class CarsController < ApplicationController
 
   # POST /cars or /cars.json
   def create
-    @car = Car.new(car_params)
+    if params[:car_id].present?
+      @car = Car.find(params[:car_id])
+    else
+     @car = Car.new(car_params)
+    end
 
     respond_to do |format|
       if @car.save
@@ -68,6 +72,6 @@ class CarsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def car_params
-      params.require(:car).permit(:car_number, :make, :model, :color, :number_of_seats, :mileage, :gas, :parking_spot, :last_used, :last_checked, :last_driver)
+      params.require(:car).permit(:car_number, :make, :model, :color, :number_of_seats, :mileage, :gas, :parking_spot, :last_used, :last_checked, :last_driver, :car_id)
     end
 end
