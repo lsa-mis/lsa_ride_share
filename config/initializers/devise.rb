@@ -14,11 +14,8 @@ Devise.setup do |config|
   idp_logout_url = Rails.application.credentials.staging_idp_slo_target_url
   idp_fingerprint = Rails.application.credentials.staging_idp_cert_fingerprint
 
- # consumer_service_url = Rails.application.credentials.dev_assertion_consumer_service_url
- # entity_id = Rails.application.credentials.dev_entity_id
-  consumer_service_url = Rails.application.credentials.staging_assertion_consumer_service_url
-  entity_id = Rails.application.credentials.staging_entity_id
-
+  consumer_service_url = Rails.application.credentials.dev_assertion_consumer_service_url
+  entity_id = Rails.application.credentials.dev_entity_id
 
   if Rails.env.staging?
     consumer_service_url = Rails.application.credentials.staging_assertion_consumer_service_url
