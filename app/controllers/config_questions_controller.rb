@@ -21,17 +21,33 @@ class ConfigQuestionsController < ApplicationController
 
   # POST /config_questions or /config_questions.json
   def create
-    @config_question = ConfigQuestion.new(config_question_params)
-fail
-    respond_to do |format|
-      if @config_question.save
-        format.html { redirect_to config_question_url(@config_question), notice: "Config question was successfully created." }
-        format.json { render :show, status: :created, location: @config_question }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @config_question.errors, status: :unprocessable_entity }
-      end
+    if params[:check1] == "1"
+      config_question = ConfigQuestion.new(program_id: @config_question_program.id, question: params[:question1])
+      config_question.save
+      @config_question_program.config_questions << config_question
     end
+    if params[:check2] == "1"
+      config_question = ConfigQuestion.new(program_id: @config_question_program.id, question: params[:question2])
+      config_question.save
+      @config_question_program.config_questions << config_question
+    end
+    if params[:check3] == "1"
+      config_question = ConfigQuestion.new(program_id: @config_question_program.id, question: params[:question3])
+      config_question.save
+      @config_question_program.config_questions << config_question
+    end
+    if params[:check4] == "1"
+      config_question = ConfigQuestion.new(program_id: @config_question_program.id, question: params[:question4])
+      config_question.save
+      @config_question_program.config_questions << config_question
+    end
+    if params[:check5] == "1"
+      config_question = ConfigQuestion.new(program_id: @config_question_program.id, question: params[:question5])
+      config_question.save
+      @config_question_program.config_questions << config_question
+    end
+    redirect_to  @config_question_program
+
   end
 
   # PATCH/PUT /config_questions/1 or /config_questions/1.json
@@ -66,6 +82,6 @@ fail
 
     # Only allow a list of trusted parameters through.
     def config_question_params
-      params.require(:config_question).permit(:program_id)
+      params.require(:config_question).permit(:program_id, :check1, :check2, :check3, :check4, :question1, :question2, :question3, :question4, :question5)
     end
 end

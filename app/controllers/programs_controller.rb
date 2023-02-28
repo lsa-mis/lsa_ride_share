@@ -1,6 +1,6 @@
 class ProgramsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_program, only: %i[ show edit update destroy duplicate remove_car remove_site remove_program_manager]
+  before_action :set_program, only: %i[ show edit update destroy duplicate remove_car remove_site remove_program_manager remove_config_question]
 
   # GET /programs or /programs.json
   def index
@@ -95,7 +95,12 @@ class ProgramsController < ApplicationController
   end
 
   def remove_program_manager
-    @program.program_managers.delete(Site.find(params[:program_manager_id]))
+    @program.program_managers.delete(ProgramManager.find(params[:program_manager_id]))
+    redirect_to @program
+  end
+
+  def remove_config_question
+    ConfigQuestion.find(params[:config_question_id]).delete
     redirect_to @program
   end
 

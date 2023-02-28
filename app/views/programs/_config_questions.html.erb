@@ -1,0 +1,87 @@
+<%= form_for [@program, ConfigQuestion.new], html: { class: "sm:flex sm:items-center" } do |form| %>
+
+
+  <div class="flex flex-col">
+
+    <div class="px-1 pb-2 my-2 flex items-center text-sm text-gray-900">
+      <div class="checkbox-filter">
+        <%= check_box_tag :check1, 1, false, { class: "w-5 h-5 rounded mr-2 border-blue-umblue text-blue-umblue focus:ring-blue-umblue" } %>
+      </div>
+      <div class="field">
+        <%= label_tag 'question1' %>
+        <%= rich_text_area_tag :question1, "Number of students using ride share" %>
+      </div>
+    </div>
+
+    <div class="px-1 pb-2 my-2 flex items-center text-sm text-gray-900">
+      <div class="checkbox-filter">
+        <%= check_box_tag :check2, 1, false, { class: "w-5 h-5 rounded mr-2 border-blue-umblue text-blue-umblue focus:ring-blue-umblue" } %>
+      </div>
+      <div class="field">
+        <%= label_tag 'question2' %>
+        <%= rich_text_area_tag :question2, "<div>Type of car reservation&nbsp;</div><ul><li>Recurring</li><li>Sporadic</li><li>Events</li><li>Trips</li><li>Other</li></ul>" %>
+      </div>
+    </div>
+
+    <div class="px-1 pb-2 my-2 flex items-center text-sm text-gray-900">
+      <div class="checkbox-filter">
+        <%= check_box_tag :check3, 1, false, { class: "w-5 h-5 rounded mr-2 border-blue-umblue text-blue-umblue focus:ring-blue-umblue" } %>
+      </div>
+      <div class="field">
+        <%= label_tag 'question3' %>
+        <%= rich_text_area_tag :question3, "Does The Course Have A $50 Lab Fee?" %>
+      </div>
+    </div>
+
+    <div class="px-1 pb-2 my-2 flex items-center text-sm text-gray-900">
+      <div class="checkbox-filter">
+        <%= check_box_tag :check4, 1, false, { class: "w-5 h-5 rounded mr-2 border-blue-umblue text-blue-umblue focus:ring-blue-umblue" } %>
+      </div>
+      <div class="field">
+        <%= label_tag 'question4' %>
+        <%= rich_text_area_tag :question4, "<div>What training option would be best for your course? (~30-minutes needed)&nbsp;</div><ul><li>Whole Class In-Person (Recommended)&nbsp;</li><li>Whole Class Via Zoom (Recommended)&nbsp;</li><li>Small Groups Via Zoom&nbsp;</li><li>Individuals Sign Up Online&nbsp;</li><li>Other</li></ul>" %>
+      </div>
+    </div>
+    <div class="px-1 pb-2 my-2 flex items-center text-sm text-gray-900">
+      <div class="checkbox-filter">
+        <%= check_box_tag :check5, 1, false, { class: "w-5 h-5 rounded mr-2 border-blue-umblue text-blue-umblue focus:ring-blue-umblue" } %>
+      </div>
+      <div class="field">
+        <%= label_tag 'question5' %>
+        <%= rich_text_area_tag :question5, "If whole class training is possible, what date would be best? (The admin will contact to coordinate time/location)" %>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <%= form.submit "Add Questions", class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+  </div>
+<% end %>
+
+
+<% if @program.config_questions.present? %>
+  <% @program.config_questions.each do |config_question| %>
+    <li class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
+      <div class="w-0 flex-1 flex items-center">
+        <i class="fas fa-link text-gray-400"></i>
+        <span class="ml-2 flex-1 w-0 truncate">
+          <%= link_to config_question.question, config_question_path(config_question) %>
+        </span>
+      </div>
+      
+        <div class="ml-4 flex-shrink-0 flex space-x-4">
+          <button type="button" class="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            <%= link_to 'Remove', remove_config_question_path(@program, config_question), method: :delete, data: { confirm: 'Are you sure?' } %>
+          </button>
+        </div>
+    </li>
+  <% end %>
+<% else %>
+  <li class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
+    <div class="w-0 flex-1 flex items-center">
+      <span class="ml-2 flex-1 w-0 truncate">
+        you currently do not have any config_questions.
+      </span>
+    </div>
+  </li>
+<% end %>

@@ -17,10 +17,14 @@ Rails.application.routes.draw do
   resources :programs do
     resources :program_managers, module: :programs
   end
+  resources :programs do
+    resources :config_questions, module: :programs
+  end
   get 'programs/duplicate/:id', to: 'programs#duplicate', as: :duplicate
   get 'programs/remove_car/:id/:car_id', to: 'programs#remove_car', as: :remove_car
   get 'programs/remove_site/:id/:site_id', to: 'programs#remove_site', as: :remove_site
   get 'programs/remove_program_manager/:id/:program_manager_id', to: 'programs#remove_program_manager', as: :remove_program_manager
+  get 'programs/remove_config_question/:id/:config_question_id', to: 'programs#remove_config_question', as: :remove_config_question
 
   resources :program_managers
   devise_for :users

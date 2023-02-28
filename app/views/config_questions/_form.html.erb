@@ -18,27 +18,27 @@
 
   <div class="px-1 pb-2 my-2 flex items-center text-sm text-gray-900">
     <div class="checkbox-filter">
-      <%= check_box_tag "check[]", 0, false, { class: "w-5 h-5 rounded mr-2 border-blue-umblue text-blue-umblue focus:ring-blue-umblue" } %>
+      <%= check_box_tag :check1, 1, false, { class: "w-5 h-5 rounded mr-2 border-blue-umblue text-blue-umblue focus:ring-blue-umblue" } %>
     </div>
     <div class="field">
-      <%= form.label "question[]" %>
-      <%= form.rich_text_area tag_name_with_index, value: "Number of students using ride share" %>
+      <%= form.label :question1 %>
+      <%= form.rich_text_area :question1, value: "#{form.index} Number of students using ride share" %>
     </div>
   </div>
 
   <div class="px-1 pb-2 my-2 flex items-center text-sm text-gray-900">
     <div class="checkbox-filter">
-      <%= check_box_tag "check[]", 0, false, { class: "w-5 h-5 rounded mr-2 border-blue-umblue text-blue-umblue focus:ring-blue-umblue" } %>
+      <%= check_box_tag :ckeck2, 1, false, { class: "w-5 h-5 rounded mr-2 border-blue-umblue text-blue-umblue focus:ring-blue-umblue" } %>
     </div>
     <div class="field">
-      <%= form.label "question[]" %>
-      <%= form.rich_text_area "question[]", value: "<div>Type of car reservation&nbsp;</div><ul><li>Recurring</li><li>Sporadic</li><li>Events</li><li>Trips</li><li>Other</li></ul>" %>
+      <%= form.label :question2 %>
+      <%= form.rich_text_area :question2, value: "<div>Type of car reservation&nbsp;</div><ul><li>Recurring</li><li>Sporadic</li><li>Events</li><li>Trips</li><li>Other</li></ul>" %>
     </div>
   </div>
 
   <div class="px-1 pb-2 my-2 flex items-center text-sm text-gray-900">
     <div class="checkbox-filter">
-      <%= check_box_tag :check3, 0, false, { class: "w-5 h-5 rounded mr-2 border-blue-umblue text-blue-umblue focus:ring-blue-umblue" } %>
+      <%= check_box_tag :check3, 1, false, { class: "w-5 h-5 rounded mr-2 border-blue-umblue text-blue-umblue focus:ring-blue-umblue" } %>
     </div>
     <div class="field">
       <%= form.label :question3 %>
@@ -48,7 +48,7 @@
 
   <div class="px-1 pb-2 my-2 flex items-center text-sm text-gray-900">
     <div class="checkbox-filter">
-      <%= check_box_tag :check4, 0, false, { class: "w-5 h-5 rounded mr-2 border-blue-umblue text-blue-umblue focus:ring-blue-umblue" } %>
+      <%= check_box_tag :check4, 1, false, { class: "w-5 h-5 rounded mr-2 border-blue-umblue text-blue-umblue focus:ring-blue-umblue" } %>
     </div>
     <div class="field">
       <%= form.label :question4 %>
@@ -57,7 +57,7 @@
   </div>
   <div class="px-1 pb-2 my-2 flex items-center text-sm text-gray-900">
     <div class="checkbox-filter">
-      <%= check_box_tag :check5, 0, false, { class: "w-5 h-5 rounded mr-2 border-blue-umblue text-blue-umblue focus:ring-blue-umblue" } %>
+      <%= check_box_tag :check5, 1, false, { class: "w-5 h-5 rounded mr-2 border-blue-umblue text-blue-umblue focus:ring-blue-umblue" } %>
     </div>
     <div class="field">
       <%= form.label :question5 %>

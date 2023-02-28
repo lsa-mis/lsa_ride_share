@@ -20,7 +20,14 @@
 
 <hr>
 <div>
-  <%= turbo_frame_tag "new_site" do %>
+  <%= turbo_frame_tag "new_program_manager" do %>
     <%= render "program_manager", locals: { program: @program} %>
+  <% end %>
+</div>
+
+<hr>
+<div>
+  <%= turbo_frame_tag "config_questions" do %>
+    <%= render "config_questions", locals: { program: @program} %>
   <% end %>
 </div>
