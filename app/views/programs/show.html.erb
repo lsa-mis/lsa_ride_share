@@ -17,3 +17,10 @@
     <%= render "program_site", locals: { program: @program} %>
   <% end %>
 </div>
+
+<hr>
+<div>
+  <%= turbo_frame_tag "new_site" do %>
+    <%= render "program_manager", locals: { program: @program} %>
+  <% end %>
+</div>
