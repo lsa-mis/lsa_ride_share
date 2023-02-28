@@ -21,38 +21,27 @@ class ConfigQuestionsController < ApplicationController
 
   # POST /config_questions or /config_questions.json
   def create
-    if params[:check1] == "1"
-      config_question = ConfigQuestion.new(program_id: @config_question_program.id, question: params[:question1])
-      config_question.save
-      @config_question_program.config_questions << config_question
+    @config_question = ConfigQuestion.new(config_question_params)
+    @config_question.program_id = params[:program_id]
+
+    respond_to do |format|
+      if @config_question.save
+        @config_question_program.config_questions << @config_question
+        format.turbo_stream { redirect_to @config_question_program, 
+                              notice: "The config_question was added" 
+                            }
+      else
+        format.turbo_stream { redirect_to @config_question_program, 
+          alert: "Fail: you need to enter a config_question data" 
+        }
+      end
     end
-    if params[:check2] == "1"
-      config_question = ConfigQuestion.new(program_id: @config_question_program.id, question: params[:question2])
-      config_question.save
-      @config_question_program.config_questions << config_question
-    end
-    if params[:check3] == "1"
-      config_question = ConfigQuestion.new(program_id: @config_question_program.id, question: params[:question3])
-      config_question.save
-      @config_question_program.config_questions << config_question
-    end
-    if params[:check4] == "1"
-      config_question = ConfigQuestion.new(program_id: @config_question_program.id, question: params[:question4])
-      config_question.save
-      @config_question_program.config_questions << config_question
-    end
-    if params[:check5] == "1"
-      config_question = ConfigQuestion.new(program_id: @config_question_program.id, question: params[:question5])
-      config_question.save
-      @config_question_program.config_questions << config_question
-    end
-    redirect_to  @config_question_program
 
   end
 
   # PATCH/PUT /config_questions/1 or /config_questions/1.json
   def update
-    fail
+    
     respond_to do |format|
       if @config_question.update(config_question_params)
         format.html { redirect_to config_question_url(@config_question), notice: "Config question was successfully updated." }
@@ -82,6 +71,6 @@ class ConfigQuestionsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def config_question_params
-      params.require(:config_question).permit(:program_id, :check1, :check2, :check3, :check4, :question1, :question2, :question3, :question4, :question5)
+      params.require(:config_question).permit(:question)
     end
 end

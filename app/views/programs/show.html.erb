@@ -3,7 +3,7 @@
     <%= render @program %>
   </div>
 </div>
-<hr>
+<hr class="border-blue-900 border m-4">
 
 <div>
   <%= turbo_frame_tag "new_car" do %>
@@ -11,23 +11,25 @@
   <% end %>
 </div>
 
-<hr>
+<hr class="border-blue-900 border m-4">
 <div>
   <%= turbo_frame_tag "new_site" do %>
     <%= render "program_site", locals: { program: @program} %>
   <% end %>
 </div>
 
-<hr>
+<hr class="border-blue-900 border m-4">
 <div>
   <%= turbo_frame_tag "new_program_manager" do %>
     <%= render "program_manager", locals: { program: @program} %>
   <% end %>
 </div>
 
-<hr>
-<div>
-  <%= turbo_frame_tag "config_questions" do %>
-    <%= render "config_questions", locals: { program: @program} %>
-  <% end %>
-</div>
+<% if @program.config_questions.present? %>
+  <hr class="border-blue-900 border m-4">
+  <div>
+    <%= turbo_frame_tag "config_questions" do %>
+      <%= render "config_questions", locals: { program: @program} %>
+    <% end %>
+  </div>
+<% end %>
