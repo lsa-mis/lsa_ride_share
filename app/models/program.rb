@@ -49,4 +49,8 @@ class Program < ApplicationRecord
     end
   end
 
+  def display_name
+    "#{self.subject.upcase} #{self.catalog_number.titleize} - #{self.class_section.titleize}"
+  end
+
 end

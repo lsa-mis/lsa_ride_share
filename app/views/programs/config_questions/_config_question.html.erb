@@ -1,7 +1,7 @@
 <div id="<%= dom_id @config_question_program %>">
   <p class="my-5">
     <strong class="block font-medium mb-1">Program:</strong>
-    <%= @config_question_program.subject.upcase %> <%= @config_question_program.catalog_number.titleize %> - <%= @config_question_program.class_section.titleize %>
+    <%= @config_question_program.display_name %>
   </p>
   <% @config_questions.each do |q| %>
     <div class="flex flex-cols items-center">
