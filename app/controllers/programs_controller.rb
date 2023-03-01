@@ -36,6 +36,7 @@ class ProgramsController < ApplicationController
   # GET /programs/1 or /programs/1.json
   def show
     @cars = @program.cars
+    @add_cars = Car.all - @cars
   end
 
   # GET /programs/new

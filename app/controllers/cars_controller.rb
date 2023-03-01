@@ -7,16 +7,23 @@ class CarsController < ApplicationController
   end
 
   # GET /cars/1 or /cars/1.json
+  def index
+  end
+  
   def show
   end
 
+
   # GET /cars/new
   def new
+    @add_cars = Car.all - @car_program.cars
     @car = Car.new
+    session[:return_to] = request.referer
   end
 
   # GET /cars/1/edit
   def edit
+    session[:return_to] = request.referer
   end
 
   # POST /cars or /cars.json
@@ -30,11 +37,11 @@ class CarsController < ApplicationController
     respond_to do |format|
       if @car.save
         @car_program.cars << @car
-        format.turbo_stream { redirect_to @car_program, 
-                              notice: "The car was added" 
+        format.turbo_stream { redirect_to session.delete(:return_to),
+        notice: "A new car was added"
                             }
       else
-        format.turbo_stream { redirect_to @car_program, 
+        format.turbo_stream { redirect_to session.delete(:return_to),
           alert: "Fail: you need to enter a car data" 
         }
       end
@@ -43,13 +50,17 @@ class CarsController < ApplicationController
 
   # PATCH/PUT /cars/1 or /cars/1.json
   def update
+    @car = Car.find(params[:id])
+
     respond_to do |format|
       if @car.update(car_params)
-        format.html { redirect_to car_url(@car), notice: "Car was successfully updated." }
-        format.json { render :show, status: :ok, location: @car }
+        format.turbo_stream { redirect_to session.delete(:return_to),
+                              notice: "The car was added" 
+                            }
       else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @car.errors, status: :unprocessable_entity }
+        format.turbo_stream { redirect_to session.delete(:return_to),
+          alert: "Fail" 
+        }
       end
     end
   end
