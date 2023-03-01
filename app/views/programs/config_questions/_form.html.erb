@@ -1,0 +1,32 @@
+<%= form_for [@config_question_program, @config_question] do |form| %>
+  <% if @config_question.errors.any? %>
+    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
+      <h2><%= pluralize(@config_question.errors.count, "error") %> prohibited this config_question from being saved:</h2>
+
+      <ul>
+        <% @config_question.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Program hell:</strong>
+    <%= @config_question_program.subject.upcase %> <%= @config_question_program.catalog_number.titleize %> - <%= @config_question_program.class_section.titleize %>
+  </p>
+
+  <%= form.hidden_field :program_id %>
+
+  <div class="px-1 pb-2 my-2 flex items-center text-sm text-gray-900">
+
+    <div class="field">
+      <%= form.label :question %>
+      <%= form.rich_text_area :question %>
+    </div>
+  </div>
+
+  <div class="inline">
+    <%= form.submit class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+  </div>
+<% end %>
