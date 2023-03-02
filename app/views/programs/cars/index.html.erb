@@ -7,7 +7,7 @@
 
   <p class="my-5">
   <strong class="block font-medium mb-1">Program:</strong>
-  <%= @car_program.display_name %>
+  <%= link_to @car_program.display_name, program_path(@car_program) %>
   </p>
 
   <div id="cars" class="min-w-full">

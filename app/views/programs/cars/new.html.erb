@@ -2,8 +2,8 @@
   <h1 class="font-bold text-4xl">Add a new car to program</h1>
 
   <p class="my-5">
-  <strong class="block font-medium mb-1">Program:</strong>
-  <%= @car_program.display_name %>
+    <strong class="block font-medium mb-1">Program:</strong>
+    <%= link_to @car_program.display_name, program_path(@car_program) %>
   </p>
 
   <%= render "form", car: @car %>

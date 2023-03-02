@@ -57,7 +57,7 @@
   </div>
 
   <% if action_name != "show" %>
-    <%= link_to 'Remove from program', remove_car_path(@car_program, car), method: :delete, data: { confirm: 'Are you sure?' } %>
+    <%= link_to 'Remove from program', remove_car_path(@car_program, car), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete} %>
     <%= link_to 'Edit this car', edit_program_car_path(@car_program, car), class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
     <hr class="mt-6">
   <% end %>

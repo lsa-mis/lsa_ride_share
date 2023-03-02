@@ -18,12 +18,11 @@ class CarsController < ApplicationController
   def new
     @add_cars = Car.all - @car_program.cars
     @car = Car.new
-    session[:return_to] = request.referer
   end
 
   # GET /cars/1/edit
   def edit
-    session[:return_to] = request.referer
+    @add_cars = Car.all - @car_program.cars
   end
 
   # POST /cars or /cars.json
@@ -37,11 +36,11 @@ class CarsController < ApplicationController
     respond_to do |format|
       if @car.save
         @car_program.cars << @car
-        format.turbo_stream { redirect_to session.delete(:return_to),
+        format.turbo_stream { redirect_back_or_to @car_program,
         notice: "A new car was added"
                             }
       else
-        format.turbo_stream { redirect_to session.delete(:return_to),
+        format.turbo_stream { redirect_to @car_program,
           alert: "Fail: you need to enter a car data" 
         }
       end
@@ -54,11 +53,11 @@ class CarsController < ApplicationController
 
     respond_to do |format|
       if @car.update(car_params)
-        format.turbo_stream { redirect_to session.delete(:return_to),
+        format.turbo_stream { redirect_back_or_to @car_program,
                               notice: "The car was added" 
                             }
       else
-        format.turbo_stream { redirect_to session.delete(:return_to),
+        format.turbo_stream { redirect_to @car_program,
           alert: "Fail" 
         }
       end

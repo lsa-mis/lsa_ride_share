@@ -11,12 +11,13 @@
     </div>
   <% end %>
 
-  <div class="px-1">
+  <% unless @car.persisted? %>
+    <div class="px-1">
       <label for="car_id">Select a Car</label>
-        <%= select_tag "car_id", options_from_collection_for_select(@add_cars, :id, :car_number), include_blank: "Select ...", class: "block rounded-none rounded-l-md text-xs border-gray-300"%>
+          <%= select_tag "car_id", options_from_collection_for_select(@add_cars, :id, :car_number), include_blank: "Select ...", class: "block rounded-none rounded-l-md text-xs border-gray-300"%>
     </div>
     <span class="inline">or add a new car</span>
-
+  <% end %>
   <div class="my-5">
     <%= form.label :car_number %>
     <%= form.text_field :car_number, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
