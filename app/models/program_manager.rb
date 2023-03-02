@@ -25,4 +25,8 @@ class ProgramManager < ApplicationRecord
   def programs
     manager + instructor
   end
+
+  def display_name
+    "#{self.first_name} #{self.last_name} - #{self.uniqname}" 
+  end
 end

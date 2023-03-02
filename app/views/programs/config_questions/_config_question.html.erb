@@ -1,0 +1,24 @@
+<div id="<%= dom_id @config_question_program %>">
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Program:</strong>
+    <%= link_to @config_question_program.display_name, program_path(@config_question_program), class: "delete_button" %>
+  </p>
+  <% @config_questions.each do |q| %>
+    <div class="flex flex-cols items-center">
+      <div>
+        <%= button_to "Delete", program_config_question_path(@config_question_program, q), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete}, class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
+      </div>
+        <%= link_to 'Edit', edit_program_config_question_path(@config_question_program, q), class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
+      <div>
+      </div>
+      <div>
+        <%= q.question %>
+      </div>
+      <div>
+        <%= q.answer %>
+      </div>
+    </div>
+  <% end %>
+
+  
+</div>

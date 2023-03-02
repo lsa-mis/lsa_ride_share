@@ -11,16 +11,17 @@
  * <action-text-attachment> element we wrap around attachments. Otherwise,
  * images in galleries will be squished by the max-width: 33%; rule.
 */
-.trix-content .attachment-gallery > action-text-attachment,
-.trix-content .attachment-gallery > .attachment {
+.trix-content .attachment-gallery>action-text-attachment,
+.trix-content .attachment-gallery>.attachment {
   flex: 1 0 33%;
   padding: 0 0.5em;
   max-width: 33%;
 }
 
-.trix-content .attachment-gallery.attachment-gallery--2 > action-text-attachment,
-.trix-content .attachment-gallery.attachment-gallery--2 > .attachment, .trix-content .attachment-gallery.attachment-gallery--4 > action-text-attachment,
-.trix-content .attachment-gallery.attachment-gallery--4 > .attachment {
+.trix-content .attachment-gallery.attachment-gallery--2>action-text-attachment,
+.trix-content .attachment-gallery.attachment-gallery--2>.attachment,
+.trix-content .attachment-gallery.attachment-gallery--4>action-text-attachment,
+.trix-content .attachment-gallery.attachment-gallery--4>.attachment {
   flex-basis: 50%;
   max-width: 50%;
 }
@@ -28,4 +29,59 @@
 .trix-content action-text-attachment .attachment {
   padding: 0 !important;
   max-width: 100% !important;
+}
+
+.trix-button--icon-attach {
+  display: none;
+}
+
+.trix-button-group--file-tools {
+  display: none !important;
+}
+
+.trix-content ol {
+  list-style: auto !important;
+}
+
+.trix-content ul {
+  list-style: disc !important;
+}
+
+.trix-content a {
+  color: blue !important;
+}
+
+.trix-content a:hover {
+  text-decoration: underline;
+}
+
+input[type="range"] {
+  width: 100%;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+datalist {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin-top: -23px;
+  padding-top: 0px;
+}
+
+option {
+  width: 2ex;
+  display: flex;
+  justify-content: center;
+  height: 42px;
+  align-items: end;
+  background-image: url(tick.png);
+  height: 4ex;
+  background-position-y: -15px;
+  background-position-x: center;
+  z-index: -1;
+}
+
+.active {
+  color: #ecc94b;
 }

@@ -1,0 +1,81 @@
+<%= form_for [@program, Car.new], html: { class: "sm:flex sm:items-center" } do |form| %>
+
+  <div class="flex flex-col">
+    <div class="px-1">
+      <label for="car_id">Select a Car</label>
+        <%= select_tag "car_id", options_from_collection_for_select(@add_cars, :id, :car_number), include_blank: "Select ...", class: "block rounded-none rounded-l-md text-xs border-gray-300"%>
+    </div>
+    <span class="inline">or add a new car</span>
+    <div class="flex flex-row">
+      <div class="my-5">
+        <%= form.label :car_number %>
+        <%= form.text_field :car_number, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+      </div>
+
+      <div class="my-5">
+        <%= form.label :make %>
+        <%= form.text_field :make, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+      </div>
+
+      <div class="my-5">
+        <%= form.label :model %>
+        <%= form.text_field :model, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+      </div>
+
+      <div class="my-5">
+        <%= form.label :color %>
+        <%= form.text_field :color, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+      </div>
+
+      <div class="my-5">
+        <%= form.label :number_of_seats %>
+        <%= form.number_field :number_of_seats, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <div class="">
+        <%= form.submit "Add Car", class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+      </div>
+      <div>
+        <%= link_to 'All Program Cars', program_cars_path(@program), class: "hover:underline" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+
+<% if @program.cars.present? %>
+      <% @program.cars.each do |car| %>
+        <li class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
+          <div class="w-0 flex-1 flex items-center">
+            <div class="ml-2 flex-1 w-0 truncate">
+              <%= link_to car.car_number, program_car_path(car) %>
+            </div>
+            <div class="ml-2 flex-1 w-0 truncate">
+              <%= car.make %>
+            </div>
+            <div class="ml-2 flex-1 w-0 truncate">
+              <%= car.model %>
+            </div>
+            <div class="ml-2 flex-1 w-0 truncate">
+              <%= car.color %>
+            </div>
+            <div class="ml-2 flex-1 w-0 truncate">
+              <%= car.number_of_seats %>
+            </div>
+          </div>
+          
+            <div class="ml-4 flex-shrink-0 flex space-x-4">
+              <%= link_to 'Remove', remove_car_path(@program, car), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete }, class: "delete_button" %>
+            </div>
+        </li>
+      <% end %>
+    <% else %>
+      <li class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
+        <div class="w-0 flex-1 flex items-center">
+          <span class="ml-2 flex-1 w-0 truncate">
+            you currently do not have any cars.
+          </span>
+        </div>
+      </li>
+    <% end %>

@@ -1,0 +1,50 @@
+<%= form_for [@program, ProgramManager.new], html: { class: "sm:flex sm:items-center" } do |form| %>
+
+
+  <div class="my-5">
+    <%= form.label :uniqname %>
+    <%= form.text_field :uniqname, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :first_name %>
+    <%= form.text_field :first_name, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :last_name %>
+    <%= form.text_field :last_name, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="inline">
+    <%= form.submit "Add Manager", class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+  </div>
+<% end %>
+
+
+<% if @program.program_managers.present? %>
+  <% @program.program_managers.each do |program_manager| %>
+    <li class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
+      <div class="w-0 flex-1 flex items-center">
+        <i class="fas fa-link text-gray-400"></i>
+        <span class="ml-2 flex-1 w-0 truncate">
+          <%= link_to program_manager.uniqname, program_manager_path(program_manager) %>
+        </span>
+      </div>
+      
+        <div class="ml-4 flex-shrink-0 flex space-x-4">
+          <button type="button" class="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            <%= link_to 'Remove', remove_program_manager_path(@program, program_manager), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete}, class: "delete_button", class: "delete_button" %>
+          </button>
+        </div>
+    </li>
+  <% end %>
+<% else %>
+  <li class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
+    <div class="w-0 flex-1 flex items-center">
+      <span class="ml-2 flex-1 w-0 truncate">
+        you currently do not have any program_managers.
+      </span>
+    </div>
+  </li>
+<% end %>

@@ -21,15 +21,22 @@ class ProgramManagersController < ApplicationController
 
   # POST /program_managers or /program_managers.json
   def create
-    @program_manager = ProgramManager.new(program_manager_params)
+    if params[:program_manager_id].present?
+      @program_manager = ProgramManager.find(params[:program_manager_id])
+    else
+     @program_manager = ProgramManager.new(program_manager_params)
+    end
 
     respond_to do |format|
       if @program_manager.save
-        format.html { redirect_to program_manager_url(@program_manager), notice: "Program manager was successfully created." }
-        format.json { render :show, status: :created, location: @program_manager }
+        @program_manager_program.program_managers << @program_manager
+        format.turbo_stream { redirect_to @program_manager_program, 
+                              notice: "The program_manager was added" 
+                            }
       else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @program_manager.errors, status: :unprocessable_entity }
+        format.turbo_stream { redirect_to @program_manager_program, 
+          alert: "Fail: you need to enter a program_manager data" 
+        }
       end
     end
   end

@@ -1,72 +1,104 @@
-<div id="<%= dom_id program %>">
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Active:</strong>
-    <%= program.active %>
-  </p>
+<h1><%= program.title %></h1>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Title:</strong>
-    <%= program.title %>
-  </p>
+<div class="grid grid-cols-1 md:grid-cols-3 place-content-between">
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Term start:</strong>
-    <%= program.term_start %>
-  </p>
+  <div class="mx-2">
+    <div class="text_small flex-grow">
+      <%= program.subject.upcase %> <%= program.catalog_number.titleize %> - <%= program.class_section.titleize %>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Term end:</strong>
-    <%= program.term_end %>
-  </p>
+    <div class="py-2">
+      <label class="text_field_label flex sm:mt-0 sm:col-span-2">
+      Term
+      </label>
+      <div class="text_small flex-grow">
+        <%= program.term.name %>
+      </div>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Term code:</strong>
-    <%= program.term_code %>
-  </p>
+    <div class="py-2">
+      <label class="text_field_label flex sm:mt-0 sm:col-span-2">
+      Instructor
+      </label>
+      <div class="text_small flex-grow">
+        <%= program.instructor.display_name %>
+      </div>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Subject:</strong>
-    <%= program.subject %>
-  </p>
+    <div class="py-2">
+      <label class="text_field_label flex sm:mt-0 sm:col-span-2">
+      Number of students
+      </label>
+      <div class="text_small flex-grow">
+        <%= program.number_of_students %>
+      </div>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Catalog number:</strong>
-    <%= program.catalog_number %>
-  </p>
+    <div class="py-2">
+      <label class="text_field_label flex sm:mt-0 sm:col-span-2">
+      Number of students using ride share
+      </label>
+      <div class="text_small flex-grow">
+        <%= program.number_of_students_using_ride_share %>
+      </div>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Class section:</strong>
-    <%= program.class_section %>
-  </p>
+  </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Number of students:</strong>
-    <%= program.number_of_students %>
-  </p>
+  <div class="ml-4">
+    <span class="flex text-sm font-semibold text-gray-900 sm:mt-0 sm:col-span-2">Record history</span>
+    <div class="py-2">
+      <label class="flex text-sm font-medium text-gray-900 sm:mt-0 sm:col-span-2">
+        Updated by
+      </label>
+      <div class="ml-2 text-sm text-gray-700 flex-grow">
+        <%= show_user_name_by_id(program.updated_by) %>
+      </div>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Number of students using ride share:</strong>
-    <%= program.number_of_students_using_ride_share %>
-  </p>
+    <div class="py-2">
+      <label class="flex text-sm font-medium text-gray-900 sm:mt-0 sm:col-span-2">
+        Created at
+      </label>
+      <div class="ml-2 text-sm text-gray-700 flex-grow">
+        <%= show_date(program.created_at) %>
+      </div>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Pictures required start:</strong>
-    <%= program.pictures_required_start %>
-  </p>
+    <div class="py-2">
+      <label class="flex text-sm font-medium text-gray-900 sm:mt-0 sm:col-span-2">
+        Updated at
+      </label>
+      <div class="ml-2 text-sm text-gray-700 flex-grow">
+        <%= show_date(program.updated_at) %>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div>
+      <div class="m-2">
+        <% if program.config_questions.empty? %>
+          <div class="m-2">
+            <%= link_to 'Add Default Questions', add_config_questions_path, class: "my-4 px-2 py-1 rounded-md shadow-sm bg-blue-umblue text-sm text-gray-100 text-center hover:underline" %>
+          </div>
+        <% end %>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Pictures required end:</strong>
-    <%= program.pictures_required_end %>
-  </p>
+        <div class="m-2">
+          <%= link_to 'Add Students', students_path, class: "my-4 px-2 py-1 rounded-md shadow-sm bg-blue-umblue text-sm text-gray-100 text-center hover:underline" %>
+        </div>
+        <div class="m-2">
+          <%= link_to 'Edit this item', edit_program_path(program), class: "my-2 px-2 py-1 rounded-md shadow-sm bg-blue-umblue text-sm text-gray-100 text-center hover:underline" %>
+        </div>
+      </div>
+      <div class="m-2">
+        <%= link_to programs_path, data: { "turbo-frame": "_top" } do %>
+          <div class="flex items-center text-sm text-blue-umblue hover:underline pb-2">
+            <%= svg("left-arrow-svgrepo-com")  %>
+            <span>Back to search</span>
+          </div>
+        <% end %>
+      </div>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Non uofm passengers:</strong>
-    <%= program.non_uofm_passengers %>
-  </p>
-
-  <% if action_name != "show" %>
-    <%= link_to "Show this program", program, class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-    <%= link_to 'Edit this program', edit_program_path(program), class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
-    <hr class="mt-6">
-  <% end %>
+  </div>
 </div>

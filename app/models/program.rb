@@ -5,9 +5,6 @@
 #  id                                  :bigint           not null, primary key
 #  active                              :boolean          default(TRUE)
 #  title                               :string
-#  term_start                          :date             not null
-#  term_end                            :date             not null
-#  term_code                           :string           not null
 #  subject                             :string           not null
 #  catalog_number                      :string           not null
 #  class_section                       :string           not null
@@ -24,6 +21,7 @@
 #  mvr_link                            :string
 #  canvas_link                         :string
 #  canvas_course_id                    :integer
+#  term_id                             :integer
 #
 class Program < ApplicationRecord
   belongs_to :instructor, class_name: 'ProgramManager', foreign_key: :instructor_id
@@ -34,5 +32,30 @@ class Program < ApplicationRecord
   has_many :reservations
   has_many :config_questions
   belongs_to :admin_access
+  belongs_to :term
+
+  accepts_nested_attributes_for :instructor
+
+  validates_presence_of :title, :subject, :catalog_number, :class_section, :instructor_id, :admin_access_id
+  validates :term_id, uniqueness: { scope: [:subject, :catalog_number], message: "already has this program" }
+  
+  scope :active, -> { where(active: true) }
+  scope :archived, -> { where(active: false) }
+
+  def dup
+    super.tap do |new_program|
+
+      new_program.term_id = nil
+      new_program.number_of_students = ""
+      new_program.number_of_students_using_ride_share = ""
+      new_program.updated_by = ""
+      new_program.active = true
+
+    end
+  end
+
+  def display_name
+    "#{self.subject.upcase} #{self.catalog_number.titleize} - #{self.class_section.titleize}"
+  end
 
 end

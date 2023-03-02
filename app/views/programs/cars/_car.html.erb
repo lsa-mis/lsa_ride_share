@@ -1,0 +1,64 @@
+<div id="<%= dom_id @car_program %>">
+  <div class="flex">
+    <div class="my-5">
+      <strong class="block font-medium mb-1 mr-4">Car number:</strong>
+      <%= car.car_number %>
+    </div>
+
+    <div class="my-5">
+      <strong class="block font-medium mb-1 mr-4">Make:</strong>
+      <%= car.make %>
+    </div>
+
+    <div class="my-5">
+      <strong class="block font-medium mb-1 mr-4">Model:</strong>
+      <%= car.model %>
+    </div>
+
+    <div class="my-5">
+      <strong class="block font-medium mb-1 mr-4">Color:</strong>
+      <%= car.color %>
+    </div>
+
+    <div class="my-5">
+      <strong class="block font-medium mb-1 mr-4">Number of seats:</strong>
+      <%= car.number_of_seats %>
+    </div>
+
+    <div class="my-5">
+      <strong class="block font-medium mb-1 mr-4">Mileage:</strong>
+      <%= car.mileage %>
+    </div>
+
+    <div class="my-5">
+      <strong class="block font-medium mb-1 mr-4">Gas:</strong>
+      <%= car.gas %>
+    </div>
+
+    <div class="my-5">
+      <strong class="block font-medium mb-1 mr-4">Parking spot:</strong>
+      <%= car.parking_spot %>
+    </div>
+
+    <div class="my-5">
+      <strong class="block font-medium mb-1 mr-4">Last used:</strong>
+      <%= car.last_used %>
+    </div>
+
+    <div class="my-5">
+      <strong class="block font-medium mb-1 mr-4">Last checked:</strong>
+      <%= car.last_checked %>
+    </div>
+
+    <div class="my-5">
+      <strong class="block font-medium mb-1 mr-4">Last driver:</strong>
+      <%= car.last_driver %>
+    </div>
+  </div>
+
+  <% if action_name != "show" %>
+    <%= link_to 'Remove from program', remove_car_path(@car_program, car), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete}, class: "delete_button" %>
+    <%= link_to 'Edit this car', edit_program_car_path(@car_program, car), class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
+    <hr class="mt-6">
+  <% end %>
+</div>
