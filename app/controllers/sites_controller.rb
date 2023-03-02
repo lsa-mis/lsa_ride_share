@@ -40,17 +40,6 @@ class SitesController < ApplicationController
       end
     end
 
-    # @site = Site.new(site_params)
-
-    # respond_to do |format|
-    #   if @site.save
-    #     format.html { redirect_to site_url(@site), notice: "Site was successfully created." }
-    #     format.json { render :show, status: :created, location: @site }
-    #   else
-    #     format.html { render :new, status: :unprocessable_entity }
-    #     format.json { render json: @site.errors, status: :unprocessable_entity }
-    #   end
-    # end
   end
 
   # PATCH/PUT /sites/1 or /sites/1.json
