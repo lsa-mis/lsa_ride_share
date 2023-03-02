@@ -17,11 +17,11 @@ from https://tailwindcss.com/docs/adding-custom-styles
 
 @layer base {
   .header_link {
-    @apply border-transparent text-blue-50 inline-flex items-center pr-1 pt-1 border-b-2 text-base font-normal hover:border-blue-300 text-white
+    @apply border-transparent text-blue-50 inline-flex items-center pr-1 pt-1 border-b-2 text-base font-normal hover:border-blue-300 text-white;
   }
 
   .active {
-    @apply text-yellow-500
+    @apply text-yellow-500;
   }
 
   h1 {
@@ -49,7 +49,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   hr {
-    @apply border-blue-900 border m-4
+    @apply border-blue-900 border m-4;
   }
 
   .body-text {
@@ -89,115 +89,115 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .text_field_label {
-    @apply text-sm font-medium text-gray-900
+    @apply text-sm font-medium text-gray-900;
   }
 
   .text_small {
-    @apply ml-2 text-sm text-gray-700
+    @apply ml-2 text-sm text-gray-700;
   }
 
   .primary_button {
-    @apply p-2 font-montserrat font-semibold leading-7 text-base border rounded-md text-white bg-blue-umblue
+    @apply p-2 font-montserrat font-semibold leading-7 text-base border rounded-md text-white bg-blue-umblue;
   }
 
   .primary_button:hover {
-    @apply underline text-blue-umblue bg-white border-solid border-blue-umblue border-2
+    @apply underline text-blue-umblue bg-white border-solid border-blue-umblue border-2;
   }
 
   .primary_button:active {
-    @apply underline text-blue-umblue bg-white border-solid border-blue-umblue border-2
+    @apply underline text-blue-umblue bg-white border-solid border-blue-umblue border-2;
   }
 
   .primary_button:focus {
-    @apply underline text-blue-umblue bg-white border-solid border-blue-umblue border-2
+    @apply underline text-blue-umblue bg-white border-solid border-blue-umblue border-2;
   }
 
   .primary_button:disabled {
-    @apply opacity-50 bg-black pointer-events-none text-white
+    @apply opacity-50 bg-black pointer-events-none text-white;
   }
 
   .secondary_yellow_button {
-    @apply p-2 font-montserrat font-semibold leading-7 text-base border rounded-md text-blue-umblue bg-yellow-ummaze
+    @apply p-2 font-montserrat font-semibold leading-7 text-base border rounded-md text-blue-umblue bg-yellow-ummaze;
   }
 
   .secondary_yellow_button:hover {
-    @apply underline text-blue-umblue bg-white border-solid border-yellow-ummaze border-2
+    @apply underline text-blue-umblue bg-white border-solid border-yellow-ummaze border-2;
   }
 
   .secondary_yellow_button:active {
-    @apply underline text-blue-umblue bg-white border-solid border-yellow-ummaze border-2
+    @apply underline text-blue-umblue bg-white border-solid border-yellow-ummaze border-2;
   }
 
   .secondary_yellow_button:focus {
-    @apply underline text-blue-umblue bg-white border-solid border-yellow-ummaze border-2
+    @apply underline text-blue-umblue bg-white border-solid border-yellow-ummaze border-2;
   }
 
   .secondary_yellow_button:disabled {
-    @apply opacity-50 bg-black pointer-events-none text-white
+    @apply opacity-50 bg-black pointer-events-none text-white;
   }
   
   .secondary_blue_button {
-    @apply p-2 font-montserrat font-semibold leading-7 text-base border rounded-md text-white bg-blue-750
+    @apply p-2 font-montserrat font-semibold leading-7 text-base border rounded-md text-white bg-blue-750;
   }
 
   .secondary_blue_button:hover {
-    @apply underline text-blue-750 bg-white border-solid border-blue-750 border-2
+    @apply underline text-blue-750 bg-white border-solid border-blue-750 border-2;
   }
 
   .secondary_blue_button:active {
-    @apply underline text-blue-750 bg-white border-solid border-blue-750 border-2
+    @apply underline text-blue-750 bg-white border-solid border-blue-750 border-2;
   }
 
   .secondary_blue_button:focus {
-    @apply underline text-blue-750 bg-white border-solid border-blue-750 border-2
+    @apply underline text-blue-750 bg-white border-solid border-blue-750 border-2;
   }
 
   .secondary_blue_button:disabled {
-    @apply opacity-50 bg-black pointer-events-none text-white
+    @apply opacity-50 bg-black pointer-events-none text-white;
   }
 
   .tertiary_button {
-    @apply p-2 font-montserrat font-semibold leading-7 text-base text-blue-umblue
+    @apply p-2 font-montserrat font-semibold leading-7 text-base text-blue-umblue;
   }
 
   .tertiary_button:hover {
-    @apply underline
+    @apply underline;
   }
 
   .tertiary_button:active {
-    @apply underline
+    @apply underline;
   }
 
   .tertiary_button:focus {
-    @apply underline
+    @apply underline;
   }
 
   .tertiary_button:disabled {
-    @apply text-opacity-50 pointer-events-none text-blue-umblue
+    @apply text-opacity-50 pointer-events-none text-blue-umblue;
   }
 
   .sign_button {
-    @apply px-1 shadow-sm text-base rounded text-blue-900 bg-yellow-550 bg-yellow-500 hover:underline
+    @apply px-1 shadow-sm text-base rounded text-blue-900 bg-yellow-550 bg-yellow-500 hover:underline;
   }
 
   .edit_button {
-    @apply my-2 px-2 py-1 rounded-md shadow-sm bg-blue-umblue text-sm text-gray-100 text-center hover:underline
+    @apply my-2 px-2 py-1 rounded-md shadow-sm bg-blue-umblue text-sm text-gray-100 text-center hover:underline;
   }
 
   .back_button {
-    @apply flex items-center text-sm text-blue-umblue pb-2 hover:underline
+    @apply flex items-center text-sm text-blue-umblue pb-2 hover:underline;
   }
 
   .delete_button {
-    @apply my-2 px-2 py-1 rounded-md shadow-sm bg-gray-100 text-sm text-blue-umblue text-center hover:underline
+    @apply my-2 px-2 py-1 rounded-md shadow-sm bg-gray-100 text-sm text-blue-umblue text-center hover:underline;
   }
 
   .input_text_field {
-    @apply text-lg font-medium text-gray-900 bg-white border border-gray-600 rounded block p-2 focus:ring-blue-500 focus:border-blue-500
+    @apply text-lg font-medium text-gray-900 bg-white border border-gray-600 rounded block p-2 focus:ring-blue-500 focus:border-blue-500;
   }
 
   .fancy_label {
-    @apply text-sm font-bold text-gray-900 bg-white relative px-1 top-2 left-3 w-auto group-focus-within:text-red-600
+    @apply text-sm font-bold text-gray-900 bg-white relative px-1 top-2 left-3 w-auto group-focus-within:text-red-600;
   }
 
   /* table */
@@ -207,19 +207,19 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .mi_thead {
-    @apply bg-gray-400
+    @apply bg-gray-um20;
   }
 
   .header_th {
-    @apply p-2 text-sm font-semibold text-gray-900 lg:table-cell text-left
+    @apply p-2 text-sm font-semibold text-gray-900 lg:table-cell text-left;
   }
 
   .mi_tbody_tr {
-    @apply relative sm:pl-2 text-sm bg-white even:bg-gray-200
+    @apply relative sm:pl-2 text-sm bg-white even:bg-gray-um10;
   }
 
   .mi_tbody_td {
-    @apply relative p-2 sm:pl-2 text-sm font-medium text-gray-900 text-left
+    @apply relative p-2 sm:pl-2 text-sm font-medium text-gray-900 text-left;
   }
   /* ... */
 }
