@@ -1,6 +1,7 @@
 class ProgramsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_program, only: %i[ show edit update destroy duplicate remove_car remove_site remove_program_manager add_config_questions remove_config_question]
+  before_action :set_terms
 
   include ApplicationHelper
 
@@ -17,8 +18,6 @@ class ProgramsController < ApplicationController
     else
       @programs = Program.active
     end
-
-    
 
     if @programs.present?
       @term_id = @programs.last.term_id
@@ -37,11 +36,13 @@ class ProgramsController < ApplicationController
   def show
     @cars = @program.cars
     @add_cars = Car.all - @cars
+    @terms = Term.all
   end
 
   # GET /programs/new
   def new
     @program = Program.new
+    @instructor = ProgramManager.new
     @terms = Term.all
   end
 
@@ -51,7 +52,15 @@ class ProgramsController < ApplicationController
 
   # POST /programs or /programs.json
   def create
-    @program = Program.new(program_params)
+    
+    @program = Program.new(program_params.except(:instructor_attributes))
+    uniqname = program_params[:instructor_attributes][:uniqname]
+    if ProgramManager.find_by(uniqname: uniqname).present?
+      instructor = ProgramManager.find_by(uniqname: uniqname)
+    else
+      instructor = ProgramManager.create(uniqname: uniqname)
+    end
+    @program.instructor = instructor
 
     respond_to do |format|
       if @program.save
@@ -119,6 +128,9 @@ class ProgramsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_program
       @program = Program.find(params[:id])
+    end
+
+    def set_terms
       @terms = Term.all
     end
 
@@ -126,6 +138,6 @@ class ProgramsController < ApplicationController
     def program_params
       params.require(:program).permit(:active, :title, :term_start, :term_end, :term_id, :subject, :catalog_number, :class_section, 
                                      :number_of_students, :number_of_students_using_ride_share, :pictures_required_start, :pictures_required_end, 
-                                     :non_uofm_passengers, :instructor_id, :admin_access_id, :updated_by)
+                                     :non_uofm_passengers, :instructor_id, :admin_access_id, :updated_by, instructor_attributes: [:uniqname])
     end
 end

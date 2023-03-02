@@ -33,6 +33,10 @@ class Program < ApplicationRecord
   has_many :config_questions
   belongs_to :admin_access
   belongs_to :term
+
+  accepts_nested_attributes_for :instructor
+
+  validates_presence_of :title, :subject, :catalog_number, :class_section, :instructor_id, :admin_access_id
   
   scope :active, -> { where(active: true) }
   scope :archived, -> { where(active: false) }
