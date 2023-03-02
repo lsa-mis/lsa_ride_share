@@ -37,6 +37,7 @@ class Program < ApplicationRecord
   accepts_nested_attributes_for :instructor
 
   validates_presence_of :title, :subject, :catalog_number, :class_section, :instructor_id, :admin_access_id
+  validates :term_id, uniqueness: { scope: [:subject, :catalog_number], message: "already has this program" }
   
   scope :active, -> { where(active: true) }
   scope :archived, -> { where(active: false) }
