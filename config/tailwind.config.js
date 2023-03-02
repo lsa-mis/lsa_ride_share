@@ -13,9 +13,9 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter var', ...defaultTheme.fontFamily.sans],
-        oswald: ['Oswald'],
-        montserrat: ['Montserrat'],
+        sans: ['Inter var'],
+        oswald: ['Oswald', 'sans-serif'],
+        montserrat: ['Montserrat', 'sans-serif'],
       },
     },
     colors: {
