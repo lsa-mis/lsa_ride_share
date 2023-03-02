@@ -1,5 +1,6 @@
 class ProgramsController < ApplicationController
-  before_action :authenticate_user!
+  before_action :auth_user
+
   before_action :set_program, only: %i[ show edit update destroy duplicate remove_car remove_site remove_program_manager add_config_questions remove_config_question]
   before_action :set_terms
 
@@ -123,6 +124,12 @@ class ProgramsController < ApplicationController
 
     def set_terms
       @terms = Term.all
+    end
+
+    def auth_user
+      unless user_signed_in?
+        redirect_to root_path, notice: 'You must sign in first!'
+      end
     end
 
     # Only allow a list of trusted parameters through.
