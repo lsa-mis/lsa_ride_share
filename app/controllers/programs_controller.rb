@@ -8,20 +8,11 @@ class ProgramsController < ApplicationController
   # GET /programs or /programs.json
   def index
     @terms = Term.all
-    if params[:active].present?
-      @programs = Program.where(active: params[:active])
-    else
-      @programs = Program.active
-    end
     if params[:term_id].present?
       @programs = Program.where(term_id: params[:term_id])
+      @term_id = params[:term_id]
     else
       @programs = Program.active
-    end
-
-    if @programs.present?
-      @term_id = @programs.last.term_id
-    else
       @term_id = nil
     end
 
