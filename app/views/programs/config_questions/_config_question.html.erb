@@ -1,7 +1,7 @@
 <div id="<%= dom_id @config_question_program %>">
   <p class="my-5">
     <strong class="block font-medium mb-1">Program:</strong>
-    <%= @config_question_program.display_name %>
+    <%= link_to @config_question_program.display_name, program_path(@config_question_program) %>
   </p>
   <% @config_questions.each do |q| %>
     <div class="flex flex-cols items-center">
