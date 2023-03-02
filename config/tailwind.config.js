@@ -37,6 +37,15 @@ module.exports = {
         700: '#4a5568',
         800: '#2d3748',
         900: '#1a202c',
+        um10: '#E5E5E5',
+        um20: '#CCCCCC',
+        um30: '#B2B2B2',
+        um40: '#999999',
+        um50: '#7F7F7F',
+        um60: '#666666',
+        um70: '#4C4C4C',
+        um80: '#323232',
+        um90: '#191919',
       },
       red: {
         100: '#fff5f5',
@@ -72,7 +81,8 @@ module.exports = {
         750: '#9D691B',
         800: '#975a16',
         900: '#744210',
-        umyellow: '#ffcb05'
+        umyellow: '#ffcb05',
+        ummaze: '#FFCF01',
       },
       green: {
         100: '#f0fff4',
