@@ -189,11 +189,15 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .back_button {
-    @apply flex items-center text-sm text-blue-umblue pb-2 hover:underline;
+    @apply text-sm text-blue-umblue pb-2 hover:underline;
   }
 
   .delete_button {
     @apply my-2 px-2 py-1 rounded-md shadow-sm bg-gray-100 text-sm text-blue-umblue text-center hover:underline;
+  }
+
+  .link_to {
+    @apply text-blue-900 hover:underline;
   }
 
   .input_text_field {

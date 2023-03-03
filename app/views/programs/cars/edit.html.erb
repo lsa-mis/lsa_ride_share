@@ -3,7 +3,7 @@
 
   <p class="my-5">
   <strong class="block font-medium mb-1">Program:</strong>
-  <%= link_to @car_program.display_name, program_path(@car_program), class: "delete_button"  %>
+  <%= link_to @car_program.display_name, program_path(@car_program), class: "link_to" %>
   </p>
 
   <%= render "form", car: @car %>
