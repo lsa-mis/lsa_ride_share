@@ -18,9 +18,11 @@
           <div class="header_link">
             <%= link_to "Home", static_pages_home_path, class: "#{class_names(active: current_page?(static_pages_home_path))}" %>
           </div>
-          <div class="header_link">
-            <%= link_to "Programs", programs_path, class: "#{class_names(active: current_page?(programs_path))}" %>
-          </div>
+          <% if user_signed_in? %>
+            <div class="header_link">
+              <%= link_to "Programs", programs_path, class: "#{class_names(active: current_page?(programs_path))}" %>
+            </div>
+          <% end %>
         </div>
       </div>
       <div class="hidden sm:ml-6 sm:flex sm:items-center">
