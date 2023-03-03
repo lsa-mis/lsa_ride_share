@@ -43,9 +43,19 @@
 
   <div class="my-5">
     <%= form.fields_for :instructor, @instructor do |instructor_attributes| %>
-      <%= form.label :uniqname %> *
+      <%= form.label :uniqname, "Instructor's uniqname" %> *
       <%= instructor_attributes.text_field :uniqname, required: true, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
     <% end %>
+  </div>
+
+  <div class="px-1 pb-2">
+    <%= label_tag(:managers, "Do you want to add managers to this program?") %>
+    <%= check_box_tag(:managers) %>
+  </div>
+
+  <div class="px-1 pb-2">
+    <%= label_tag(:config_questions, "Do you want to send the instructor a survey with questions about the program?") %>
+    <%= check_box_tag(:config_questions) %>
   </div>
 
   <div class="my-5">
