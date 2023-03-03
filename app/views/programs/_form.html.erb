@@ -13,74 +13,74 @@
 
   <div class="my-5">
     <%= form.label :active %>
-    <%= form.check_box :active, class: "block mt-2 h-5 w-5" %>
+    <%= form.check_box :active, class: "check_box" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :title %> *
-    <%= form.text_field :title, required: true, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.label :title, class: "fancy_label" %> *
+    <%= form.text_field :title, required: true, placeholder: "Title", class: "input_text_field" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :term_id %> *
-    <%= form.collection_select :term_id, @terms, :id, :name, { include_blank: "Select ...", required: true }, { class: "block rounded-none rounded-l-md text-base border-gray-300" } %>
+    <%= form.label :term_id, class: "fancy_label" %> *
+    <%= form.collection_select :term_id, @terms, :id, :name, { include_blank: "Select ...", required: true }, { class: "input_text_field" } %>
   </div>
 
   <div class="my-5">
-    <%= form.label :subject %> *
-    <%= form.text_field :subject, required: true, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.label :subject, class: "fancy_label" %> *
+    <%= form.text_field :subject, required: true, placeholder: "Subject", class: "input_text_field" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :catalog_number %> *
-    <%= form.text_field :catalog_number, required: true, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.label :catalog_number, class: "fancy_label" %> *
+    <%= form.text_field :catalog_number, required: true, placeholder: "Catalog number", class: "input_text_field" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :class_section %> *
-    <%= form.text_field :class_section, required: true, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.label :class_section, class: "fancy_label" %> *
+    <%= form.text_field :class_section, required: true, placeholder: "Class section", class: "input_text_field" %>
   </div>
 
   <div class="my-5">
     <%= form.fields_for :instructor, @instructor do |instructor_attributes| %>
-      <%= form.label :uniqname, "Instructor's uniqname" %> *
-      <%= instructor_attributes.text_field :uniqname, required: true, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+      <%= form.label :uniqname, "Instructor's uniqname", class: "fancy_label" %> *
+      <%= instructor_attributes.text_field :uniqname, required: true, placeholder: "Uniqname", class: "input_text_field" %>
     <% end %>
   </div>
 
   <div class="px-1 pb-2">
     <%= label_tag(:managers, "Do you want to add managers to this program?") %>
-    <%= check_box_tag(:managers) %>
+    <%= check_box_tag :managers, 1, false, class: "check_box" %>
   </div>
 
   <div class="px-1 pb-2">
     <%= label_tag(:config_questions, "Do you want to send the instructor a survey with questions about the program?") %>
-    <%= check_box_tag(:config_questions) %>
+    <%= check_box_tag :config_questions, 1, false, class: "check_box" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :number_of_students %>
-    <%= form.number_field :number_of_students, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.label :number_of_students, class: "fancy_label" %>
+    <%= form.number_field :number_of_students, placeholder: "Number", class: "input_text_field" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :number_of_students_using_ride_share %>
-    <%= form.number_field :number_of_students_using_ride_share, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.label :number_of_students_using_ride_share, class: "fancy_label" %>
+    <%= form.number_field :number_of_students_using_ride_share, placeholder: "Number", class: "input_text_field" %>
   </div>
 
   <div class="my-5">
     <%= form.label :pictures_required_start %>
-    <%= form.check_box :pictures_required_start, class: "block mt-2 h-5 w-5" %>
+    <%= form.check_box :pictures_required_start, class: "check_box" %>
   </div>
 
   <div class="my-5">
     <%= form.label :pictures_required_end %>
-    <%= form.check_box :pictures_required_end, class: "block mt-2 h-5 w-5" %>
+    <%= form.check_box :pictures_required_end, class: "check_box" %>
   </div>
 
   <div class="my-5">
     <%= form.label :non_uofm_passengers %>
-    <%= form.check_box :non_uofm_passengers, class: "block mt-2 h-5 w-5" %>
+    <%= form.check_box :non_uofm_passengers, class: "check_box" %>
   </div>
 
   <%= form.hidden_field :updated_by, value: current_user.id %>

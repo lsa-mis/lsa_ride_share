@@ -3,5 +3,10 @@
 
   <%= render "form", program: @program %>
 
-  <%= link_to 'Back to programs', programs_path, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
+  <%= link_to programs_path do %>
+    <span class="tertiary_button">Cancel
+    <i class="fa fa-times" aria-hidden="true"></i>
+    </span>
+  <% end %>
+
 </div>

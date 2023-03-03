@@ -1,6 +1,6 @@
 <h1><%= program.title %></h1>
 
-<div class="grid grid-cols-1 md:grid-cols-3 place-content-between">
+<div class="grid grid-cols-2">
 
   <div class="mx-2">
     <div class="text_small flex-grow">
@@ -44,61 +44,16 @@
     </div>
 
   </div>
+  <div class="grid justify-items-end">
 
-  <div class="ml-4">
-    <span class="flex text-sm font-semibold text-gray-900 sm:mt-0 sm:col-span-2">Record history</span>
-    <div class="py-2">
-      <label class="flex text-sm font-medium text-gray-900 sm:mt-0 sm:col-span-2">
-        Updated by
-      </label>
-      <div class="ml-2 text-sm text-gray-700 flex-grow">
-        <%= show_user_name_by_id(program.updated_by) %>
-      </div>
+    
+    <div class="">
+      <%= link_to 'Edit program', edit_program_path(program), class: "primary_button" %>
     </div>
-
-    <div class="py-2">
-      <label class="flex text-sm font-medium text-gray-900 sm:mt-0 sm:col-span-2">
-        Created at
-      </label>
-      <div class="ml-2 text-sm text-gray-700 flex-grow">
-        <%= show_date(program.created_at) %>
-      </div>
-    </div>
-
-    <div class="py-2">
-      <label class="flex text-sm font-medium text-gray-900 sm:mt-0 sm:col-span-2">
-        Updated at
-      </label>
-      <div class="ml-2 text-sm text-gray-700 flex-grow">
-        <%= show_date(program.updated_at) %>
-      </div>
+    <div class="">
+      <%= link_to 'Students', students_path, class: "secondary_blue_button" %>
     </div>
   </div>
-  <div>
-    <div>
-      <div class="m-2">
-        <% if program.config_questions.empty? %>
-          <div class="m-2">
-            <%= link_to 'Add Default Questions', add_config_questions_path, class: "my-4 px-2 py-1 rounded-md shadow-sm bg-blue-umblue text-sm text-gray-100 text-center hover:underline" %>
-          </div>
-        <% end %>
 
-        <div class="m-2">
-          <%= link_to 'Add Students', students_path, class: "my-4 px-2 py-1 rounded-md shadow-sm bg-blue-umblue text-sm text-gray-100 text-center hover:underline" %>
-        </div>
-        <div class="m-2">
-          <%= link_to 'Edit this item', edit_program_path(program), class: "my-2 px-2 py-1 rounded-md shadow-sm bg-blue-umblue text-sm text-gray-100 text-center hover:underline" %>
-        </div>
-      </div>
-      <div class="m-2">
-        <%= link_to programs_path, data: { "turbo-frame": "_top" } do %>
-          <div class="flex items-center text-sm text-blue-umblue hover:underline pb-2">
-            <%= svg("left-arrow-svgrepo-com")  %>
-            <span>Back to search</span>
-          </div>
-        <% end %>
-      </div>
-    </div>
-
-  </div>
 </div>
+

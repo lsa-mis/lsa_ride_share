@@ -43,39 +43,8 @@
   </div>
 <% end %>
 
-
-<% if @program.cars.present? %>
-      <% @program.cars.each do |car| %>
-        <li class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
-          <div class="w-0 flex-1 flex items-center">
-            <div class="ml-2 flex-1 w-0 truncate">
-              <%= link_to car.car_number, program_car_path(car) %>
-            </div>
-            <div class="ml-2 flex-1 w-0 truncate">
-              <%= car.make %>
-            </div>
-            <div class="ml-2 flex-1 w-0 truncate">
-              <%= car.model %>
-            </div>
-            <div class="ml-2 flex-1 w-0 truncate">
-              <%= car.color %>
-            </div>
-            <div class="ml-2 flex-1 w-0 truncate">
-              <%= car.number_of_seats %>
-            </div>
-          </div>
-          
-            <div class="ml-4 flex-shrink-0 flex space-x-4">
-              <%= link_to 'Remove', remove_car_path(@program, car), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete }, class: "delete_button" %>
-            </div>
-        </li>
-      <% end %>
-    <% else %>
-      <li class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
-        <div class="w-0 flex-1 flex items-center">
-          <span class="ml-2 flex-1 w-0 truncate">
-            you currently do not have any cars.
-          </span>
-        </div>
-      </li>
-    <% end %>
+<div>
+  <%= turbo_frame_tag "cars_list" do %>
+    <%= render "cars_list", locals: { program: @program} %>
+  <% end %>
+</div>

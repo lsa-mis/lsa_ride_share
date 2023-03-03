@@ -1,35 +1,24 @@
-<div class="mx-auto md:w-2/3 w-full flex">
-  <div class="mx-auto">
+<div class="mx-auto md:w-2/3 w-full">
+  <div>
     <%= render @program %>
   </div>
-</div>
-<hr class="border-blue-900 border m-4">
 
-<div>
-  <%= turbo_frame_tag "new_car" do %>
-    <%= render "program_car", locals: { program: @program} %>
-  <% end %>
-</div>
-
-<hr class="border-blue-900 border m-4">
-<div>
-  <%= turbo_frame_tag "new_site" do %>
-    <%= render "program_site", locals: { program: @program} %>
-  <% end %>
-</div>
-
-<hr class="border-blue-900 border m-4">
-<div>
-  <%= turbo_frame_tag "new_program_manager" do %>
-    <%= render "program_manager", locals: { program: @program} %>
-  <% end %>
-</div>
-
-<% if @program.config_questions.present? %>
-  <hr class="border-blue-900 border m-4">
   <div>
-    <%= turbo_frame_tag "config_questions" do %>
-      <%= render "config_questions", locals: { program: @program} %>
+    <%= turbo_frame_tag "cars_list" do %>
+      <%= render "cars_list", locals: { program: @program} %>
     <% end %>
   </div>
-<% end %>
+
+  <div>
+    <%= turbo_frame_tag "sites_list" do %>
+      <%= render "sites_list", locals: { program: @program} %>
+    <% end %>
+  </div>
+
+  <div>
+    <%= turbo_frame_tag "managers_list" do %>
+      <%= render "managers_list", locals: { program: @program} %>
+    <% end %>
+  </div>
+</div>
+

@@ -96,6 +96,10 @@ from https://tailwindcss.com/docs/adding-custom-styles
     @apply ml-2 text-sm text-gray-700;
   }
 
+  .check_box {
+    @apply w-5 h-5 rounded mr-2 border-blue-umblue text-blue-umblue focus:ring-blue-umblue;
+  }
+
   .primary_button {
     @apply p-2 font-montserrat font-semibold leading-7 text-base border rounded-md text-white bg-blue-umblue;
   }
