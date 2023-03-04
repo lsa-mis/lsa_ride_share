@@ -1,50 +1,59 @@
-<%= form_for [@program, Car.new], html: { class: "sm:flex sm:items-center" } do |form| %>
-
-  <div class="flex flex-col">
-    <div class="px-1">
-      <label for="car_id">Select a Car</label>
-        <%= select_tag "car_id", options_from_collection_for_select(@add_cars, :id, :car_number), include_blank: "Select ...", class: "block rounded-none rounded-l-md text-xs border-gray-300"%>
-    </div>
-    <span class="inline">or add a new car</span>
-    <div class="flex flex-row">
-      <div class="my-5">
-        <%= form.label :car_number %>
-        <%= form.text_field :car_number, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-      </div>
-
-      <div class="my-5">
-        <%= form.label :make %>
-        <%= form.text_field :make, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-      </div>
-
-      <div class="my-5">
-        <%= form.label :model %>
-        <%= form.text_field :model, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-      </div>
-
-      <div class="my-5">
-        <%= form.label :color %>
-        <%= form.text_field :color, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-      </div>
-
-      <div class="my-5">
-        <%= form.label :number_of_seats %>
-        <%= form.number_field :number_of_seats, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-      </div>
-    </div>
-    <div class="flex items-center gap-2">
-      <div class="">
-        <%= form.submit "Add Car", class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
-      </div>
-      <div>
-        <%= link_to 'All Program Cars', program_cars_path(@program), class: "hover:underline" %>
-      </div>
-    </div>
-  </div>
-<% end %>
-
 <div>
   <%= turbo_frame_tag "cars_list" do %>
     <%= render "cars_list", locals: { program: @program} %>
   <% end %>
+</div>
+
+<div data-controller="toggle">
+  <%= form_for [@program, Car.new], html: { class: "sm:flex sm:items-center" }, data: { controller: 'autosubmit', autosubmit_target: "form", turbo_frame: "turbo-cars" } do |form| %>
+    <div class="flex flex-col">
+      <div class="flex flex-row">
+        <div class="px-1">
+          <label for="car_id">Add a Car from the List</label>
+            <%= select_tag "car_id", options_from_collection_for_select(@add_cars, :id, :car_number), include_blank: "Select ...", class: "block rounded-none rounded-l-md text-xs border-gray-300",
+            :"data-action" => "change->autosubmit#search" %>
+        </div>
+        <span >or </span>
+        <button type="button" class=""
+          data-action='click->toggle#toggle touch->toggle#toggle' >
+          Add a new car
+        </button>
+        
+      </div>
+      <div data-toggle-target='toggleable' class="flex flex-row hidden">
+        <div class="my-5">
+          <%= form.label :car_number %>
+          <%= form.text_field :car_number, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+        </div>
+
+        <div class="my-5">
+          <%= form.label :make %>
+          <%= form.text_field :make, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+        </div>
+
+        <div class="my-5">
+          <%= form.label :model %>
+          <%= form.text_field :model, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+        </div>
+
+        <div class="my-5">
+          <%= form.label :color %>
+          <%= form.text_field :color, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+        </div>
+
+        <div class="my-5">
+          <%= form.label :number_of_seats %>
+          <%= form.number_field :number_of_seats, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+        </div>
+        <div class="">
+          <%= form.submit "Add a New Car", class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+<div class="">
+  <div>
+    <%= link_to 'All Program Cars', program_cars_path(@program), class: "hover:underline" %>
+  </div>
 </div>

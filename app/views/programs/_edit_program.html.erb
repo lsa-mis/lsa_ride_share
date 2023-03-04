@@ -42,18 +42,22 @@
         <%= program.number_of_students_using_ride_share %>
       </div>
     </div>
+    <div>
+      <%= link_to edit_program_path(program) do %>
+        <span class="tertiary_button">Edit Program Information
+          <i class="fa-solid fa-chevron-right"></i>
+        </span>
+      <% end %>
+    </div>
 
   </div>
   <div class="grid justify-items-end">
-
-    
     <div class="">
-      <%= link_to 'Edit program', program_data_path(program), class: "primary_button" %>
-    </div>
-    <div class="">
-      <%= link_to 'Students', students_path, class: "secondary_blue_button" %>
+      <%= link_to 'Exit Edit Page', program_path(program), class: "primary_button" %>
     </div>
   </div>
-
 </div>
 
+<div>
+    <%= render 'program_car' %>
+</div>

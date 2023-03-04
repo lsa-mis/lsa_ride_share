@@ -53,10 +53,12 @@
     <%= check_box_tag :managers, 1, false, class: "check_box" %>
   </div>
 
-  <div class="px-1 pb-2">
-    <%= label_tag(:config_questions, "Do you want to send the instructor a survey with questions about the program?") %>
-    <%= check_box_tag :config_questions, 1, false, class: "check_box" %>
-  </div>
+  <% if @program.config_questions.empty? %>
+    <div class="px-1 pb-2">
+      <%= label_tag(:config_questions, "Do you want to send the instructor a survey with questions about the program?") %>
+      <%= check_box_tag :config_questions, 1, false, class: "check_box" %>
+    </div>
+  <% end %>
 
   <div class="my-5">
     <%= form.label :number_of_students, class: "fancy_label" %>
