@@ -23,4 +23,8 @@ class Car < ApplicationRecord
   has_many :reservations
   has_rich_text :note
   has_many_attached :initial_damage
+
+  def display_name
+    "#{self.make} #{self.model} #{self.color} seats"
+  end
 end

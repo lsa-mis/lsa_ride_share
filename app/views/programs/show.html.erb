@@ -2,7 +2,7 @@
   <div>
     <%= render @program %>
   </div>
-
+  <h2>Cars Available</h2>
   <div>
     <%= turbo_frame_tag "cars_list" do %>
       <%= render "cars_list", locals: { program: @program} %>

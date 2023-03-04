@@ -36,7 +36,7 @@ class CarsController < ApplicationController
     respond_to do |format|
       if @car.save
         @car_program.cars << @car
-        format.turbo_stream { redirect_back_or_to @car_program,
+        format.turbo_stream { redirect_to program_data_path(@car_program),
         notice: "A new car was added"
                             }
       else
@@ -53,8 +53,8 @@ class CarsController < ApplicationController
 
     respond_to do |format|
       if @car.update(car_params)
-        format.turbo_stream { redirect_back_or_to @car_program,
-                              notice: "The car was added" 
+        format.turbo_stream { redirect_to program_data_path(@car_program),
+                              notice: "The car was updated" 
                             }
       else
         format.turbo_stream { redirect_to @car_program,
