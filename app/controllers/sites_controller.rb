@@ -12,11 +12,13 @@ class SitesController < ApplicationController
 
   # GET /sites/new
   def new
+    @add_sites = Site.all - @site_program.sites
     @site = Site.new
   end
 
   # GET /sites/1/edit
   def edit
+    @add_sites = Site.all - @site_program.sites
   end
 
   # POST /sites or /sites.json
@@ -30,7 +32,7 @@ class SitesController < ApplicationController
     respond_to do |format|
       if @site.save
         @site_program.sites << @site
-        format.turbo_stream { redirect_to @site_program, 
+        format.turbo_stream { redirect_to program_data_path(@site_program), 
                               notice: "The site was added" 
                             }
       else
@@ -46,13 +48,16 @@ class SitesController < ApplicationController
   def update
     respond_to do |format|
       if @site.update(site_params)
-        format.html { redirect_to site_url(@site), notice: "Site was successfully updated." }
-        format.json { render :show, status: :ok, location: @site }
+        format.turbo_stream { redirect_to program_data_path(@site_program),
+                              notice: "The site was updated" 
+                            }
       else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @site.errors, status: :unprocessable_entity }
+        format.turbo_stream { redirect_to @site_program,
+          alert: "Fail" 
+        }
       end
     end
+
   end
 
   # DELETE /sites/1 or /sites/1.json
@@ -73,6 +78,6 @@ class SitesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def site_params
-      params.require(:site).permit(:title, :address1, :address2, :city, :state, :zip_code)
+      params.require(:site).permit(:title, :address1, :address2, :city, :state, :zip_code, :site_id)
     end
 end

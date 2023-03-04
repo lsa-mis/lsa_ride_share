@@ -5,10 +5,6 @@ class CarsController < ApplicationController
   def index
     @cars = Car.all
   end
-
-  # GET /cars/1 or /cars/1.json
-  def index
-  end
   
   def show
   end
@@ -49,8 +45,6 @@ class CarsController < ApplicationController
 
   # PATCH/PUT /cars/1 or /cars/1.json
   def update
-    @car = Car.find(params[:id])
-
     respond_to do |format|
       if @car.update(car_params)
         format.turbo_stream { redirect_to program_data_path(@car_program),
