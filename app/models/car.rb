@@ -25,6 +25,6 @@ class Car < ApplicationRecord
   has_many_attached :initial_damage
 
   def display_name
-    "#{self.make} #{self.model} #{self.color} seats"
+    "#{self.make} #{self.model} #{self.color} #{self.number_of_seats} seats"
   end
 end
