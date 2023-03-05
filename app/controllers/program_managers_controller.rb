@@ -21,22 +21,32 @@ class ProgramManagersController < ApplicationController
 
   # POST /program_managers or /program_managers.json
   def create
-    if params[:program_manager_id].present?
-      @program_manager = ProgramManager.find(params[:program_manager_id])
-    else
-     @program_manager = ProgramManager.new(program_manager_params)
-    end
-
-    respond_to do |format|
-      if @program_manager.save
-        @program_manager_program.program_managers << @program_manager
-        format.turbo_stream { redirect_to @program_manager_program, 
-                              notice: "The program_manager was added" 
-                            }
+    uniqname = params[:program_manager][:uniqname]
+    if ProgramManager.find_by(uniqname: uniqname).present?
+      @manager = ProgramManager.find_by(uniqname: uniqname)
+      if @program_manager_program.program_managers.pluck(:uniqname).include?(uniqname)
+        redirect_to new_program_program_manager_path(@program_manager_program), alert: "#{@manager.display_name} is already a manager"
+        return
+      elsif @program_manager_program.instructor.uniqname == uniqname
+        redirect_to new_program_program_manager_path(@program_manager_program), alert: "#{@manager.display_name} is the instructor"
+        return
       else
-        format.turbo_stream { redirect_to @program_manager_program, 
-          alert: "Fail: you need to enter a program_manager data" 
-        }
+        @program_manager_program.program_managers << @manager
+        redirect_to @program_manager_program, notice: "The program_manager was added"
+        return
+      end
+    else
+      program_manager = ProgramManager.new(program_manager_params)
+     
+      respond_to do |format|
+        if program_manager.save
+          @program_manager_program.program_managers << program_manager
+          format.html { redirect_to @program_manager_program, notice: "The program_manager was created" }
+          format.json { render :show, status: :created, location: @program_manager_program }
+        else
+          format.html { render :new, status: :unprocessable_entity }
+          format.json { render json: @program_manager_program.errors, status: :unprocessable_entity }
+        end
       end
     end
   end

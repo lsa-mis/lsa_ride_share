@@ -14,6 +14,8 @@
 class ProgramManager < ApplicationRecord
   has_and_belongs_to_many :programs
 
+  validates :uniqname, uniqueness: true
+
   def instructor
     Program.where(instructor: self)
   end
