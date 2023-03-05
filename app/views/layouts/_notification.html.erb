@@ -1,5 +1,5 @@
 <% flash.each do |key, value| %>
   <% if key == 'alert' or key == 'notice' %>
-    <%= content_tag(:div, value, class: "flash #{key} text-green-500", id: "#{key}") %>
+    <%= content_tag(:div, value, class: "flash #{key}", id: "#{key}") %>
   <% end %>
 <% end %>

@@ -229,6 +229,14 @@ from https://tailwindcss.com/docs/adding-custom-styles
   .mi_tbody_td {
     @apply relative p-2 sm:pl-2 text-sm font-medium text-gray-900 text-left;
   }
+
+  .alert {
+    @apply text-red-500;
+  }
+
+  .notice {
+    @apply text-green-500;
+  }
   /* ... */
 }
 
