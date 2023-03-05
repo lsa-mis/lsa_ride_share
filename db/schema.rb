@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_28_010403) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_05_045937) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -132,6 +132,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_28_010403) do
     t.string "canvas_link"
     t.integer "canvas_course_id"
     t.integer "term_id"
+    t.boolean "add_managers", default: false
     t.index ["admin_access_id"], name: "index_programs_on_admin_access_id"
     t.index ["instructor_id"], name: "index_programs_on_instructor_id"
   end
@@ -168,9 +169,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_28_010403) do
     t.bigint "program_id", null: false
     t.bigint "site_id", null: false
     t.bigint "car_id"
-    t.datetime "start_date"
-    t.datetime "end_date"
-    t.string "recurring"
+    t.datetime "start_time"
+    t.datetime "end_time"
+    t.text "recurring"
     t.bigint "driver_id"
     t.string "driver_phone"
     t.bigint "backup_driver_id"

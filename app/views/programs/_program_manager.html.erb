@@ -1,29 +1,13 @@
-<%= form_for [@program, ProgramManager.new], html: { class: "sm:flex sm:items-center" } do |form| %>
-
-
-  <div class="my-5">
-    <%= form.label :uniqname %>
-    <%= form.text_field :uniqname, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+<div class="flex flex-row items-center gap-4 m-2">
+  <div>
+    <h2>Program Managers</h2>
   </div>
-
-  <div class="my-5">
-    <%= form.label :first_name %>
-    <%= form.text_field :first_name, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  <div>
+    <%= link_to "Add another program_manager", new_program_program_manager_path(@program), class: "secondary_blue_button" %> 
   </div>
-
-  <div class="my-5">
-    <%= form.label :last_name %>
-    <%= form.text_field :last_name, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
-
-  <div class="inline">
-    <%= form.submit "Add Manager", class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
-  </div>
-<% end %>
-
-<hr class="border-blue-900 border m-4">
+</div>
 <div>
-  <%= turbo_frame_tag "managers_list" do %>
-    <%= render "managers_list", locals: { program: @program} %>
+  <%= turbo_frame_tag "program_managers_list" do %>
+    <%= render "program_managers_list", locals: { program: @program} %>
   <% end %>
 </div>

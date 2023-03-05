@@ -49,8 +49,8 @@
   </div>
 
   <div class="px-1 pb-2">
-    <%= label_tag(:managers, "Do you want to add managers to this program?") %>
-    <%= check_box_tag :managers, 1, false, class: "check_box" %>
+    <%= form.label :add_managers, "Do you want to add managers to this program?" %>
+    <%= form.check_box :add_managers, class: "check_box" %>
   </div>
 
   <% if @program.config_questions.empty? %>

@@ -1,11 +1,9 @@
-<h2>Managers</h2>
 <% if @program.program_managers.present? %>
   <% @program.program_managers.each do |program_manager| %>
     <li class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
       <div class="w-0 flex-1 flex items-center">
-        <i class="fas fa-link text-gray-400"></i>
         <span class="ml-2 flex-1 w-0 truncate">
-          <%= link_to program_manager.uniqname, program_manager_path(program_manager), class: "link_to"  %>
+          <%= program_manager.display_name %>
         </span>
       </div>
       

@@ -22,6 +22,7 @@
 #  canvas_link                         :string
 #  canvas_course_id                    :integer
 #  term_id                             :integer
+#  add_managers                        :boolean          default(FALSE)
 #
 class Program < ApplicationRecord
   belongs_to :instructor, class_name: 'ProgramManager', foreign_key: :instructor_id

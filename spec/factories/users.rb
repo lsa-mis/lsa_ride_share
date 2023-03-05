@@ -15,6 +15,11 @@
 #  last_sign_in_ip        :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  uid                    :string
+#  uniqname               :string
+#  principal_name         :string
+#  display_name           :string
+#  person_affiliation     :string
 #
 FactoryBot.define do
   factory :user do

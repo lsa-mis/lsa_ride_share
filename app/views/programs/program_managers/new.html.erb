@@ -1,0 +1,11 @@
+<div class="mx-auto md:w-2/3 w-full">
+  <h1 class="font-bold text-4xl">Add a program manager to program</h1>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Program:</strong>
+    <%= link_to @program_manager_program.display_name, program_path(@program_manager_program), class: "link_to" %>
+  </p>
+
+  <%= render "form", program_manager: @program_manager %>
+
+</div>

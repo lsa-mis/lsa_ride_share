@@ -15,10 +15,13 @@
     <% end %>
   </div>
 
-  <div>
-    <%= turbo_frame_tag "managers_list" do %>
-      <%= render "managers_list", locals: { program: @program} %>
-    <% end %>
-  </div>
+  <% if @program.add_managers %>
+    <h2>Managers</h2>
+    <div>
+      <%= turbo_frame_tag "managers_list" do %>
+        <%= render "managers_list", locals: { program: @program} %>
+      <% end %>
+    </div>
+  <% end %>
 </div>
 

@@ -72,8 +72,15 @@ class ProgramsController < ApplicationController
 
   # PATCH/PUT /programs/1 or /programs/1.json
   def update
+    uniqname = program_params[:instructor_attributes][:uniqname]
+    if ProgramManager.find_by(uniqname: uniqname).present?
+      instructor = ProgramManager.find_by(uniqname: uniqname)
+    else
+      instructor = ProgramManager.create(uniqname: uniqname)
+    end
     respond_to do |format|
-      if @program.update(program_params)
+      if @program.update(program_params.except(:instructor_attributes))
+        @program.update(instructor_id: instructor.id)
         format.html { redirect_to program_url(@program), notice: "Program was successfully updated." }
         format.json { render :show, status: :ok, location: @program }
       else
@@ -140,6 +147,6 @@ class ProgramsController < ApplicationController
     def program_params
       params.require(:program).permit(:active, :title, :term_start, :term_end, :term_id, :subject, :catalog_number, :class_section, 
                                      :number_of_students, :number_of_students_using_ride_share, :pictures_required_start, :pictures_required_end, 
-                                     :non_uofm_passengers, :instructor_id, :admin_access_id, :updated_by, :managers, :config_questions, instructor_attributes: [:uniqname])
+                                     :non_uofm_passengers, :instructor_id, :admin_access_id, :updated_by, :managers, :config_questions, :add_managers, instructor_attributes: [:uniqname])
     end
 end
