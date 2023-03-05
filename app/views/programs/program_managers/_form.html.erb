@@ -2,12 +2,12 @@
 
 
   <div class="my-5">
-    <%= form.label :uniqname %>
-    <%= form.text_field :uniqname, required: true, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.label :uniqname, class: "fancy_label" %>
+    <%= form.text_field :uniqname, required: true, class: "input_text_field" %>
   </div>
 
   <div class="inline">
-    <%= form.submit "Add Manager", class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+    <%= form.submit "Add Manager", class: "secondary_blue_button" %>
   </div>
   <div class="inline">
     <%= link_to program_path(@program_manager_program) do %>
