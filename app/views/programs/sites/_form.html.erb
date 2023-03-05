@@ -22,32 +22,32 @@
   <% end %>
 
   <div class="my-5">
-    <%= form.label :title %>
-    <%= form.text_field :title, placeholder: "Title", class: "input_text_field" %>
+    <%= form.label :title, "Title *", class: "fancy_label" %>
+    <%= form.text_field :title, required: true, placeholder: "Title", class: "input_text_field" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :address1, class: "fancy_label"  %>
+    <%= form.label :address1, class: "fancy_label" %>
     <%= form.text_field :address1, placeholder: "Address1", class: "input_text_field" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :address2, class: "fancy_label"  %>
+    <%= form.label :address2, class: "fancy_label" %>
     <%= form.text_field :address2, placeholder: "Address2", class: "input_text_field" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :city, class: "fancy_label"  %>
+    <%= form.label :city, class: "fancy_label" %>
     <%= form.text_field :city, placeholder: "City", class: "input_text_field" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :state, class: "fancy_label"  %>
+    <%= form.label :state, class: "fancy_label" %>
     <%= form.text_field :state, placeholder: "State", class: "input_text_field" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :zip_code, class: "fancy_label"  %>
+    <%= form.label :zip_code, class: "fancy_label" %>
     <%= form.text_field :zip_code, placeholder: "Zip code", class: "input_text_field" %>
   </div>
 

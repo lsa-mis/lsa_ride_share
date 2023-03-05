@@ -17,33 +17,33 @@
   </div>
 
   <div class="my-5">
-    <%= form.label :title, class: "fancy_label" %> *
+    <%= form.label :title, 'Title *', class: "fancy_label" %>
     <%= form.text_field :title, required: true, placeholder: "Title", class: "input_text_field" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :term_id, class: "fancy_label" %> *
+    <%= form.label :term_id, 'Term *', class: "fancy_label" %>
     <%= form.collection_select :term_id, @terms, :id, :name, { include_blank: "Select ...", required: true }, { class: "input_text_field" } %>
   </div>
 
   <div class="my-5">
-    <%= form.label :subject, class: "fancy_label" %> *
+    <%= form.label :subject, 'Subject *', class: "fancy_label" %>
     <%= form.text_field :subject, required: true, placeholder: "Subject", class: "input_text_field" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :catalog_number, class: "fancy_label" %> *
+    <%= form.label :catalog_number, 'Catalog number *', class: "fancy_label" %>
     <%= form.text_field :catalog_number, required: true, placeholder: "Catalog number", class: "input_text_field" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :class_section, class: "fancy_label" %> *
+    <%= form.label :class_section, 'Class section *', class: "fancy_label" %>
     <%= form.text_field :class_section, required: true, placeholder: "Class section", class: "input_text_field" %>
   </div>
 
   <div class="my-5">
     <%= form.fields_for :instructor, @instructor do |instructor_attributes| %>
-      <%= form.label :uniqname, "Instructor's uniqname", class: "fancy_label" %> *
+      <%= form.label :uniqname, "Instructor's uniqname *", class: "fancy_label" %>
       <%= instructor_attributes.text_field :uniqname, required: true, placeholder: "Uniqname", class: "input_text_field" %>
     <% end %>
   </div>

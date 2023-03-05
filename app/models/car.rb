@@ -24,6 +24,9 @@ class Car < ApplicationRecord
   has_rich_text :note
   has_many_attached :initial_damage
 
+  validates :car_number, presence: true, uniqueness: true
+  validates :number_of_seats, presence: true
+
   def display_name
     "#{self.make} #{self.model} #{self.color} #{self.number_of_seats} seats"
   end

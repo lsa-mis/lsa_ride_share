@@ -21,8 +21,8 @@
     <h3 class="mt-2">or add a new car</h3>
   <% end %>
   <div class="my-5">
-    <%= form.label :car_number, class: "fancy_label" %>
-    <%= form.text_field :car_number, placeholder: "Car number", class: "input_text_field" %>
+    <%= form.label :car_number, 'Car number *', class: "fancy_label" %>
+    <%= form.text_field :car_number, placeholder: "Car number", required: true, class: "input_text_field" %>
   </div>
 
   <div class="my-5">
@@ -41,8 +41,8 @@
   </div>
 
   <div class="my-5">
-    <%= form.label :number_of_seats, class: "fancy_label" %>
-    <%= form.number_field :number_of_seats, placeholder: "Number", class: "input_text_field" %>
+    <%= form.label :number_of_seats, 'Number of seats *', class: "fancy_label" %>
+    <%= form.number_field :number_of_seats, required: true, placeholder: "Number", class: "input_text_field" %>
   </div>
 
   <% if @car.persisted? %>
