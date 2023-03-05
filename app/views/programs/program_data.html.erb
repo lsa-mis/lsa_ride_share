@@ -1,5 +1,71 @@
 <div class="mx-auto md:w-2/3 w-full">
 
-  <%= render "edit_program", program: @program %>
+  <h1><%= @program.title %></h1>
+
+  <div class="grid grid-cols-2">
+
+    <div class="mx-2">
+      <div class="text_small flex-grow">
+        <%= @program.subject.upcase %> <%= @program.catalog_number.titleize %> - <%= @program.class_section.titleize %>
+      </div>
+
+      <div class="py-2">
+        <label class="text_field_label flex sm:mt-0 sm:col-span-2">
+        Term
+        </label>
+        <div class="text_small flex-grow">
+          <%= @program.term.name %>
+        </div>
+      </div>
+
+      <div class="py-2">
+        <label class="text_field_label flex sm:mt-0 sm:col-span-2">
+        Instructor
+        </label>
+        <div class="text_small flex-grow">
+          <%= @program.instructor.display_name %>
+        </div>
+      </div>
+
+      <div class="py-2">
+        <label class="text_field_label flex sm:mt-0 sm:col-span-2">
+        Number of students
+        </label>
+        <div class="text_small flex-grow">
+          <%= @program.number_of_students %>
+        </div>
+      </div>
+
+      <div class="py-2">
+        <label class="text_field_label flex sm:mt-0 sm:col-span-2">
+        Number of students using ride share
+        </label>
+        <div class="text_small flex-grow">
+          <%= @program.number_of_students_using_ride_share %>
+        </div>
+      </div>
+      <div>
+        <%= link_to edit_program_path(@program) do %>
+          <span class="tertiary_button m-4">Edit Program Information
+            <i class="fa-solid fa-chevron-right"></i>
+          </span>
+        <% end %>
+      </div>
+
+    </div>
+    <div class="grid justify-items-end">
+      <div class="">
+        <%= link_to 'Exit Edit Page', program_path(@program), class: "primary_button" %>
+      </div>
+    </div>
+  </div>
+
+  <div>
+      <%= render 'program_car' %>
+      <%= render 'program_site' %>
+      <% if @program.add_managers %>
+        <%= render 'program_manager' %>
+      <% end %>
+  </div>
 
 </div>
