@@ -8,7 +8,7 @@
         <%= link_to 'Update Student List', update_student_list_path(@student_program), class: "secondary_blue_button" %>
       </div>
       <div>
-        <%= link_to 'Update MVR status', program_students_path(@student_program), class: "secondary_blue_button" %>
+        <%= link_to 'Update MVR status', update_mvr_status_path(@student_program), class: "secondary_blue_button" %>
       </div>
       <div>
         <%= link_to 'Update Canvas status', program_students_path(@student_program), class: "secondary_blue_button" %>
@@ -30,7 +30,7 @@
           <th class="header_th"> Uniqname </th>
           <th class="header_th"> Last name </th>
           <th class="header_th"> First name </th>
-          <th class="header_th"> Mvr expiration date </th>
+          <th class="header_th"> MVR status </th>
           <th class="header_th"> Class training date </th>
           <th class="header_th"> Canvas course complete date </th>
           <th class="header_th"> Meeting with admin date </th>
@@ -55,7 +55,7 @@
                 <%= student.first_name %>
             </td>
             <td class="mi_tbody_td">
-                <%= student.mvr_expiration_date %>
+                <%= student.mvr_status %>
             </td>
             <td class="mi_tbody_td">
                 <%= student.class_training_date %>

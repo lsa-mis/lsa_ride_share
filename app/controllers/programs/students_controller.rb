@@ -7,7 +7,7 @@ class Programs::StudentsController < ApplicationController
   def index
     @students = @student_program.students
     unless @students.present?
-      call_api = get_students(@student_program)
+      call_api = get_student_list(@student_program)
       flash[:notice] = call_api
     end
   end
@@ -19,6 +19,14 @@ class Programs::StudentsController < ApplicationController
 
   # GET /students/1 or /students/1.json
   def show
+  end
+
+  def update_mvr_status
+    @student_program.students.each do |student|
+      status = mvr_status(student.uniqname)
+      student.update(mvr_status: status)
+    end
+    redirect_to program_students_path(@student_program), notice: "MVR status updates"
   end
 
   private

@@ -2,10 +2,9 @@ module StudentApi
   require 'uri'
   require 'net/http'
 
-  def mvr_status
+  def mvr_status(uniqname)
     #  https://ltp.fo.umich.edu/mvr/api/api.php?action=check_status&uniqname=hodel
 
-    uniqname = @student.uniqname
     url = URI("https://ltp.fo.umich.edu/mvr/api/api.php?action=check_status&uniqname=#{uniqname}")
 
     http = Net::HTTP.new(url.host, url.port)
@@ -18,18 +17,13 @@ module StudentApi
 
     response = http.request(request)
     data = JSON.parse(response.read_body)
-    if data['expires'].present?
-      mvr_expiration = data['expires'].to_date
-    else 
-      mvr_expiration = nil
-    end
-    if data['mvr_status'].nil?
-      mvr_status = "nothing"
-    else 
+    unless data['mvr_status'].nil?
       mvr_status = data['mvr_status']
     end
-    @student.update(mvr_status: mvr_status, mvr_expiration: mvr_expiration)
-    redirect_to student_url(@student)
+    if data['expires'].present?
+      mvr_status += " until " + data['expires']
+    end
+    return mvr_status
   end
 
   def class_roster_operational(term_code, subject_code, catalog_number, class_section, access_token)
