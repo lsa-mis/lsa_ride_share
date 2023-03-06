@@ -85,6 +85,21 @@
     <%= form.check_box :non_uofm_passengers, class: "check_box" %>
   </div>
 
+  <div class="my-5">
+    <%= form.label :mvr_link, 'MVR Link', class: "fancy_label" %>
+    <%= form.text_field :mvr_link, required: true, placeholder: "MVR Link", class: "input_text_field" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :canvas_link, 'Canvas Course Link', class: "fancy_label" %>
+    <%= form.text_field :canvas_link, required: true, placeholder: "Canvas Course Link", class: "input_text_field" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :canvas_course_id, 'Canvas Course Number', class: "fancy_label" %>
+    <%= form.number_field :canvas_course_id, required: true, placeholder: "Canvas Course Number", class: "input_text_field" %>
+  </div>
+
   <%= form.hidden_field :updated_by, value: current_user.id %>
   <%= form.hidden_field :admin_access_id, value: AdminAccess.first.id %>
 

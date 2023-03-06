@@ -24,4 +24,24 @@ module ApplicationHelper
     User.find(id).email
   end
 
+  def program_config_data(program)
+    config_data = ''
+    if program.pictures_required_start || program.pictures_required_end
+      config_data = 'The program requires to upload pictures to the vehicle reports '
+      if program.pictures_required_start
+        config_data += 'at the start of the trip '
+      end
+      if program.pictures_required_start && program.pictures_required_end
+        config_data += ' and '
+      end
+      if program.pictures_required_end
+        config_data += 'at the end of the trip'
+      end
+    end
+    if program.non_uofm_passengers
+      config_data += '<br><br>Non UofM passangers are allowed'
+    end
+    config_data +=''
+    return config_data
+  end
 end
