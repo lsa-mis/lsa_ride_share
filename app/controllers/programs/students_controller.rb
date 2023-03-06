@@ -1,10 +1,85 @@
-class Programs::StudentsController < StudentsController
+class Programs::StudentsController < ApplicationController
+  before_action :set_student, only: %i[ show ]
   before_action :set_student_program
+  include StudentApi
+
+  # GET /students or /students.json
+  def index
+    @students = @student_program.students
+    unless @students.present?
+      call_api = get_students(@student_program)
+      flash[:notice] = call_api
+    end
+  end
+
+  def update_student_list
+    call_api = update_students(@student_program)
+    redirect_to program_students_path(@student_program), notice: call_api
+  end
+
+  # GET /students/1 or /students/1.json
+  def show
+  end
 
   private
 
-  def set_student_program
-      @student_program = Program.find(params[:program_id])
-  end
+    def set_student_program
+        @student_program = Program.find(params[:program_id])
+    end
+
+    def set_student
+      fail
+      @student = Student.find(params[:id])
+    end
+
+    def get_student_list(program)
+      scope = "classroster"
+      token = get_auth_token(scope)
+      result = class_roster_operational(2420, "RCCORE", 205, 165, token['access_token'])
+      if result['success']
+        data = result['data']['Classes']['Class']['ClassSections']['ClassSection']['ClassStudents']['ClassStudent']
+        data.each do |student_info|
+          student = Student.new(uniqname: student_info['Uniqname'], first_name: student_info['Name'].split(",").last, last_name: student_info['Name'].split(",").first)
+          if student.save
+            @student_program.students << student
+          end
+        end
+        return "Student List is created"
+      else
+        return result['errorcode'] + ": " + result['error']
+      end
+    end
+
+    def update_students(program)
+      scope = "classroster"
+      token = get_auth_token(scope)
+      result = class_roster_operational(2420, "RCCORE", 205, 165, token['access_token'])
+      if result['success']
+        data = result['data']['Classes']['Class']['ClassSections']['ClassSection']['ClassStudents']['ClassStudent']
+        students_in_db = @student_program.students.pluck(:uniqname)
+        data.each do |student_info|
+          uniqname = student_info['Uniqname']
+          if students_in_db.include?(uniqname)
+            students_in_db.delete(uniqname)
+          else
+            student = Student.new(uniqname: student_info['Uniqname'], first_name: student_info['Name'].split(",").last, last_name: student_info['Name'].split(",").first)
+            if student.save
+              @student_program.students << student
+            end
+          end
+        end
+        if students_in_db.present?
+          @student_program.students.delete(Student.where(uniqname: students_in_db))
+        end
+        return "Student list is updated"
+      else
+        return result['errorcode'] + ": " + result['error']
+      end
+    end
+
+    # Only allow a list of trusted parameters through.
+    def student_params
+      params.require(:student).permit(:uniqname, :last_name, :first_name, :mvr_expiration_date, :class_training_date, :canvas_course_complete_date, :meeting_with_admin_date)
+    end
 
 end
