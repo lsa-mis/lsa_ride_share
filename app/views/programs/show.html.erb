@@ -1,6 +1,38 @@
 <div class="mx-auto md:w-2/3 w-full">
   <div>
-    <%= render @program %>
+
+
+
+
+    <h1><%= @program.title %></h1>
+
+    <div class="grid grid-cols-2">
+    
+      <%= render @program %>
+      <div class="grid justify-items-end">
+    
+        
+        <div class="">
+          <%= link_to 'Edit program', program_data_path(@program), class: "primary_button" %>
+        </div>
+        <% if @program.config_questions.present? %>
+          <div class="">
+          <%= link_to 'Questions to instructor', program_config_questions_path(@program), class: "secondary_blue_button" %>
+        </div>
+        <% end %>
+        <div class="">
+          <%= link_to 'Students', students_path, class: "secondary_blue_button" %>
+        </div>
+      </div>
+    
+    </div>
+  
+
+
+
+
+
+
   </div>
   <h2>Cars Available</h2>
   <div>

@@ -1,64 +1,69 @@
-<h1><%= program.title %></h1>
-
-<div class="grid grid-cols-2">
-
-  <div class="mx-2">
-    <div class="text_small flex-grow">
-      <%= program.subject.upcase %> <%= program.catalog_number.titleize %> - <%= program.class_section.titleize %>
-    </div>
-
-    <div class="py-2">
-      <label class="text_field_label flex sm:mt-0 sm:col-span-2">
-      Term
-      </label>
-      <div class="text_small flex-grow">
-        <%= program.term.name %>
-      </div>
-    </div>
-
-    <div class="py-2">
-      <label class="text_field_label flex sm:mt-0 sm:col-span-2">
-      Instructor
-      </label>
-      <div class="text_small flex-grow">
-        <%= program.instructor.display_name %>
-      </div>
-    </div>
-
-    <div class="py-2">
-      <label class="text_field_label flex sm:mt-0 sm:col-span-2">
-      Number of students
-      </label>
-      <div class="text_small flex-grow">
-        <%= program.number_of_students %>
-      </div>
-    </div>
-
-    <div class="py-2">
-      <label class="text_field_label flex sm:mt-0 sm:col-span-2">
-      Number of students using ride share
-      </label>
-      <div class="text_small flex-grow">
-        <%= program.number_of_students_using_ride_share %>
-      </div>
-    </div>
-
+<div class="mx-2">
+  <div class="text_small flex-grow">
+    <%= program.display_name %>
   </div>
-  <div class="grid justify-items-end">
 
-    
-    <div class="">
-      <%= link_to 'Edit program', program_data_path(program), class: "primary_button" %>
+  <div class="py-2">
+    <label class="text_field_label">
+    Term
+    </label>
+    <div class="text_small flex-grow">
+      <%= program.term.name %>
     </div>
-    <% if program.config_questions.present? %>
-      <div class="">
-      <%= link_to 'Questions to instructor', program_config_questions_path(program), class: "secondary_blue_button" %>
-     </div>
-    <% end %>
-    <div class="">
-      <%= link_to 'Students', students_path, class: "secondary_blue_button" %>
+  </div>
+
+  <div class="py-2">
+    <label class="text_field_label">
+    Instructor
+    </label>
+    <div class="text_small flex-grow">
+      <%= program.instructor.display_name %>
+    </div>
+  </div>
+
+  <div class="py-2">
+    <label class="text_field_label">
+    Number of students
+    </label>
+    <div class="text_small flex-grow">
+      <%= program.number_of_students %>
+    </div>
+  </div>
+
+  <div class="py-2">
+    <label class="text_field_label">
+    Number of students using ride share
+    </label>
+    <div class="text_small flex-grow">
+      <%= program.number_of_students_using_ride_share %>
+    </div>
+  </div>
+
+  <div class="py-2">
+    <label class="text_field_label">
+    MVR link
+    </label>
+    <div class="text_small flex-grow">
+      <%= program.mvr_link %>
+    </div>
+  </div>
+
+  <div class="py-2">
+    <label class="text_field_label">
+    Canvas course link
+    </label>
+    <div class="text_small flex-grow">
+      <%= program.canvas_link %>
+    </div>
+  </div>
+
+  <div class="py-2">
+    <label class="text_field_label">
+    Configuration fields
+    </label>
+    <div class="text_small flex-grow">
+      <%= sanitize program_config_data(program)%>
     </div>
   </div>
 
 </div>
-
