@@ -1,42 +1,22 @@
 <div class="w-full">
+  <div class="flex flex-row items-center justify-between m-2">
+    <div>
+      <h1 class="font-bold text-4xl">Config questions</h1>
+    </div>
+    <div class="flex flex-row justify-between gap-2">
+      <div>
+        <%= link_to 'New config question', faculty_survey_path(@config_question_program), class: "secondary_blue_button" %>
+      </div>
+      <div>
+        <%= link_to 'Faculty Survey', new_program_config_question_path(@config_question_program), class: "secondary_blue_button" %>
+      </div>
+    </div>
 
-  <div class="flex justify-between items-center mb-2">
-    <h1 class="font-bold text-4xl">Config questions</h1>
-    <%= link_to 'New config question', new_program_config_question_path(@config_question_program), class: "rounded-lg py-3 px-5 bg-blue-600 text-white block font-medium" %>
   </div>
-
-  <div id="config_questions" class="min-w-full">
-    <table class="mi_table">
-      <thead class="mi_thead">
-        <tr>
-          <th class="header_th">  </th>
-          <th class="header_th">  </th>
-          <th class="header_th"> Question </th>
-          <th class="header_th"> Answer </th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @config_questions.each do |config_question| %>
-          <tr class="mi_tbody_tr">
-            <td class="mi_tbody_td">
-              <%= link_to "View", program_config_question_path(@config_question_program, config_question), class: "link_to" %>
-            </td>
-            <td class="mi_tbody_td">
-              <%= link_to 'Edit', edit_program_config_question_path(@config_question_program, config_question), class: "link_to" %>
-            </td>
-            <td class="mi_tbody_td">
-                <%= config_question.question %>
-            </td>
-            <td class="mi_tbody_td">
-                <%= config_question.answer %>
-            </td>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </div>
-
-
+  <p class="my-5">
+  <strong class="block font-medium mb-1">Program:</strong>
+  <%= link_to @config_question_program.display_name, program_path(@config_question_program), class: "link_to" %>
+  </p>
+  <%= render 'config_question' %>
 
 </div>

@@ -81,6 +81,9 @@ class ProgramsController < ApplicationController
     respond_to do |format|
       if @program.update(program_params.except(:instructor_attributes))
         @program.update(instructor_id: instructor.id)
+        if params[:config_questions].present?
+          add_config_questions(@program)
+        end
         format.html { redirect_to program_url(@program), notice: "Program was successfully updated." }
         format.json { render :show, status: :ok, location: @program }
       else
@@ -124,7 +127,7 @@ class ProgramsController < ApplicationController
 
   def remove_config_question
     ConfigQuestion.find(params[:config_question_id]).delete
-    redirect_to @program
+    redirect_to program_config_questions_path(@program)
   end
 
   private
