@@ -29,6 +29,24 @@ class Programs::StudentsController < ApplicationController
     redirect_to program_students_path(@student_program), notice: "MVR status updates"
   end
 
+  def canvas_results
+    scope = "canvasreadonly"
+    token = get_auth_token(scope)
+     # course_id = 187918, test with 187919, 187918999
+    result = canvas_readonly(@student_program.canvas_course_id, token['access_token'])
+    if result['success']
+      students =  @student_program.students.pluck(:uniqname)
+      result['data'].each do |uniqname, date|
+        if students.include?(uniqname)
+          Student.find_by(uniqname: uniqname).update(canvas_course_complete_date: date)
+        end
+      end
+      redirect_to program_students_path(@student_program), notice: "Canvas course data updated"
+    else
+      redirect_to program_students_path(@student_program), alert: result['error']
+    end
+  end
+
   private
 
     def set_student_program

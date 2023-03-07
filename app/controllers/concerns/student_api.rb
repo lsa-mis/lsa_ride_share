@@ -51,7 +51,7 @@ module StudentApi
   end
 
   def canvas_readonly(course_id, access_token)
-    result = {'success' => false, 'errorcode' => '', 'error' => '', 'data' => []}
+    result = {'success' => false, 'error' => '', 'data' => []}
     url = URI("https://gw.api.it.umich.edu/um/aa/CanvasReadOnly/courses/#{course_id}/enrollments")
     http = Net::HTTP.new(url.host, url.port)
     http.use_ssl = true
@@ -65,12 +65,23 @@ module StudentApi
     response = http.request(request)
     response_json = JSON.parse(response.read_body)
 
-    if response_json.is_a?(Hash) && response_json['errorCode'].present?
-      result['errorcode'] = response_json['errorCode']
-      result['error'] = response_json['errorMessage']
+    if response_json.is_a?(Hash) && response_json['errors'].present?
+      result['error'] = "course id #{course_id} - " + response_json['errors'][0]['message']
     else
-      result['success'] = true
-      result['data'] = response_json
+      if response_json.present?
+        students_with_pass_score = {}
+        response_json.each do |student|
+          # test with 84.85, uniqnames hakabuo and hkagnew
+          if student['grades']['final_score'] == 100.00
+            score = student['grades']['final_score']
+            students_with_pass_score.merge! Hash[student['user']['login_id'], student['last_activity_at']]
+          end
+        end
+        result['success'] = true
+        result['data'] = students_with_pass_score
+      else
+        result['error'] = " course id #{course_id} - empty result"
+      end
     end
     return result
   end
