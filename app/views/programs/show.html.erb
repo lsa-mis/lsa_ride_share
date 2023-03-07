@@ -1,38 +1,26 @@
 <div class="mx-auto md:w-2/3 w-full">
+  <h1><%= @program.title %></h1>
   <div>
-
-
-
-
-    <h1><%= @program.title %></h1>
-
-    <div class="grid grid-cols-2">
-    
-      <%= render @program %>
-      <div class="grid justify-items-end">
-    
-        
-        <div class="">
-          <%= link_to 'Edit program', program_data_path(@program), class: "primary_button" %>
-        </div>
-        <% if @program.config_questions.present? %>
-          <div class="">
-          <%= link_to 'Questions to instructor', program_config_questions_path(@program), class: "secondary_blue_button" %>
-        </div>
-        <% end %>
-        <div class="">
-          <%= link_to 'Students', students_path, class: "secondary_blue_button" %>
+    <div class="grid grid-cols-1 lg:grid-cols-3">
+      <div class="lg:col-span-2">
+        <%= render @program %>
+      </div>
+      <div class="lg:flex lg:flex-col">
+        <div class="lg:grid lg:justify-items-end">
+          <div class="py-2">
+            <%= link_to 'Edit program', program_data_path(@program), class: "primary_button" %>
+          </div>
+          <% if @program.config_questions.present? %>
+            <div class="py-2">
+            <%= link_to 'Questions to instructor', program_config_questions_path(@program), class: "secondary_blue_button" %>
+          </div>
+          <% end %>
+          <div class="py-2">
+            <%= link_to 'Students', students_path, class: "secondary_blue_button" %>
+          </div>
         </div>
       </div>
-    
     </div>
-  
-
-
-
-
-
-
   </div>
   <h2>Cars Available</h2>
   <div>
@@ -56,4 +44,3 @@
     </div>
   <% end %>
 </div>
-

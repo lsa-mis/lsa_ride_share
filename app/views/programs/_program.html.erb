@@ -1,67 +1,68 @@
-<div class="mx-2">
-  <div class="text_small flex-grow">
-    <%= program.display_name %>
-  </div>
+<div class="flex flex-col lg:flex-row mx-2 gap-4">
+  <div class="flex-none">
+    <div class="text_small">
+      <%= program.display_name %>
+    </div>
 
-  <div class="py-2">
-    <label class="text_field_label">
-    Term
-    </label>
-    <div class="text_small flex-grow">
-      <%= program.term.name %>
+    <div class="py-2">
+      <label class="text_field_label">
+      Term hell
+      </label>
+      <div class="text_small">
+        <%= program.term.name %>
+      </div>
+    </div>
+
+    <div class="py-2">
+      <label class="text_field_label">
+      Instructor
+      </label>
+      <div class="text_small">
+        <%= program.instructor.display_name %>
+      </div>
+    </div>
+
+    <div class="py-2">
+      <label class="text_field_label">
+      Number of students
+      </label>
+      <div class="text_small">
+        <%= program.number_of_students %>
+      </div>
+    </div>
+
+    <div class="py-2">
+      <label class="text_field_label">
+      Number of students using ride share
+      </label>
+      <div class="text_small">
+        <%= program.number_of_students_using_ride_share %>
+      </div>
+    </div>
+
+    <div class="py-2">
+      <label class="text_field_label">
+      MVR link
+      </label>
+      <div class="text_small">
+        <%= program.mvr_link %>
+      </div>
+    </div>
+
+    <div class="py-2">
+      <label class="text_field_label">
+      Canvas course link
+      </label>
+      <div class="text_small">
+        <%= program.canvas_link %>
+      </div>
     </div>
   </div>
-
-  <div class="py-2">
-    <label class="text_field_label">
-    Instructor
-    </label>
-    <div class="text_small flex-grow">
-      <%= program.instructor.display_name %>
-    </div>
-  </div>
-
-  <div class="py-2">
-    <label class="text_field_label">
-    Number of students
-    </label>
-    <div class="text_small flex-grow">
-      <%= program.number_of_students %>
-    </div>
-  </div>
-
-  <div class="py-2">
-    <label class="text_field_label">
-    Number of students using ride share
-    </label>
-    <div class="text_small flex-grow">
-      <%= program.number_of_students_using_ride_share %>
-    </div>
-  </div>
-
-  <div class="py-2">
-    <label class="text_field_label">
-    MVR link
-    </label>
-    <div class="text_small flex-grow">
-      <%= program.mvr_link %>
-    </div>
-  </div>
-
-  <div class="py-2">
-    <label class="text_field_label">
-    Canvas course link
-    </label>
-    <div class="text_small flex-grow">
-      <%= program.canvas_link %>
-    </div>
-  </div>
-
   <div class="py-2">
     <label class="text_field_label">
     Configuration fields
     </label>
-    <div class="text_small flex-grow">
+    <div class="text_small">
       <%= sanitize program_config_data(program)%>
     </div>
   </div>
