@@ -9,6 +9,21 @@ class Programs::ConfigQuestionsController < ApplicationController
     @config_question = ConfigQuestion.new
   end
 
+  def faculty_survey
+    @survey = @config_question_program.config_questions.order(:id)    
+  end
+
+  def save_faculty_survey
+    @survey = @config_question_program.config_questions
+    params[:survey].each do |p|
+      if p[0].split("_").first == "answer"
+        id = p[0].split("_").last
+        @survey.find(id).update(answer: p[1])
+      end
+    end
+    redirect_to program_config_questions_path(@config_question_program)
+  end
+
   def create
     @config_question = ConfigQuestion.new(config_question_params)
     @config_question.program_id = params[:program_id]
@@ -67,7 +82,7 @@ class Programs::ConfigQuestionsController < ApplicationController
   end
 
   def config_question_params
-    params.require(:config_question).permit(:program_id, :question)
+    params.require(:config_question).permit(:program_id, :question, :survey[])
   end
 
 end

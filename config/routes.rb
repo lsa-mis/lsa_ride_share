@@ -19,6 +19,9 @@ Rails.application.routes.draw do
   resources :programs do
     resources :config_questions, module: :programs
   end
+  get '/programs/config_questions/faculty_survey/:program_id', to: 'programs/config_questions#faculty_survey', as: :faculty_survey
+  post '/programs/config_questions/faculty_survey/:program_id', to: 'programs/config_questions#save_faculty_survey'
+
   get 'programs/duplicate/:id', to: 'programs#duplicate', as: :duplicate
   delete 'programs/remove_car/:id/:car_id', to: 'programs#remove_car', as: :remove_car
   delete 'programs/remove_site/:id/:site_id', to: 'programs#remove_site', as: :remove_site

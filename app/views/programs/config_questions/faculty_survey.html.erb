@@ -1,0 +1,31 @@
+<div class="mx-auto md:w-2/3 w-full">
+  <h1>Faculty Survey</h1>
+  <p class="my-5">
+  <strong class="block font-medium mb-1">Program:</strong>
+  <%= link_to @config_question_program.display_name, program_path(@config_question_program), class: "link_to" %>
+  </p>
+
+  <%= form_with model: @survey, url: faculty_survey_path, method: :post do |form| %>
+    
+    <% @survey.each do |answer| %>
+
+      <%= fields_for 'survey[]' do %>
+        <%= answer.question %>
+        <%= label_tag("survey[answer_#{answer.id}]", nil, class: "hidden") %>
+        <%= rich_text_area_tag "survey[answer_#{answer.id}]" %>
+      <% end %>
+    <% end %>
+
+    
+    <div class="inline mt-4">
+      <%= submit_tag 'Save', class: "secondary_blue_button" %>
+    </div>
+    <div class="inline mt-4">
+      <%= link_to root_path do %>
+        <span class="tertiary_button">Cancel
+        <i class="fa fa-times" aria-hidden="true"></i>
+        </span>
+      <% end %>
+    </div>
+  <% end %>
+</div>
