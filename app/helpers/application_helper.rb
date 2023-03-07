@@ -21,7 +21,7 @@ module ApplicationHelper
   end
 
   def show_user_name_by_id(id)
-    User.find(id).email
+    User.find(id).display_name_email
   end
 
   def program_config_data(program)
