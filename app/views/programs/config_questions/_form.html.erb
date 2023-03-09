@@ -16,8 +16,6 @@
     <%= @config_question_program.subject.upcase %> <%= @config_question_program.catalog_number.titleize %> - <%= @config_question_program.class_section.titleize %>
   </p>
 
-  <%= form.hidden_field :program_id %>
-
   <div class="px-1 pb-2 my-2 flex items-center text-sm text-gray-900">
 
     <div class="field">
@@ -28,5 +26,12 @@
 
   <div class="inline">
     <%= form.submit class: "secondary_blue_button" %>
+  </div>
+  <div class="inline">
+    <%= link_to program_config_questions_path(@config_question_program) do %>
+      <span class="tertiary_button">Cancel
+      <i class="fa fa-times" aria-hidden="true"></i>
+      </span>
+    <% end %>
   </div>
 <% end %>

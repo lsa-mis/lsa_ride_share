@@ -5,10 +5,10 @@
     </div>
     <div class="flex flex-row justify-between gap-2">
       <div>
-        <%= link_to 'New config question', faculty_survey_path(@config_question_program), class: "secondary_blue_button" %>
+        <%= link_to 'New config question', new_program_config_question_path(@config_question_program), class: "secondary_blue_button" %>
       </div>
       <div>
-        <%= link_to 'Faculty Survey', new_program_config_question_path(@config_question_program), class: "secondary_blue_button" %>
+        <%= link_to 'Faculty Survey', faculty_survey_path(@config_question_program), class: "secondary_blue_button" %>
       </div>
     </div>
 
