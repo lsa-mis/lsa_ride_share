@@ -20,10 +20,6 @@ module ApplicationHelper
     field.strftime("%m/%d/%Y") unless field.blank?
   end
 
-  def show_user_name_by_id(id)
-    User.find(id).display_name_email
-  end
-
   def program_config_data(program)
     config_data = ''
     if program.pictures_required_start || program.pictures_required_end
