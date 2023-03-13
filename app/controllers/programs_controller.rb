@@ -13,7 +13,7 @@ class ProgramsController < ApplicationController
       @programs = Program.where(term_id: params[:term_id])
       @term_id = params[:term_id]
     else
-      @programs = Program.active
+      @programs = Program.all
       @term_id = nil
     end
 
@@ -89,6 +89,10 @@ class ProgramsController < ApplicationController
       end
     end
   end
+
+  # def add_program_manager_to_program(program, program_manager)
+  #   program.program_managers << program_manager
+  # end
 
   # DELETE /programs/1 or /programs/1.json
   def destroy

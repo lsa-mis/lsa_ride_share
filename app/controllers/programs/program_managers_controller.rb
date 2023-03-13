@@ -6,38 +6,39 @@ class Programs::ProgramManagersController < ApplicationController
   end
 
   def create
-    uniqname = params[:program_manager][:uniqname]
-    if ProgramManager.find_by(uniqname: uniqname).present?
-      # uniqname exists in the program_manages table
-      @manager = ProgramManager.find_by(uniqname: uniqname)
-      if @program_manager_program.program_managers.pluck(:uniqname).include?(uniqname)
-        # uniqname is already a manager for the program
-        redirect_to new_program_program_manager_path(@program_manager_program), alert: "#{@manager.display_name} is already a manager"
-        return
-      elsif @program_manager_program.instructor.uniqname == uniqname
-        # the uniqname is the instructor for the program
-        redirect_to new_program_program_manager_path(@program_manager_program), alert: "#{@manager.display_name} is the instructor"
-        return
-      else
-        # uniqname exists in the program_managers table but is not related to this program
-        @program_manager_program.program_managers << @manager
-        redirect_to @program_manager_program, notice: "The program manager was added"
-        return
-      end
-    else
-      # it a new wuniqname, doesn't exist in the program
-      program_manager = ProgramManager.new(program_manager_params)
-      name = LdapLookup.get_simple_name(uniqname)
-      if name.nil?
-        redirect_to new_program_program_manager_path(@program_manager_program), alert: "#{uniqname} is not a correct uniqname"
-        return
-      else
-        program_manager.first_name = name.split(" ").first
-        program_manager.last_name = name.split(" ").last
+    # uniqname = params[:program_manager][:uniqname]
+    # if ProgramManager.find_by(uniqname: uniqname).present?
+    #   # uniqname exists in the program_manages table
+    #   @manager = ProgramManager.find_by(uniqname: uniqname)
+    #   if @program_manager_program.program_managers.pluck(:uniqname).include?(uniqname)
+    #     # uniqname is already a manager for the program
+    #     redirect_to new_program_program_manager_path(@program_manager_program), alert: "#{@manager.display_name} is already a manager"
+    #     return
+    #   elsif @program_manager_program.instructor.uniqname == uniqname
+    #     # the uniqname is the instructor for the program
+    #     redirect_to new_program_program_manager_path(@program_manager_program), alert: "#{@manager.display_name} is the instructor"
+    #     return
+    #   else
+    #     # uniqname exists in the program_managers table but is not related to this program
+    #     @program_manager_program.program_managers << @manager
+    #     redirect_to @program_manager_program, notice: "The program manager was added"
+    #     return
+    #   end
+    # else
+    #   # it a new wuniqname, doesn't exist in the program
+      @program_manager = ProgramManager.new(program_manager_params)
+    #   name = LdapLookup.get_simple_name(uniqname)
+    #   if name.nil?
+    #     redirect_to new_program_program_manager_path(@program_manager_program), alert: "#{uniqname} is not a correct uniqname"
+    #     return
+    #   else
+    #     program_manager.first_name = name.split(" ").first
+    #     program_manager.last_name = name.split(" ").last
       
         respond_to do |format|
-          if program_manager.save
-            @program_manager_program.program_managers << program_manager
+          if @program_manager.save
+            # add_program_manager_to_program(@program_manager_program, @program_manager)
+            @program_manager_program.program_managers << @program_manager
             format.html { redirect_to @program_manager_program, notice: "The program manager was added" }
             format.json { render :show, status: :created, location: @program_manager_program }
           else
@@ -45,8 +46,8 @@ class Programs::ProgramManagersController < ApplicationController
             format.json { render json: @program_manager_program.errors, status: :unprocessable_entity }
           end
         end
-      end
-    end
+      # end
+    # end
   end
 
   def destroy
