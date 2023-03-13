@@ -13,7 +13,7 @@ class ProgramsController < ApplicationController
       @programs = Program.where(term_id: params[:term_id])
       @term_id = params[:term_id]
     else
-      @programs = Program.active
+      @programs = Program.all
       @term_id = nil
     end
 
