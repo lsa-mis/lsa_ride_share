@@ -1,6 +1,6 @@
 <div class="flex flex-col lg:flex-row mx-2 gap-4">
   <div class="flex-none">
-    <div class="text_small">
+    <div class="body-md-text ml-2">
       <%= program.display_name %>
     </div>
 
@@ -8,7 +8,7 @@
       <label class="text_field_label">
       Term
       </label>
-      <div class="text_small">
+      <div class="body-md-text ml-2">
         <%= program.term.name %>
       </div>
     </div>
@@ -17,7 +17,7 @@
       <label class="text_field_label">
       Instructor
       </label>
-      <div class="text_small">
+      <div class="body-md-text ml-2">
         <%= program.instructor.display_name %>
       </div>
     </div>
@@ -26,7 +26,7 @@
       <label class="text_field_label">
       Number of students
       </label>
-      <div class="text_small">
+      <div class="body-md-text ml-2">
         <%= program.number_of_students %>
       </div>
     </div>
@@ -35,7 +35,7 @@
       <label class="text_field_label">
       Number of students using ride share
       </label>
-      <div class="text_small">
+      <div class="body-md-text ml-2">
         <%= program.number_of_students_using_ride_share %>
       </div>
     </div>
@@ -44,7 +44,7 @@
       <label class="text_field_label">
       MVR link
       </label>
-      <div class="text_small">
+      <div class="body-md-text ml-2">
         <%= program.mvr_link %>
       </div>
     </div>
@@ -53,18 +53,20 @@
       <label class="text_field_label">
       Canvas course link
       </label>
-      <div class="text_small">
+      <div class="body-md-text ml-2">
         <%= program.canvas_link %>
       </div>
     </div>
   </div>
   <div class="py-2">
-    <label class="text_field_label">
-    Configuration fields
-    </label>
-    <div class="text_small">
-      <%= sanitize program_config_data(program)%>
-    </div>
+    <% if program_config_data(program).present? %>
+      <label class="text_field_label">
+      Additional options
+      </label>
+      <div class="body-md-text ml-2">
+        <%= sanitize program_config_data(program)%>
+      </div>
+    <% end %>
   </div>
 
 </div>

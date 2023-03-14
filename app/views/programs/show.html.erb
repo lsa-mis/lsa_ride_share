@@ -12,7 +12,7 @@
           </div>
           <% if @program.config_questions.present? %>
             <div class="py-2">
-            <%= link_to 'Questions to instructor', program_config_questions_path(@program), class: "secondary_blue_button" %>
+            <%= link_to 'Instructor Survey', program_config_questions_path(@program), class: "secondary_blue_button" %>
           </div>
           <% end %>
           <div class="py-2">
@@ -44,5 +44,8 @@
         <% end %>
       </div>
     <% end %>
+  </div>
+  <div class="body-md-text text-right">
+    <%= updated_on_and_by(@program) %>
   </div>
 </div>
