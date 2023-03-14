@@ -45,4 +45,8 @@ module ApplicationHelper
     return config_data
   end
 
+  def updated_on_and_by(program)
+    return "Updated on " + program.updated_at.strftime('%m/%d/%Y') + " by " + show_user_name_by_id(program.updated_by)
+  end
+
 end
