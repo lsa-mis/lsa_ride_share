@@ -1,0 +1,30 @@
+<div class="mx-auto md:w-2/3 w-full">
+
+  <div class="flex flex-row items-center gap-4 m-2">
+    <div>
+      <h1><%= @program.title %></h1>
+    </div>
+    <div>
+      <%= link_to "Edit Course Information", edit_program_path(@program), class: "secondary_blue_button" %> 
+    </div>
+  </div>
+  <div class="grid grid-cols-2">
+    <div>
+      <%= render @program %>
+    </div>
+    <div class="grid justify-items-end">
+      <div class="">
+        <%= link_to 'Exit Edit Page', program_path(@program), class: "primary_button" %>
+      </div>
+    </div>
+  </div>
+
+  <div>
+      <%= render 'program_car' %>
+      <%= render 'program_site' %>
+      <% if @program.add_managers %>
+        <%= render 'program_manager' %>
+      <% end %>
+  </div>
+
+</div>

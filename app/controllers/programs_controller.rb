@@ -1,7 +1,7 @@
 class ProgramsController < ApplicationController
   before_action :auth_user
 
-  before_action :set_program, only: %i[ show edit update destroy duplicate remove_car remove_site remove_program_manager add_config_questions remove_config_question]
+  before_action :set_program, except: %i[ index new ]
   before_action :set_terms
 
   include ApplicationHelper
@@ -26,9 +26,6 @@ class ProgramsController < ApplicationController
 
   # GET /programs/1 or /programs/1.json
   def show
-    @cars = @program.cars
-    @add_cars = Car.all - @cars
-    @terms = Term.all
   end
 
   # GET /programs/new
@@ -40,6 +37,12 @@ class ProgramsController < ApplicationController
 
   # GET /programs/1/edit
   def edit
+  end
+
+  def program_data
+    @cars = @program.cars
+    @add_cars = Car.all - @cars
+    @terms = Term.all
   end
 
   # POST /programs or /programs.json
