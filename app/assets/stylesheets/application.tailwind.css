@@ -212,6 +212,10 @@ from https://tailwindcss.com/docs/adding-custom-styles
     @apply text-sm font-semibold text-gray-900 bg-white relative px-1 top-2 left-3 w-auto group-focus-within:text-red-600;
   }
 
+  .filter_select {
+    @apply text-lg font-medium text-gray-900 bg-white border border-gray-600 rounded block p-2 focus:ring-blue-500 focus:border-blue-500;
+  }
+
   /* table */
 
   .mi_table {
