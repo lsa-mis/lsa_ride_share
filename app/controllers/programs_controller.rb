@@ -1,7 +1,7 @@
 class ProgramsController < ApplicationController
   before_action :auth_user
 
-  before_action :set_program, only: %i[ show edit update destroy duplicate remove_car remove_site remove_program_manager add_config_questions remove_config_question]
+  before_action :set_program, except: %i[ index new ]
   before_action :set_terms
 
   include ApplicationHelper
@@ -13,7 +13,7 @@ class ProgramsController < ApplicationController
       @programs = Program.where(term_id: params[:term_id])
       @term_id = params[:term_id]
     else
-      @programs = Program.active
+      @programs = Program.all
       @term_id = nil
     end
 
@@ -26,9 +26,6 @@ class ProgramsController < ApplicationController
 
   # GET /programs/1 or /programs/1.json
   def show
-    @cars = @program.cars
-    @add_cars = Car.all - @cars
-    @terms = Term.all
   end
 
   # GET /programs/new
@@ -40,6 +37,12 @@ class ProgramsController < ApplicationController
 
   # GET /programs/1/edit
   def edit
+  end
+
+  def program_data
+    @cars = @program.cars
+    @add_cars = Car.all - @cars
+    @terms = Term.all
   end
 
   # POST /programs or /programs.json
@@ -67,9 +70,16 @@ class ProgramsController < ApplicationController
 
   # PATCH/PUT /programs/1 or /programs/1.json
   def update
+    uniqname = program_params[:instructor_attributes][:uniqname]
+    if ProgramManager.find_by(uniqname: uniqname).present?
+      instructor = ProgramManager.find_by(uniqname: uniqname)
+    else
+      instructor = ProgramManager.create(uniqname: uniqname)
+    end
     respond_to do |format|
-      if @program.update(program_params)
-        format.html { redirect_to program_url(@program), notice: "Program was successfully updated." }
+      if @program.update(program_params.except(:instructor_attributes))
+        @program.update(instructor_id: instructor.id)
+        format.html { redirect_to program_data_path(@program), notice: "Program was successfully updated." }
         format.json { render :show, status: :ok, location: @program }
       else
         format.html { render :edit, status: :unprocessable_entity }

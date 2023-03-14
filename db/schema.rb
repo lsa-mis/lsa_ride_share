@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_28_010403) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_13_153946) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -109,11 +109,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_28_010403) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["program_id"], name: "index_program_managers_programs_on_program_id"
+    t.index ["program_manager_id", "program_id"], name: "manager_program_index", unique: true
     t.index ["program_manager_id"], name: "index_program_managers_programs_on_program_manager_id"
   end
 
   create_table "programs", force: :cascade do |t|
-    t.boolean "active", default: true
     t.string "title"
     t.string "subject", null: false
     t.string "catalog_number", null: false
@@ -132,6 +132,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_28_010403) do
     t.string "canvas_link"
     t.integer "canvas_course_id"
     t.integer "term_id"
+    t.boolean "add_managers", default: false
     t.index ["admin_access_id"], name: "index_programs_on_admin_access_id"
     t.index ["instructor_id"], name: "index_programs_on_instructor_id"
   end
@@ -203,13 +204,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_28_010403) do
     t.string "uniqname"
     t.string "last_name"
     t.string "first_name"
-    t.date "mvr_expiration_date"
     t.date "class_training_date"
     t.date "canvas_course_complete_date"
     t.string "meeting_with_admin_date"
     t.integer "updated_by"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "mvr_status"
   end
 
   create_table "terms", force: :cascade do |t|

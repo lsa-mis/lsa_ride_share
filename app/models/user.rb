@@ -26,4 +26,9 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :omniauthable, omniauth_providers: [:saml]
+
+  def display_name_email
+    "#{display_name} - #{email}"
+  end
+  
 end

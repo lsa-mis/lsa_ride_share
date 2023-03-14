@@ -8,8 +8,8 @@
     <%= form_with url: programs_path, method: :get, class: "", data: { autosubmit_target: "form", turbo_frame: "turbo-rooms" } do |form| %>
   
       <div class="px-1">
-        <label for="term_id">Select a Term</label>
-          <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: @term_id), include_blank: "Select ...", class: "block rounded-none rounded-l-md text-xs border-gray-300",
+        <label for="term_id" class="fancy_label">Select a Term</label>
+        <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: @term_id), include_blank: "Select ...", class: "filter_select",
                     :"data-action" => "change->autosubmit#search" %>
       </div>
 

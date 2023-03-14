@@ -1,104 +1,72 @@
-<h1><%= program.title %></h1>
-
-<div class="grid grid-cols-1 md:grid-cols-3 place-content-between">
-
-  <div class="mx-2">
-    <div class="text_small flex-grow">
-      <%= program.subject.upcase %> <%= program.catalog_number.titleize %> - <%= program.class_section.titleize %>
+<div class="flex flex-col lg:flex-row mx-2 gap-4">
+  <div class="flex-none">
+    <div class="body-md-text ml-2">
+      <%= program.display_name %>
     </div>
 
     <div class="py-2">
-      <label class="text_field_label flex sm:mt-0 sm:col-span-2">
+      <label class="text_field_label">
       Term
       </label>
-      <div class="text_small flex-grow">
+      <div class="body-md-text ml-2">
         <%= program.term.name %>
       </div>
     </div>
 
     <div class="py-2">
-      <label class="text_field_label flex sm:mt-0 sm:col-span-2">
+      <label class="text_field_label">
       Instructor
       </label>
-      <div class="text_small flex-grow">
+      <div class="body-md-text ml-2">
         <%= program.instructor.display_name %>
       </div>
     </div>
 
     <div class="py-2">
-      <label class="text_field_label flex sm:mt-0 sm:col-span-2">
+      <label class="text_field_label">
       Number of students
       </label>
-      <div class="text_small flex-grow">
+      <div class="body-md-text ml-2">
         <%= program.number_of_students %>
       </div>
     </div>
 
     <div class="py-2">
-      <label class="text_field_label flex sm:mt-0 sm:col-span-2">
+      <label class="text_field_label">
       Number of students using ride share
       </label>
-      <div class="text_small flex-grow">
+      <div class="body-md-text ml-2">
         <%= program.number_of_students_using_ride_share %>
       </div>
     </div>
 
-  </div>
-
-  <div class="ml-4">
-    <span class="flex text-sm font-semibold text-gray-900 sm:mt-0 sm:col-span-2">Record history</span>
     <div class="py-2">
-      <label class="flex text-sm font-medium text-gray-900 sm:mt-0 sm:col-span-2">
-        Updated by
+      <label class="text_field_label">
+      MVR link
       </label>
-      <div class="ml-2 text-sm text-gray-700 flex-grow">
-        <%= show_user_name_by_id(program.updated_by) %>
+      <div class="body-md-text ml-2">
+        <%= program.mvr_link %>
       </div>
     </div>
 
     <div class="py-2">
-      <label class="flex text-sm font-medium text-gray-900 sm:mt-0 sm:col-span-2">
-        Created at
+      <label class="text_field_label">
+      Canvas course link
       </label>
-      <div class="ml-2 text-sm text-gray-700 flex-grow">
-        <%= show_date(program.created_at) %>
-      </div>
-    </div>
-
-    <div class="py-2">
-      <label class="flex text-sm font-medium text-gray-900 sm:mt-0 sm:col-span-2">
-        Updated at
-      </label>
-      <div class="ml-2 text-sm text-gray-700 flex-grow">
-        <%= show_date(program.updated_at) %>
+      <div class="body-md-text ml-2">
+        <%= program.canvas_link %>
       </div>
     </div>
   </div>
-  <div>
-    <div>
-      <div class="m-2">
-        <% if program.config_questions.empty? %>
-          <div class="m-2">
-            <%= link_to 'Add Default Questions', add_config_questions_path, class: "my-4 px-2 py-1 rounded-md shadow-sm bg-blue-umblue text-sm text-gray-100 text-center hover:underline" %>
-          </div>
-        <% end %>
-
-        <div class="m-2">
-          <%= link_to 'Add Students', students_path, class: "my-4 px-2 py-1 rounded-md shadow-sm bg-blue-umblue text-sm text-gray-100 text-center hover:underline" %>
-        </div>
-        <div class="m-2">
-          <%= link_to 'Edit this item', edit_program_path(program), class: "my-2 px-2 py-1 rounded-md shadow-sm bg-blue-umblue text-sm text-gray-100 text-center hover:underline" %>
-        </div>
+  <div class="py-2">
+    <% if program_config_data(program).present? %>
+      <label class="text_field_label">
+      Additional options
+      </label>
+      <div class="body-md-text ml-2">
+        <%= sanitize program_config_data(program)%>
       </div>
-      <div class="m-2">
-        <%= link_to programs_path, data: { "turbo-frame": "_top" } do %>
-          <div class="flex items-center text-sm text-blue-umblue hover:underline pb-2">
-            <%= svg("left-arrow-svgrepo-com")  %>
-            <span>Back to search</span>
-          </div>
-        <% end %>
-      </div>
-    </div>
-
+    <% end %>
   </div>
+
 </div>

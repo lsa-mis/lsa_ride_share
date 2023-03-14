@@ -1,35 +1,51 @@
-<div class="mx-auto md:w-2/3 w-full flex">
-  <div class="mx-auto">
-    <%= render @program %>
-  </div>
-</div>
-<hr class="border-blue-900 border m-4">
-
-<div>
-  <%= turbo_frame_tag "new_car" do %>
-    <%= render "program_car", locals: { program: @program} %>
-  <% end %>
-</div>
-
-<hr class="border-blue-900 border m-4">
-<div>
-  <%= turbo_frame_tag "new_site" do %>
-    <%= render "program_site", locals: { program: @program} %>
-  <% end %>
-</div>
-
-<hr class="border-blue-900 border m-4">
-<div>
-  <%= turbo_frame_tag "new_program_manager" do %>
-    <%= render "program_manager", locals: { program: @program} %>
-  <% end %>
-</div>
-
-<% if @program.config_questions.present? %>
-  <hr class="border-blue-900 border m-4">
+<div class="mx-auto md:w-2/3 w-full">
+  <h1><%= @program.title %></h1>
   <div>
-    <%= turbo_frame_tag "config_questions" do %>
-      <%= render "config_questions", locals: { program: @program} %>
+    <div class="grid grid-cols-1 lg:grid-cols-3">
+      <div class="grid lg:col-span-2">
+        <%= render @program %>
+      </div>
+      <div class="lg:flex lg:flex-col">
+        <div class="lg:grid lg:justify-items-end">
+          <div class="py-2">
+            <%= link_to 'Edit program', program_data_path(@program), class: "primary_button" %>
+          </div>
+          <% if @program.config_questions.present? %>
+            <div class="py-2">
+            <%= link_to 'Instructor Survey', program_config_questions_path(@program), class: "secondary_blue_button" %>
+          </div>
+          <% end %>
+          <div class="py-2">
+            <%= link_to 'Students List', program_path(@program), class: "secondary_blue_button" %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div>
+    <h2>Cars Available</h2>
+    <div>
+      <%= turbo_frame_tag "cars_list" do %>
+        <%= render "cars_list", locals: { program: @program} %>
+      <% end %>
+    </div>
+    <h2>Sites</h2>
+    <div>
+      <%= turbo_frame_tag "sites_list" do %>
+        <%= render "sites_list", locals: { program: @program} %>
+      <% end %>
+    </div>
+
+    <% if @program.add_managers %>
+      <h2>Managers</h2>
+      <div>
+        <%= turbo_frame_tag "managers_list" do %>
+          <%= render "managers_list", locals: { program: @program} %>
+        <% end %>
+      </div>
     <% end %>
   </div>
-<% end %>
+  <div class="body-md-text text-right my-2">
+    <%= updated_on_and_by(@program) %>
+  </div>
+</div>

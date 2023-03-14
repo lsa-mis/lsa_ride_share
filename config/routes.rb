@@ -25,6 +25,7 @@ Rails.application.routes.draw do
   delete 'programs/remove_program_manager/:id/:program_manager_id', to: 'programs#remove_program_manager', as: :remove_program_manager
   delete 'programs/remove_config_question/:id/:config_question_id', to: 'programs#remove_config_question', as: :remove_config_question
   get 'programs/add_config_questions/:id/', to: 'programs#add_config_questions', as: :add_config_questions
+  get 'programs/program_data/:id/', to: 'programs#program_data', as: :program_data
 
   resources :program_managers
   get 'static_pages/home'

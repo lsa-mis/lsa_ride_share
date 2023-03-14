@@ -1,0 +1,25 @@
+<% if @program.program_managers.present? %>
+  <% @program.program_managers.each do |program_manager| %>
+    <li class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
+      <div class="w-0 flex-1 flex items-center">
+        <span class="ml-2 flex-1 w-0 truncate">
+          <%= program_manager.display_name %>
+        </span>
+      </div>
+      
+        <div class="ml-4 flex-shrink-0 flex space-x-4">
+          <button type="button" class="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            <%= link_to 'Remove', remove_program_manager_path(@program, program_manager), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete}, class: "delete_button" %>
+          </button>
+        </div>
+    </li>
+  <% end %>
+<% else %>
+  <li class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
+    <div class="w-0 flex-1 flex items-center">
+      <span class="ml-2 flex-1 w-0 truncate">
+        The program currently does not have any program managers.
+      </span>
+    </div>
+  </li>
+<% end %>
