@@ -46,7 +46,6 @@ class Program < ApplicationRecord
       new_program.number_of_students = ""
       new_program.number_of_students_using_ride_share = ""
       new_program.updated_by = ""
-      new_program.active = true
 
     end
   end
