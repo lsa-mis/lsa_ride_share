@@ -3,8 +3,7 @@ module StudentApi
   require 'net/http'
 
   def mvr_status(uniqname)
-    #  https://ltp.fo.umich.edu/mvr/api/api.php?action=check_status&uniqname=hodel
-
+    mvr_status = ''
     url = URI("https://ltp.fo.umich.edu/mvr/api/api.php?action=check_status&uniqname=#{uniqname}")
 
     http = Net::HTTP.new(url.host, url.port)
