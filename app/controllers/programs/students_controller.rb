@@ -5,7 +5,7 @@ class Programs::StudentsController < ApplicationController
 
   # GET /students or /students.json
   def index
-    @students = @student_program.students
+    @students = @student_program.students.order(:last_name)
     unless @students.present?
       call_api_message = get_student_list(@student_program)
       flash[:notice] = call_api_message
