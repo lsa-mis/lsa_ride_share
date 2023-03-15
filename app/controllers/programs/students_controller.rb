@@ -24,7 +24,9 @@ class Programs::StudentsController < ApplicationController
   def update_mvr_status
     @student_program.students.each do |student|
       status = mvr_status(student.uniqname)
-      student.update(mvr_status: status)
+      unless student.update(mvr_status: status)
+        return "Error updating student record"
+      end
     end
     redirect_to program_students_path(@student_program), notice: "MVR status updates"
   end
@@ -38,7 +40,9 @@ class Programs::StudentsController < ApplicationController
       students =  @student_program.students.pluck(:uniqname)
       result['data'].each do |uniqname, date|
         if students.include?(uniqname)
-          Student.find_by(uniqname: uniqname).update(canvas_course_complete_date: date)
+          unless Student.find_by(uniqname: uniqname).update(canvas_course_complete_date: date)
+            return "Error updating student record"
+          end
         end
       end
       redirect_to program_students_path(@student_program), notice: "Canvas course data updated"
@@ -67,6 +71,8 @@ class Programs::StudentsController < ApplicationController
           student = Student.new(uniqname: student_info['Uniqname'], first_name: student_info['Name'].split(",").last, last_name: student_info['Name'].split(",").first)
           if student.save
             @student_program.students << student
+          else
+            return "Error saving student record"
           end
         end
         return "Student List is created"
@@ -90,6 +96,8 @@ class Programs::StudentsController < ApplicationController
             student = Student.new(uniqname: student_info['Uniqname'], first_name: student_info['Name'].split(",").last, last_name: student_info['Name'].split(",").first)
             if student.save
               @student_program.students << student
+            else
+              return "Error saving student record"
             end
           end
         end
