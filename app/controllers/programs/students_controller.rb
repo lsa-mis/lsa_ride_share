@@ -7,14 +7,14 @@ class Programs::StudentsController < ApplicationController
   def index
     @students = @student_program.students
     unless @students.present?
-      call_api = get_student_list(@student_program)
-      flash[:notice] = call_api
+      call_api_message = get_student_list(@student_program)
+      flash[:notice] = call_api_message
     end
   end
 
   def update_student_list
-    call_api = update_students(@student_program)
-    redirect_to program_students_path(@student_program), notice: call_api
+    call_api_message = update_students(@student_program)
+    redirect_to program_students_path(@student_program), notice: call_api_message
   end
 
   # GET /students/1 or /students/1.json
