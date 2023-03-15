@@ -31,8 +31,8 @@
           <th class="header_th"> Last name </th>
           <th class="header_th"> First name </th>
           <th class="header_th"> MVR status </th>
-          <th class="header_th"> Class training date </th>
           <th class="header_th"> Canvas course complete date </th>
+          <th class="header_th"> Class training date </th>
           <th class="header_th"> Meeting with admin date </th>
         </tr>
       </thead>
@@ -46,25 +46,25 @@
               <%= link_to 'Edit', program_students_path(@student_program), class: "link_to" %>
             </td>
             <td class="mi_tbody_td">
-                <%= student.uniqname %>
+              <%= student.uniqname %>
             </td>
             <td class="mi_tbody_td">
-                <%= student.last_name %>
+              <%= student.last_name %>
             </td>
             <td class="mi_tbody_td">
-                <%= student.first_name %>
+              <%= student.first_name %>
             </td>
             <td class="mi_tbody_td">
-                <%= student.mvr_status %>
+              <%= student.mvr_status %>
             </td>
             <td class="mi_tbody_td">
-                <%= student.class_training_date %>
+              <%= student.canvas_course_complete_date %>
             </td>
             <td class="mi_tbody_td">
-                <%= student.canvas_course_complete_date %>
+              <%= student.class_training_date %>
             </td>
             <td class="mi_tbody_td">
-                <%= student.meeting_with_admin_date %>
+              <%= student.meeting_with_admin_date %>
             </td>
           </tr>
         <% end %>
