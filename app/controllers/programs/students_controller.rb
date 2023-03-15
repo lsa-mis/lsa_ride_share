@@ -54,7 +54,6 @@ class Programs::StudentsController < ApplicationController
     end
 
     def set_student
-      fail
       @student = Student.find(params[:id])
     end
 
