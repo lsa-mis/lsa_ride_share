@@ -64,16 +64,14 @@ module StudentApi
 
     response = http.request(request)
     response_json = JSON.parse(response.read_body)
-
     if response_json.is_a?(Hash) && response_json['errors'].present?
       result['error'] = "course id #{course_id} - " + response_json['errors'][0]['message']
     else
       if response_json.present?
         students_with_pass_score = {}
         response_json.each do |student|
-          # test with 84.85, uniqnames hakabuo and hkagnew
-          if student['grades']['final_score'] == 100.00
-            score = student['grades']['final_score']
+          # test with < 100.00, uniqnames brwern 
+          if student['grades'].present? and student['grades']['final_score'] == 100.00
             students_with_pass_score.merge! Hash[student['user']['login_id'], student['last_activity_at']]
           end
         end
