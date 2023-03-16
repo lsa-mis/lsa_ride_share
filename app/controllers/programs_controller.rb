@@ -59,6 +59,9 @@ class ProgramsController < ApplicationController
 
     respond_to do |format|
       if @program.save
+        if params[:config_questions].present?
+          add_config_questions(@program)
+        end
         format.html { redirect_to program_url(@program), notice: "Program was successfully created." }
         format.json { render :show, status: :created, location: @program }
       else
@@ -113,12 +116,11 @@ class ProgramsController < ApplicationController
     redirect_to @program
   end
 
-  def add_config_questions
+  def add_config_questions(program)
     default_config_questions.each do |q|
-      config_question = ConfigQuestion.new(program_id: @program.id, question: q)
+      config_question = ConfigQuestion.new(program_id: program.id, question: q)
       config_question.save
     end
-    redirect_to @program
   end
 
   def remove_config_question
