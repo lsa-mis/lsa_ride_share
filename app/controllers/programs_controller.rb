@@ -59,6 +59,9 @@ class ProgramsController < ApplicationController
 
     respond_to do |format|
       if @program.save
+        if params[:config_questions].present?
+          add_config_questions(@program)
+        end
         format.html { redirect_to program_url(@program), notice: "Program was successfully created." }
         format.json { render :show, status: :created, location: @program }
       else
@@ -113,12 +116,11 @@ class ProgramsController < ApplicationController
     redirect_to @program
   end
 
-  def add_config_questions
+  def add_config_questions(program)
     default_config_questions.each do |q|
-      config_question = ConfigQuestion.new(program_id: @program.id, question: q)
+      config_question = ConfigQuestion.new(program_id: program.id, question: q)
       config_question.save
     end
-    redirect_to @program
   end
 
   def remove_config_question
@@ -146,6 +148,7 @@ class ProgramsController < ApplicationController
     def program_params
       params.require(:program).permit(:active, :title, :term_start, :term_end, :term_id, :subject, :catalog_number, :class_section, 
                                      :number_of_students, :number_of_students_using_ride_share, :pictures_required_start, :pictures_required_end, 
-                                     :non_uofm_passengers, :instructor_id, :mvr_link, :canvas_link, :canvas_course_id, :admin_access_id, :updated_by, instructor_attributes: [:uniqname])
+                                     :non_uofm_passengers, :instructor_id, :mvr_link, :canvas_link, :canvas_course_id, :admin_access_id, :add_managers, 
+                                     :updated_by, instructor_attributes: [:uniqname])
     end
 end
