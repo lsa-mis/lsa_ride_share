@@ -1,4 +1,4 @@
-# Art Survey
+# LSA Ride Share
 ![](https://img.shields.io/badge/Ruby%20Version-3.1.2-red) ![](https://img.shields.io/badge/Rails%20Version-7.0.4-red) ![](https://img.shields.io/badge/Postgresql%20Version-14.4-red)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
