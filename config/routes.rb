@@ -22,9 +22,9 @@ Rails.application.routes.draw do
   resources :programs do
     resources :students, module: :programs
   end
-  get '/programs/students/update_student_list/:program_id', to: 'programs/students#update_student_list', as: :update_student_list
-  get '/programs/students/update_mvr_status/:program_id', to: 'programs/students#update_mvr_status', as: :update_mvr_status
-  get '/programs/students/canvas_results/:program_id', to: 'programs/students#canvas_results', as: :canvas_results
+  get '/programs/students/update_student_list/:program_id', to: 'programs/students#update_student_list', as: :update_student_list, defaults: { format: :turbo_stream } 
+  get '/programs/students/update_mvr_status/:program_id', to: 'programs/students#update_mvr_status', as: :update_mvr_status, defaults: { format: :turbo_stream }
+  get '/programs/students/canvas_results/:program_id', to: 'programs/students#canvas_results', as: :canvas_results, defaults: { format: :turbo_stream }
 
   get 'programs/duplicate/:id', to: 'programs#duplicate', as: :duplicate
   delete 'programs/remove_car/:id/:car_id', to: 'programs#remove_car', as: :remove_car
