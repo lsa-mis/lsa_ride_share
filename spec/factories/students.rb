@@ -13,6 +13,7 @@
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
 #  mvr_status                  :string
+#  program_id                  :bigint
 #
 FactoryBot.define do
   factory :student do

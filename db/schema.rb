@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_15_032252) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_16_200549) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -146,15 +146,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_15_032252) do
     t.index ["site_id"], name: "index_programs_sites_on_site_id"
   end
 
-  create_table "programs_students", force: :cascade do |t|
-    t.bigint "program_id", null: false
-    t.bigint "student_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["program_id"], name: "index_programs_students_on_program_id"
-    t.index ["student_id"], name: "index_programs_students_on_student_id"
-  end
-
   create_table "reservation_passengers", force: :cascade do |t|
     t.bigint "reservation_id", null: false
     t.bigint "student_id", null: false
@@ -211,6 +202,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_15_032252) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "mvr_status"
+    t.bigint "program_id"
+    t.index ["program_id"], name: "index_students_on_program_id"
   end
 
   create_table "terms", force: :cascade do |t|
@@ -269,8 +262,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_15_032252) do
   add_foreign_key "programs", "program_managers", column: "instructor_id"
   add_foreign_key "programs_sites", "programs"
   add_foreign_key "programs_sites", "sites"
-  add_foreign_key "programs_students", "programs"
-  add_foreign_key "programs_students", "students"
   add_foreign_key "reservation_passengers", "reservations"
   add_foreign_key "reservation_passengers", "students"
   add_foreign_key "reservations", "cars"
@@ -278,5 +269,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_15_032252) do
   add_foreign_key "reservations", "sites"
   add_foreign_key "reservations", "students", column: "backup_driver_id"
   add_foreign_key "reservations", "students", column: "driver_id"
+  add_foreign_key "students", "programs"
   add_foreign_key "vehicle_reports", "reservations"
 end
