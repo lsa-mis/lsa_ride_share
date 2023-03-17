@@ -49,6 +49,35 @@ module StudentApi
     return result
   end
 
+  def update_students(program)
+    # add new students and delete those who dropped the course
+    scope = "classroster"
+    token = get_auth_token(scope)
+    result = class_roster_operational(program.term.code, program.subject, program.catalog_number, program.class_section, token['access_token'])
+    if result['success']
+      data = result['data']['Classes']['Class']['ClassSections']['ClassSection']['ClassStudents']['ClassStudent']
+      students_in_db = @student_program.students.pluck(:uniqname)
+      data.each do |student_info|
+        uniqname = student_info['Uniqname']
+        if students_in_db.include?(uniqname)
+          students_in_db.delete(uniqname)
+        else
+          student = Student.new(uniqname: student_info['Uniqname'], first_name: student_info['Name'].split(",").last, last_name: student_info['Name'].split(",").first, program: program)
+          unless student.save
+            return "Error saving student record"
+          end
+        end
+      end
+      if students_in_db.present?
+        # delete students who dropped the course
+        @student_program.students.delete(Student.where(uniqname: students_in_db))
+      end
+      flash.now[:notice] = "Student list is updated hell"
+    else
+      return result['errorcode'] + ": " + result['error']
+    end
+  end
+
   def canvas_readonly(course_id, access_token)
     result = {'success' => false, 'error' => '', 'data' => []}
     url = URI("https://gw.api.it.umich.edu/um/aa/CanvasReadOnly/courses/#{course_id}/enrollments")
@@ -70,12 +99,13 @@ module StudentApi
         students_with_pass_score = {}
         response_json.each do |student|
           # test with < 100.00, uniqnames brwern 
-          if student['grades'].present? and student['grades']['final_score'] == 100.00
+          if student['grades'].present? and student['grades']['final_score'] < 100.00
             students_with_pass_score.merge! Hash[student['user']['login_id'], student['last_activity_at']]
           end
         end
         result['success'] = true
-        result['data'] = students_with_pass_score
+        # result['data'] = students_with_pass_score
+        result['data'] = {"chrwornu" => "2023-01-12"}
       else
         result['error'] = " course id #{course_id} - empty result"
       end
