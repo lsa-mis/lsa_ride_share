@@ -49,4 +49,8 @@ module ApplicationHelper
     return "Updated on " + program.updated_at.strftime('%m/%d/%Y') + " by " + show_user_name_by_id(program.updated_by)
   end
 
+  def render_flash_stream
+    turbo_stream.update "flash", partial: "layouts/flash"
+  end
+
 end

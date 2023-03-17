@@ -27,7 +27,7 @@ class Programs::StudentsController < ApplicationController
         redirect_to program_students_path(@student_program), alert: "Error updating student record"
       end
     end
-    flash.now[:notice] = "MVR status updated"
+    flash.now[:notice] = "MVR status is updated"
     @students = @student_program.students.order(:last_name)
   end
 
@@ -42,14 +42,16 @@ class Programs::StudentsController < ApplicationController
       @student_program.students.each do |student|
         if uniqnames.include?(student.uniqname)
           unless student.update(canvas_course_complete_date: students_with_good_score[student.uniqname])
-            redirect_to program_students_path(@student_program), alert: "Error updating student record"
+            flash.now[:alert] = "Error updating student record"
+            return
           end
         end
       end
-      @students = @student_program.students.order(:last_name)
+      flash.now[:notice] = "Canvas results are updated"
     else
-      redirect_to program_students_path(@student_program), alert: result['error']
+      flash.now[:alert] = result['error']
     end
+    @students = @student_program.students.order(:last_name)
   end
 
   private

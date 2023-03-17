@@ -64,7 +64,8 @@ module StudentApi
         else
           student = Student.new(uniqname: student_info['Uniqname'], first_name: student_info['Name'].split(",").last, last_name: student_info['Name'].split(",").first, program: program)
           unless student.save
-            return "Error saving student record"
+            flash.now[:alert] = "Error saving student record"
+            return
           end
         end
       end
@@ -72,9 +73,9 @@ module StudentApi
         # delete students who dropped the course
         @student_program.students.delete(Student.where(uniqname: students_in_db))
       end
-      flash.now[:notice] = "Student list is updated hell"
+      flash.now[:notice] = "Student list is updated"
     else
-      return result['errorcode'] + ": " + result['error']
+      flash.now[:alert] = result['errorcode'] + ": " + result['error']
     end
   end
 
