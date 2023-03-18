@@ -32,8 +32,12 @@ class ProgramPolicy < ApplicationPolicy
     update?
   end
 
+  def duplicate?
+    update?
+  end
+
   def destroy?
-    user_in_access_group?
+    false
   end
 
 end

@@ -16,16 +16,19 @@ class ProgramsController < ApplicationController
       @programs = Program.all
       @term_id = nil
     end
+    authorize @programs
 
   end
 
   def duplicate
     @program = @program.dup
     render :new
+    authorize @program
   end
 
   # GET /programs/1 or /programs/1.json
   def show
+    authorize @program
   end
 
   # GET /programs/new
@@ -56,7 +59,7 @@ class ProgramsController < ApplicationController
       instructor = ProgramManager.create(uniqname: uniqname)
     end
     @program.instructor = instructor
-
+    authorize @program
     respond_to do |format|
       if @program.save
         if params[:config_questions].present?
@@ -79,6 +82,7 @@ class ProgramsController < ApplicationController
     else
       instructor = ProgramManager.create(uniqname: uniqname)
     end
+    authorize @program
     respond_to do |format|
       if @program.update(program_params.except(:instructor_attributes))
         @program.update(instructor_id: instructor.id)
