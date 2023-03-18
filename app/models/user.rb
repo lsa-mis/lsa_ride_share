@@ -27,6 +27,8 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :omniauthable, omniauth_providers: [:saml]
 
+  attr_accessor :membership
+
   def display_name_email
     "#{display_name} - #{email}"
   end
