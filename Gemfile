@@ -60,6 +60,7 @@ gem "image_processing", "~> 1.2"
 gem 'omniauth-saml', '~> 2.1'
 gem "omniauth-rails_csrf_protection"
 gem 'ldap_lookup', '~> 0.1.6'
+gem 'pundit', '~> 2.3'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
