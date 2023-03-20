@@ -10,6 +10,7 @@ class ProgramPolicy < ApplicationPolicy
 
   def index?
     user_in_access_group?
+    # true
   end
 
   def show?
@@ -33,6 +34,10 @@ class ProgramPolicy < ApplicationPolicy
   end
 
   def duplicate?
+    update?
+  end
+
+  def program_data?
     update?
   end
 
