@@ -48,22 +48,12 @@
     <%= form.label :add_managers, "Do you want to add managers to this program?" %>
   </div>
 
-  <% if @program.config_questions.empty? %>
-    <div class="px-1 pb-2">
-      <%= check_box_tag :config_questions, 1, false, class: "check_box" %>
-      <%= label_tag(:config_questions, "Do you want to send the instructor a survey with questions about the program?") %>
+  <% if program.persisted? %>
+    <div class="my-5">
+      <%= form.label :number_of_students_using_ride_share, class: "fancy_label" %>
+      <%= form.number_field :number_of_students_using_ride_share, placeholder: "Number", class: "input_text_field" %>
     </div>
   <% end %>
-
-  <div class="my-5">
-    <%= form.label :number_of_students, class: "fancy_label" %>
-    <%= form.number_field :number_of_students, placeholder: "Number", class: "input_text_field" %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :number_of_students_using_ride_share, class: "fancy_label" %>
-    <%= form.number_field :number_of_students_using_ride_share, placeholder: "Number", class: "input_text_field" %>
-  </div>
 
   <div class="my-5">
     <%= form.label :mvr_link, 'MVR Link *', class: "fancy_label" %>

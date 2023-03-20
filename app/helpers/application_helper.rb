@@ -49,4 +49,20 @@ module ApplicationHelper
     return "Updated on " + program.updated_at.strftime('%m/%d/%Y') + " by " + show_user_name_by_id(program.updated_by)
   end
 
+  def number_of_students(program)
+    if program.number_of_students.present?
+      program.number_of_students.present
+    else
+      "The student list is not populated"
+    end
+  end
+
+  def number_of_students_using_ride_share(program)
+    if program.number_of_students_using_ride_share.present?
+      program.number_of_students_using_ride_share
+    else
+      "Not avalable"
+    end
+  end
+
 end
