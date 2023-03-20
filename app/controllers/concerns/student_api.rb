@@ -99,14 +99,12 @@ module StudentApi
       if response_json.present?
         students_with_pass_score = {}
         response_json.each do |student|
-          # test with < 100.00, uniqnames brwern 
-          if student['grades'].present? and student['grades']['final_score'] < 100.00
+          if student['grades'].present? and student['grades']['final_score'] == 100.00
             students_with_pass_score.merge! Hash[student['user']['login_id'], student['last_activity_at']]
           end
         end
         result['success'] = true
-        # result['data'] = students_with_pass_score
-        result['data'] = {"chrwornu" => "2023-01-12"}
+        result['data'] = students_with_pass_score
       else
         result['error'] = " course id #{course_id} - empty result"
       end
