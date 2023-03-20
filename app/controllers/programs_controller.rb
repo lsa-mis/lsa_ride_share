@@ -142,12 +142,6 @@ class ProgramsController < ApplicationController
       @terms = Term.all
     end
 
-    # def auth_user
-    #   unless user_signed_in?
-    #     redirect_to root_path, notice: 'You must sign in first!'
-    #   end
-    # end
-
     # Only allow a list of trusted parameters through.
     def program_params
       params.require(:program).permit(:active, :title, :term_start, :term_end, :term_id, :subject, :catalog_number, :class_section, 
