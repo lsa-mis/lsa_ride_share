@@ -33,8 +33,14 @@ class Programs::StudentsController < ApplicationController
   def canvas_results
     scope = "canvasreadonly"
     token = get_auth_token(scope)
+    if token['success']
+      result = canvas_readonly(@student_program.canvas_course_id, token['access_token'])
+    else
+      flash.now[:alert] = token['error']
+      @students = @student_program.students.order(:last_name)
+      return
+    end
      # to test: course_id = 187918
-    result = canvas_readonly(@student_program.canvas_course_id, token['access_token'])
     if result['success']
       students_with_good_score = result['data']
       uniqnames = students_with_good_score.keys
@@ -42,6 +48,7 @@ class Programs::StudentsController < ApplicationController
         if uniqnames.include?(student.uniqname)
           unless student.update(canvas_course_complete_date: students_with_good_score[student.uniqname])
             flash.now[:alert] = "Error updating student record"
+            @students = @student_program.students.order(:last_name)
             return
           end
         end

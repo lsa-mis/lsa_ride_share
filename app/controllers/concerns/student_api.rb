@@ -53,7 +53,12 @@ module StudentApi
     # add new students and delete those who dropped the course
     scope = "classroster"
     token = get_auth_token(scope)
-    result = class_roster_operational(program.term.code, program.subject, program.catalog_number, program.class_section, token['access_token'])
+    if token['success']
+      result = class_roster_operational(program.term.code, program.subject, program.catalog_number, program.class_section, token['access_token'])
+    else
+      flash.now[:alert] = token['error']
+      return
+    end
     if result['success']
       data = result['data']['Classes']['Class']['ClassSections']['ClassSection']['ClassStudents']['ClassStudent']
       students_in_db = @student_program.students.pluck(:uniqname)
