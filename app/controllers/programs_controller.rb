@@ -31,6 +31,7 @@ class ProgramsController < ApplicationController
   # GET /programs/new
   def new
     @program = Program.new
+    @program.mvr_link = "https://ltp.umich.edu/fleet/vehicle-use/"
     @instructor = ProgramManager.new
     @terms = Term.all
   end
@@ -59,9 +60,6 @@ class ProgramsController < ApplicationController
 
     respond_to do |format|
       if @program.save
-        if params[:config_questions].present?
-          add_config_questions(@program)
-        end
         format.html { redirect_to program_url(@program), notice: "Program was successfully created." }
         format.json { render :show, status: :created, location: @program }
       else
@@ -114,13 +112,6 @@ class ProgramsController < ApplicationController
   def remove_program_manager
     @program.program_managers.delete(ProgramManager.find(params[:program_manager_id]))
     redirect_to @program
-  end
-
-  def add_config_questions(program)
-    default_config_questions.each do |q|
-      config_question = ConfigQuestion.new(program_id: program.id, question: q)
-      config_question.save
-    end
   end
 
   def remove_config_question
