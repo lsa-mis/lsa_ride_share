@@ -6,13 +6,12 @@ class Programs::StudentsController < ApplicationController
   # GET /students or /students.json
   def index
     update_students(@student_program)
-    # flash[:notice] = call_api_message
     @students = @student_program.students.order(:last_name)
   end
 
   def update_student_list
+    # to test create program with: subject = RCCORE, catalog_number = 205, section = 165
     update_students(@student_program)
-    # flash[:notice] = call_api_message
     @students = @student_program.students.order(:last_name)
   end
 
@@ -34,7 +33,7 @@ class Programs::StudentsController < ApplicationController
   def canvas_results
     scope = "canvasreadonly"
     token = get_auth_token(scope)
-     # course_id = 187918, test with 187919, 187918999
+     # to test: course_id = 187918
     result = canvas_readonly(@student_program.canvas_course_id, token['access_token'])
     if result['success']
       students_with_good_score = result['data']
