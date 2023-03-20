@@ -23,12 +23,10 @@ class ProgramsController < ApplicationController
   def duplicate
     @program = @program.dup
     render :new
-    authorize @program
   end
 
   # GET /programs/1 or /programs/1.json
   def show
-    authorize @program
   end
 
   # GET /programs/new
@@ -36,6 +34,7 @@ class ProgramsController < ApplicationController
     @program = Program.new
     @instructor = ProgramManager.new
     @terms = Term.all
+    authorize @program
   end
 
   # GET /programs/1/edit
@@ -136,17 +135,18 @@ class ProgramsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_program
       @program = Program.find(params[:id])
+      authorize @program
     end
 
     def set_terms
       @terms = Term.all
     end
 
-    def auth_user
-      unless user_signed_in?
-        redirect_to root_path, notice: 'You must sign in first!'
-      end
-    end
+    # def auth_user
+    #   unless user_signed_in?
+    #     redirect_to root_path, notice: 'You must sign in first!'
+    #   end
+    # end
 
     # Only allow a list of trusted parameters through.
     def program_params
