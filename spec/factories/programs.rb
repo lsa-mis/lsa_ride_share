@@ -22,6 +22,7 @@
 #  canvas_course_id                    :integer
 #  term_id                             :integer
 #  add_managers                        :boolean          default(FALSE)
+#  not_course                          :boolean          default(FALSE)
 #
 FactoryBot.define do
   factory :program do
