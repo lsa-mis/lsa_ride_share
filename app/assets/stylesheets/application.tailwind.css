@@ -245,6 +245,18 @@ from https://tailwindcss.com/docs/adding-custom-styles
   .notice {
     @apply text-green-500;
   }
+
+  .fields--hide {
+    @apply hidden
+  }
+
+  .fields--display {
+    @apply block
+  }
+
+  .error_text {
+    @apply text-red-500
+  }
   /* ... */
 }
 
