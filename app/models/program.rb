@@ -22,6 +22,7 @@
 #  canvas_course_id                    :integer
 #  term_id                             :integer
 #  add_managers                        :boolean          default(FALSE)
+#  not_course                          :boolean          default(FALSE)
 #
 class Program < ApplicationRecord
   belongs_to :instructor, class_name: 'ProgramManager', foreign_key: :instructor_id
@@ -36,8 +37,10 @@ class Program < ApplicationRecord
 
   accepts_nested_attributes_for :instructor
 
-  validates_presence_of :title, :subject, :catalog_number, :class_section, :instructor_id, :admin_access_id
-  validates :term_id, uniqueness: { scope: [:subject, :catalog_number], message: "already has this program" }
+  validates_presence_of :title, :instructor_id, :admin_access_id
+  validates_presence_of :subject, :catalog_number, :class_section, unless: -> { self.not_course }
+  validates :term_id, uniqueness: { scope: [:subject, :catalog_number], message: "already has this program" }, unless: -> { self.not_course } 
+  validates :term_id, uniqueness: { scope: [:title], message: "already has this program" }, if: -> { self.not_course }
 
   def dup
     super.tap do |new_program|
@@ -51,7 +54,11 @@ class Program < ApplicationRecord
   end
 
   def display_name
-    "#{self.subject.upcase} #{self.catalog_number.titleize} - #{self.class_section.titleize}"
+    if self.not_course
+      "This program is not a course"
+    else
+      "#{self.subject} #{self.catalog_number} - #{self.class_section}"
+    end
   end
 
 end
