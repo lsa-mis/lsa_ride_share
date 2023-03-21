@@ -24,13 +24,14 @@ export default class extends Controller {
   submitForm(event) {
     var hide = document.getElementById("program_not_course").checked
     if (!hide) {
-      console.log("display")
       var subject = this.subjectTarget.value
       var catalog_number = this.catalog_numberTarget.value
       var class_section = this.class_sectionTarget.value
       if(subject == "" || catalog_number == "" || class_section == "") {
         this.course_errorTarget.classList.add("fields--display")
         this.course_errorTarget.classList.remove("fields--hide")
+        const error = document.getElementById("error_text")
+        error.scrollIntoView()
         event.preventDefault()
       }
       Turbo.navigator.submitForm(this.formTarget)

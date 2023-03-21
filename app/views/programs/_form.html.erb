@@ -31,7 +31,7 @@
       <%= form.label :not_course, "Check if this program is not a course" %>
     </div>
 
-    <div class="error_text fields--hide" data-program-target="course_error">
+    <div id="error_text" class="error_text fields--hide" data-program-target="course_error">
      <span>Please enter course data</span>
     </div>
     <% if program.persisted? && program.not_course %>
