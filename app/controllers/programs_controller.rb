@@ -114,11 +114,6 @@ class ProgramsController < ApplicationController
     redirect_to @program
   end
 
-  def remove_config_question
-    ConfigQuestion.find(params[:config_question_id]).delete
-    redirect_to @program
-  end
-
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_program
