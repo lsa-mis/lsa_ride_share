@@ -1,4 +1,8 @@
-<%= form_with(model: program, class: "contents") do |form| %>
+<%= form_with(model: program, class: "contents",
+  data: { controller: "program",
+          target: "form",
+          action: "submit->program#submitForm"
+        }) do |form| %>
   <% if program.errors.any? %>
     <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
       <h2><%= pluralize(program.errors.count, "error") %> prohibited this program from being saved:</h2>
@@ -21,19 +25,35 @@
     <%= form.collection_select :term_id, @terms, :id, :name, { include_blank: "Select ...", required: true }, { class: "input_text_field" } %>
   </div>
 
-  <div class="my-5">
-    <%= form.label :subject, 'Subject *', class: "fancy_label" %>
-    <%= form.text_field :subject, required: true, placeholder: "Subject", class: "input_text_field" %>
-  </div>
+  <div>
+    <div class="px-1 pb-2">
+      <%= form.check_box :not_course, class: "check_box", "data-program-target": "hide_course_data", "data-action": "program#hideCourseFields" %>
+      <%= form.label :not_course, "Check if this program is not a course" %>
+    </div>
 
-  <div class="my-5">
-    <%= form.label :catalog_number, 'Catalog number *', class: "fancy_label" %>
-    <%= form.text_field :catalog_number, required: true, placeholder: "Catalog number", class: "input_text_field" %>
-  </div>
+    <div class="error_text fields--hide" data-program-target="course_error">
+     <span>Please enter course data</span>
+    </div>
+    <% if program.persisted? && program.not_course %>
+      <div data-program-target="course_data" class="fields--hide">
+    <% else %>
+      <div data-program-target="course_data" class="fields--display">
+    <% end %>
+      <div class="my-5">
+        <%= form.label :subject, 'Subject *', class: "fancy_label" %>
+        <%= form.text_field :subject, placeholder: "Subject", class: "input_text_field", "data-program-target": "subject" %>
+      </div>
 
-  <div class="my-5">
-    <%= form.label :class_section, 'Class section *', class: "fancy_label" %>
-    <%= form.text_field :class_section, required: true, placeholder: "Class section", class: "input_text_field" %>
+      <div class="my-5">
+        <%= form.label :catalog_number, 'Catalog number *', class: "fancy_label" %>
+        <%= form.text_field :catalog_number, placeholder: "Catalog number", class: "input_text_field", "data-program-target": "catalog_number" %>
+      </div>
+
+      <div class="my-5">
+        <%= form.label :class_section, 'Class section *', class: "fancy_label" %>
+        <%= form.text_field :class_section, placeholder: "Class section", class: "input_text_field", "data-program-target": "class_section" %>
+      </div>
+    </div>
   </div>
 
   <div class="my-5">
