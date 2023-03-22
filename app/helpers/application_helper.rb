@@ -61,7 +61,7 @@ module ApplicationHelper
     if program.number_of_students_using_ride_share.present?
       program.number_of_students_using_ride_share
     else
-      "Not avalable"
+      "Not available"
     end
   end
 
