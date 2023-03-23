@@ -64,5 +64,9 @@ module ApplicationHelper
       "Not available"
     end
   end
+  
+  def render_flash_stream
+    turbo_stream.update "flash", partial: "layouts/notification"
+  end
 
 end

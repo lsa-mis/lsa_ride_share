@@ -16,6 +16,7 @@ class ProgramsController < ApplicationController
       @programs = Program.all
       @term_id = nil
     end
+    authorize @programs
 
   end
 
@@ -34,6 +35,7 @@ class ProgramsController < ApplicationController
     @program.mvr_link = "https://ltp.umich.edu/fleet/vehicle-use/"
     @instructor = ProgramManager.new
     @terms = Term.all
+    authorize @program
   end
 
   # GET /programs/1/edit
@@ -57,7 +59,7 @@ class ProgramsController < ApplicationController
       instructor = ProgramManager.create(uniqname: uniqname)
     end
     @program.instructor = instructor
-
+    authorize @program
     respond_to do |format|
       if @program.save
         format.html { redirect_to program_url(@program), notice: "Program was successfully created." }
@@ -77,6 +79,7 @@ class ProgramsController < ApplicationController
     else
       instructor = ProgramManager.create(uniqname: uniqname)
     end
+    authorize @program
     respond_to do |format|
       if @program.update(program_params.except(:instructor_attributes))
         @program.update(instructor_id: instructor.id)
@@ -118,16 +121,11 @@ class ProgramsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_program
       @program = Program.find(params[:id])
+      authorize @program
     end
 
     def set_terms
       @terms = Term.all
-    end
-
-    def auth_user
-      unless user_signed_in?
-        redirect_to root_path, notice: 'You must sign in first!'
-      end
     end
 
     # Only allow a list of trusted parameters through.

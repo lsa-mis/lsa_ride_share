@@ -47,6 +47,15 @@ def set_user
 
   if @user
     session[:user_email] = @user.email
+
+    membership = []
+    access_groups = ['lsa-rideshare-admins']
+    access_groups.each do |group|
+      if  LdapLookup.is_member_of_group?(@user.uniqname, group)
+        membership.append(group)
+      end
+    end
+    session[:user_memberships] = membership
   end
 end
 
