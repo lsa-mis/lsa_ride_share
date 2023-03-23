@@ -78,6 +78,10 @@ module StudentApi
         # delete students who dropped the course
         @student_program.students.delete(Student.where(uniqname: students_in_db))
       end
+      unless @student_program.update(number_of_students: @student_program.students.count)
+        flash.now[:error] = "Error updating number of students"
+        return
+      end
       flash.now[:notice] = "Student list is updated"
     else
       flash.now[:alert] = result['errorcode'] + ": " + result['error']

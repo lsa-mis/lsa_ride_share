@@ -51,7 +51,7 @@ module ApplicationHelper
 
   def number_of_students(program)
     if program.number_of_students.present?
-      program.number_of_students.present
+      program.number_of_students
     else
       "The student list is not populated"
     end
