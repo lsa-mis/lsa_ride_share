@@ -50,7 +50,7 @@ module ApplicationHelper
   end
 
   def number_of_students(program)
-    if program.number_of_students.present?
+    if program.number_of_students.present? && program.number_of_students > 0
       program.number_of_students
     else
       "The student list is not populated"
