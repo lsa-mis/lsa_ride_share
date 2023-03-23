@@ -24,4 +24,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def after_sign_in_path_for(resource)
+    if session[:user_memberships].include?('lsa-rideshare-admins')
+      programs_path 
+    else
+      root_path
+    end
+  end
+
 end
