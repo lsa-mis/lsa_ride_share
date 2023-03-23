@@ -1,4 +1,5 @@
 class Programs::StudentsController < ApplicationController
+  before_action :auth_user
   before_action :set_student, only: %i[ show ]
   before_action :set_student_program
   include StudentApi
@@ -7,12 +8,14 @@ class Programs::StudentsController < ApplicationController
   def index
     update_students(@student_program)
     @students = @student_program.students.order(:last_name)
+    authorize @students
   end
 
   def update_student_list
     # to test create program with: subject = RCCORE, catalog_number = 205, section = 165
     update_students(@student_program)
     @students = @student_program.students.order(:last_name)
+    authorize @students
   end
 
   # GET /students/1 or /students/1.json
@@ -28,6 +31,7 @@ class Programs::StudentsController < ApplicationController
     end
     flash.now[:notice] = "MVR status is updated"
     @students = @student_program.students.order(:last_name)
+    authorize @students
   end
 
   def canvas_results
@@ -58,6 +62,7 @@ class Programs::StudentsController < ApplicationController
       flash.now[:alert] = result['error']
     end
     @students = @student_program.students.order(:last_name)
+    authorize @students
   end
 
   private

@@ -4,7 +4,12 @@
     <%= link_to program_path(program), data: { "turbo-frame": "_top" } do %>
       <div class="text-xs px-2 font-bold hover:underline">
         <%= link_to program_path(program), data: { "turbo-frame": "_top" } do %>
-          <%= program.subject.upcase %> <%= program.catalog_number.titleize %> - <%= program.class_section.titleize %>
+          <div>
+            <%= program.title %>
+          </div>
+          <div>
+          <%= program.display_name %>
+          </div>
         <% end %>
       </div>
       <div class="text-xs px-2">

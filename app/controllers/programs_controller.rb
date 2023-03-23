@@ -32,6 +32,7 @@ class ProgramsController < ApplicationController
   # GET /programs/new
   def new
     @program = Program.new
+    @program.mvr_link = "https://ltp.umich.edu/fleet/vehicle-use/"
     @instructor = ProgramManager.new
     @terms = Term.all
     authorize @program
@@ -61,9 +62,6 @@ class ProgramsController < ApplicationController
     authorize @program
     respond_to do |format|
       if @program.save
-        if params[:config_questions].present?
-          add_config_questions(@program)
-        end
         format.html { redirect_to program_url(@program), notice: "Program was successfully created." }
         format.json { render :show, status: :created, location: @program }
       else
@@ -119,18 +117,6 @@ class ProgramsController < ApplicationController
     redirect_to @program
   end
 
-  def add_config_questions(program)
-    default_config_questions.each do |q|
-      config_question = ConfigQuestion.new(program_id: program.id, question: q)
-      config_question.save
-    end
-  end
-
-  def remove_config_question
-    ConfigQuestion.find(params[:config_question_id]).delete
-    redirect_to @program
-  end
-
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_program
@@ -147,6 +133,6 @@ class ProgramsController < ApplicationController
       params.require(:program).permit(:active, :title, :term_start, :term_end, :term_id, :subject, :catalog_number, :class_section, 
                                      :number_of_students, :number_of_students_using_ride_share, :pictures_required_start, :pictures_required_end, 
                                      :non_uofm_passengers, :instructor_id, :mvr_link, :canvas_link, :canvas_course_id, :admin_access_id, :add_managers, 
-                                     :updated_by, instructor_attributes: [:uniqname])
+                                     :not_course, :updated_by, instructor_attributes: [:uniqname])
     end
 end
