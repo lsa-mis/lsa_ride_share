@@ -9,7 +9,7 @@
   
       <div class="px-1">
         <label for="term_id" class="fancy_label">Select a Term</label>
-        <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: @term_id), include_blank: "Select ...", class: "filter_select",
+        <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: @term_id), include_blank: "Current Term", class: "filter_select w-48",
                     :"data-action" => "change->autosubmit#search" %>
       </div>
 
@@ -20,7 +20,7 @@
             <h2 class="ml-2"><%= @title %></h2>
             <ul role="list" class="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-4 m-4">
               <% @programs.each do |program| %>
-                <li class="col-span-1 bg-white rounded-lg shadow-md divide-y divide-gray-400 px-2 grid place-items-stretch bg-white border border-gray-300 rounded-lg">
+                <li class="col-span-1 bg-white rounded-lg shadow-md divide-y divide-gray-400 px-2 place-items-stretch bg-white border border-gray-300 rounded-lg">
                   <%= render 'program_card', program: program %>
                 </li>
               <% end %>

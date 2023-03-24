@@ -12,10 +12,8 @@ class ProgramsController < ApplicationController
     if params[:term_id].present?
       @programs = Program.where(term_id: params[:term_id])
       @term_id = params[:term_id]
-      @title = ''
     else
       @programs = Program.current_term
-      @title = "Current Term"
       @term_id = nil
     end
     authorize @programs
