@@ -2,7 +2,7 @@
 <div class="container px-1 mb-20" data-controller='autosubmit'>
   <h1>Programs</h1>
   <div class="flex justify-end items-center pb-1">
-    <%= link_to 'New program', new_program_path, class: "rounded-lg py-3 px-5 bg-blue-umblue text-white block font-medium hover:bg-white hover:text-blue-umblue hover:ring-2 hover:ring-blue-umblue" %>
+    <%= link_to 'Create a program', new_program_path, class: "secondary_blue_button" %>
   </div>
   <div>
     <%= form_with url: programs_path, method: :get, class: "", data: { autosubmit_target: "form", turbo_frame: "turbo-rooms" } do |form| %>

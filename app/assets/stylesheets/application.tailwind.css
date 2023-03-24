@@ -145,7 +145,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
   
   .secondary_blue_button {
-    @apply p-2 font-montserrat font-medium leading-7 text-base border rounded-md text-white bg-blue-750;
+    @apply p-2 font-montserrat font-semibold leading-7 text-base border rounded-md text-white bg-blue-750;
   }
 
   .secondary_blue_button:hover {
