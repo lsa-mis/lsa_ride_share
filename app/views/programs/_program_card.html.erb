@@ -17,16 +17,16 @@
         </div>
       <% end %>
     </div>
-    <div class="link_to body-bold-text pb-2">
+    <div class="body-bold-text pb-2">
       <% if current_user %>
         <div class="flex flex-row justify-between">
-          <div class="">
+          <div class="link_to">
             <%= link_to program_data_path(program), data: { "turbo-frame": "_top" } do %>
               Edit
               <i class="fa-solid fa-pen"></i>
             <% end %>
           </div>
-          <div>
+          <div class="link_to">
             <%= link_to duplicate_path(program), data: { "turbo-frame": "_top" } do %>
               Copy
               <i class="fa-solid fa-clone"></i>
