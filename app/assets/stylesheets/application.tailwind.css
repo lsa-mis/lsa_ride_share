@@ -213,7 +213,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .filter_select {
-    @apply text-lg font-medium text-gray-900 bg-white border border-gray-600 rounded block p-2 focus:ring-blue-500 focus:border-blue-500;
+    @apply text-sm font-medium leading-4 text-blue-umblue bg-white border border-gray-600 rounded block p-2 focus:ring-blue-500 focus:border-blue-500 font-montserrat;
   }
 
   /* table */
