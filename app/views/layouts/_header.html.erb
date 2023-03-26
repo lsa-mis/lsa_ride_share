@@ -15,9 +15,6 @@
           <% end %>
         </div>
         <div class="hidden sm:ml-6 sm:flex sm:space-x-4 pl-2">
-          <div class="header_link">
-            <%= link_to "Home", static_pages_home_path, class: "#{class_names(active: current_page?(static_pages_home_path))}" %>
-          </div>
           <% if user_signed_in? && policy(Program).index? %>
             <div class="header_link">
               <%= link_to "Programs", programs_path, class: "#{class_names(active: current_page?(programs_path))}" %>
