@@ -6,7 +6,9 @@ class Programs::StudentsController < ApplicationController
 
   # GET /students or /students.json
   def index
-    update_students(@student_program)
+    unless @student_program.not_course
+      update_students(@student_program)
+    end
     @students = @student_program.students.order(:last_name)
     authorize @students
   end
@@ -16,6 +18,11 @@ class Programs::StudentsController < ApplicationController
     update_students(@student_program)
     @students = @student_program.students.order(:last_name)
     authorize @students
+  end
+
+  def add_students
+    @student = Student.new
+    authorize @student
   end
 
   # GET /students/1 or /students/1.json
