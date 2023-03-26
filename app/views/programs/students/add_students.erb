@@ -1,0 +1,38 @@
+<div class="w-full ml-4 mb-48">
+
+  <h1>Hell</h1>
+
+  <%= form_with(model: @student, class: "contents") do |form| %>
+    <% if @student.errors.any? %>
+      <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
+        <h2><%= pluralize(@student.errors.count, "error") %> prohibited this student from being saved:</h2>
+
+        <ul>
+          <% @student.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+    <div class="flex">
+      <div class="my-5">
+        <%= form.label :uniqname, class: "fancy_label" %>
+        <%= form.text_field :uniqname, class: "input_text_field" %>
+      </div>
+
+      <div class="my-5">
+        <%= form.label :last_name, class: "fancy_label" %>
+        <%= form.text_field :last_name, class: "input_text_field" %>
+      </div>
+
+      <div class="my-5">
+        <%= form.label :first_name, class: "fancy_label" %>
+        <%= form.text_field :first_name, class: "input_text_field" %>
+      </div>
+
+      <div class="inline">
+        <%= form.submit class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+      </div>
+    </div>
+  <% end %>
+</div>
