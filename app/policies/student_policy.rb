@@ -20,6 +20,10 @@ class StudentPolicy < ApplicationPolicy
     user_in_access_group?
   end
 
+  def add_students?
+    user_in_access_group?
+  end
+
   def update_mvr_status?
     user_in_access_group?
   end
