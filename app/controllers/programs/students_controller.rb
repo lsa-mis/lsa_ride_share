@@ -27,11 +27,6 @@ class Programs::StudentsController < ApplicationController
     @no_name = false
   end
 
-  # def new
-  #   @student = Student.new
-  #   authorize @student
-  # end
-
   def create
     uniqname = student_params[:uniqname]
     @student = Student.new(uniqname: uniqname)
@@ -53,7 +48,6 @@ class Programs::StudentsController < ApplicationController
     end
     @student.program_id = @student_program.id
     if @student.save
-      # @students = @student_program.students.order(:last_name)
       @student = Student.new
       flash.now[:notice] = "Student list is updated"
     end
