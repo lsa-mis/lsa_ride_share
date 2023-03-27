@@ -189,7 +189,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .sign_button {
-    @apply p-2 text-xs font-montserrat rounded text-blue-900 bg-yellow-550 hover:bg-yellow-500 hover:underline;
+    @apply px-1 ml-2 shadow-sm font-medium rounded text-blue-900 bg-yellow-550 hover:bg-yellow-500 flex-1 hover:underline;
   }
 
   .edit_button {
