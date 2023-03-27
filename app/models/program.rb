@@ -57,7 +57,7 @@ class Program < ApplicationRecord
     if self.not_course
       "This program is not a course"
     else
-      "#{title} - #{self.subject} #{self.catalog_number} - #{self.class_section} - #{self.term.name}" 
+      "#{self.subject} #{self.catalog_number} - #{self.class_section} - #{self.term.name}" 
     end
   end
 
