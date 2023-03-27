@@ -24,6 +24,7 @@ class Programs::StudentsController < ApplicationController
     @student = Student.new
     @students = @student_program.students.order(:last_name)
     authorize Student
+    @no_name = false
   end
 
   # def new
@@ -32,28 +33,31 @@ class Programs::StudentsController < ApplicationController
   # end
 
   def create
-    @student = Student.new
-    authorize @student
     uniqname = student_params[:uniqname]
-    name = LdapLookup.get_simple_name(uniqname)
-    if name.nil?
-      flash.now[:alert] = "Mcommunity returns no name for #{uniqname} uniqname"
-      @students = @student_program.students.order(:last_name)
-      return
+    @student = Student.new(uniqname: uniqname)
+    authorize @student
+    if params[:correct_uniqname].present?
+      @student = Student.new(student_params)
     else
-      @student.uniqname = uniqname
-      @student.first_name = name.split(" ").first
-      @student.last_name = name.split(" ").last
-      @student.program_id = @student_program.id
+      name = LdapLookup.get_simple_name(uniqname)
+      if name.nil?
+        flash.now[:alert] = "Mcommunity returns no name for #{uniqname} uniqname"
+        @no_name = true
+        @students = @student_program.students.order(:last_name)
+        return
+      else
+        @no_name = false
+        @student.first_name = name.split(" ").first
+        @student.last_name = name.split(" ").last
+      end
     end
+    @student.program_id = @student_program.id
     if @student.save
-      @students = @student_program.students.order(:last_name)
+      # @students = @student_program.students.order(:last_name)
       @student = Student.new
       flash.now[:notice] = "Student list is updated"
-    else
-      @students = @student_program.students.order(:last_name)
-      render :add_students, status: :unprocessable_entity
     end
+    @students = @student_program.students.order(:last_name)
   end
 
   def destroy

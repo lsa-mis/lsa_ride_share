@@ -1,7 +1,7 @@
 <%= render_flash_stream %>
 
 <%= turbo_stream.update "new_student" do %>
-  <%= render "form" %>
+  <%= render "form", student: @student %>
 <% end %>
 
 <%= turbo_stream.update "students" do %>

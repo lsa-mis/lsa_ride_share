@@ -1,11 +1,11 @@
 <%= turbo_frame_tag 'new_student' do %>
-  <%= form_for [@student_program, @student] do |form| %>
-    <% if @student.errors.any? %>
+  <%= form_for [@student_program, student] do |form| %>
+    <% if student.errors.any? %>
       <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
-        <h2><%= pluralize(@student.errors.count, "error") %> prohibited this student from being saved:</h2>
+        <h2><%= pluralize(student.errors.count, "error") %> prohibited this student from being saved:</h2>
 
         <ul>
-          <% @student.errors.each do |error| %>
+          <% student.errors.each do |error| %>
             <li><%= error.full_message %></li>
           <% end %>
         </ul>
@@ -16,16 +16,21 @@
         <%= form.label :uniqname, class: "fancy_label" %>
         <%= form.text_field :uniqname, class: "input_text_field" %>
       </div>
+      <% if @no_name %>
+        <div>
+        <%= label_tag(:correct_uniqname, "Check if uniqname is correct and add First and Last names manually") %>
+          <%= check_box_tag :correct_uniqname, 1, false, class: "check_box" %>
+        </div>
+        <div class="my-5">
+          <%= form.label :last_name, class: "fancy_label" %>
+          <%= form.text_field :last_name, class: "input_text_field" %>
+        </div>
 
-      <div class="my-5">
-        <%= form.label :last_name, class: "fancy_label" %>
-        <%= form.text_field :last_name, class: "input_text_field" %>
-      </div>
-
-      <div class="my-5">
-        <%= form.label :first_name, class: "fancy_label" %>
-        <%= form.text_field :first_name, class: "input_text_field" %>
-      </div>
+        <div class="my-5">
+          <%= form.label :first_name, class: "fancy_label" %>
+          <%= form.text_field :first_name, class: "input_text_field" %>
+        </div>
+      <% end %>
 
       <div class="inline">
         <%= form.submit class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
