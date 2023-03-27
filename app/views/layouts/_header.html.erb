@@ -22,6 +22,9 @@
             <div class="header_link">
               <%= link_to "Programs", programs_path, class: "#{class_names(active: current_page?(programs_path))}" %>
             </div>
+            <div class="header_link">
+              <%= link_to "Cars", cars_path, class: "#{class_names(active: current_page?(cars_path))}" %>
+            </div>
           <% end %>
         </div>
       </div>

@@ -1,14 +1,11 @@
-<div class="w-full">
-  <% if notice.present? %>
-    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
-  <% end %>
+<div class="container px-1 mb-20">
 
-  <div class="flex justify-between items-center">
-    <h1 class="font-bold text-4xl">Cars</h1>
-    <%= link_to 'New car', new_car_path, class: "rounded-lg py-3 px-5 bg-blue-600 text-white block font-medium" %>
+  <div class="flex justify-between items-center pb-8">
+    <h1>Cars</h1>
+    <%= link_to 'New Car', new_car_path, class: "primary_button" %>
   </div>
 
   <div id="cars" class="min-w-full">
-    <%= render @cars %>
+    <%= render 'car_list' %>
   </div>
 </div>
