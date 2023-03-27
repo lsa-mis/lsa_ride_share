@@ -1,0 +1,9 @@
+<%= render_flash_stream %>
+
+<%= turbo_stream.update "new_student" do %>
+  <%= render "form" %>
+<% end %>
+
+<%= turbo_stream.update "students" do %>
+  <%= render "student_list_manual" %>
+<% end %>

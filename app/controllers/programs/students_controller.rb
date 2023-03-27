@@ -1,6 +1,6 @@
 class Programs::StudentsController < ApplicationController
   before_action :auth_user
-  before_action :set_student, only: %i[ show ]
+  before_action :set_student, only: %i[ show destroy]
   before_action :set_student_program
   include StudentApi
 
@@ -54,6 +54,19 @@ class Programs::StudentsController < ApplicationController
       @students = @student_program.students.order(:last_name)
       render :add_students, status: :unprocessable_entity
     end
+  end
+
+  def destroy
+    authorize @student
+    if @student.destroy
+      @students = @student_program.students.order(:last_name)
+      @student = Student.new
+      flash.now[:notice] = "Student is removed"
+    else
+      @students = @student_program.students.order(:last_name)
+      render :add_students, status: :unprocessable_entity
+    end
+
   end
 
   # GET /students/1 or /students/1.json

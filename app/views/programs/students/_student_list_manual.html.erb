@@ -13,7 +13,7 @@
         <% @students.each do |student| %>
           <tr class="mi_tbody_tr">
             <td class="mi_tbody_td">
-              <%= link_to "Remove", program_students_path(@student_program), class: "link_to" %>
+              <%= link_to "Remove", program_student_path(@student_program, student), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete }, class: "link_to" %>
             </td>
             <td class="mi_tbody_td">
               <%= student.uniqname %>
