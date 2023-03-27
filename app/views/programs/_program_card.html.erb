@@ -1,32 +1,32 @@
 <%= turbo_frame_tag dom_id(program) do  %>
   <div class="flex flex-col justify-between h-full">
-    <div class="mt-2 mb-3 px-2 sm:px-0">
+    <div class="m-2 mb-3 sm:px-0">
       <%= link_to program_path(program), data: { "turbo-frame": "_top" } do %>
-        <div class="text-xs px-2 font-bold hover:underline">
+        <div class="text-xs  font-bold hover:underline">
           <%= link_to program_path(program), data: { "turbo-frame": "_top" } do %>
             <h3>
               <%= program.title %>
             </h3>
-            <div class="body-md-bold-text">
+            <div class="body-lg-medium-text">
               <%= program.display_name %>
             </div>
           <% end %>
         </div>
-        <div class="body-md-text px-2">
+        <div class="body-md-bold-text pt-4">
           Instructor - <%= program.instructor.uniqname%>
         </div>
       <% end %>
     </div>
-    <div class="body-bold-text pb-2">
+    <div class="pb-2">
       <% if current_user %>
         <div class="flex flex-row justify-between">
-          <div class="link_to">
+          <div class="tertiary_button">
             <%= link_to program_data_path(program), data: { "turbo-frame": "_top" } do %>
               Edit
               <i class="fa-solid fa-pen"></i>
             <% end %>
           </div>
-          <div class="link_to">
+          <div class="tertiary_button">
             <%= link_to duplicate_path(program), data: { "turbo-frame": "_top" } do %>
               Copy
               <i class="fa-solid fa-clone"></i>
