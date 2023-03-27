@@ -109,7 +109,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .primary_button {
-    @apply py-2 px-4 font-montserrat font-medium leading-7 text-base border rounded-md text-white bg-blue-umblue;
+    @apply py-2 px-4 font-montserrat font-medium leading-7 text-xs border rounded-md text-white bg-blue-umblue;
   }
 
   .primary_button:hover {
@@ -129,7 +129,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .secondary_yellow_button {
-    @apply py-2 px-4 font-montserrat font-medium leading-7 text-base border rounded-md text-blue-umblue bg-yellow-ummaze;
+    @apply py-2 px-4 font-montserrat font-medium leading-7 text-xs border rounded-md text-blue-umblue bg-yellow-ummaze;
   }
 
   .secondary_yellow_button:hover {
@@ -149,7 +149,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
   
   .secondary_blue_button {
-    @apply py-2 px-4 font-montserrat font-medium leading-7 text-base border rounded-md text-white bg-blue-750;
+    @apply py-2 px-4 font-montserrat font-medium leading-7 text-xs border rounded-md text-white bg-blue-750;
   }
 
   .secondary_blue_button:hover {
@@ -169,7 +169,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .tertiary_button {
-    @apply py-2 px-4 font-montserrat font-medium leading-7 text-base text-blue-umblue;
+    @apply py-2 px-4 font-montserrat font-medium leading-7 text-xs text-blue-umblue;
   }
 
   .tertiary_button:hover {
@@ -189,7 +189,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .sign_button {
-    @apply px-1 shadow-sm text-base rounded text-blue-900 bg-yellow-550 bg-yellow-500 hover:underline;
+    @apply p-2 text-xs font-montserrat rounded text-blue-900 bg-yellow-550 hover:bg-yellow-500 hover:underline;
   }
 
   .edit_button {
