@@ -11,29 +11,29 @@
         </ul>
       </div>
     <% end %>
-    <div class="flex">
-      <div class="my-5">
+    <div class="sm:flex gap-2 items-end">
+      <div class="">
         <%= form.label :uniqname, class: "fancy_label" %>
         <%= form.text_field :uniqname, class: "input_text_field" %>
       </div>
       <% if @no_name %>
-        <div>
-        <%= label_tag(:correct_uniqname, "Check if uniqname is correct and add First and Last names manually") %>
+        <div class="">
           <%= check_box_tag :correct_uniqname, 1, false, class: "check_box" %>
+          <%= label_tag(:correct_uniqname, "- correct") %>
         </div>
-        <div class="my-5">
+        <div class="">
           <%= form.label :last_name, class: "fancy_label" %>
           <%= form.text_field :last_name, class: "input_text_field" %>
         </div>
 
-        <div class="my-5">
+        <div class="">
           <%= form.label :first_name, class: "fancy_label" %>
           <%= form.text_field :first_name, class: "input_text_field" %>
         </div>
       <% end %>
 
-      <div class="inline">
-        <%= form.submit class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+      <div class="">
+        <%= form.submit 'Add Student', class: "secondary_blue_button" %>
       </div>
     </div>
   <% end %>

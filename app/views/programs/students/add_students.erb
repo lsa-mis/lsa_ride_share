@@ -1,13 +1,18 @@
 <div class="w-full ml-4 mb-2">
 
-  <h1>Hell</h1>
+  <div class="flex justify-between items-center">
+    <h1>Update student list manually</h1>
+    <div>
+      <%= link_to "Back to Program's Student List", program_students_path(@student_program), class: "secondary_blue_button" %>
+    </div>
+  </div>
 
   <%= render "form", student: @student %>
 
 <div class="w-full">
   <div class="flex flex-row items-center justify-between m-2">
     <div>
-      <h1> Student List</h1>
+      <h2> Student List</h2>
     </div>
     
   </div>
