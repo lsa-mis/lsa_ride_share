@@ -21,7 +21,16 @@ class StudentsController < ApplicationController
 
   # POST /students or /students.json
   def create
-    @student = Student.new(student_params)
+    @student = Student.new
+    uniqname = student_params[:uniqname]
+    name = LdapLookup.get_simple_name(uniqname)
+    if name.nil?
+      flash.now
+      return
+    else
+      @student.first_name = name.split(" ").first
+      @student.last_name = name.split(" ").last
+   
 
     respond_to do |format|
       if @student.save

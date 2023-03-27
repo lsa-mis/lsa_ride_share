@@ -22,7 +22,38 @@ class Programs::StudentsController < ApplicationController
 
   def add_students
     @student = Student.new
+    @students = @student_program.students.order(:last_name)
+    authorize Student
+  end
+
+  # def new
+  #   @student = Student.new
+  #   authorize @student
+  # end
+
+  def create
+    @student = Student.new
     authorize @student
+    uniqname = student_params[:uniqname]
+    name = LdapLookup.get_simple_name(uniqname)
+    if name.nil?
+      flash.now[:alert] = "Mcommunity returns no name for #{uniqname} uniqname"
+      @students = @student_program.students.order(:last_name)
+      return
+    else
+      @student.uniqname = uniqname
+      @student.first_name = name.split(" ").first
+      @student.last_name = name.split(" ").last
+      @student.program_id = @student_program.id
+    end
+    if @student.save
+      @students = @student_program.students.order(:last_name)
+      @student = Student.new
+      flash.now[:notice] = "Student list is updated"
+    else
+      @students = @student_program.students.order(:last_name)
+      render :add_students, status: :unprocessable_entity
+    end
   end
 
   # GET /students/1 or /students/1.json
