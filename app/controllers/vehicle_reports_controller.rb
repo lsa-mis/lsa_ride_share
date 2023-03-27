@@ -4,6 +4,7 @@ class VehicleReportsController < ApplicationController
   # GET /vehicle_reports or /vehicle_reports.json
   def index
     @vehicle_reports = VehicleReport.all
+    authorize @vehicle_reports
   end
 
   # GET /vehicle_reports/1 or /vehicle_reports/1.json
