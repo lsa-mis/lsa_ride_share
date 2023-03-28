@@ -13,13 +13,12 @@ class CarsController < ApplicationController
 
   # GET /cars/new
   def new
-    @add_cars = Car.all - @car_program.cars
     @car = Car.new
+    authorize @car
   end
 
   # GET /cars/1/edit
   def edit
-    @add_cars = Car.all - @car_program.cars
   end
 
   # POST /cars or /cars.json
@@ -32,7 +31,6 @@ class CarsController < ApplicationController
 
     respond_to do |format|
       if @car.save
-        @car_program.cars << @car
         format.turbo_stream { redirect_back_or_to @car_program,
         notice: "A new car was added"
                             }
