@@ -42,7 +42,8 @@ class Program < ApplicationRecord
   validates :term_id, uniqueness: { scope: [:subject, :catalog_number], message: "already has this program" }, unless: -> { self.not_course } 
   validates :term_id, uniqueness: { scope: [:title], message: "already has this program" }, if: -> { self.not_course }
 
-  scope :current_term, -> { where(term_id: Term.current) } 
+  scope :current_term, -> { where(term_id: Term.current) }
+  scope :data, ->(term_id) { term_id.present? ? where(term_id: term_id) : current_term }
 
   def dup
     super.tap do |new_program|
@@ -57,7 +58,7 @@ class Program < ApplicationRecord
 
   def display_name
     if self.not_course
-      "This program is not a course"
+      "This program is not a course - #{self.term.name}"
     else
       "#{self.subject} #{self.catalog_number} - #{self.class_section} - #{self.term.name}"
     end

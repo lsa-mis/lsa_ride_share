@@ -8,11 +8,7 @@ class ProgramsController < ApplicationController
 
   # GET /programs or /programs.json
   def index
-    if params[:term_id].present?
-      @programs = Program.where(term_id: params[:term_id])
-    else
-      @programs = Program.current_term
-    end
+    @programs = Program.data(params[:term_id])
     authorize @programs
 
   end
