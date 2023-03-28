@@ -22,6 +22,7 @@ class Student < ApplicationRecord
   has_rich_text :note
 
   validates :uniqname, uniqueness: { scope: :program, message: "is already in the program list" }
+  validates_presence_of :first_name, :last_name
 
   def driver
     Reservation.where(driver: self)
