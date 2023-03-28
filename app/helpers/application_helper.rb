@@ -24,27 +24,6 @@ module ApplicationHelper
     User.find(id).display_name_email
   end
 
-  def program_config_data(program)
-    config_data = ''
-    if program.pictures_required_start || program.pictures_required_end
-      config_data = 'The program requires to upload pictures to the vehicle reports '
-      if program.pictures_required_start
-        config_data += '<br>at the start of the trip '
-      end
-      if program.pictures_required_start && program.pictures_required_end
-        config_data += 'and '
-      end
-      if program.pictures_required_end
-        config_data += '<br>at the end of the trip'
-      end
-    end
-    if program.non_uofm_passengers
-      config_data += '<br><br>Non UofM passangers are allowed'
-    end
-    config_data +=''
-    return config_data
-  end
-
   def updated_on_and_by(program)
     return "Updated on " + program.updated_at.strftime('%m/%d/%Y') + " by " + show_user_name_by_id(program.updated_by)
   end
