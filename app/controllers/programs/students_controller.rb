@@ -36,7 +36,7 @@ class Programs::StudentsController < ApplicationController
     else
       name = LdapLookup.get_simple_name(uniqname)
       if name.nil?
-        flash.now[:alert] = "Mcommunity returns no name for '#{uniqname}' uniqname. If the uniqname is correct, please check the checkbox and enter last and first name manually"
+        flash.now[:alert] = "Mcommunity returns no name for '#{uniqname}' uniqname. Edit the uniqname or - if the uniqname is correct - check the checkbox and enter last and first name manually"
         @no_name = true
         @students = @student_program.students.order(:last_name)
         return
