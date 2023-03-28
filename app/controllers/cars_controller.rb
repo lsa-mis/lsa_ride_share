@@ -75,6 +75,7 @@ class CarsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_car
       @car = Car.find(params[:id])
+      authorize @car
     end
 
     # Only allow a list of trusted parameters through.
