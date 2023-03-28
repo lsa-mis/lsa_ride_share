@@ -205,7 +205,8 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .input_text_field {
-    @apply w-full text-lg font-medium text-gray-900 bg-white border border-gray-600 rounded block p-2 focus:ring-blue-500 focus:border-blue-500;
+    @apply w-full text-lg font-medium text-gray-900 bg-white border border-gray-600 rounded block p-2 focus:ring-blue-500 focus:border-blue-500 
+    placeholder:font-montserrat placeholder:font-medium placeholder:leading-7 placeholder:text-sm placeholder:text-black;
   }
 
   .fancy_label {
@@ -214,6 +215,10 @@ from https://tailwindcss.com/docs/adding-custom-styles
 
   .filter_select {
     @apply text-lg font-medium text-gray-900 bg-white border border-gray-600 rounded block p-2 focus:ring-blue-500 focus:border-blue-500;
+  }
+
+  .file-upload {
+    @apply block shadow rounded-md border border-gray-600 outline-none px-3 py-2 mt-2 w-full;
   }
 
   /* table */
