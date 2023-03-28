@@ -33,14 +33,6 @@ class VehicleReportPolicy < ApplicationPolicy
   #   update?
   # end
 
-  # def duplicate?
-  #   update?
-  # end
-
-  # def program_data?
-  #   update?
-  # end
-
   # def destroy?
   #   false
   # end
