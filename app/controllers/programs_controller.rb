@@ -8,7 +8,6 @@ class ProgramsController < ApplicationController
 
   # GET /programs or /programs.json
   def index
-    @terms = Term.all
     if params[:term_id].present?
       @programs = Program.where(term_id: params[:term_id])
     else
@@ -32,7 +31,6 @@ class ProgramsController < ApplicationController
     @program = Program.new
     @program.mvr_link = "https://ltp.umich.edu/fleet/vehicle-use/"
     @instructor = ProgramManager.new
-    @terms = Term.all
     authorize @program
   end
 
@@ -43,7 +41,6 @@ class ProgramsController < ApplicationController
   def program_data
     @cars = @program.cars
     @add_cars = Car.all - @cars
-    @terms = Term.all
   end
 
   # POST /programs or /programs.json
