@@ -25,6 +25,12 @@ class Car < ApplicationRecord
   has_rich_text :note
   has_many_attached :initial_damage
 
+  def last_vehicle_report
+    VehicleReport.where(reservation_id: self.reservations.ids).present? ?
+    VehicleReport.where(reservation_id: self.reservations.ids).order(:updated_at).last :
+    nil
+  end
+
   def vehicle_reports_ids
     VehicleReport.where(reservation_id: self.reservations.ids).present? ? 
       VehicleReport.where(reservation_id: self.reservations.ids).pluck(:id).join(",") : 
