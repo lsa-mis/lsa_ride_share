@@ -13,12 +13,12 @@
     <% end %>
     <div class="sm:flex gap-2 items-end">
       <div class="">
-        <%= form.label :uniqname, "Uniqname *", required: true, class: "fancy_label" %>
-        <%= form.text_field :uniqname, class: "input_text_field" %>
+        <%= form.label :uniqname, "Uniqname *", class: "fancy_label" %>
+        <%= form.text_field :uniqname, required: true, class: "input_text_field" %>
       </div>
       <% if @no_name %>
         <div class="">
-          <%= check_box_tag :correct_uniqname, 1, false, class: "check_box" %>
+          <%= check_box_tag :correct_uniqname, 1, params[:correct_uniqname], class: "check_box" %>
           <%= label_tag(:correct_uniqname, "- correct") %>
         </div>
         <div class="">
