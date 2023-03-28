@@ -27,7 +27,8 @@ class Car < ApplicationRecord
     attachable.variant :thumb, resize_to_limit: [640, 480]
   end
   include AppendToHasManyAttached['initial_damages']
-  has_many_attached :initial_damage
+
+  validates_presence_of :car_number, :make, :model, :color, :number_of_seats, :mileage, :gas, :parking_spot
 
   def last_vehicle_report
     VehicleReport.where(reservation_id: self.reservations.ids).present? ?
