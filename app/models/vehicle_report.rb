@@ -28,6 +28,8 @@ class VehicleReport < ApplicationRecord
   has_one_attached :image_back_end
   has_rich_text :note
 
+  scope :data, ->(reports_ids) { reports_ids.present? ? where(id: reports_ids.split(",").map(&:to_i)) : all }
+  
   def car
     self.reservation.car
   end
