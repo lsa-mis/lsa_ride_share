@@ -27,7 +27,7 @@ class Car < ApplicationRecord
 
   def vehicle_reports_ids
     VehicleReport.where(reservation_id: self.reservations.ids).present? ? 
-      VehicleReport.where(reservation_id: self.reservations.ids).order(:updated_at).pluck(:id).join(",") : 
+      VehicleReport.where(reservation_id: self.reservations.ids).pluck(:id).join(",") : 
       []
   end
 
