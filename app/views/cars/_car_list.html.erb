@@ -36,7 +36,9 @@
               <%= car.last_checked %>
             </td>
             <td class="mi_tbody_td">
-              <%#= last_vehicle_report_date(car) %>
+              <% if car.vehicle_reports_ids.present? %>
+                <%= show_date(car.last_vehicle_report.updated_at) %>
+              <% end %>
             </td>
             <td class="mi_tbody_td">
               <% if car.vehicle_reports_ids.present? %>
