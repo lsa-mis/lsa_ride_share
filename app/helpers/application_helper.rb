@@ -70,8 +70,8 @@ module ApplicationHelper
   end
 
   def vehicle_reports(car)
-    if @vehicle_reports = VehicleReport.where(reservation_id: car.reservations.ids).order(:updated_at).present?
-      @vehicle_reports = VehicleReport.where(reservation_id: car.reservations.ids).order(:updated_at)
+    if VehicleReport.where(reservation_id: car.reservations.ids).order(:updated_at).present?
+      VehicleReport.where(reservation_id: car.reservations.ids).order(:updated_at)
     end
   end
 
