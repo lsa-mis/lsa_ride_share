@@ -77,10 +77,12 @@
                       <%= image_tag image.variant(:thumb), class: "object-cover h-full w-full group-hover:opacity-75" %>
                     </div>
                     <div>
-                      <%= link_to delete_file_path(image), data: { turbo_method: :get, turbo_confirm: 'Are you sure?' } do %>
-                        <span class="tertiary_button">Remove
-                        <i class="fa fa-times" aria-hidden="true"></i>
-                        </span>
+                      <% if policy(Car).delete_file? %>
+                        <%= link_to delete_file_path(image), data: { turbo_method: :get, turbo_confirm: 'Are you sure?' } do %>
+                          <span class="tertiary_button">Remove
+                          <i class="fa fa-times" aria-hidden="true"></i>
+                          </span>
+                        <% end %>
                       <% end %>
                     </div>
                   </div>
