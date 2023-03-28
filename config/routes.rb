@@ -35,6 +35,8 @@ Rails.application.routes.draw do
   get 'programs/add_config_questions/:id/', to: 'programs#add_config_questions', as: :add_config_questions
   get 'programs/program_data/:id/', to: 'programs#program_data', as: :program_data
 
+  get 'application/delete_file_attachment/:id', to: 'application#delete_file_attachment', as: :delete_file
+
   resources :program_managers
   get 'static_pages/home'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
