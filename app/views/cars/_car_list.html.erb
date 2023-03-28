@@ -36,10 +36,14 @@
               <%= car.last_checked %>
             </td>
             <td class="mi_tbody_td">
-              <%= last_vehicle_report_date(car) %>
+              <% if car.vehicle_reports_ids.present? %>
+                <%= show_date(car.last_vehicle_report.updated_at) %>
+              <% end %>
             </td>
             <td class="mi_tbody_td">
-              <%= link_to 'Vehicle Reports', vehicle_reports_path(vehicle_reports(car)), class: "link_to" %>
+              <% if car.vehicle_reports_ids.present? %>
+                <%= link_to 'Vehicle Reports', vehicle_reports_path(car.vehicle_reports_ids), class: 'link_to' %>
+              <% end %>
             </td>
             <td class="mi_tbody_td">
               <%= car.status %>

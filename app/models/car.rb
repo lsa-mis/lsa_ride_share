@@ -27,4 +27,18 @@ class Car < ApplicationRecord
     attachable.variant :thumb, resize_to_limit: [640, 480]
   end
   include AppendToHasManyAttached['initial_damages']
+  has_many_attached :initial_damage
+
+  def last_vehicle_report
+    VehicleReport.where(reservation_id: self.reservations.ids).present? ?
+    VehicleReport.where(reservation_id: self.reservations.ids).order(:updated_at).last :
+    nil
+  end
+
+  def vehicle_reports_ids
+    VehicleReport.where(reservation_id: self.reservations.ids).present? ? 
+      VehicleReport.where(reservation_id: self.reservations.ids).pluck(:id).join(",") : 
+      []
+  end
+
 end

@@ -3,7 +3,7 @@ class VehicleReportsController < ApplicationController
 
   # GET /vehicle_reports or /vehicle_reports.json
   def index
-    @vehicle_reports = VehicleReport.all
+    @vehicle_reports = VehicleReport.data(params[:reports_ids]).order(updated_at: :desc)
     authorize @vehicle_reports
   end
 

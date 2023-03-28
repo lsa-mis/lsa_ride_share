@@ -69,16 +69,4 @@ module ApplicationHelper
     turbo_stream.update "flash", partial: "layouts/notification"
   end
 
-  def vehicle_reports(car)
-    if @vehicle_reports = VehicleReport.where(reservation_id: car.reservations.ids).order(:updated_at).present?
-      @vehicle_reports = VehicleReport.where(reservation_id: car.reservations.ids).order(:updated_at)
-    end
-  end
-
-  def last_vehicle_report_date(car)
-    if vehicle_reports(car).present?
-      show_date(vehicle_reports(car).first.updated_at)
-    end
-  end
-
 end
