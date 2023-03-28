@@ -23,5 +23,8 @@ class Car < ApplicationRecord
   has_and_belongs_to_many :programs
   has_many :reservations
   has_rich_text :note
-  has_many_attached :initial_damage
+  has_many_attached :initial_damages do |attachable|
+    attachable.variant :thumb, resize_to_limit: [640, 480]
+  end
+  include AppendToHasManyAttached['initial_damages']
 end
