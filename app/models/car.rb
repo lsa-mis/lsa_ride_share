@@ -17,13 +17,15 @@
 #  updated_by      :integer
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
-#  status          :string
+#  status          :integer
 #
 class Car < ApplicationRecord
   has_and_belongs_to_many :programs
   has_many :reservations
   has_rich_text :note
   has_many_attached :initial_damage
+  
+  enum :status, [:available, :unavailable], prefix: true, scopes: true
 
   def last_vehicle_report
     VehicleReport.where(reservation_id: self.reservations.ids).present? ?
