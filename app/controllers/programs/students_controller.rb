@@ -49,7 +49,10 @@ class Programs::StudentsController < ApplicationController
     @student.program_id = @student_program.id
     if @student.save
       @student = Student.new
+      @no_name = false
       flash.now[:notice] = "Student list is updated"
+    else 
+      @no_name = true
     end
     @students = @student_program.students.order(:last_name)
   end
