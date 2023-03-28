@@ -11,79 +11,88 @@
     </div>
   <% end %>
 
-  <div class="my-5">
-    <%= form.label :car_number, 'Car Number *', class: "fancy_label" %>
-    <%= form.text_field :car_number, required: true, placeholder: "Car Number", class: "input_text_field" %>
-  </div>
+  <div class="grid grid-cols-1 sm:grid-cols-2">
+    <div>
+      <div class="my-5">
+        <%= form.label :car_number, 'Car Number *', class: "fancy_label" %>
+        <%= form.text_field :car_number, required: true, placeholder: "Car Number", class: "input_text_field" %>
+      </div>
 
-  <div class="my-5">
-    <%= form.label :make, class: "fancy_label" %>
-    <%= form.text_field :make, placeholder: "Make", class: "input_text_field" %>
-  </div>
+      <div class="my-5">
+        <%= form.label :make, 'Make *', class: "fancy_label" %>
+        <%= form.text_field :make, required: true, placeholder: "Make", class: "input_text_field" %>
+      </div>
 
-  <div class="my-5">
-    <%= form.label :mode, class: "fancy_label" %>
-    <%= form.text_field :model, placeholder: "Model", class: "input_text_field" %>
-  </div>
+      <div class="my-5">
+        <%= form.label :model, 'Model *', class: "fancy_label" %>
+        <%= form.text_field :model, required: true, placeholder: "Model", class: "input_text_field" %>
+      </div>
 
-  <div class="my-5">
-    <%= form.label :color, class: "fancy_label" %>
-    <%= form.text_field :color, placeholder: "Color", class: "input_text_field" %>
-  </div>
+      <div class="my-5">
+        <%= form.label :color, 'Color *', class: "fancy_label" %>
+        <%= form.text_field :color, required: true, placeholder: "Color", class: "input_text_field" %>
+      </div>
 
-  <div class="my-5">
-    <%= form.label :number_of_seats, class: "fancy_label" %>
-    <%= form.number_field :number_of_seats, placeholder: "Number of seats", class: "input_text_field" %>
-  </div>
+      <div class="my-5">
+        <%= form.label :number_of_seats, 'Number of Seats *', class: "fancy_label" %>
+        <%= form.number_field :number_of_seats, required: true, placeholder: "Number of seats", class: "input_text_field" %>
+      </div>
 
-  <div class="my-5">
-    <%= form.label :mileage, class: "fancy_label" %>
-    <%= form.text_field :mileage, placeholder: "Mileage", class: "input_text_field" %>
-  </div>
+      <div class="my-5">
+        <%= form.label :mileage, 'Mileage *', class: "fancy_label" %>
+        <%= form.text_field :mileage, required: true, placeholder: "Mileage", class: "input_text_field" %>
+      </div>
 
-  <div class="my-5">
-    <%= form.label :gas, class: "fancy_label" %>
-    <%= form.text_field :gas, placeholder: "Gas", class: "input_text_field" %>
-  </div>
+      <div class="my-5">
+        <%= form.label :gas,  'Gas *',class: "fancy_label" %>
+        <%= form.text_field :gas, required: true, placeholder: "Gas", class: "input_text_field" %>
+      </div>
 
-  <div class="my-5">
-    <%= form.label :parking_spot, class: "fancy_label" %>
-    <%= form.text_field :parking_spot, placeholder: "Prking spot", class: "input_text_field" %>
-  </div>
+      <div class="my-5">
+        <%= form.label :parking_spot, 'Parking Spot *', class: "fancy_label" %>
+        <%= form.text_field :parking_spot, required: true, placeholder: "Prking spot", class: "input_text_field" %>
+      </div>
 
-  <% if car.persisted? %>
-    <div class="my-5">
-      <%= form.label :last_checked, class: "fancy_label" %>
-      <%= form.datetime_field :last_checked, placeholder: "Last checked date", class: "input_text_field" %>
+      <% if car.persisted? %>
+        <div class="my-5">
+          <%= form.label :last_checked, class: "fancy_label" %>
+          <%= form.datetime_field :last_checked, placeholder: "Last checked date", class: "input_text_field" %>
+        </div>
+      <% end %>
     </div>
-  <% end %>
-
-  <div id="attached_initial_damages" class="my-5">
-    <%= form.label :initial_damages %>
-    <%= form.file_field :initial_damages, multiple: true, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
-
-  <div class="text-sm font-medium text-gray-500 mb-10 pb-10">
-          Other initial_damages currently uploaded:
-  </div>
-
-  <ul class="list-none grid grid-cols-2 gap-x-4 gap-y-8 px-4">
-    <% car.initial_damages.each do |image| %>
-      <li class="relative">
-        <div class="flex flex-col">
-          <div class="group block w-full h-40 rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-indigo-500 overflow-hidden">
-            <%= image_tag image.variant(:thumb), class: "object-cover h-full w-full group-hover:opacity-75" %>
-          </div>
+    <div>
+      <div id="attached_initial_damages" class="mx-4 my-2">
+        <%= form.label :initial_damages, "Initial damage images", class: "text_field_label" %>
+        <%= form.file_field :initial_damages, multiple: true, class: "file-upload" %>
+      </div>
+      <% if car.persisted? && car.initial_damages.attached? %>
+        <div class="">
+          <span class="body-md-bold-text m-4">Images of initial damage currently uploaded:</span>
           <div>
-            <button type="button" class="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-              <%= link_to 'Remove', delete_file_path(image), data: {turbo_method: :get, turbo_confirm: 'Are you sure?'} %>
-            </button>
+            <ul class="list-none grid grid-cols-2 gap-x-4 gap-y-8 px-4 mb-2">
+              <% car.initial_damages.each do |image| %>
+                <li class="relative">
+                  <div class="flex flex-col">
+                    <div class="group block w-full h-40 rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-indigo-500 overflow-hidden">
+                      <%= image_tag image.variant(:thumb), class: "object-cover h-full w-full group-hover:opacity-75" %>
+                    </div>
+                    <div>
+                      <%= link_to delete_file_path(image), data: { turbo_method: :get, turbo_confirm: 'Are you sure?' } do %>
+                        <span class="tertiary_button">Remove
+                        <i class="fa fa-times" aria-hidden="true"></i>
+                        </span>
+                      <% end %>
+                    </div>
+                  </div>
+                </li>
+                
+              <% end %>
+            </ul>
           </div>
         </div>
-      </li>
-      
-    <% end %>
-  </ul>
+      <% end %>
+    </div>
+  </div>
 
   <div class="inline">
     <%= form.submit class: "primary_button" %>
