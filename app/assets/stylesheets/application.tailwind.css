@@ -201,7 +201,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .link_to {
-    @apply text-blue-900 hover:underline;
+    @apply text-blue-umlink hover:underline;
   }
 
   .input_text_field {
