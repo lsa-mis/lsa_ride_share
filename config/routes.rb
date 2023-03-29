@@ -4,7 +4,9 @@ Rails.application.routes.draw do
   get '/vehicle_reports/:reports_ids', to: 'vehicle_reports#index', as: 'vehicle_reports'
   resources :vehicle_reports
   resources :reservations
-  resources :cars
+  resources :cars do
+    resources :notes, module: :cars
+  end
   resources :students
   resources :sites
   resources :program_managers
@@ -38,6 +40,8 @@ Rails.application.routes.draw do
   get 'application/delete_file_attachment/:id', to: 'application#delete_file_attachment', as: :delete_file
 
   resources :program_managers
+  resources :notes
+  
   get 'static_pages/home'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
