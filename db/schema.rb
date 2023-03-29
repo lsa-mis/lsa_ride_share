@@ -14,6 +14,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_27_204431) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  # Custom types defined in this database.
+  # Note that some types may not work with other database engines. Be careful if changing database.
+  create_enum "status", ["available", "unavailable"]
+
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
     t.text "body"
@@ -74,7 +78,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_27_204431) do
     t.integer "updated_by"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "status"
+    t.integer "status"
   end
 
   create_table "cars_programs", force: :cascade do |t|
