@@ -2,7 +2,7 @@
   <div class="">
     <div class="">
       <div class="body-bold-text">
-        <%= car.status %>
+        <%= car.status.titleize %>
       </div>
 
       <div class="py-2">
@@ -90,7 +90,7 @@
 
       <div class="py-2">
         <label class="body-lg-medium-text">
-          Last Checked
+          Last Checked:
         </label>
         <div class="body-lg-text inline-block">
           <%= show_date(car.last_checked) %>
