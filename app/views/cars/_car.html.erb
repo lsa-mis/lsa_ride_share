@@ -105,16 +105,6 @@
           <%= show_date(car.last_used) %>
         </div>
       </div>
-
-      <div class="py-2">
-        <label class="body-lg-medium-text">
-          Updated By
-        <div class="body-lg-text inline-block">
-          <%= show_user_name_by_id(car.updated_by) %>
-        </div>
-      </div>
-
-
     </div>
   </div>
   <div>
@@ -147,6 +137,9 @@
       </div>
     <% end %>
   </div>
-</div> 
+</div>
+<div class="body-md-text text-right my-2">
+  <%= updated_on_and_by(@car) %>
+</div>
 
 

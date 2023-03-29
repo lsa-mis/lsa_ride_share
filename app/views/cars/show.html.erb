@@ -7,10 +7,22 @@
       </div>
     </div>
   </div>
-  <div class="grid grid-cols-1 lg:grid-cols-3">
+  <div class="grid grid-cols-1 lg:grid-cols-2">
     <div class="grid lg:col-span-2">
       <%= render @car %>
     </div>
+  </div>
+
+  <div class="container p-2 rounded-lg shadow-lg text-xl mb-20 bg-gray-50">
+    <h2 class="mb-4">Notes:</h2>
+    <% if user_signed_in? %>
+      <%= render partial: "notes/form", locals: { note: Note.new, noteable: @car } %>
+    <% end %>
+    
+    <%= turbo_stream_from @car, :notes %>
+    <%= tag.div id: "#{dom_id(@car)}_notes" do %>
+      <%= render @car.notes %>
+    <% end %>
   </div>
 
   <div class="grid grid-cols-q lg:grid-cols-2 gap-10 my-6">
@@ -33,5 +45,4 @@
       </div>
     </div>
   </div>
-
 </div>
