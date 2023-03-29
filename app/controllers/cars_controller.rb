@@ -1,4 +1,5 @@
 class CarsController < ApplicationController
+  include ActionView::RecordIdentifier
   before_action :set_car, only: %i[ show edit update destroy ]
   before_action :set_statuses, only: %i[ new edit create update]
 
