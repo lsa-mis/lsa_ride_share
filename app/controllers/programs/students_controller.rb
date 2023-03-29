@@ -24,35 +24,26 @@ class Programs::StudentsController < ApplicationController
     @student = Student.new
     @students = @student_program.students.order(:last_name)
     authorize Student
-    @no_name = false
   end
 
   def create
     uniqname = student_params[:uniqname]
     @student = Student.new(uniqname: uniqname)
     authorize @student
-    if params[:correct_uniqname].present?
-      @student = Student.new(student_params)
+
+    name = LdapLookup.get_simple_name(uniqname)
+    if name.nil?
+      flash.now[:alert] = "Mcommunity returns no name for '#{uniqname}' uniqname. Edit the uniqname"
+      @students = @student_program.students.order(:last_name)
+      return
     else
-      name = LdapLookup.get_simple_name(uniqname)
-      if name.nil?
-        flash.now[:alert] = "Mcommunity returns no name for '#{uniqname}' uniqname. Edit the uniqname or - if the uniqname is correct - check the checkbox and enter last and first name manually"
-        @no_name = true
-        @students = @student_program.students.order(:last_name)
-        return
-      else
-        @no_name = false
-        @student.first_name = name.split(" ").first
-        @student.last_name = name.split(" ").last
-      end
+      @student.first_name = name.split(" ").first
+      @student.last_name = name.split(" ").last
     end
     @student.program_id = @student_program.id
     if @student.save
       @student = Student.new
-      @no_name = false
       flash.now[:notice] = "Student list is updated"
-    else 
-      @no_name = true
     end
     @students = @student_program.students.order(:last_name)
   end

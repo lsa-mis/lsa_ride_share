@@ -16,21 +16,6 @@
         <%= form.label :uniqname, "Uniqname *", class: "fancy_label" %>
         <%= form.text_field :uniqname, required: true, class: "input_text_field" %>
       </div>
-      <% if @no_name %>
-        <div class="">
-          <%= check_box_tag :correct_uniqname, 1, params[:correct_uniqname], class: "check_box" %>
-          <%= label_tag(:correct_uniqname, "- correct") %>
-        </div>
-        <div class="">
-          <%= form.label :last_name, "Last Name *", class: "fancy_label" %>
-          <%= form.text_field :last_name, class: "input_text_field" %>
-        </div>
-
-        <div class="">
-          <%= form.label :first_name, "First Name *", class: "fancy_label" %>
-          <%= form.text_field :first_name, class: "input_text_field" %>
-        </div>
-      <% end %>
 
       <div class="">
         <%= form.submit 'Add Student', class: "secondary_blue_button" %>
