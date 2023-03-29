@@ -1,62 +1,117 @@
-<div id="<%= dom_id car %>">
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Car number:</strong>
-    <%= car.car_number %>
-  </p>
+<div class="">
+  <div class="">
+    <div class="body-bold-text">
+      <%= car.status %>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Make:</strong>
-    <%= car.make %>
-  </p>
+    <div class="py-2">
+      <label class="body-lg-medium-text">
+        Make:
+      </label>
+      <div class="body-lg-text inline-block">
+        <%= car.make %>
+      </div>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Model:</strong>
-    <%= car.model %>
-  </p>
+    <div class="py-2">
+      <label class="body-lg-medium-text">
+        Model:
+      </label>
+      <div class="body-lg-text inline-block">
+        <%= car.model %>
+      </div>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Color:</strong>
-    <%= car.color %>
-  </p>
+    <div class="py-2">
+      <label class="body-lg-medium-text">
+        Color:
+      </label>
+      <div class="body-lg-text inline-block">
+        <%= car.color %>
+      </div>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Number of seats:</strong>
-    <%= car.number_of_seats %>
-  </p>
+    <div class="py-2">
+      <label class="body-lg-medium-text">
+        Number of Seats:
+      </label>
+      <div class="body-lg-text inline-block">
+        <%= car.number_of_seats %>
+      </div>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Mileage:</strong>
-    <%= car.mileage %>
-  </p>
+    <div class="py-2">
+      <label class="body-lg-medium-text">
+        Mileage:
+      </label>
+      <div class="body-lg-text inline-block">
+        <%= car.mileage %>
+      </div>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Gas:</strong>
-    <%= car.gas %>
-  </p>
+    <div class="py-2">
+      <label class="body-lg-medium-text">
+        Gas:
+      </label>
+      <div class="body-lg-text inline-block">
+        <%= car.gas %>
+      </div>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Parking spot:</strong>
-    <%= car.parking_spot %>
-  </p>
+    <div class="py-2">
+      <label class="body-lg-medium-text">
+        Parking Spot:
+      </label>
+      <div class="body-lg-text inline-block">
+        <%= car.parking_spot %>
+      </div>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Last used:</strong>
-    <%= car.last_used %>
-  </p>
+    <div class="py-2">
+      <label class="body-lg-medium-text">
+        Last Driver:
+      </label>
+      <div class="body-lg-text inline-block">
+        <%= car.last_driver %>
+      </div>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Last checked:</strong>
-    <%= car.last_checked %>
-  </p>
+    <div class="py-2">
+      <label class="body-lg-medium-text">
+        Last Used:
+      </label>
+      <div class="body-lg-text inline-block">
+        <%= show_date(car.last_used) %>
+      </div>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Last driver:</strong>
-    <%= car.last_driver %>
-  </p>
+    <div class="py-2">
+      <label class="body-lg-medium-text">
+        Last Checked
+      </label>
+      <div class="body-lg-text inline-block">
+        <%= show_date(car.last_checked) %>
+      </div>
+    </div>
 
-  <% if action_name != "show" %>
-    <%= link_to "Show this car", car, class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-    <%= link_to 'Edit this car', edit_car_path(car), class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
-    <hr class="mt-6">
-  <% end %>
+    <div class="py-2">
+      <label class="body-lg-medium-text">
+        Last Used:
+      </label>
+      <div class="body-lg-text inline-block">
+        <%= show_date(car.last_used) %>
+      </div>
+    </div>
+
+    <div class="py-2">
+      <label class="body-lg-medium-text">
+        Updated By
+      <div class="body-lg-text inline-block">
+        <%= show_user_name_by_id(car.updated_by) %>
+      </div>
+    </div>
+
+
+  </div>
 </div>
+
