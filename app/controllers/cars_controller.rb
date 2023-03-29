@@ -9,6 +9,7 @@ class CarsController < ApplicationController
   end
 
   def show
+    @vehicle_reports = VehicleReport.all
   end
 
   # GET /cars/new
