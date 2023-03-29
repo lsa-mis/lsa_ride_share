@@ -16,10 +16,10 @@
               <%= link_to reservation.reservation_date, reservation_path(reservation.id), class: "link_to" %>
             </td>
             <td class="mi_tbody_td">
-              <%= reservation.site_id %>
+              <%= reservation.site.title %>
             </td>
             <td class="mi_tbody_td">
-              <%= reservation.program_id %>
+              <%= reservation.program.display_name %>
             </td>
             <td class="mi_tbody_td">
               <%= reservation.reserved_by %>

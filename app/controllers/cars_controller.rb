@@ -10,7 +10,7 @@ class CarsController < ApplicationController
 
   def show
     @vehicle_reports = VehicleReport.all
-    @reservations = Reservation.all
+    @reservations = @car.reservations
   end
 
   # GET /cars/new
