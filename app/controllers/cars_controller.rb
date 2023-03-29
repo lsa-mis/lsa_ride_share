@@ -13,12 +13,14 @@ class CarsController < ApplicationController
 
   # GET /cars/new
   def new
+    @statuses = Car.statuses.keys
     @car = Car.new
     authorize @car
   end
 
   # GET /cars/1/edit
   def edit
+    @statuses = Car.statuses.keys
   end
 
   # POST /cars or /cars.json
@@ -60,6 +62,6 @@ class CarsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def car_params
-      params.require(:car).permit(:car_number, :make, :model, :color, :number_of_seats, :mileage, :gas, :parking_spot, :last_used, :last_checked, :last_driver, initial_damages: [])
+      params.require(:car).permit(:car_number, :make, :model, :color, :number_of_seats, :mileage, :gas, :parking_spot, :last_used, :last_checked, :last_driver, :status, initial_damages: [])
     end
 end
