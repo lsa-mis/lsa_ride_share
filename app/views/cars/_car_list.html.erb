@@ -16,7 +16,11 @@
       </thead>
       <tbody>
         <% @cars.each do |car| %>
-          <tr class="mi_tbody_tr">
+          <% if car.status.present? && car.status == 'unavailable' %>
+            <tr class="mi_tbody_tr bg-gray-um10">
+          <% else %>
+            <tr class="mi_tbody_tr">
+          <% end %>
             <td class="mi_tbody_td">
               <%= link_to car.car_number, car_path(car), class: "link_to" %>
             </td>
