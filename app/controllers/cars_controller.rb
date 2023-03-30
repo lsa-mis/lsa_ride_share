@@ -5,7 +5,7 @@ class CarsController < ApplicationController
 
   # GET /cars or /cars.json
   def index
-    @cars = Car.all
+    @cars = Car.all.order(:car_number)
     authorize @cars
     
   end

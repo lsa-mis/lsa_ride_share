@@ -46,7 +46,7 @@ class Car < ApplicationRecord
   end
 
   def vehicle_reports
-    VehicleReport.where(reservation_id: self.reservations.ids)
+    VehicleReport.where(reservation_id: self.reservations.ids).order(updated_at: :desc)
   end
 
   def acceptable_image
