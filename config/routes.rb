@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :units
   resources :terms
   resources :admin_accesses
   get '/vehicle_reports/:reports_ids', to: 'vehicle_reports#index', as: 'vehicle_reports'
