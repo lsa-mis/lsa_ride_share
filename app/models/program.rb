@@ -42,6 +42,9 @@ class Program < ApplicationRecord
   validates :term_id, uniqueness: { scope: [:subject, :catalog_number], message: "already has this program" }, unless: -> { self.not_course } 
   validates :term_id, uniqueness: { scope: [:title], message: "already has this program" }, if: -> { self.not_course }
 
+  scope :current_term, -> { where(term_id: Term.current) }
+  scope :data, ->(term_id) { term_id.present? ? where(term_id: term_id) : current_term }
+
   def dup
     super.tap do |new_program|
 
@@ -53,11 +56,31 @@ class Program < ApplicationRecord
     end
   end
 
+  def additional_options
+    options = ''
+    if self.pictures_required_start || self.pictures_required_end
+      options = 'The program requires to upload pictures to the vehicle reports '
+      if self.pictures_required_start
+        options += '<br>at the start of the trip '
+      end
+      if self.pictures_required_start && self.pictures_required_end
+        options += 'and '
+      end
+      if self.pictures_required_end
+        options += '<br>at the end of the trip'
+      end
+    end
+    if self.non_uofm_passengers
+      options += '<br><br>Non UofM passangers are allowed'
+    end
+    options
+  end
+
   def display_name
     if self.not_course
-      "This program is not a course"
+      "This program is not a course - #{self.term.name}"
     else
-      "#{self.subject} #{self.catalog_number} - #{self.class_section}"
+      "#{self.subject} #{self.catalog_number} - #{self.class_section} - #{self.term.name}"
     end
   end
 

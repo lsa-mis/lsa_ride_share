@@ -1,70 +1,70 @@
-<div class="flex flex-col lg:flex-row mx-2 gap-4">
-  <div class="flex-none">
-    <div class="body-md-text ml-2">
+<div class="">
+  <div class="">
+    <div class="body-bold-text">
       <%= program.display_name %>
     </div>
 
     <div class="py-2">
-      <label class="text_field_label">
-      Term
+      <label class="body-lg-medium-text">
+      Term:
       </label>
-      <div class="body-md-text ml-2">
+      <div class="body-lg-text inline-block">
         <%= program.term.name %>
       </div>
     </div>
 
     <div class="py-2">
-      <label class="text_field_label">
-      Instructor
+      <label class="body-lg-medium-text">
+      Instructor:
       </label>
-      <div class="body-md-text ml-2">
+      <div class="body-lg-text ml-2 inline-block">
         <%= program.instructor.display_name %>
       </div>
     </div>
 
     <div class="py-2">
-      <label class="text_field_label">
-      Number of students
+      <label class="body-lg-medium-text">
+      Number of students:
       </label>
-      <div class="body-md-text ml-2">
+      <div class="body-lg-text ml-2 inline-block">
         <%= number_of_students(program) %>
       </div>
     </div>
 
     <div class="py-2">
-      <label class="text_field_label">
-      Number of students using ride share
+      <label class="body-lg-medium-text">
+      Number of students using ride share:
       </label>
-      <div class="body-md-text ml-2">
+      <div class="body-lg-text ml-2 inline-block">
         <%= number_of_students_using_ride_share(program) %>
       </div>
     </div>
 
     <div class="py-2">
-      <label class="text_field_label">
-      MVR link
+      <label class="body-lg-medium-text">
+      MVR link:
       </label>
-      <div class="body-md-text ml-2">
+      <div class="body-lg-text ml-2 inline-block">
         <%= program.mvr_link %>
       </div>
     </div>
 
     <div class="py-2">
-      <label class="text_field_label">
-      Canvas course link
+      <label class="body-lg-medium-text">
+      Canvas course link:
       </label>
-      <div class="body-md-text ml-2">
+      <div class="body-lg-text ml-2 inline-block">
         <%= program.canvas_link %>
       </div>
     </div>
   </div>
-  <div class="py-2">
-    <% if program_config_data(program).present? %>
-      <label class="text_field_label">
-      Additional options
+  <div class="py-2 flex items-center">
+    <% if program.additional_options.present? %>
+      <label class="body-lg-medium-text flex-none">
+      Additional options:
       </label>
-      <div class="body-md-text ml-2">
-        <%= sanitize program_config_data(program)%>
+      <div class="body-lg-text ml-2 inline-block">
+        <%= sanitize program.additional_options %>
       </div>
     <% end %>
   </div>
