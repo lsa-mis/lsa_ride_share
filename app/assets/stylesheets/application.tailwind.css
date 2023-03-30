@@ -72,6 +72,10 @@ from https://tailwindcss.com/docs/adding-custom-styles
     @apply text-base font-normal leading-6 font-montserrat;
   }
 
+  .body-lg-medium-text {
+    @apply text-base font-medium leading-6 font-montserrat;
+  }
+
   .body-lg-bold-text {
     @apply text-base font-bold leading-6 font-montserrat;
   }
@@ -105,7 +109,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .primary_button {
-    @apply p-2 font-montserrat font-medium leading-7 text-base border rounded-md text-white bg-blue-umblue;
+    @apply py-2 px-4 font-montserrat font-medium leading-7 text-xs border rounded-md text-white bg-blue-umblue;
   }
 
   .primary_button:hover {
@@ -125,7 +129,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .secondary_yellow_button {
-    @apply p-2 font-montserrat font-medium leading-7 text-base border rounded-md text-blue-umblue bg-yellow-ummaze;
+    @apply py-2 px-4 font-montserrat font-medium leading-7 text-xs border rounded-md text-blue-umblue bg-yellow-ummaze;
   }
 
   .secondary_yellow_button:hover {
@@ -145,7 +149,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
   
   .secondary_blue_button {
-    @apply p-2 font-montserrat font-medium leading-7 text-base border rounded-md text-white bg-blue-750;
+    @apply py-2 px-4 font-montserrat font-medium leading-7 text-xs border rounded-md text-white bg-blue-750;
   }
 
   .secondary_blue_button:hover {
@@ -165,7 +169,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .tertiary_button {
-    @apply p-2 font-montserrat font-medium leading-7 text-base text-blue-umblue;
+    @apply py-2 px-4 font-montserrat font-medium leading-7 text-xs text-blue-umblue;
   }
 
   .tertiary_button:hover {
@@ -185,7 +189,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .sign_button {
-    @apply px-1 shadow-sm text-base rounded text-blue-900 bg-yellow-550 bg-yellow-500 hover:underline;
+    @apply px-1 ml-2 shadow-sm font-medium rounded text-blue-900 bg-yellow-550 hover:bg-yellow-500 flex-1 hover:underline;
   }
 
   .edit_button {
@@ -213,7 +217,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .filter_select {
-    @apply text-lg font-medium text-gray-900 bg-white border border-gray-600 rounded block p-2 focus:ring-blue-500 focus:border-blue-500;
+    @apply text-sm font-medium leading-4 text-blue-umblue bg-white border border-gray-600 rounded block p-2 focus:ring-blue-500 focus:border-blue-500 font-montserrat;
   }
 
   /* table */
