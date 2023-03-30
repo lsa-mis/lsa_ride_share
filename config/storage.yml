@@ -1,27 +1,29 @@
 test:
-  service: Disk
-  root: <%= Rails.root.join("tmp/storage") %>
+service: Disk
+root: <%= Rails.root.join("tmp/storage") %>
+
 local:
-  service: Disk
-  root: <%= Rails.root.join("storage") %>
-# google:
-#   service: GCS
-#   credentials:
-#     type: "service_account"
-#     project_id: <%= ENV['GCS_PROJECT_ID'] %>
-#     private_key_id: <%= ENV['GCS_PRIVATE_KEY_ID'] %>
-#     private_key: <%= ENV['GCS_PRIVATE_KEY'] %>
-#     client_email: <%= ENV['GCS_CLIENT_EMAIL'] %>
-#     client_id: <%= ENV['GCS_CLIENT_ID'] %>
-#     auth_uri: "https://accounts.google.com/o/oauth2/auth"
-#     token_uri: "https://accounts.google.com/o/oauth2/token"
-#     auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs"
-#     client_x509_cert_url: <%= ENV['GCS_CLIENT_X509_CERT_URL'] %>
-#   project: <%= ENV['GCS_PROJECT'] %>
-#   bucket: <%= ENV['GCS_BUCKET'] %>
+service: Disk
+root: <%= Rails.root.join("storage") %>
 
 google:
   service: GCS
-  project: lsa-was-base
-  credentials: <%= Rails.root.join("config/lsa-was-base-5ab463b9650d.json") %>
-  bucket: lsa_rideshare_data
+  credentials:
+    type: <%= ENV['GCS_TYPE'] %>
+    project_id: <%= ENV['GCS_PROJECT_ID'] %>
+    private_key_id: <%= ENV['GCS_PRIVATE_KEY_ID'] %>
+    private_key: <%= ENV['GCS_PRIVATE_KEY'] %>
+    client_email: <%= ENV['GCS_CLIENT_EMAIL'] %>
+    client_id: <%= ENV['GCS_CLIENT_ID'] %>
+    auth_uri: "https://accounts.google.com/o/oauth2/auth"
+    token_uri: "https://accounts.google.com/o/oauth2/token"
+    auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs"
+    client_x509_cert_url: <%= ENV['GCS_CLIENT_X509_CERT_URL'] %>
+  project: <%= ENV['GCS_PROJECT'] %>
+  bucket: <%= ENV['GCS_BUCKET'] %>
+
+# google:
+#   service: GCS
+#   project: lsa-was-base
+#   credentials: <%= Rails.root.join("config/lsa-was-base-5ab463b9650d.json") %>
+#   bucket: lsa_rideshare_data
