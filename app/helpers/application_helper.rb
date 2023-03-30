@@ -47,6 +47,10 @@ module ApplicationHelper
       "Not available"
     end
   end
+
+  def show_units(user)
+    Unit.where(id: current_user.unit).pluck(:name).join(' ')
+  end
   
   def render_flash_stream
     turbo_stream.update "flash", partial: "layouts/notification"

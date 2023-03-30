@@ -28,14 +28,14 @@ class ApplicationController < ActionController::Base
 
   def set_unit
     if user_signed_in?
-      current_user.unit = Unit.find_by(ldap_group: session[:user_memberships]).name
+      current_user.unit = Unit.where(ldap_group: session[:user_memberships]).pluck(:id)
     else
       new_user_session_path
     end
   end
 
   def after_sign_in_path_for(resource)
-    if session[:user_memberships].include?('lsa-rideshare-admins')
+    if session[:user_memberships].present?
       programs_path 
     else
       root_path

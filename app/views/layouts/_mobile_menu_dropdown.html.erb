@@ -8,9 +8,14 @@
     <div class="pt-2 pb-3 space-y-1 text-white" id="header-nav-menu-button">
       <%= link_to "Home", static_pages_home_path, class: "header_link #{class_names(active: current_page?(static_pages_home_path))}" %>
       <%= link_to "Programs", programs_path, class: "header_link #{class_names(active: current_page?(programs_path))}" %>
+      <%= link_to "Cars", cars_path, class: "#{class_names(active: current_page?(cars_path))}" %>
+    </div>
       <div class="grid grid-col-2 gap-2 justify-items-end mr-8">
         <div>
           <% if user_signed_in? %>
+            <div class="leading-tight text-sm font-medium text-white">
+              <%= Unit.where(id: current_user.unit).pluck(:name) %>
+            </div>
             <div class="leading-tight text-md font-medium text-white">
               <%= current_user.email %>
             </div>

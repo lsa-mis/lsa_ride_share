@@ -37,8 +37,11 @@ class ApplicationPolicy
   end
 
   def user_in_access_group?
-    access_groups = ['lsa-rideshare-admins']
-    user.membership && (user.membership & access_groups).any?
+    # access_groups = ['lsa-rideshare-admins']
+    # user.membership && (user.membership & access_groups).any?
+    units = Unit.all.pluck(:id)
+    # user.unit && units.include?(user.unit)
+    user.unit && (user.unit & units).any?
   end
 
 end
