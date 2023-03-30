@@ -33,6 +33,9 @@
                 <span class="sr-only bg-white text-black">Open user menu</span>
               </button>
               <div class="leading-tight text-sm font-medium text-white">
+                <%= current_user.unit %>
+              </div>
+              <div class="leading-tight text-sm font-medium text-white">
                 <%= current_user.email %>
               </div>
               <%= button_to destroy_user_session_path, method: :delete, role: "menuitem", data: {turbo: "false"} do %>
