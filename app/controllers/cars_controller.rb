@@ -11,8 +11,6 @@ class CarsController < ApplicationController
   end
 
   def show
-    @vehicle_reports = VehicleReport.all
-    @reservations = @car.reservations
   end
 
   # GET /cars/new

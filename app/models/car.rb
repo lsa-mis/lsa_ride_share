@@ -45,6 +45,10 @@ class Car < ApplicationRecord
       []
   end
 
+  def vehicle_reports
+    VehicleReport.where(reservation_id: self.reservations.ids)
+  end
+
   def acceptable_image
     return unless initial_damages.attached?
 
