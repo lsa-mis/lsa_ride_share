@@ -10,9 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_21_133327) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_27_204431) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  # Custom types defined in this database.
+  # Note that some types may not work with other database engines. Be careful if changing database.
+  create_enum "status", ["available", "unavailable"]
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -74,6 +78,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_21_133327) do
     t.integer "updated_by"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "status"
   end
 
   create_table "cars_programs", force: :cascade do |t|
@@ -86,10 +91,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_21_133327) do
   end
 
   create_table "config_questions", force: :cascade do |t|
-    t.bigint "program_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["program_id"], name: "index_config_questions_on_program_id"
+    t.bigint "faculty_survey_id"
+    t.index ["faculty_survey_id"], name: "index_config_questions_on_faculty_survey_id"
+  end
+
+  create_table "faculty_surveys", force: :cascade do |t|
+    t.string "uniqname"
+    t.integer "term_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "program_managers", force: :cascade do |t|
@@ -109,7 +121,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_21_133327) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["program_id"], name: "index_program_managers_programs_on_program_id"
-    t.index ["program_manager_id", "program_id"], name: "manager_program_index", unique: true
     t.index ["program_manager_id"], name: "index_program_managers_programs_on_program_manager_id"
   end
 
@@ -257,7 +268,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_21_133327) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "cars_programs", "cars"
   add_foreign_key "cars_programs", "programs"
-  add_foreign_key "config_questions", "programs"
   add_foreign_key "program_managers_programs", "program_managers"
   add_foreign_key "program_managers_programs", "programs"
   add_foreign_key "programs", "program_managers", column: "instructor_id"

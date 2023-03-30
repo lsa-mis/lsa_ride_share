@@ -205,7 +205,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .link_to {
-    @apply text-blue-900 hover:underline;
+    @apply text-blue-umlink hover:underline;
   }
 
   .input_text_field {
@@ -227,19 +227,19 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .mi_thead {
-    @apply bg-gray-um20;
+    @apply border border-l-0 border-r-0 border-gray-um60;
   }
 
   .header_th {
-    @apply p-2 text-sm font-medium text-gray-900 lg:table-cell text-left;
+    @apply p-2 text-base font-semibold leading-5 font-montserrat lg:table-cell text-left;
   }
 
   .mi_tbody_tr {
-    @apply relative sm:pl-2 text-sm bg-white even:bg-gray-um10;
+    @apply relative sm:pl-2 bg-white border border-l-0 border-r-0 border-gray-um20;
   }
 
   .mi_tbody_td {
-    @apply relative p-2 sm:pl-2 text-sm font-medium text-gray-900 text-left;
+    @apply relative p-2 sm:pl-2 text-xs leading-4 font-montserrat text-left;
   }
 
   .alert {

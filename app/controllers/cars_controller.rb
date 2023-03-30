@@ -4,25 +4,21 @@ class CarsController < ApplicationController
   # GET /cars or /cars.json
   def index
     @cars = Car.all
+    authorize @cars
+    
   end
 
-  # GET /cars/1 or /cars/1.json
-  def index
-  end
-  
   def show
   end
 
-
   # GET /cars/new
   def new
-    @add_cars = Car.all - @car_program.cars
     @car = Car.new
+    authorize @car
   end
 
   # GET /cars/1/edit
   def edit
-    @add_cars = Car.all - @car_program.cars
   end
 
   # POST /cars or /cars.json
@@ -35,7 +31,6 @@ class CarsController < ApplicationController
 
     respond_to do |format|
       if @car.save
-        @car_program.cars << @car
         format.turbo_stream { redirect_back_or_to @car_program,
         notice: "A new car was added"
                             }
@@ -78,6 +73,7 @@ class CarsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_car
       @car = Car.find(params[:id])
+      authorize @car
     end
 
     # Only allow a list of trusted parameters through.
