@@ -1,4 +1,4 @@
-<div class="mx-auto md:w-2/3 w-full">
+<div class="mx-auto w-full">
   <h1><%= @program.title %></h1>
   <div>
     <div class="grid grid-cols-1 lg:grid-cols-3">
@@ -8,7 +8,7 @@
       <div class="lg:flex lg:flex-col">
         <div class="lg:grid lg:justify-items-end">
           <div class="py-2">
-            <%= link_to 'Edit program', program_data_path(@program), class: "primary_button" %>
+            <%= link_to 'Edit Program', program_data_path(@program), class: "primary_button" %>
           </div>
           <div class="py-2">
             <%= link_to 'Students List', program_students_path(@program), class: "secondary_blue_button" %>
