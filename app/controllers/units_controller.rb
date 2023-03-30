@@ -4,6 +4,7 @@ class UnitsController < ApplicationController
   # GET /units or /units.json
   def index
     @units = Unit.all
+    authorize @units
   end
 
   # GET /units/1 or /units/1.json
@@ -13,6 +14,7 @@ class UnitsController < ApplicationController
   # GET /units/new
   def new
     @unit = Unit.new
+    authorize @unit
   end
 
   # GET /units/1/edit
@@ -22,7 +24,7 @@ class UnitsController < ApplicationController
   # POST /units or /units.json
   def create
     @unit = Unit.new(unit_params)
-
+    authorize @unit
     respond_to do |format|
       if @unit.save
         format.html { redirect_to unit_url(@unit), notice: "Unit was successfully created." }
@@ -61,6 +63,7 @@ class UnitsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_unit
       @unit = Unit.find(params[:id])
+      authorize @unit
     end
 
     # Only allow a list of trusted parameters through.
