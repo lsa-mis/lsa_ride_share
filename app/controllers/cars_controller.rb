@@ -1,5 +1,7 @@
 class CarsController < ApplicationController
+  include ActionView::RecordIdentifier
   before_action :set_car, only: %i[ show edit update destroy ]
+  before_action :set_statuses, only: %i[ new edit create update]
 
   # GET /cars or /cars.json
   def index
@@ -13,14 +15,12 @@ class CarsController < ApplicationController
 
   # GET /cars/new
   def new
-    @statuses = Car.statuses.keys
     @car = Car.new
     authorize @car
   end
 
   # GET /cars/1/edit
   def edit
-    @statuses = Car.statuses.keys
   end
 
   # POST /cars or /cars.json
@@ -37,7 +37,7 @@ class CarsController < ApplicationController
   # PATCH/PUT /cars/1 or /cars/1.json
   def update
     if @car.update(car_params)
-      redirect_to car_path(@car), notice: "The car was update"
+      redirect_to car_path(@car), notice: "The car was updated"
     else
       render :edit, status: :unprocessable_entity
     end
@@ -58,6 +58,10 @@ class CarsController < ApplicationController
     def set_car
       @car = Car.find(params[:id])
       authorize @car
+    end
+
+    def set_statuses
+      @statuses = Car.statuses.keys
     end
 
     # Only allow a list of trusted parameters through.

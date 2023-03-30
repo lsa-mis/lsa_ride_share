@@ -69,7 +69,7 @@
     </div>
     <div>
       <div id="attached_initial_damages" class="mx-4 my-2">
-        <%= form.label :initial_damages, "Initial damage images", class: "text_field_label" %>
+        <%= form.label :initial_damages, "Initial damage images (jpg, png)", class: "text_field_label" %>
         <%= form.file_field :initial_damages, multiple: true, class: "file-upload" %>
       </div>
       <% if car.persisted? && car.initial_damages.attached? %>
