@@ -33,8 +33,8 @@ class CarPolicy < ApplicationPolicy
     update?
   end
 
-  def destroy?
-    false
+  def delete_file?
+    user_in_access_group?
   end
 
 end

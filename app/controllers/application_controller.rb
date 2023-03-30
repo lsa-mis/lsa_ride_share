@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
   before_action :set_membership
   after_action :verify_authorized, unless: :devise_controller?
+  skip_after_action :verify_authorized, only: [:delete_file_attachment]
 
   def user_not_authorized
     flash[:alert] = "You are not authorized to perform this action."
@@ -30,6 +31,12 @@ class ApplicationController < ActionController::Base
     else
       root_path
     end
+  end
+
+  def delete_file_attachment
+    delete_file = ActiveStorage::Attachment.find(params[:id])
+    delete_file.purge
+    redirect_back(fallback_location: request.referer)
   end
 
 end

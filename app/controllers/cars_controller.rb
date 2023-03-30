@@ -13,49 +13,33 @@ class CarsController < ApplicationController
 
   # GET /cars/new
   def new
+    @statuses = Car.statuses.keys
     @car = Car.new
     authorize @car
   end
 
   # GET /cars/1/edit
   def edit
+    @statuses = Car.statuses.keys
   end
 
   # POST /cars or /cars.json
   def create
-    if params[:car_id].present?
-      @car = Car.find(params[:car_id])
+    @car = Car.new(car_params)
+    authorize @car
+    if @car.save
+      redirect_to car_path(@car), notice: "A new car was added"
     else
-     @car = Car.new(car_params)
-    end
-
-    respond_to do |format|
-      if @car.save
-        format.turbo_stream { redirect_back_or_to @car_program,
-        notice: "A new car was added"
-                            }
-      else
-        format.turbo_stream { redirect_to @car_program,
-          alert: "Fail: you need to enter a car data" 
-        }
-      end
+      render :new, status: :unprocessable_entity
     end
   end
 
   # PATCH/PUT /cars/1 or /cars/1.json
   def update
-    @car = Car.find(params[:id])
-
-    respond_to do |format|
-      if @car.update(car_params)
-        format.turbo_stream { redirect_back_or_to @car_program,
-                              notice: "The car was added" 
-                            }
-      else
-        format.turbo_stream { redirect_to @car_program,
-          alert: "Fail" 
-        }
-      end
+    if @car.update(car_params)
+      redirect_to car_path(@car), notice: "The car was update"
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 
@@ -78,6 +62,6 @@ class CarsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def car_params
-      params.require(:car).permit(:car_number, :make, :model, :color, :number_of_seats, :mileage, :gas, :parking_spot, :last_used, :last_checked, :last_driver, :car_id)
+      params.require(:car).permit(:car_number, :make, :model, :color, :number_of_seats, :mileage, :gas, :parking_spot, :last_used, :last_checked, :last_driver, :status, initial_damages: [])
     end
 end
