@@ -16,7 +16,7 @@
       </thead>
       <tbody>
         <% @cars.each do |car| %>
-          <% if car.status.present? && car.status == 'unavailable' %>
+          <% if car.status == 'unavailable' %>
             <tr class="mi_tbody_tr bg-gray-um10">
           <% else %>
             <tr class="mi_tbody_tr">
