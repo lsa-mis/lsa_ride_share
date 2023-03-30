@@ -116,7 +116,7 @@ class ProgramsController < ApplicationController
     end
 
     def set_terms
-      @terms = Term.all
+      @terms = Term.all.order(:term_start)
     end
 
     # Only allow a list of trusted parameters through.
