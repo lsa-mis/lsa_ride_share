@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :unit_preferences
   resources :units
   resources :terms
   resources :admin_accesses
