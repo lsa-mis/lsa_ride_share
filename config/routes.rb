@@ -1,6 +1,11 @@
 Rails.application.routes.draw do
   resources :unit_preferences
   resources :units
+
+  get '/units/unit_prefs/:unit_id', to: 'units/unit_preferences#unit_prefs', as: :unit_prefs
+  post '/units/unit_prefs/:unit_id', to: 'units/unit_preferences#save_unit_prefs'
+
+
   resources :terms
   resources :admin_accesses
   get '/vehicle_reports/:reports_ids', to: 'vehicle_reports#index', as: 'vehicle_reports'

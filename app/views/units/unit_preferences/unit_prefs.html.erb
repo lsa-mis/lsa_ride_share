@@ -1,0 +1,24 @@
+<div class="mx-auto md:w-2/3 w-full">
+  <h1>Faculty Survey hell</h1>
+  <p class="my-5">
+  <%= @unit.name %>
+  </p>
+
+  <%= form_with model: @unit_preferences, url: unit_prefs_path, method: :post do |form| %>
+    
+    <% @unit_prefs.each do |pref| %>
+      <%= fields_for 'unit_preferences[]' do %>
+        <%= pref.name %>
+        <%= label_tag("unit_preferences[pref_#{pref.id}]", nil, class: "hidden") %>
+        <%= check_box_tag "unit_preferences[pref_#{pref.id}]" %>
+      <% end %>
+    <% end %>
+    
+    <div class="my-4">
+      <div class="inline">
+        <%= submit_tag 'Save your prefs', class: "secondary_blue_button" %>
+      </div>
+      
+    <div>
+  <% end %>
+</div>

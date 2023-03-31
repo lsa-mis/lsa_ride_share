@@ -12,6 +12,15 @@ class UnitPreferencePolicy < ApplicationPolicy
     user_in_access_group?
   end
 
+  def unit_prefs?
+    true
+    # user_in_access_group?
+  end
+
+  def save_unit_prefs?
+    true
+  end
+
   def show?
     user_in_access_group?
   end

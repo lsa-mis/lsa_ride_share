@@ -1,5 +1,6 @@
-class UnitPreferencesController < ApplicationController
+class Units::UnitPreferencesController < ApplicationController
   before_action :set_unit_preference, only: %i[ show edit update destroy ]
+  before_action :set_unit
 
   # GET /unit_preferences or /unit_preferences.json
   def index
@@ -9,6 +10,24 @@ class UnitPreferencesController < ApplicationController
 
   # GET /unit_preferences/1 or /unit_preferences/1.json
   def show
+  end
+
+  def unit_prefs
+    @unit_prefs = @unit.unit_preferences
+    authorize @unit_prefs
+  end
+
+  def save_unit_prefs
+    @unit_prefs = @unit.unit_preferences
+    authorize @unit_prefs
+    params[:unit_prefs].each do |p|
+      if p[0].split("_").first == "value"
+        id = p[0].split("_").last
+        fail
+        @survey.find(id).update(value: p[1])
+      end
+    end
+    fail
   end
 
   # GET /unit_preferences/new
@@ -68,8 +87,12 @@ class UnitPreferencesController < ApplicationController
       authorize @unit_preference
     end
 
+    def set_unit
+      @unit = Unit.find(params[:unit_id])
+    end
+
     # Only allow a list of trusted parameters through.
     def unit_preference_params
-      params.require(:unit_preference).permit(:name, :description, :value, :unit_id)
+      params.require(:unit_preference).permit(:name, :description, :value, :unit_id, unit_prefs: [])
     end
 end

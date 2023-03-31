@@ -12,4 +12,5 @@
 class Unit < ApplicationRecord
   has_many :programs
   has_many :cars
+  has_many :unit_preferences
 end
