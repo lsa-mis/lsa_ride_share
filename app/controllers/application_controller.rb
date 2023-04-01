@@ -2,8 +2,7 @@ class ApplicationController < ActionController::Base
   include Pundit::Authorization
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
-  before_action :set_membership
-  before_action :set_unit
+  before_action :set_unit_and_membership
   after_action :verify_authorized, unless: :devise_controller?
   skip_after_action :verify_authorized, only: [:delete_file_attachment]
 
@@ -18,17 +17,18 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def set_membership
-    if user_signed_in?
-      current_user.membership = session[:user_memberships]
-    else
-      new_user_session_path
-    end
-  end
+  # def set_membership
+  #   if user_signed_in?
+  #     current_user.membership = session[:user_memberships]
+  #   else
+  #     new_user_session_path
+  #   end
+  # end
 
-  def set_unit
+  def set_unit_and_membership
     if user_signed_in?
       current_user.unit = Unit.where(ldap_group: session[:user_memberships]).pluck(:id)
+      current_user.membership = session[:user_memberships]
     else
       new_user_session_path
     end

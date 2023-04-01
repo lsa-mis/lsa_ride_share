@@ -44,4 +44,8 @@ class ApplicationPolicy
     user.unit && (user.unit & units).any?
   end
 
+  def user_admin?
+    user.membership && user.membership.include?('lsa-rideshare-admins')
+  end
+
 end

@@ -22,6 +22,19 @@
             <div class="header_link">
               <%= link_to "Cars", cars_path, class: "#{class_names(active: current_page?(cars_path))}" %>
             </div>
+            <% if policy(Unit).index? %>
+              <div class="header_link">
+                <%= link_to "Units", units_path, class: "#{class_names(active: current_page?(units_path))}" %>
+              </div>
+              <div class="header_link">
+                <%= link_to "Unit Preferences", unit_preferences_path, class: "#{class_names(active: current_page?(unit_preferences_path))}" %>
+              </div>
+            <% end %>
+            <% if UnitPreference.find_by(unit_id: current_user.unit, name: "faculty_survey").value %>
+              <div class="header_link">
+                <%= link_to "Faculty Survey", units_path, class: "#{class_names(active: current_page?(units_path))}" %>
+              </div>
+            <% end %>
           <% end %>
         </div>
       </div>
@@ -30,7 +43,7 @@
           <div class="grid justify-items-end flex flex-wrap items-center">
             <% if user_signed_in? %>
                 <div class="leading-tight text-sm font-medium text-white">
-                  <%= show_units(current_user) %>
+                  <%= link_to show_units(current_user), unit_prefs_path, class: "#{class_names(active: current_page?(unit_prefs_path))}" %>
                   <%= current_user.email %>
                 </div>
               <%= button_to destroy_user_session_path, method: :delete, role: "menuitem", data: {turbo: "false"} do %>

@@ -1,0 +1,26 @@
+<div class="mx-auto md:w-2/3 w-full">
+  <h1>Unit Prefesences</h1>
+  
+
+    <%= form_with model: @unit_prefs, url: unit_prefs_path, method: :post do |form| %>
+      <% @units.each do |unit| %>
+        <h2 class="m-2"><%= unit.name %></h2>
+        <% @unit_prefs.where(unit_id: unit).each do |pref| %>
+          <%= fields_for 'unit_prefs[]' do %>
+            <div>
+            <%= label_tag("unit_prefs[#{unit.id}][#{pref.name}]", nil, class: "hidden") %>
+            <%= check_box_tag "unit_prefs[#{unit.id}][#{pref.name}]", 1, pref.value %>
+            <%= pref.name %> - <%= pref.description %>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
+
+        
+      <div class="my-4">
+        <div class="inline">
+          <%= submit_tag 'Update your preferences', class: "secondary_blue_button" %>
+        </div>
+      <div>
+    <% end %>
+</div>

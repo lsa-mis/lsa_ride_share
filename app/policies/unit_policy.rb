@@ -9,15 +9,15 @@ class UnitPolicy < ApplicationPolicy
   end
 
   def index?
-    user_in_access_group?
+    user_admin?
   end
 
   def show?
-    user_in_access_group?
+    user_admin?
   end
 
   def create?
-    user_in_access_group?
+    user_admin?
   end
 
   def new?
@@ -25,15 +25,11 @@ class UnitPolicy < ApplicationPolicy
   end
 
   def update?
-    user_in_access_group?
+    user_admin?
   end
 
   def edit?
     update?
-  end
-
-  def delete_file?
-    user_in_access_group?
   end
 
 end
