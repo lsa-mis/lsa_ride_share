@@ -63,7 +63,7 @@
       <% end %>
 
       <div class="my-5">
-        <%= form.label :status, class: "fancy_label" %>
+        <%= form.label :status, 'Status *', class: "fancy_label" %>
         <%= form.select :status, @statuses.map{ |key| [key.titleize, key] }, { selected: @car.status || :available }, { class: "input_text_field" } %>
       </div>
     </div>
