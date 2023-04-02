@@ -3,8 +3,9 @@ class UnitsController < ApplicationController
 
   # GET /units or /units.json
   def index
+    @unit = Unit.new
     @units = Unit.all
-    authorize @units
+    authorize Unit
   end
 
   # GET /units/1 or /units/1.json
@@ -25,15 +26,11 @@ class UnitsController < ApplicationController
   def create
     @unit = Unit.new(unit_params)
     authorize @unit
-    respond_to do |format|
-      if @unit.save
-        format.html { redirect_to unit_url(@unit), notice: "Unit was successfully created." }
-        format.json { render :show, status: :created, location: @unit }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @unit.errors, status: :unprocessable_entity }
-      end
+    if @unit.save
+      @unit = Unit.new
+      flash.now[:notice] = "Unit was successfully created."
     end
+    @units = Unit.all
   end
 
   # PATCH/PUT /units/1 or /units/1.json
@@ -51,12 +48,10 @@ class UnitsController < ApplicationController
 
   # DELETE /units/1 or /units/1.json
   def destroy
-    @unit.destroy
-
-    respond_to do |format|
-      format.html { redirect_to units_url, notice: "Unit was successfully destroyed." }
-      format.json { head :no_content }
+    if @unit.destroy
+      flash.now[:notice] = "Unit was removed."
     end
+    @units = Unit.all
   end
 
   private
