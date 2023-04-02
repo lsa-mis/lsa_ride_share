@@ -11,17 +11,24 @@
     </div>
   <% end %>
 
-  <div class="my-5">
-    <%= form.label :name %>
-    <%= form.text_field :name, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
+  <div class="sm:flex gap-2 items-end mb-2">
+    <div>
+      <%= form.label :name, "Name *", class: "fancy_label"  %>
+      <%= form.text_field :name, class: "input_text_field" %>
+    </div>
 
-  <div class="my-5">
-    <%= form.label :ldap_group %>
-    <%= form.text_field :ldap_group, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
+    <div class="">
+      <%= form.label :ldap_group, "Ldap Group *", class: "fancy_label"  %>
+      <%= form.text_field :ldap_group, class: "input_text_field" %>
+    </div>
 
-  <div class="inline">
-    <%= form.submit class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+    <div class="">
+    <% if unit.new_record? %>
+      <%= form.submit "Create Unit", class: "secondary_blue_button" %>
+    <% else %>
+      <%= form.submit "Save" %>
+      <%= link_to "Cancel", @unit %>
+    <% end %>
+    </div>
   </div>
 <% end %>
