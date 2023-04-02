@@ -14,20 +14,24 @@
   <div class="sm:flex gap-2 items-end mb-2">
     <div>
       <%= form.label :name, "Name *", class: "fancy_label"  %>
-      <%= form.text_field :name, class: "input_text_field" %>
+      <%= form.text_field :name, required: true, class: "input_text_field" %>
     </div>
 
     <div class="">
       <%= form.label :ldap_group, "Ldap Group *", class: "fancy_label"  %>
-      <%= form.text_field :ldap_group, class: "input_text_field" %>
+      <%= form.text_field :ldap_group, required: true, class: "input_text_field" %>
     </div>
 
     <div class="">
     <% if unit.new_record? %>
       <%= form.submit "Create Unit", class: "secondary_blue_button" %>
     <% else %>
-      <%= form.submit "Save" %>
-      <%= link_to "Cancel", @unit %>
+      <%= form.submit "Update", class: "primary_button" %>
+      <%= link_to units_path do %>
+        <span class="tertiary_button">Cancel
+        <i class="fa fa-times" aria-hidden="true"></i>
+        </span>
+      <% end %>
     <% end %>
     </div>
   </div>

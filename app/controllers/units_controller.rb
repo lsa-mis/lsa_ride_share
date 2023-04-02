@@ -35,14 +35,9 @@ class UnitsController < ApplicationController
 
   # PATCH/PUT /units/1 or /units/1.json
   def update
-    respond_to do |format|
-      if @unit.update(unit_params)
-        format.html { redirect_to unit_url(@unit), notice: "Unit was successfully updated." }
-        format.json { render :show, status: :ok, location: @unit }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @unit.errors, status: :unprocessable_entity }
-      end
+    if @unit.update(unit_params)
+      @unit = Unit.new
+      redirect_to units_path, notice: "Unit was successfully updated."
     end
   end
 

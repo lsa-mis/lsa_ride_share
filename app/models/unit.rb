@@ -13,4 +13,6 @@ class Unit < ApplicationRecord
   has_many :programs
   has_many :cars
   has_many :unit_preferences
+
+  validates_presence_of :name, :ldap_group
 end
