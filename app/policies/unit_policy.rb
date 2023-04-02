@@ -32,4 +32,8 @@ class UnitPolicy < ApplicationPolicy
     update?
   end
 
+  def destroy?
+    user_admin?
+  end
+
 end
