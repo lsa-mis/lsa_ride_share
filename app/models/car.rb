@@ -28,7 +28,7 @@ class Car < ApplicationRecord
   end
   include AppendToHasManyAttached['initial_damages']
 
-  validates_presence_of :car_number, :make, :model, :color, :number_of_seats, :mileage, :gas, :parking_spot
+  validates_presence_of :car_number, :make, :model, :color, :number_of_seats, :mileage, :gas, :parking_spot, :status, :updated_by
   validate :acceptable_image
   
   enum :status, [:available, :unavailable], prefix: true, scopes: true

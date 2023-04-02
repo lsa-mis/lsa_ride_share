@@ -240,7 +240,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .mi_tbody_tr {
-    @apply relative sm:pl-2 bg-white border border-l-0 border-r-0 border-gray-um20;
+    @apply relative sm:pl-2 bg-white border border-l-0 border-r-0 border-t-0 border-gray-um20;
   }
 
   .mi_tbody_td {
