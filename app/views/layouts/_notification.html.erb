@@ -1,4 +1,4 @@
-<div class="flashes">
+<div class="flashes mt-2">
   <% flash.each do |key, value| %>
     <% if key == 'alert' or key == 'notice' %>
       <%= content_tag(:div, value, class: "flash #{key}", id: "#{key}") %>
