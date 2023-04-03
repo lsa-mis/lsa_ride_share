@@ -27,6 +27,11 @@ class UnitsController < ApplicationController
     @unit = Unit.new(unit_params)
     authorize @unit
     if @unit.save
+      # create preferences for the unit
+      prefs = UnitPreference.distinct.pluck(:name, :description)
+      prefs.each do |name, descr|
+        UnitPreference.create(name: name, description: descr, unit_id: @unit.id)
+      end
       @unit = Unit.new
       flash.now[:notice] = "Unit was successfully created."
     end
