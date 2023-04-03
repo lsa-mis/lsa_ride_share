@@ -11,7 +11,7 @@
 
         <div class="mb-4">
           <label for="unit_id" class="fancy_label">Select a Unit</label>
-          <%= select_tag "unit_id", options_from_collection_for_select(@units, :id, :name, selected: params[:unit_id]), class: "filter_select w-48",
+          <%= select_tag "unit_id", options_from_collection_for_select(@units, :id, :name, selected: params[:unit_id]), include_blank: "All Cars", class: "filter_select w-48",
                       :"data-action" => "change->autosubmit#search" %>
         </div>
 
