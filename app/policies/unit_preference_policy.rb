@@ -40,8 +40,9 @@ class UnitPreferencePolicy < ApplicationPolicy
     update?
   end
 
-  def delete_file?
-    user_in_access_group?
+  def delete_preference?
+    user_admin?
   end
+
 
 end

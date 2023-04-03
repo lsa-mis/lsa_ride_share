@@ -13,7 +13,7 @@
         <% @units.each do |unit| %>
           <tr class="mi_tbody_tr">
             <td class="mi_tbody_td">
-              <%= link_to unit.name, unit_path(unit), class: "link_to" %>
+              <%= unit.name %>
             </td>
             <td class="mi_tbody_td">
               <%= unit.ldap_group %>
