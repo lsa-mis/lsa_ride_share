@@ -13,6 +13,8 @@ class Unit < ApplicationRecord
   has_many :programs
   has_many :cars
   has_many :unit_preferences, dependent: :destroy
-
+  
   validates_presence_of :name, :ldap_group
+  validates :name, :ldap_group, uniqueness: { case_sensitive: false }
+
 end
