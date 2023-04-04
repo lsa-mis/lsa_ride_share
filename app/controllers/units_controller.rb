@@ -26,7 +26,10 @@ class UnitsController < ApplicationController
       # create preferences for the unit
       prefs = UnitPreference.distinct.pluck(:name, :description)
       prefs.each do |name, descr|
-        UnitPreference.create(name: name, description: descr, unit_id: @unit.id)
+        unless UnitPreference.create(name: name, description: descr, unit_id: @unit.id)
+          @units = Unit.all
+          return
+        end
       end
       @unit = Unit.new
       flash.now[:notice] = "Unit was successfully created."
