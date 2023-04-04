@@ -38,10 +38,13 @@ class UnitPreferencesController < ApplicationController
   # POST /unit_preferences or /unit_preferences.json
   def create
     Unit.all.each do |unit|
-      unit_preference = UnitPreference.new(unit_preference_params)
-      authorize unit_preference
-      unit_preference.unit_id = unit.id
-      unit_preference.save
+      @unit_preference = UnitPreference.new(unit_preference_params)
+      authorize @unit_preference
+      @unit_preference.unit_id = unit.id
+      unless @unit_preference.save
+        @unit_preferences = UnitPreference.distinct.pluck(:name, :description)
+        return
+      end
     end
     flash.now[:notice] =  "Unit preference was successfully created."
     @unit_preference = UnitPreference.new

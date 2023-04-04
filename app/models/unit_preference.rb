@@ -13,4 +13,10 @@
 
 class UnitPreference < ApplicationRecord
   belongs_to :unit
+
+  validates :name, uniqueness: { scope: :unit_id, message: "should be unique." }
+
+  def name=(value)
+    super(value.try(:strip))
+  end
 end
