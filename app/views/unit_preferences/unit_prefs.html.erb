@@ -1,4 +1,4 @@
-<div class="mx-auto md:w-2/3 w-full">
+<div class="mx-auto w-full">
   <h1>Unit Preferences</h1>
   
 
@@ -8,9 +8,9 @@
         <% @unit_prefs.where(unit_id: unit).each do |pref| %>
           <%= fields_for 'unit_prefs[]' do %>
             <div>
-            <%= label_tag("unit_prefs[#{unit.id}][#{pref.name}]", nil, class: "hidden") %>
-            <%= check_box_tag "unit_prefs[#{unit.id}][#{pref.name}]", 1, pref.value %>
-            <%= pref.name %> - <%= pref.description %>
+            <%= label_tag("refs[#{unit.id}][#{pref.name}]", nil, class: "hidden") %>
+            <%= check_box_tag "prefs[#{unit.id}][#{pref.name}]", 1, pref.value, class: "check_box" %>
+            <span class="check_box_text"><%= pref.description %></span>
             </div>
           <% end %>
         <% end %>
