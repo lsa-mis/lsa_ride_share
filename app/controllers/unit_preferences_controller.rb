@@ -37,6 +37,7 @@ class UnitPreferencesController < ApplicationController
 
   # POST /unit_preferences or /unit_preferences.json
   def create
+    # create preference for every unit
     Unit.all.each do |unit|
       @unit_preference = UnitPreference.new(unit_preference_params)
       authorize @unit_preference
