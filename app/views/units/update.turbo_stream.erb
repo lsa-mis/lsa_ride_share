@@ -1,9 +1,0 @@
-<%= render_flash_stream %>
-
-<%= turbo_stream.update "new_unit" do %>
-  <%= render "form", unit: @unit %>
-<% end %>
-
-<%= turbo_stream.update "units" do %>
-  <%= render "unit_list" %>
-<% end %>

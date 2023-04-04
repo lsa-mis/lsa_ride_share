@@ -8,10 +8,6 @@ class UnitsController < ApplicationController
     authorize Unit
   end
 
-  # GET /units/1 or /units/1.json
-  def show
-  end
-
   # GET /units/new
   def new
     @unit = Unit.new
@@ -40,9 +36,14 @@ class UnitsController < ApplicationController
 
   # PATCH/PUT /units/1 or /units/1.json
   def update
-    if @unit.update(unit_params)
-      @unit = Unit.new
-      redirect_to units_path, notice: "Unit was successfully updated."
+    respond_to do |format|
+      if @unit.update(unit_params)
+        @unit = Unit.new
+        @units = Unit.all
+        format.html { redirect_to units_path, notice: "Unit was successfully updated." }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+      end
     end
   end
 

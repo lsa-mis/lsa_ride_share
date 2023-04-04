@@ -12,10 +12,6 @@ class UnitPolicy < ApplicationPolicy
     user_admin?
   end
 
-  def show?
-    user_admin?
-  end
-
   def create?
     user_admin?
   end
