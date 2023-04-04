@@ -24,16 +24,13 @@
       </div>
 
       <div class="">
-      <% if unit.new_record? %>
-        <%= form.submit "Create Unit", class: "secondary_blue_button" %>
-      <% else %>
-        <%= form.submit "Update", class: "primary_button" %>
+        <%= form.submit class: "primary_button" %>
+      
         <%= link_to units_path do %>
           <span class="tertiary_button">Cancel
             <i class="fa fa-times" aria-hidden="true"></i>
           </span>
         <% end %>
-      <% end %>
       </div>
     </div>
   <% end %>
