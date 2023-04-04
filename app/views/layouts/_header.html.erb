@@ -32,7 +32,7 @@
             <% end %>
             <% if UnitPreference.where(unit_id: current_user.unit, name: "faculty_survey").present? && UnitPreference.where(unit_id: current_user.unit, name: "faculty_survey").pluck(:value).include?(true) %>
               <div class="header_link">
-                <%= link_to "Faculty Survey", units_path, class: "#{class_names(active: current_page?(units_path))}" %>
+                <%= link_to "Faculty Survey", root_path, class: "#{class_names(active: current_page?(root_path))}" %>
               </div>
             <% end %>
           <% end %>
@@ -40,23 +40,25 @@
       </div>
       <div class="hidden sm:ml-6 sm:flex sm:items-center">
         <div class="ml-2 relative">
-          <div class="grid justify-items-end flex flex-wrap items-center">
-            <% if user_signed_in? %>
-                <div class="leading-tight text-sm font-medium text-white">
-                  <%= link_to show_units(current_user), unit_prefs_path, class: "#{class_names(active: current_page?(unit_prefs_path))}" %>
-                  <%= current_user.email %>
-                </div>
-              <%= button_to destroy_user_session_path, method: :delete, role: "menuitem", data: {turbo: "false"} do %>
-                <div class="sign_button">Sign Out</div>
-              <% end %>
+          <% if user_signed_in? %>
+            <div class="flex items-center">
+              <div class="header_link">
+                <%= link_to show_units(current_user), unit_prefs_path, class: "#{class_names(active: current_page?(unit_prefs_path))}" %>
+              </div>
+              <div class="flex flex-col items-center leading-tight text-sm font-medium text-white">
+                <%= current_user.uniqname %>
+                <%= button_to destroy_user_session_path, method: :delete, role: "menuitem", data: {turbo: "false"} do %>
+                  <div class="sign_button">Sign Out</div>
+                <% end %>
+              </div>
             <% else %>
               <div>
                 <%= button_to user_saml_omniauth_authorize_path, data: {turbo: "false"} do %>
                   <div class="sign_button">Sign In</div>
                 <% end %>
               </div>
-            <% end %>
-          </div>
+            </div>
+          <% end %>
         </div>
       </div>
       <div class="sm:hidden items-center mt-1">
