@@ -30,7 +30,7 @@
                 <%= link_to "Unit Preferences", unit_preferences_path, class: "#{class_names(active: current_page?(unit_preferences_path))}" %>
               </div>
             <% end %>
-            <% if UnitPreference.where(unit_id: current_user.unit, name: "faculty_survey").present? && UnitPreference.where(unit_id: current_user.unit, name: "faculty_survey").pluck(:value).include?(true) %>
+            <% if unit_use_faculty_survey(current_user.unit) %>
               <div class="header_link">
                 <%= link_to "Faculty Survey", root_path, class: "#{class_names(active: current_page?(root_path))}" %>
               </div>

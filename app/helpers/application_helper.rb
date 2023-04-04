@@ -56,6 +56,10 @@ module ApplicationHelper
     end
   end
 
+  def unit_use_faculty_survey(unit)
+    UnitPreference.where(unit_id: unit, name: "faculty_survey").present? && UnitPreference.where(unit_id: unit, name: "faculty_survey").pluck(:value).include?(true)
+  end
+
   def is_super_admin?(user)
     user.membership.include?('lsa-rideshare-admins')
   end
