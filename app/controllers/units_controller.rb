@@ -50,7 +50,7 @@ class UnitsController < ApplicationController
   # DELETE /units/1 or /units/1.json
   def destroy
     if @unit.destroy
-      flash.now[:notice] = "Unit was removed."
+      flash.now[:notice] = "Unit was deleted."
     end
     @units = Unit.all
   end
