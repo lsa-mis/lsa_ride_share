@@ -49,7 +49,15 @@ module ApplicationHelper
   end
 
   def show_units(user)
-    Unit.where(id: current_user.unit).pluck(:name).join(' ')
+    if is_super_admin?(user)
+      "SuperAdmin"
+    else
+      Unit.where(id: current_user.unit).pluck(:name).join(' ')
+    end
+  end
+
+  def is_super_admin?(user)
+    user.membership.include?('lsa-rideshare-admins')
   end
   
   def render_flash_stream

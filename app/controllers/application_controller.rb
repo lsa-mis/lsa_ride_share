@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   include Pundit::Authorization
+  include ApplicationHelper
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
   before_action :set_unit_and_membership
@@ -17,18 +18,14 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  # def set_membership
-  #   if user_signed_in?
-  #     current_user.membership = session[:user_memberships]
-  #   else
-  #     new_user_session_path
-  #   end
-  # end
-
   def set_unit_and_membership
     if user_signed_in?
-      current_user.unit = Unit.where(ldap_group: session[:user_memberships]).pluck(:id)
       current_user.membership = session[:user_memberships]
+      if is_super_admin?(current_user)
+        current_user.unit = Unit.all
+      else
+        current_user.unit = Unit.where(ldap_group: session[:user_memberships]).pluck(:id)
+      end
     else
       new_user_session_path
     end
