@@ -1,5 +1,4 @@
 class UnitPreferencesController < ApplicationController
-  # before_action :set_unit_preference, only: %i[ show edit update destroy ]
   before_action :set_units
 
   # GET /unit_preferences or /unit_preferences.json
@@ -7,14 +6,6 @@ class UnitPreferencesController < ApplicationController
     @unit_preference = UnitPreference.new
     @unit_preferences = UnitPreference.distinct.pluck(:name, :description)
     authorize UnitPreference
-  end
-
-  def units_preferences
-    @unit_preferences = UnitPreference.where(unit_id: current_user.unit)
-    authorize @unit_preferences
-  end
-  # GET /unit_preferences/1 or /unit_preferences/1.json
-  def show
   end
 
   def unit_prefs
@@ -46,11 +37,6 @@ class UnitPreferencesController < ApplicationController
     @units = Unit.all
   end
 
-  # GET /unit_preferences/1/edit
-  def edit
-    @units = Unit.all
-  end
-
   # POST /unit_preferences or /unit_preferences.json
   def create
     Unit.all.each do |unit|
@@ -64,34 +50,12 @@ class UnitPreferencesController < ApplicationController
     @unit_preferences = UnitPreference.distinct.pluck(:name, :description)
   end
 
-  # PATCH/PUT /unit_preferences/1 or /unit_preferences/1.json
-  def update
-    respond_to do |format|
-      if @unit_preference.update(unit_preference_params)
-        format.html { redirect_to unit_preference_url(@unit_preference), notice: "Unit preference was successfully updated." }
-        format.json { render :show, status: :ok, location: @unit_preference }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @unit_preference.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /unit_preferences/1 or /unit_preferences/1.json
   def delete_preference
     @unit_preferences = UnitPreference.where(name: params[:name])
     authorize @unit_preferences
-    # if @unit_preferences.destroy_all
-    #   flash.now[:notice] = "Unit preference was successfully destroyed."
-    # end
-    # @unit_preference = UnitPreference.new
-    # @unit_preferences = UnitPreference.distinct.pluck(:name, :description)
 
     respond_to do |format|
       if @unit_preferences.destroy_all
-        @unit_preference = UnitPreference.new
-        @unit_preferences = UnitPreference.distinct.pluck(:name, :description)
-        flash.now[:notice] = "Preference was deleted."
         format.html { redirect_to unit_preferences_path, notice: "Preference was deleted." }
       else
         format.html { render :unit_preferences_path, status: :unprocessable_entity }
@@ -101,14 +65,9 @@ class UnitPreferencesController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    # def set_unit_preference
-    #   @unit_preference = UnitPreference.find(params[:id])
-    #   authorize @unit_preference
-    # end
 
     def set_units
       @units = Unit.where(id: current_user.unit)
-      # @unit = Unit.find(params[:unit_id])
     end
 
     # Only allow a list of trusted parameters through.

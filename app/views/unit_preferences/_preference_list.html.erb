@@ -6,7 +6,6 @@
             <th class="header_th">Name</th>
             <th class="header_th">Description</th>
             <th class="header_th"></th>
-            <th class="header_th"></th>
           </tr>
         </thead>
         <tbody>
@@ -17,9 +16,6 @@
               </td>
               <td class="mi_tbody_td">
                 <%= descr %>
-              </td>
-              <td>
-                <%= link_to 'Edit', edit_unit_preference_path(name), class: "link_to" %>
               </td>
               <td>
                 <%= link_to 'Delete', delete_preference_path(name), data: { turbo_confirm: 'Are you sure?', turbo_method: :get }, class: "link_to" %>
