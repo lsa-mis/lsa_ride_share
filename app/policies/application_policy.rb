@@ -42,7 +42,7 @@ class ApplicationPolicy
   end
 
   def user_admin?
-    user.membership && user.membership.include?('lsa-rideshare-admins')
+    user.membership && user.membership.include?('lsa-was-rails-devs')
   end
 
   def user_in_access_group?

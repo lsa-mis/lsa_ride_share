@@ -61,7 +61,7 @@ module ApplicationHelper
   end
 
   def is_super_admin?(user)
-    user.membership.include?('lsa-rideshare-admins')
+    user.membership.include?('lsa-was-rails-devs')
   end
   
   def render_flash_stream
