@@ -13,6 +13,11 @@
 
   <div class="grid grid-cols-1 sm:grid-cols-2">
     <div>
+
+      <div class="my-5">
+        <%= form.label :unit_id, 'Unit *', class: "fancy_label" %>
+        <%= form.collection_select :unit_id, @units, :id, :name, { required: true }, { class: "input_text_field" } %>
+      </div>
       <div class="my-5">
         <%= form.label :car_number, 'Car Number *', class: "fancy_label" %>
         <%= form.text_field :car_number, required: true, placeholder: "Car Number", class: "input_text_field" %>

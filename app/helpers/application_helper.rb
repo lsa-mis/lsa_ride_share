@@ -47,6 +47,22 @@ module ApplicationHelper
       "Not available"
     end
   end
+
+  def show_units(user)
+    if is_super_admin?(user)
+      "SuperAdmin"
+    else
+      Unit.where(id: current_user.unit).pluck(:name).join(' ')
+    end
+  end
+
+  def unit_use_faculty_survey(unit)
+    UnitPreference.where(unit_id: unit, name: "faculty_survey").present? && UnitPreference.where(unit_id: unit, name: "faculty_survey").pluck(:value).include?(true)
+  end
+
+  def is_super_admin?(user)
+    user.membership.include?('lsa-rideshare-admins')
+  end
   
   def render_flash_stream
     turbo_stream.update "flash", partial: "layouts/notification"

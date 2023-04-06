@@ -1,14 +1,15 @@
 class ApplicationController < ActionController::Base
   include Pundit::Authorization
+  include ApplicationHelper
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
-  before_action :set_membership
+  before_action :set_unit_and_membership
   after_action :verify_authorized, unless: :devise_controller?
   skip_after_action :verify_authorized, only: [:delete_file_attachment]
 
   def user_not_authorized
     flash[:alert] = "You are not authorized to perform this action."
-    redirect_to(request.referrer || root_path)
+    redirect_to(root_path)
   end
 
   def auth_user
@@ -17,16 +18,21 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def set_membership
+  def set_unit_and_membership
     if user_signed_in?
       current_user.membership = session[:user_memberships]
+      if is_super_admin?(current_user)
+        current_user.unit = Unit.all
+      else
+        current_user.unit = Unit.where(ldap_group: session[:user_memberships]).pluck(:id)
+      end
     else
       new_user_session_path
     end
   end
 
   def after_sign_in_path_for(resource)
-    if session[:user_memberships].include?('lsa-rideshare-admins')
+    if session[:user_memberships].present?
       programs_path 
     else
       root_path

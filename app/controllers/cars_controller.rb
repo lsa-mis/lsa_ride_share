@@ -2,10 +2,15 @@ class CarsController < ApplicationController
   include ActionView::RecordIdentifier
   before_action :set_car, only: %i[ show edit update destroy ]
   before_action :set_statuses, only: %i[ new edit create update]
+  before_action :set_units
 
   # GET /cars or /cars.json
   def index
-    @cars = Car.all.order(:car_number)
+    if params[:unit_id].present?
+      @cars = Car.where(unit_id: params[:unit_id]).order(:car_number)
+    else
+      @cars = Car.where(unit_id: current_user.unit).order(:car_number)
+    end
     authorize @cars
     
   end
@@ -64,10 +69,14 @@ class CarsController < ApplicationController
       @statuses = Car.statuses.keys
     end
 
+    def set_units
+      @units = Unit.where(id: current_user.unit).order(:name)
+    end
+
     # Only allow a list of trusted parameters through.
     def car_params
       params.require(:car).permit(:car_number, :make, :model, :color, :number_of_seats, 
                  :mileage, :gas, :parking_spot, :last_used, :last_checked, :last_driver, 
-                 :updated_by, :status, initial_damages: [])
+                 :updated_by, :status, :unit_id, initial_damages: [])
     end
 end

@@ -18,9 +18,11 @@
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  status          :integer
+#  unit_id         :bigint
 #
 class Car < ApplicationRecord
   has_and_belongs_to_many :programs
+  belongs_to :unit
   has_many :reservations
   has_many :notes, as: :noteable
   has_many_attached :initial_damages do |attachable|

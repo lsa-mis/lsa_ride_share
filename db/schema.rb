@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_29_182936) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_30_222840) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -79,6 +79,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_29_182936) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "status"
+    t.bigint "unit_id"
+    t.index ["unit_id"], name: "index_cars_on_unit_id"
   end
 
   create_table "cars_programs", force: :cascade do |t|
@@ -148,15 +150,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_29_182936) do
     t.integer "updated_by"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "admin_access_id"
     t.string "mvr_link"
     t.string "canvas_link"
     t.integer "canvas_course_id"
     t.integer "term_id"
     t.boolean "add_managers", default: false
     t.boolean "not_course", default: false
-    t.index ["admin_access_id"], name: "index_programs_on_admin_access_id"
+    t.bigint "unit_id"
     t.index ["instructor_id"], name: "index_programs_on_instructor_id"
+    t.index ["unit_id"], name: "index_programs_on_unit_id"
   end
 
   create_table "programs_sites", force: :cascade do |t|
@@ -237,6 +239,23 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_29_182936) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "unit_preferences", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.boolean "value"
+    t.bigint "unit_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["unit_id"], name: "index_unit_preferences_on_unit_id"
+  end
+
+  create_table "units", force: :cascade do |t|
+    t.string "name"
+    t.string "ldap_group"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -292,5 +311,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_29_182936) do
   add_foreign_key "reservations", "students", column: "backup_driver_id"
   add_foreign_key "reservations", "students", column: "driver_id"
   add_foreign_key "students", "programs"
+  add_foreign_key "unit_preferences", "units"
   add_foreign_key "vehicle_reports", "reservations"
 end

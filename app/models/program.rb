@@ -16,13 +16,13 @@
 #  updated_by                          :integer
 #  created_at                          :datetime         not null
 #  updated_at                          :datetime         not null
-#  admin_access_id                     :bigint
 #  mvr_link                            :string
 #  canvas_link                         :string
 #  canvas_course_id                    :integer
 #  term_id                             :integer
 #  add_managers                        :boolean          default(FALSE)
 #  not_course                          :boolean          default(FALSE)
+#  unit_id                             :bigint
 #
 class Program < ApplicationRecord
   belongs_to :instructor, class_name: 'ProgramManager', foreign_key: :instructor_id
@@ -32,12 +32,12 @@ class Program < ApplicationRecord
   has_and_belongs_to_many :cars
   has_many :reservations
   has_many :config_questions
-  belongs_to :admin_access
+  belongs_to :unit
   belongs_to :term
 
   accepts_nested_attributes_for :instructor
 
-  validates_presence_of :title, :instructor_id, :admin_access_id
+  validates_presence_of :title, :instructor_id, :unit_id
   validates_presence_of :subject, :catalog_number, :class_section, unless: -> { self.not_course }
   validates :term_id, uniqueness: { scope: [:subject, :catalog_number], message: "already has this program" }, unless: -> { self.not_course } 
   validates :term_id, uniqueness: { scope: [:title], message: "already has this program" }, if: -> { self.not_course }

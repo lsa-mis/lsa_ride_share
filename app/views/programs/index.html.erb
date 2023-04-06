@@ -9,15 +9,25 @@
   <div>
     <%= form_with url: programs_path, method: :get, class: "", data: { autosubmit_target: "form", turbo_frame: "turbo-programs" } do |form| %>
   
-      <div class="">
-        <label for="term_id" class="fancy_label">Select a Term</label>
-        <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: params[:term_id]), include_blank: "Current Term", class: "filter_select w-48",
-                    :"data-action" => "change->autosubmit#search" %>
+      <div class="flex gap-2">
+        <div class="">
+          <label for="term_id" class="fancy_label">Select a Term</label>
+          <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: params[:term_id]), include_blank: "Current Term", class: "filter_select w-48",
+                      :"data-action" => "change->autosubmit#search" %>
+        </div>
+
+        <% if current_user.unit.count > 1 %>
+          <div class="">
+            <label for="unit_id" class="fancy_label">Select a Unit</label>
+            <%= select_tag "unit_id", options_from_collection_for_select(@units, :id, :name, selected: params[:unit_id]), include_blank: "All Units", class: "filter_select w-48",
+                        :"data-action" => "change->autosubmit#search" %>
+          </div>
+        <% end %>
       </div>
 
       <%= turbo_frame_tag "turbo-programs" do %>
         <div id="maincontent"></div>
-        <div class=" mb-10" id="programs_listing">
+        <div class="mb-10" id="programs_listing">
           <ul role="list" class="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-4 mt-4">
             <% @programs.each do |program| %>
               <li class="col-span-1 bg-white rounded-lg shadow-md divide-y divide-gray-400 px-2 place-items-stretch bg-white border border-gray-300 rounded-lg">
