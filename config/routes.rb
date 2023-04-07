@@ -18,7 +18,9 @@ Rails.application.routes.draw do
     resources :notes, module: :cars
   end
   resources :students
-  resources :sites
+  resources :sites do
+    resources :notes, module: :sites
+  end
   resources :program_managers
   resources :programs do
     resources :cars, module: :programs

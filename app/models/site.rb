@@ -18,8 +18,8 @@ class Site < ApplicationRecord
   has_many :programs, through: :programs_sites
   has_many :reservations
   has_many :site_contacts
-  has_rich_text :note
-  
+  has_many :notes, as: :noteable
+
   def address
     "#{self.address1} #{self.address2} #{self.city} #{self.state} #{self.zip_code}"
   end
