@@ -10,6 +10,7 @@ class SitesController < ApplicationController
   # GET /sites/1 or /sites/1.json
   def show
     @programs = @site.programs
+    @site_contacts = @site.site_contacts
   end
 
   # GET /sites/new

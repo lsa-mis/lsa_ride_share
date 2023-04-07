@@ -24,7 +24,11 @@
     </label>
     <% @programs.each do |program| %>
       <div>
-        <%= link_to program.display_name_with_title, program_path(program), class: "link_to" %>
+        <% if policy(Program).edit? %>
+          <%= link_to program.display_name_with_title, program_path(program), class: "link_to" %>
+        <% else %>
+          <%= program.display_name_with_title %>
+        <% end %>
       </div>
     <% end %>
   </div>
@@ -33,9 +37,13 @@
     <label class="body-lg-medium-text">
       Contacts:
     </label>
-    <% @programs.each do |program| %>
+    <% @site_contacts.each do |site_contact| %>
       <div>
-        <%= link_to program.display_name_with_title, program_path(program), class: "link_to" %>
+        <% if policy(SiteContact).edit? %>
+          <%= link_to site_contact.display_name, site_contact_path(site_contact), class: "link_to" %>
+        <% else %>
+          <%= site_contact.display_name %>
+        <% end %>
       </div>
     <% end %>
   </div>
