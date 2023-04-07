@@ -17,6 +17,7 @@ class Site < ApplicationRecord
   has_many :programs_sites
   has_many :programs, through: :programs_sites
   has_many :reservations
+  has-many: site_contacts
   has_rich_text :note
   
   def address
