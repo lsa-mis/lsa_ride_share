@@ -4,6 +4,7 @@ class SitesController < ApplicationController
   # GET /sites or /sites.json
   def index
     @sites = Site.all
+    authorize @sites
   end
 
   # GET /sites/1 or /sites/1.json
@@ -13,6 +14,7 @@ class SitesController < ApplicationController
   # GET /sites/new
   def new
     @site = Site.new
+    authorize @site
   end
 
   # GET /sites/1/edit
@@ -29,7 +31,7 @@ class SitesController < ApplicationController
 
     respond_to do |format|
       if @site.save
-        @site_program.sites << @site
+        # @site_program.sites << @site
         format.turbo_stream { redirect_to @site_program, 
                               notice: "The site was added" 
                             }
@@ -69,6 +71,7 @@ class SitesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_site
       @site = Site.find(params[:id])
+      authorize @site
     end
 
     # Only allow a list of trusted parameters through.
