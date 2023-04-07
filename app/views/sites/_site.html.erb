@@ -18,6 +18,28 @@
     </div>
   </div>
 
+  <div class="py-2">
+    <label class="body-lg-medium-text">
+      Programs:
+    </label>
+    <% @programs.each do |program| %>
+      <div>
+        <%= link_to program.display_name_with_title, program_path(program), class: "link_to" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="py-2">
+    <label class="body-lg-medium-text">
+      Contacts:
+    </label>
+    <% @programs.each do |program| %>
+      <div>
+        <%= link_to program.display_name_with_title, program_path(program), class: "link_to" %>
+      </div>
+    <% end %>
+  </div>
+
 
   <% if action_name != "show" %>
     <%= link_to "Show this site", site, class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
