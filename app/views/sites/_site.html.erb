@@ -1,33 +1,23 @@
 <div id="<%= dom_id site %>">
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Title:</strong>
-    <%= site.title %>
-  </p>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Address1:</strong>
-    <%= site.address1 %>
-  </p>
+  <div class="py-2">
+    <label class="body-lg-medium-text">
+      Title:
+    </label>
+    <div class="body-lg-text inline-block">
+      <%= site.title %>
+    </div>
+  </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Address2:</strong>
-    <%= site.address2 %>
-  </p>
+  <div class="py-2">
+    <label class="body-lg-medium-text">
+      Address:
+    </label>
+    <div class="body-lg-text inline-block">
+      <%= site.address %>
+    </div>
+  </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">City:</strong>
-    <%= site.city %>
-  </p>
-
-  <p class="my-5">
-    <strong class="block font-medium mb-1">State:</strong>
-    <%= site.state %>
-  </p>
-
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Zip code:</strong>
-    <%= site.zip_code %>
-  </p>
 
   <% if action_name != "show" %>
     <%= link_to "Show this site", site, class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
