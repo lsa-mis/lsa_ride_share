@@ -10,7 +10,7 @@
 #  site_id      :bigint
 
 class SiteContact < ApplicationRecord
-  belongs_to: site
+  belongs_to :site
 
   def display_name
     "#{self.title}: #{self.first_name} #{self.last_name}, #{self.email}, #{self.phone_number}"

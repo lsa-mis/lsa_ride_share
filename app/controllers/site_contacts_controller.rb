@@ -4,6 +4,7 @@ class SiteContactsController < ApplicationController
   # GET /site_contacts or /site_contacts.json
   def index
     @site_contacts = SiteContact.all
+    authorize @site_contacts
   end
 
   # GET /site_contacts/1 or /site_contacts/1.json
@@ -13,6 +14,7 @@ class SiteContactsController < ApplicationController
   # GET /site_contacts/new
   def new
     @site_contact = SiteContact.new
+    authorize @site_contact
   end
 
   # GET /site_contacts/1/edit
@@ -61,6 +63,7 @@ class SiteContactsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_site_contact
       @site_contact = SiteContact.find(params[:id])
+      authorize @site_contact
     end
 
     # Only allow a list of trusted parameters through.
