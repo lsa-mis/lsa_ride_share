@@ -9,34 +9,38 @@
     </div>
   </div>
 
-  <div class="py-2">
-    <label class="body-lg-medium-text">
-      Programs:
-    </label>
-    <% @programs.each do |program| %>
-      <div>
-        <% if policy(Program).edit? %>
-          <%= link_to program.display_name_with_title, program_path(program), class: "link_to" %>
-        <% else %>
-          <%= program.display_name_with_title %>
-        <% end %>
-      </div>
-    <% end %>
-  </div>
-
-  <div class="py-2">
+  <div class="py-2 flex items-center gap-2">
     <label class="body-lg-medium-text">
       Contacts:
     </label>
-    <% @site_contacts.each do |site_contact| %>
-      <div>
-        <% if policy(SiteContact).edit? %>
-          <%= link_to site_contact.display_name, site_contact_path(site_contact), class: "link_to" %>
-        <% else %>
-          <%= site_contact.display_name %>
-        <% end %>
-      </div>
-    <% end %>
+    <div class="body-lg-text">
+      <% @site_contacts.each do |site_contact| %>
+        <div>
+          <% if policy(SiteContact).edit? %>
+            <%= link_to site_contact.display_name, site_contact_path(site_contact), class: "link_to" %>
+          <% else %>
+            <%= site_contact.display_name %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="py-2 flex items-center gap-2">
+    <label class="body-lg-medium-text">
+      Programs:
+    </label>
+    <div class="body-lg-text">
+      <% @programs.each do |program| %>
+        <div>
+          <% if policy(Program).edit? %>
+            <%= link_to program.display_name_with_title, program_path(program), class: "link_to" %>
+          <% else %>
+            <%= program.display_name_with_title %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
   </div>
 
 </div>
