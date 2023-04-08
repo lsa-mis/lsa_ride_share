@@ -4,7 +4,11 @@ class SitesController < ApplicationController
 
   # GET /sites or /sites.json
   def index
-    @sites = Site.all
+    if params[:unit_id].present?
+      @sites = Site.includes(:programs).where(programs: { id: Program.where(unit_id: params[:unit_id]) })
+    else
+      @sites = Site.includes(:programs).where(programs: { id: Program.where(unit_id: @units) })
+    end
     authorize @sites
   end
 
