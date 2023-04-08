@@ -1,0 +1,24 @@
+<%= turbo_frame_tag 'sites' do %>
+  <div class="min-w-full">
+    <table class="mi_table">
+      <thead class="border border-l-0 border-r-0 border-gray-um60">
+        <tr>
+          <th class="header_th">Ste title</th>
+          <th class="header_th">Address</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @sites.each do |site| %>
+          <tr>
+            <td class="mi_tbody_td">
+              <%= link_to site.title, site_path(site), class: "link_to" %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= site.address %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>
