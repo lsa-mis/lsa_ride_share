@@ -17,5 +17,8 @@ class Site < ApplicationRecord
   has_and_belongs_to_many :programs
   has_many :reservations
   has_rich_text :note
-  
+
+  def address
+    "#{self.address1} #{self.address2} #{self.city} #{self.state} #{self.zip_code}"
+  end
 end
