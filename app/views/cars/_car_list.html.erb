@@ -49,7 +49,7 @@
                 <%= link_to 'Vehicle Reports', vehicle_reports_path(car.vehicle_reports_ids), class: 'link_to' %>
               <% end %>
             </td>
-            <td class="mi_tbody_td">
+            <td class="mi_tbody_td <%= "#{car.status}" %>">
               <%= car.status.titleize %>
             </td>
           </tr>
