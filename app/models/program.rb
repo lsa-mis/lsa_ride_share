@@ -73,6 +73,9 @@ class Program < ApplicationRecord
     if self.non_uofm_passengers
       options += '<br><br>Non UofM passangers are allowed'
     end
+    if self.add_managers
+      options += '<br><br>Program have managers'
+    end
     options
   end
 
