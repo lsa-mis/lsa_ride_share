@@ -65,6 +65,10 @@
           <%= form.check_box :is_checked_today, class: "check_box" %>
           <%= form.label :is_checked_today, "The car is checked today" %>
         </div>
+        <div class="my-5">
+          <%= form.label :checked, class: "fancy_label" %>
+          <%= form.datetime_field :checked, placeholder: "Last checked date", class: "input_text_field" %>
+        </div>
 
       <% end %>
 
