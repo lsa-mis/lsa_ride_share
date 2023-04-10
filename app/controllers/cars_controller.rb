@@ -41,7 +41,10 @@ class CarsController < ApplicationController
 
   # PATCH/PUT /cars/1 or /cars/1.json
   def update
-    if @car.update(car_params)
+    if car_params[:is_checked_today] == "1"
+      @car.last_checked = DateTime.now
+    end
+    if @car.update(car_params.except(:is_checked_today))
       redirect_to car_path(@car), notice: "The car was updated"
     else
       render :edit, status: :unprocessable_entity
@@ -77,6 +80,6 @@ class CarsController < ApplicationController
     def car_params
       params.require(:car).permit(:car_number, :make, :model, :color, :number_of_seats, 
                  :mileage, :gas, :parking_spot, :last_used, :last_checked, :last_driver, 
-                 :updated_by, :status, :unit_id, initial_damages: [])
+                 :updated_by, :status, :unit_id, :is_checked_today, initial_damages: [])
     end
 end

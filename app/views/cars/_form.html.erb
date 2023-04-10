@@ -61,10 +61,11 @@
       <%= form.hidden_field :updated_by, value: current_user.id %>
 
       <% if car.persisted? %>
-        <div class="my-5">
-          <%= form.label :last_checked, class: "fancy_label" %>
-          <%= form.datetime_field :last_checked, placeholder: "Last checked date", class: "input_text_field" %>
+        <div class="px-1 pb-2">
+          <%= form.check_box :is_checked_today, class: "check_box" %>
+          <%= form.label :is_checked_today, "The car is checked today" %>
         </div>
+
       <% end %>
 
       <div class="my-5">
