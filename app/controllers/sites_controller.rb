@@ -1,9 +1,14 @@
 class SitesController < ApplicationController
   before_action :set_site, only: %i[ show edit update destroy ]
+  before_action :set_units
 
   # GET /sites or /sites.json
   def index
-    @sites = Site.all
+    if params[:unit_id].present?
+      @sites = Site.includes(:programs).where(programs: { id: Program.where(unit_id: params[:unit_id]) })
+    else
+      @sites = Site.includes(:programs).where(programs: { id: Program.where(unit_id: @units) })
+    end
     authorize @sites
   end
 
@@ -74,6 +79,10 @@ class SitesController < ApplicationController
     def set_site
       @site = Site.find(params[:id])
       authorize @site
+    end
+
+    def set_units
+      @units = Unit.where(id: current_user.unit).order(:name)
     end
 
     # Only allow a list of trusted parameters through.
