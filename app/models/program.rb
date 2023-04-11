@@ -58,23 +58,17 @@ class Program < ApplicationRecord
 
   def additional_options
     options = ''
-    if self.pictures_required_start || self.pictures_required_end
-      options = 'The program requires to upload pictures to the vehicle reports '
-      if self.pictures_required_start
-        options += '<br>at the start of the trip '
-      end
-      if self.pictures_required_start && self.pictures_required_end
-        options += 'and '
-      end
-      if self.pictures_required_end
-        options += '<br>at the end of the trip'
-      end
+    if self.pictures_required_start 
+      options += 'Users are required to add pictures at beginning of their trip<br>'
+    end
+    if self.pictures_required_end
+      options += 'Users are required to add pictures at beginning of their trip<br>'
     end
     if self.non_uofm_passengers
-      options += '<br><br>Non UofM passangers are allowed'
+      options += 'Reservation can include non U-M passengers<br>'
     end
     if self.add_managers
-      options += '<br><br>Program have managers'
+      options += 'Program have managers<br>'
     end
     options
   end
