@@ -1,20 +1,30 @@
-<div class="mx-auto md:w-2/3 w-full">
+<div class="mx-auto w-full">
 
-  <div class="flex flex-row items-center gap-4 m-2">
+  <div class="lg:flex justify-between">
     <div>
-      <h1><%= @program.title %></h1>
+      <div class="flex items-end gap-2">
+        <h1><%= @program.title %></h1>
+        <div>
+          <%= link_to edit_program_path(@program) do %>
+            <span class="tertiary_button"> 
+            Edit Course Information
+            <i class="fa-solid fa-pen" aria-hidden="true"></i>
+            </span>
+          <% end %>
+        </div>
+      </div>
+      <div class="mt-2">
+        <%= render @program %>
+      </div>
     </div>
-    <div>
-      <%= link_to "Edit Course Information", edit_program_path(@program), class: "secondary_blue_button" %> 
-    </div>
-  </div>
-  <div class="grid grid-cols-2">
-    <div>
-      <%= render @program %>
-    </div>
-    <div class="grid justify-items-end">
-      <div class="">
-        <%= link_to 'Exit Edit Page', program_path(@program), class: "primary_button" %>
+    <div class="mt-4 flex-none">
+      <div>
+        <%= link_to program_path(@program) do %>
+          <span class="primary_button mb-2">
+            <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
+            Exit Edit Page
+          </span>
+        <% end %>
       </div>
     </div>
   </div>

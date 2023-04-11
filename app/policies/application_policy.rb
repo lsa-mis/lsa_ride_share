@@ -36,9 +36,17 @@ class ApplicationPolicy
     false
   end
 
+  def unit_admin?
+    units = Unit.all.pluck(:id)
+    user.unit && (user.unit & units).any?
+  end
+
+  def user_admin?
+    user.membership && user.membership.include?('lsa-was-rails-devs')
+  end
+
   def user_in_access_group?
-    access_groups = ['lsa-rideshare-admins']
-    user.membership && (user.membership & access_groups).any?
+    unit_admin? || user_admin?
   end
 
 end

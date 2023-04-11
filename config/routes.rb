@@ -1,9 +1,21 @@
 Rails.application.routes.draw do
+  
+  resources :units
+
+  get 'unit_preference/:name', to: 'unit_preferences#delete_preference', as: :delete_preference
+  get 'unit_preferences/unit_prefs', to: 'unit_preferences#unit_prefs', as: :unit_prefs
+  post 'unit_preferences/unit_prefs/', to: 'unit_preferences#save_unit_prefs'
+  resources :unit_preferences
+
+
   resources :terms
   resources :admin_accesses
+  get '/vehicle_reports/:reports_ids', to: 'vehicle_reports#index', as: 'vehicle_reports'
   resources :vehicle_reports
   resources :reservations
-  resources :cars
+  resources :cars do
+    resources :notes, module: :cars
+  end
   resources :students
   resources :sites
   resources :program_managers
@@ -36,7 +48,11 @@ Rails.application.routes.draw do
   get 'programs/add_config_questions/:id/', to: 'programs#add_config_questions', as: :add_config_questions
   get 'programs/program_data/:id/', to: 'programs#program_data', as: :program_data
 
+  get 'application/delete_file_attachment/:id', to: 'application#delete_file_attachment', as: :delete_file
+
   resources :program_managers
+  resources :notes
+  
   get 'static_pages/home'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

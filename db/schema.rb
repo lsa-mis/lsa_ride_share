@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_21_133327) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_30_222840) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -74,6 +74,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_21_133327) do
     t.integer "updated_by"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "status"
+    t.bigint "unit_id"
+    t.index ["unit_id"], name: "index_cars_on_unit_id"
   end
 
   create_table "cars_programs", force: :cascade do |t|
@@ -90,6 +93,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_21_133327) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["program_id"], name: "index_config_questions_on_program_id"
+  end
+
+  create_table "notes", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "noteable_type", null: false
+    t.bigint "noteable_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["noteable_type", "noteable_id"], name: "index_notes_on_noteable"
+    t.index ["user_id"], name: "index_notes_on_user_id"
   end
 
   create_table "program_managers", force: :cascade do |t|
@@ -109,7 +122,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_21_133327) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["program_id"], name: "index_program_managers_programs_on_program_id"
-    t.index ["program_manager_id", "program_id"], name: "manager_program_index", unique: true
     t.index ["program_manager_id"], name: "index_program_managers_programs_on_program_manager_id"
   end
 
@@ -127,15 +139,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_21_133327) do
     t.integer "updated_by"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "admin_access_id"
     t.string "mvr_link"
     t.string "canvas_link"
     t.integer "canvas_course_id"
     t.integer "term_id"
     t.boolean "add_managers", default: false
     t.boolean "not_course", default: false
-    t.index ["admin_access_id"], name: "index_programs_on_admin_access_id"
+    t.bigint "unit_id"
     t.index ["instructor_id"], name: "index_programs_on_instructor_id"
+    t.index ["unit_id"], name: "index_programs_on_unit_id"
   end
 
   create_table "programs_sites", force: :cascade do |t|
@@ -216,6 +228,23 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_21_133327) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "unit_preferences", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.boolean "value"
+    t.bigint "unit_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["unit_id"], name: "index_unit_preferences_on_unit_id"
+  end
+
+  create_table "units", force: :cascade do |t|
+    t.string "name"
+    t.string "ldap_group"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -258,6 +287,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_21_133327) do
   add_foreign_key "cars_programs", "cars"
   add_foreign_key "cars_programs", "programs"
   add_foreign_key "config_questions", "programs"
+  add_foreign_key "notes", "users"
   add_foreign_key "program_managers_programs", "program_managers"
   add_foreign_key "program_managers_programs", "programs"
   add_foreign_key "programs", "program_managers", column: "instructor_id"
@@ -271,5 +301,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_21_133327) do
   add_foreign_key "reservations", "students", column: "backup_driver_id"
   add_foreign_key "reservations", "students", column: "driver_id"
   add_foreign_key "students", "programs"
+  add_foreign_key "unit_preferences", "units"
   add_foreign_key "vehicle_reports", "reservations"
 end

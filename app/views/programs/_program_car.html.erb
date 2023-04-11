@@ -1,9 +1,14 @@
-<div class="flex flex-row items-center gap-4 m-2">
+<div class="flex flex-row items-end gap-4 m-2">
   <div>
     <h2>Cars Available</h2>
   </div>
   <div>
-    <%= link_to "Add another car", program_data_path(@program), class: "secondary_blue_button" %> 
+    <%= link_to program_data_path(@program) do %>
+      <span class="tertiary_button">
+        Edit Cars
+        <i class="fa-solid fa-pen" aria-hidden="true"></i>
+        </span>
+      <% end %>
   </div>
 </div>
 <div>

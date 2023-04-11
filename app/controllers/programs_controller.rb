@@ -2,20 +2,18 @@ class ProgramsController < ApplicationController
   before_action :auth_user
 
   before_action :set_program, except: %i[ index new create]
-  before_action :set_terms
+  before_action :set_terms_and_units
 
   include ApplicationHelper
 
   # GET /programs or /programs.json
   def index
-    @terms = Term.all
-    if params[:term_id].present?
-      @programs = Program.where(term_id: params[:term_id])
-      @term_id = params[:term_id]
+    if params[:unit_id].present?
+      @programs = Program.where(unit_id: params[:unit_id])
     else
-      @programs = Program.all
-      @term_id = nil
+      @programs = Program.where(unit_id: current_user.unit)
     end
+    @programs = @programs.data(params[:term_id])
     authorize @programs
 
   end
@@ -34,7 +32,6 @@ class ProgramsController < ApplicationController
     @program = Program.new
     @program.mvr_link = "https://ltp.umich.edu/fleet/vehicle-use/"
     @instructor = ProgramManager.new
-    @terms = Term.all
     authorize @program
   end
 
@@ -45,7 +42,6 @@ class ProgramsController < ApplicationController
   def program_data
     @cars = @program.cars
     @add_cars = Car.all - @cars
-    @terms = Term.all
   end
 
   # POST /programs or /programs.json
@@ -124,15 +120,16 @@ class ProgramsController < ApplicationController
       authorize @program
     end
 
-    def set_terms
-      @terms = Term.all
+    def set_terms_and_units
+      @terms = Term.all.order(:term_start)
+      @units = Unit.where(id: current_user.unit).order(:name)
     end
 
     # Only allow a list of trusted parameters through.
     def program_params
       params.require(:program).permit(:active, :title, :term_start, :term_end, :term_id, :subject, :catalog_number, :class_section, 
                                      :number_of_students, :number_of_students_using_ride_share, :pictures_required_start, :pictures_required_end, 
-                                     :non_uofm_passengers, :instructor_id, :mvr_link, :canvas_link, :canvas_course_id, :admin_access_id, :add_managers, 
+                                     :non_uofm_passengers, :instructor_id, :mvr_link, :canvas_link, :canvas_course_id, :unit_id, :add_managers, 
                                      :not_course, :updated_by, instructor_attributes: [:uniqname])
     end
 end

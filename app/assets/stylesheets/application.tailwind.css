@@ -72,6 +72,10 @@ from https://tailwindcss.com/docs/adding-custom-styles
     @apply text-base font-normal leading-6 font-montserrat;
   }
 
+  .body-lg-medium-text {
+    @apply text-base font-medium leading-6 font-montserrat;
+  }
+
   .body-lg-bold-text {
     @apply text-base font-bold leading-6 font-montserrat;
   }
@@ -104,8 +108,12 @@ from https://tailwindcss.com/docs/adding-custom-styles
     @apply w-5 h-5 rounded mr-2 border-blue-umblue text-blue-umblue focus:ring-blue-umblue;
   }
 
+  .check_box_text {
+    @apply font-montserrat font-medium leading-4 text-sm text-blue-umblue;
+  }
+
   .primary_button {
-    @apply p-2 font-montserrat font-medium leading-7 text-base border rounded-md text-white bg-blue-umblue;
+    @apply py-2 px-4 font-montserrat font-medium leading-7 text-xs border rounded-md text-white bg-blue-umblue;
   }
 
   .primary_button:hover {
@@ -125,7 +133,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .secondary_yellow_button {
-    @apply p-2 font-montserrat font-medium leading-7 text-base border rounded-md text-blue-umblue bg-yellow-ummaze;
+    @apply py-2 px-4 font-montserrat font-medium leading-7 text-xs border rounded-md text-blue-umblue bg-yellow-ummaze;
   }
 
   .secondary_yellow_button:hover {
@@ -145,7 +153,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
   
   .secondary_blue_button {
-    @apply p-2 font-montserrat font-medium leading-7 text-base border rounded-md text-white bg-blue-750;
+    @apply py-2 px-4 font-montserrat font-medium leading-7 text-xs border rounded-md text-white bg-blue-750;
   }
 
   .secondary_blue_button:hover {
@@ -165,7 +173,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .tertiary_button {
-    @apply p-2 font-montserrat font-medium leading-7 text-base text-blue-umblue;
+    @apply py-2 px-4 font-montserrat font-medium leading-7 text-xs text-blue-umblue;
   }
 
   .tertiary_button:hover {
@@ -185,7 +193,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .sign_button {
-    @apply px-1 shadow-sm text-base rounded text-blue-900 bg-yellow-550 bg-yellow-500 hover:underline;
+    @apply px-1 ml-2 shadow-sm font-medium rounded text-blue-900 bg-yellow-550 hover:bg-yellow-500 flex-1 hover:underline;
   }
 
   .edit_button {
@@ -201,11 +209,12 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .link_to {
-    @apply text-blue-900 hover:underline;
+    @apply text-blue-umlink hover:underline;
   }
 
   .input_text_field {
-    @apply w-full text-lg font-medium text-gray-900 bg-white border border-gray-600 rounded block p-2 focus:ring-blue-500 focus:border-blue-500;
+    @apply w-full text-lg font-medium text-gray-900 bg-white border border-gray-600 rounded block p-2 focus:ring-blue-500 focus:border-blue-500 
+    placeholder:font-montserrat placeholder:font-medium placeholder:leading-7 placeholder:text-sm placeholder:text-black;
   }
 
   .fancy_label {
@@ -213,7 +222,11 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .filter_select {
-    @apply text-lg font-medium text-gray-900 bg-white border border-gray-600 rounded block p-2 focus:ring-blue-500 focus:border-blue-500;
+    @apply text-sm font-medium leading-4 text-blue-umblue bg-white border border-gray-600 rounded block p-2 focus:ring-blue-500 focus:border-blue-500 font-montserrat;
+  }
+
+  .file-upload {
+    @apply block shadow rounded-md border border-gray-600 outline-none px-3 py-2 mt-2 w-full;
   }
 
   /* table */
@@ -223,19 +236,19 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .mi_thead {
-    @apply bg-gray-um20;
+    @apply border border-l-0 border-r-0 border-gray-um60;
   }
 
   .header_th {
-    @apply p-2 text-sm font-medium text-gray-900 lg:table-cell text-left;
+    @apply p-2 text-base font-semibold leading-5 font-montserrat lg:table-cell text-left;
   }
 
   .mi_tbody_tr {
-    @apply relative sm:pl-2 text-sm bg-white even:bg-gray-um10;
+    @apply relative sm:pl-2 bg-white border border-l-0 border-r-0 border-t-0 border-gray-um20;
   }
 
   .mi_tbody_td {
-    @apply relative p-2 sm:pl-2 text-sm font-medium text-gray-900 text-left;
+    @apply relative p-2 sm:pl-2 text-xs leading-4 font-montserrat text-left;
   }
 
   .alert {

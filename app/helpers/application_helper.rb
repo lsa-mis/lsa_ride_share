@@ -20,29 +20,12 @@ module ApplicationHelper
     field.strftime("%m/%d/%Y") unless field.blank?
   end
 
-  def show_user_name_by_id(id)
-    User.find(id).display_name_email
+  def show_date_time(field)
+    field.strftime("%m/%d/%Y %I:%M%p") unless field.blank?
   end
 
-  def program_config_data(program)
-    config_data = ''
-    if program.pictures_required_start || program.pictures_required_end
-      config_data = 'The program requires to upload pictures to the vehicle reports '
-      if program.pictures_required_start
-        config_data += 'at the start of the trip '
-      end
-      if program.pictures_required_start && program.pictures_required_end
-        config_data += ' and '
-      end
-      if program.pictures_required_end
-        config_data += 'at the end of the trip'
-      end
-    end
-    if program.non_uofm_passengers
-      config_data += '<br><br>Non UofM passangers are allowed'
-    end
-    config_data +=''
-    return config_data
+  def show_user_name_by_id(id)
+    User.find(id).display_name_email
   end
 
   def updated_on_and_by(program)
@@ -63,6 +46,22 @@ module ApplicationHelper
     else
       "Not available"
     end
+  end
+
+  def show_units(user)
+    if is_super_admin?(user)
+      "SuperAdmin"
+    else
+      Unit.where(id: current_user.unit).pluck(:name).join(' ')
+    end
+  end
+
+  def unit_use_faculty_survey(unit)
+    UnitPreference.where(unit_id: unit, name: "faculty_survey").present? && UnitPreference.where(unit_id: unit, name: "faculty_survey").pluck(:value).include?(true)
+  end
+
+  def is_super_admin?(user)
+    user.membership.include?('lsa-was-rails-devs')
   end
   
   def render_flash_stream

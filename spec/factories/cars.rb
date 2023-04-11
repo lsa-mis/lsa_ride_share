@@ -17,6 +17,7 @@
 #  updated_by      :integer
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#  status          :integer
 #
 FactoryBot.define do
   factory :car do

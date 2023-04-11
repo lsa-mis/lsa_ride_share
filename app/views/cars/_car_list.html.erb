@@ -1,0 +1,60 @@
+<%= turbo_frame_tag 'cars' do %>
+  <div class="min-w-full">
+    <table class="mi_table">
+      <thead class="border border-l-0 border-r-0 border-gray-um60">
+        <tr>
+          <th class="header_th">Car Number</th>
+          <th class="header_th">Make</th>
+          <th class="header_th">Model</th>
+          <th class="header_th">Color</th>
+          <th class="header_th">Number of Seats</th>
+          <th class="header_th">Last Checked</th>
+          <th class="header_th">Last Vehicle Report Date</th>
+          <th class="header_th">Vehicle Reports</th>
+          <th class="header_th">Car Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @cars.each do |car| %>
+          <% if car.status == 'unavailable' %>
+            <tr class="mi_tbody_tr bg-gray-um10">
+          <% else %>
+            <tr class="mi_tbody_tr">
+          <% end %>
+            <td class="mi_tbody_td">
+              <%= link_to car.car_number, car_path(car), class: "link_to" %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= car.make %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= car.model %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= car.color %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= car.number_of_seats %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= car.last_checked %>
+            </td>
+            <td class="mi_tbody_td">
+              <% if car.vehicle_reports_ids.present? %>
+                <%= show_date(car.last_vehicle_report.updated_at) %>
+              <% end %>
+            </td>
+            <td class="mi_tbody_td">
+              <% if car.vehicle_reports_ids.present? %>
+                <%= link_to 'Vehicle Reports', vehicle_reports_path(car.vehicle_reports_ids), class: 'link_to' %>
+              <% end %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= car.status.titleize %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

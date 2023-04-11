@@ -1,30 +1,40 @@
 
 <div class="container px-1 mb-20" data-controller='autosubmit'>
-  <h1>Programs</h1>
-  <div class="flex justify-end items-center pb-1">
-    <%= link_to 'New program', new_program_path, class: "rounded-lg py-3 px-5 bg-blue-umblue text-white block font-medium hover:bg-white hover:text-blue-umblue hover:ring-2 hover:ring-blue-umblue" %>
+  <div class="flex justify-between">
+    <h1>Programs</h1>
+    <div class="self-end">
+      <%= link_to 'Create a Program', new_program_path, class: "secondary_blue_button" %>
+    </div>
   </div>
   <div>
-    <%= form_with url: programs_path, method: :get, class: "", data: { autosubmit_target: "form", turbo_frame: "turbo-rooms" } do |form| %>
+    <%= form_with url: programs_path, method: :get, class: "", data: { autosubmit_target: "form", turbo_frame: "turbo-programs" } do |form| %>
   
-      <div class="px-1">
-        <label for="term_id" class="fancy_label">Select a Term</label>
-        <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: @term_id), include_blank: "Select ...", class: "filter_select",
-                    :"data-action" => "change->autosubmit#search" %>
+      <div class="flex gap-2">
+        <div class="">
+          <label for="term_id" class="fancy_label">Select a Term</label>
+          <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: params[:term_id]), include_blank: "Current Term", class: "filter_select w-48",
+                      :"data-action" => "change->autosubmit#search" %>
+        </div>
+
+        <% if current_user.unit.count > 1 %>
+          <div class="">
+            <label for="unit_id" class="fancy_label">Select a Unit</label>
+            <%= select_tag "unit_id", options_from_collection_for_select(@units, :id, :name, selected: params[:unit_id]), include_blank: "All Units", class: "filter_select w-48",
+                        :"data-action" => "change->autosubmit#search" %>
+          </div>
+        <% end %>
       </div>
 
-      <%= turbo_frame_tag "turbo-rooms" do %>
+      <%= turbo_frame_tag "turbo-programs" do %>
         <div id="maincontent"></div>
         <div class="mb-10" id="programs_listing">
-          <div class="">
-            <ul role="list" class="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-4 m-4">
-              <% @programs.each do |program| %>
-                <li class="col-span-1 bg-white rounded-lg shadow-md divide-y divide-gray-400 px-2 grid place-items-stretch bg-white border border-gray-300 rounded-lg">
-                  <%= render 'program_card', program: program %>
-                </li>
-              <% end %>
-            </ul>
-          </div>
+          <ul role="list" class="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-4 mt-4">
+            <% @programs.each do |program| %>
+              <li class="col-span-1 bg-white rounded-lg shadow-md divide-y divide-gray-400 px-2 place-items-stretch bg-white border border-gray-300 rounded-lg">
+                <%= render 'program_card', program: program %>
+              </li>
+            <% end %>
+          </ul>
         </div>
       <% end %>
     <% end %>
