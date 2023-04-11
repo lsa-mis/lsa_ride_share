@@ -26,6 +26,7 @@ class CarsController < ApplicationController
 
   # GET /cars/1/edit
   def edit
+    @last_checked = @car.last_checked.present? ? @car.last_checked.strftime("%Y-%m-%d %H:%M") : ""
   end
 
   # POST /cars or /cars.json

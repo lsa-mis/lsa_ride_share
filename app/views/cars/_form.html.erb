@@ -69,7 +69,7 @@
           </div>
           <div class="flex-1">
             <%= form.label :checked, "Select date and time", class: "fancy_label" %>
-            <%= form.datetime_field(:checked, placeholder: "Last checked date", value: car.last_checked.strftime("%Y-%m-%d %H:%M"), class: "input_text_field") %>
+            <%= form.datetime_field(:checked, placeholder: "Last checked date", value: @last_checked, class: "input_text_field") %>
           </div>
         </div>
 
