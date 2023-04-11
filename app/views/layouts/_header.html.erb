@@ -22,6 +22,9 @@
             <div class="header_link">
               <%= link_to "Cars", cars_path, class: "#{class_names(active: current_page?(cars_path))}" %>
             </div>
+            <div class="header_link">
+              <%= link_to "Sites", sites_path, class: "#{class_names(active: current_page?(sites_path))}" %>
+            </div>
             <% if policy(Unit).index? %>
               <div class="header_link">
                 <%= link_to "Units", units_path, class: "#{class_names(active: current_page?(units_path))}" %>
