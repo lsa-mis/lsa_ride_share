@@ -37,7 +37,7 @@
               <%= car.number_of_seats %>
             </td>
             <td class="mi_tbody_td">
-              <%= car.last_checked %>
+              <%= show_date_time(car.last_checked) %>
             </td>
             <td class="mi_tbody_td">
               <% if car.vehicle_reports_ids.present? %>
