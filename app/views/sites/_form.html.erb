@@ -12,36 +12,40 @@
   <% end %>
 
   <div class="my-5">
-    <%= form.label :title %>
-    <%= form.text_field :title, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.label :title, class: "fancy_label"  %>
+    <%= form.text_field :title, required: true, placeholder: "Title", class: "input_text_field" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :address1 %>
-    <%= form.text_field :address1, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.label :address1, class: "fancy_label"  %>
+    <%= form.text_field :address1, required: true, placeholder: "Address1", class: "input_text_field" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :address2 %>
-    <%= form.text_field :address2, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.label :address2, class: "fancy_label"  %>
+    <%= form.text_field :address2, placeholder: "Address2", class: "input_text_field" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :city %>
-    <%= form.text_field :city, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.label :city, class: "fancy_label"  %>
+    <%= form.text_field :city, required: true, placeholder: "City", class: "input_text_field" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :state %>
-    <%= form.text_field :state, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.label :state, class: "fancy_label"  %>
+    <%= form.text_field :state, required: true, placeholder: "State", class: "input_text_field" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :zip_code %>
-    <%= form.text_field :zip_code, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.label :zip_code, class: "fancy_label"  %>
+    <%= form.text_field :zip_code, required: true, placeholder: "Zip Code", class: "input_text_field" %>
+  </div>
+
+  <div class="my-5">
+    Add/edit site's contacts on the sites' show page
   </div>
 
   <div class="inline">
-    <%= form.submit class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+    <%= form.submit class: "secondary_blue_button" %>
   </div>
 <% end %>
