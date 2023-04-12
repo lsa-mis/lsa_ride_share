@@ -12,32 +12,32 @@
   <% end %>
 
   <div class="my-5">
-    <%= form.label :title, class: "fancy_label"  %>
+    <%= form.label :title, 'Title *', class: "fancy_label"  %>
     <%= form.text_field :title, required: true, placeholder: "Title", class: "input_text_field" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :address1, class: "fancy_label"  %>
+    <%= form.label :address1, 'Address 1 *', class: "fancy_label"  %>
     <%= form.text_field :address1, required: true, placeholder: "Address1", class: "input_text_field" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :address2, class: "fancy_label"  %>
+    <%= form.label :address2, 'Address 2', class: "fancy_label"  %>
     <%= form.text_field :address2, placeholder: "Address2", class: "input_text_field" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :city, class: "fancy_label"  %>
+    <%= form.label :city, 'City *', class: "fancy_label"  %>
     <%= form.text_field :city, required: true, placeholder: "City", class: "input_text_field" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :state, class: "fancy_label"  %>
+    <%= form.label :state, 'State *', class: "fancy_label"  %>
     <%= form.text_field :state, required: true, placeholder: "State", class: "input_text_field" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :zip_code, class: "fancy_label"  %>
+    <%= form.label :zip_code, 'Zip Code *', class: "fancy_label"  %>
     <%= form.text_field :zip_code, required: true, placeholder: "Zip Code", class: "input_text_field" %>
   </div>
 
@@ -48,4 +48,9 @@
   <div class="inline">
     <%= form.submit class: "secondary_blue_button" %>
   </div>
+  <%= link_to site_path(site) do %>
+    <span class="tertiary_button">Cancel
+    <i class="fa fa-times" aria-hidden="true"></i>
+    </span>
+  <% end %>
 <% end %>
