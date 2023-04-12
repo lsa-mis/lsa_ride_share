@@ -20,6 +20,8 @@ class Site < ApplicationRecord
   has_many :site_contacts
   has_many :notes, as: :noteable
 
+  accepts_nested_attributes_for :site_contacts
+
   def address
     "#{self.address1} #{self.address2} #{self.city} #{self.state} #{self.zip_code}"
   end
