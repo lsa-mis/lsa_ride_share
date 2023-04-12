@@ -1,32 +1,16 @@
 <% if @program.sites.present? %>
   <% @program.sites.each do |site| %>
-    <li class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
+    <div class="flex items-center justify-between text-sm m-2">
       <div class="w-0 flex-1 flex items-center">
-        <div class="ml-2 flex-1 w-0 truncate">
-          <%= link_to site.title, site_path(site), class: "link_to" %>
-        </div>
-        <div class="ml-2 flex-1 w-0 truncate">
-          <%= site.address1 %>
-        </div>
+        <%= link_to site.title, program_path(@program), class: "link_to" %>
       </div>
-      <div class="ml-4 flex-shrink-0 flex space-x-4">
-        <%= link_to edit_program_site_path(@program, site) do %>
-          <span class="tertiary_button">Edit
-            <i class="fa-solid fa-chevron-right"></i>
-          </span>
-        <% end %>
+      <div class="flex-1 w-0 truncate">
+        <%= site.address1 %>
       </div>
-      <div class="ml-4 flex-shrink-0 flex space-x-4">
-        <%= link_to 'Remove', remove_site_path(@program, site), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete}, class: "delete_button" %>
-      </div>
-    </li>
+    </div>
   <% end %>
 <% else %>
-  <li class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
-    <div class="w-0 flex-1 flex items-center">
-      <span class="ml-2 flex-1 w-0 truncate body-lg-text">
-        The program currently does not have any sites.
-      </span>
+    <div class="m-2 flex-1 truncate body-lg-text">
+      The program currently does not have any sites.
     </div>
-  </li>
 <% end %>

@@ -1,7 +1,7 @@
 <div class="grid grid-cols-1 sm:grid-cols-2">
   <div class="">
     <div class="">
-      <div class="body-bold-text">
+      <div class="body-bold-text <%= "#{car.status}" %>">
         <%= car.status.titleize %>
       </div>
 
@@ -102,7 +102,7 @@
           Last Checked:
         </label>
         <div class="body-lg-text inline-block">
-          <%= show_date(car.last_checked) %>
+          <%= show_date_time(car.last_checked) %>
         </div>
       </div>
 
@@ -148,7 +148,7 @@
     <% end %>
   </div>
 </div>
-<div class="body-md-text text-right my-2">
+<div class="body-md-text m-2">
   <%= updated_on_and_by(@car) %>
 </div>
 

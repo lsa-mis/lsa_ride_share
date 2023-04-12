@@ -26,6 +26,7 @@ class CarsController < ApplicationController
 
   # GET /cars/1/edit
   def edit
+    @last_checked = @car.last_checked.present? ? @car.last_checked.strftime("%Y-%m-%d %H:%M") : ""
   end
 
   # POST /cars or /cars.json
@@ -41,7 +42,13 @@ class CarsController < ApplicationController
 
   # PATCH/PUT /cars/1 or /cars/1.json
   def update
-    if @car.update(car_params)
+    if car_params[:is_checked_today] == "1"
+      @car.last_checked = DateTime.now
+    end
+    if car_params[:is_checked_today] == "0" && car_params[:checked].present?
+      @car.last_checked = car_params[:checked]
+    end
+    if @car.update(car_params.except(:is_checked_today, :checked))
       redirect_to car_path(@car), notice: "The car was updated"
     else
       render :edit, status: :unprocessable_entity
@@ -76,7 +83,7 @@ class CarsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def car_params
       params.require(:car).permit(:car_number, :make, :model, :color, :number_of_seats, 
-                 :mileage, :gas, :parking_spot, :last_used, :last_checked, :last_driver, 
-                 :updated_by, :status, :unit_id, initial_damages: [])
+                 :mileage, :gas, :parking_spot, :last_used, :checked, :last_driver, 
+                 :updated_by, :status, :unit_id, :is_checked_today, initial_damages: [])
     end
 end
