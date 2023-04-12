@@ -38,6 +38,8 @@ class Program < ApplicationRecord
 
   accepts_nested_attributes_for :instructor
 
+  before_save :upcase_subject
+
   validates_presence_of :title, :instructor_id, :unit_id
   validates_presence_of :subject, :catalog_number, :class_section, unless: -> { self.not_course }
   validates :term_id, uniqueness: { scope: [:subject, :catalog_number], message: "already has this program" }, unless: -> { self.not_course } 
@@ -72,6 +74,10 @@ class Program < ApplicationRecord
       options += 'Program have managers<br>'
     end
     options
+  end
+
+  def upcase_subject
+    self.subject = subject.upcase
   end
 
   def display_name
