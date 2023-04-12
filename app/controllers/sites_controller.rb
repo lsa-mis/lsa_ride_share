@@ -21,6 +21,7 @@ class SitesController < ApplicationController
   # GET /sites/new
   def new
     @site = Site.new
+    @site_contact = SiteContact.new
     authorize @site
   end
 
@@ -62,6 +63,10 @@ class SitesController < ApplicationController
         format.json { render json: @site.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  def edit_program_sites
+    fail
   end
 
   # DELETE /sites/1 or /sites/1.json

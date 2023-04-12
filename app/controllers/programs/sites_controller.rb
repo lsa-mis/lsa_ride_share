@@ -4,7 +4,7 @@ class Programs::SitesController < SitesController
   private
 
   def set_site_program
-      @site_program = Program.find(params[:program_id])
+    @site_program = Program.find(params[:program_id])
   end
 
 end
