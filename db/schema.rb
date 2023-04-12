@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_30_222840) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_07_181031) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -192,6 +192,18 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_30_222840) do
     t.index ["site_id"], name: "index_reservations_on_site_id"
   end
 
+  create_table "site_contacts", force: :cascade do |t|
+    t.string "title"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "phone_number"
+    t.string "email"
+    t.bigint "site_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["site_id"], name: "index_site_contacts_on_site_id"
+  end
+
   create_table "sites", force: :cascade do |t|
     t.string "title"
     t.string "address1"
@@ -300,6 +312,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_30_222840) do
   add_foreign_key "reservations", "sites"
   add_foreign_key "reservations", "students", column: "backup_driver_id"
   add_foreign_key "reservations", "students", column: "driver_id"
+  add_foreign_key "site_contacts", "sites"
   add_foreign_key "students", "programs"
   add_foreign_key "unit_preferences", "units"
   add_foreign_key "vehicle_reports", "reservations"

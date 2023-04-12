@@ -88,4 +88,12 @@ class Program < ApplicationRecord
     end
   end
 
+  def display_name_with_title
+    if self.not_course
+      "#{self.title} - not a course - #{self.term.name}"
+    else
+      "#{self.title} - #{self.subject} #{self.catalog_number} - #{self.class_section} - #{self.term.name}"
+    end
+  end
+
 end

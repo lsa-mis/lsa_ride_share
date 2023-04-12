@@ -1,0 +1,32 @@
+<div id="<%= dom_id site_contact %>">
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Title:</strong>
+    <%= site_contact.title %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">First name:</strong>
+    <%= site_contact.first_name %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Last name:</strong>
+    <%= site_contact.last_name %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Phone number:</strong>
+    <%= site_contact.phone_number %>
+  </p>
+
+  <p class="my-5">
+    <strong class="block font-medium mb-1">Email:</strong>
+    <%= site_contact.email %>
+  </p>
+
+  <% if action_name != "show" %>
+    <%= link_to "Show this site contact", site_contact, class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
+    <%= link_to 'Edit this site contact', edit_site_contact_path(site_contact), class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
+    <hr class="mt-6">
+  <% end %>
+</div>
