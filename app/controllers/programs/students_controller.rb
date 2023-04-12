@@ -32,18 +32,23 @@ class Programs::StudentsController < ApplicationController
     authorize @student
 
     name = LdapLookup.get_simple_name(uniqname)
-    if name.nil?
-      flash.now[:alert] = "Mcommunity returns no name for '#{uniqname}' uniqname. Edit the uniqname"
+    if name == "No such user"
+      flash.now[:alert] = "The '#{uniqname}' uniqname is not valid"
       @students = @student_program.students.order(:last_name)
       return
     else
-      @student.first_name = name.split(" ").first
-      @student.last_name = name.split(" ").last
-    end
-    @student.program_id = @student_program.id
-    if @student.save
-      @student = Student.new
-      flash.now[:notice] = "Student list is updated"
+      if name.nil?
+        note = "Mcommunity returns no name for '#{uniqname}' uniqname."
+      else
+        note = ''
+        @student.first_name = name.split(" ").first
+        @student.last_name = name.split(" ").last
+      end
+      @student.program_id = @student_program.id
+      if @student.save
+        @student = Student.new
+        flash.now[:notice] = "Student list is updated." + note
+      end
     end
     @students = @student_program.students.order(:last_name)
   end
