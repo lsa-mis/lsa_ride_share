@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  resources :site_contacts
   
   resources :units
 
@@ -20,6 +19,7 @@ Rails.application.routes.draw do
   resources :students
   resources :sites do
     resources :notes, module: :sites
+    resources :site_contacts, module: :sites
   end
   resources :program_managers
   resources :programs do
