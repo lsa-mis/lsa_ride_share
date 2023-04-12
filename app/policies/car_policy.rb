@@ -10,7 +10,6 @@ class CarPolicy < ApplicationPolicy
 
   def index?
     user_in_access_group?
-    # true
   end
 
   def show?

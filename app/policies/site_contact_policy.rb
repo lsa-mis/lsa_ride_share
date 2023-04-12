@@ -10,7 +10,6 @@ class SiteContactPolicy < ApplicationPolicy
 
   def index?
     user_in_access_group?
-    # true
   end
 
   def show?
@@ -33,7 +32,7 @@ class SiteContactPolicy < ApplicationPolicy
     update?
   end
 
-  def delete_file?
+  def destroy?
     user_in_access_group?
   end
 
