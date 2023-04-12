@@ -66,7 +66,9 @@ class SitesController < ApplicationController
   end
 
   def edit_program_sites
-    fail
+    @site = Site.new
+    @sites = @site_program.sites
+    authorize Site
   end
 
   # DELETE /sites/1 or /sites/1.json

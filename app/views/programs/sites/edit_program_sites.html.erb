@@ -1,18 +1,20 @@
 <div class="flex flex-row items-end gap-4 m-2">
   <div>
-    <h2>Edit Program Sites</h2>
+    <h2>Edit Program Sites hell</h2>
   </div>
   <div>
-    <%= link_to program_data_path(@program) do %>
+    <%= link_to program_data_path(@site_program) do %>
       <span class="tertiary_button" %>
-        Edit Sites
+        Exit Edit Sites Page
         <i class="fa-solid fa-pen" aria-hidden="true"></i>
       </span>
     <% end %>
   </div>
 </div>
+
+<%= render 'form', site: @site %>
 <div>
   <%= turbo_frame_tag "sites_list" do %>
-    <%= render "sites_list", locals: { program: @program} %>
+    <%= render "site_list", locals: { program: @site_program} %>
   <% end %>
 </div>

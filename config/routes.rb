@@ -28,6 +28,7 @@ Rails.application.routes.draw do
   resources :programs do
     resources :sites, module: :programs
   end
+  get '/programs/sites/edit_program_sites/:program_id', to: 'programs/sites#edit_program_sites', as: :edit_program_sites
   resources :programs do
     resources :program_managers, module: :programs
   end
