@@ -1,0 +1,9 @@
+<%= render_flash_stream %>
+
+<%= turbo_stream.update "new_site_contact" do %>
+  <%= render "form", site_contact: @site_contact %>
+<% end %>
+
+<%= turbo_stream.update "site_contacts" do %>
+  <%= render "site_contact_list" %>
+<% end %>
