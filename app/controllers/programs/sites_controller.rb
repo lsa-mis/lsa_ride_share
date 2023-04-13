@@ -40,23 +40,21 @@ class Programs::SitesController < SitesController
   # POST /sites or /sites.json
   def create
     if params[:site_id].present?
-      fail
       @site = Site.find(params[:site_id])
       @site_program.sites << @site
+      @site = Site.new
       authorize @site
     else
      @site = Site.new(site_params)
      authorize @site
       if @site.save
-        fail
         @site_program.sites << @site
+        @site = Site.new
         flash.now[:notice] = "The site was added"
       end
     end
-    @site = Site.new
     @sites = @site_program.sites
     @all_sites = Site.all
-    
   end
 
   # PATCH/PUT /sites/1 or /sites/1.json
