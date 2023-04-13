@@ -44,5 +44,11 @@ class ApplicationController < ActionController::Base
     delete_file.purge
     redirect_back(fallback_location: request.referer)
   end
+  
+  def redirect_back_or_default(notice = '', default = root_url)
+    flash[:notice] = notice
+    redirect_to(session[:return_to] || default)
+    session[:return_to] = nil
+  end
 
 end
