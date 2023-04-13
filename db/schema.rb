@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_07_181031) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_13_155901) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -89,10 +89,20 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_07_181031) do
   end
 
   create_table "config_questions", force: :cascade do |t|
-    t.bigint "program_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["program_id"], name: "index_config_questions_on_program_id"
+    t.bigint "faculty_survey_id"
+    t.index ["faculty_survey_id"], name: "index_config_questions_on_faculty_survey_id"
+  end
+
+  create_table "faculty_surveys", force: :cascade do |t|
+    t.string "uniqname"
+    t.integer "term_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "program_id"
+    t.bigint "unit_id"
+    t.index ["unit_id"], name: "index_faculty_surveys_on_unit_id"
   end
 
   create_table "notes", force: :cascade do |t|
@@ -214,6 +224,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_07_181031) do
     t.integer "updated_by"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "unit_id"
+    t.index ["unit_id"], name: "index_sites_on_unit_id"
   end
 
   create_table "students", force: :cascade do |t|
@@ -298,7 +310,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_07_181031) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "cars_programs", "cars"
   add_foreign_key "cars_programs", "programs"
-  add_foreign_key "config_questions", "programs"
   add_foreign_key "notes", "users"
   add_foreign_key "program_managers_programs", "program_managers"
   add_foreign_key "program_managers_programs", "programs"
