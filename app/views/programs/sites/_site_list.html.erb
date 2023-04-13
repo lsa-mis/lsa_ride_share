@@ -11,7 +11,7 @@
       </thead>
       <tbody>
         <% @sites.each do |site| %>
-          <tr>
+          <tr class="mi_tbody_tr">
             <td class="mi_tbody_td">
               <%= link_to site.title, site_path(site), class: "link_to" %>
             </td>

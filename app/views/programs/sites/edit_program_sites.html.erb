@@ -1,7 +1,8 @@
 <div class="lg:flex justify-between">
-  <div>
-    <h2>Edit Program Sites</h2>
-  </div>
+  <h1>Edit Sites for 
+    <%= @site_program.title %>
+    program
+  </h1>
   <div class="mt-4 flex-none">
     <%= link_to program_data_path(@site_program) do %>
       <span class="primary_button mb-2" %>

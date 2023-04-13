@@ -31,9 +31,9 @@
     <%= form.text_field :city, required: true, placeholder: "City", class: "input_text_field" %>
   </div>
 
-  <div class="my-5">
-    <%= form.label :state, 'State *', class: "fancy_label"  %>
-    <%= form.text_field :state, required: true, placeholder: "State", class: "input_text_field" %>
+  <div class="">
+    <label for="state" class="fancy_label">State *</label>
+    <%= form.select(:state, options_for_select(us_states, us_states.rassoc(params[:site].present? ? params[:site][:state] : site.state)), { include_blank: "Select State" }, { class: "input_text_field" }) %>
   </div>
 
   <div class="my-5">
