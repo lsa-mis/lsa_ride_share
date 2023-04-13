@@ -12,33 +12,40 @@
       </div>
     <% end %>
 
-    <div class="my-5">
+    <div class="my-2">
+      <label for="site_id" class="fancy_label">Select a Site</label>
+      <%= select_tag "site_id", options_from_collection_for_select(@all_sites, :id, :title), include_blank: "Select", class: "input_text_field" %>
+    </div>
+
+    <p class="body-text pt-2">Or create a new site</p>
+
+    <div class="my-2">
       <%= form.label :title, 'Title *', class: "fancy_label"  %>
       <%= form.text_field :title, placeholder: "Title", class: "input_text_field" %>
     </div>
 
     <div class="md:flex gap-2 w-full">
-      <div class="my-5">
+      <div class="">
         <%= form.label :address1, 'Address 1 *', class: "fancy_label"  %>
         <%= form.text_field :address1, placeholder: "Address1", class: "input_text_field" %>
       </div>
 
-      <div class="my-5">
+      <div class="">
         <%= form.label :address2, 'Address 2', class: "fancy_label"  %>
         <%= form.text_field :address2, placeholder: "Address2", class: "input_text_field" %>
       </div>
 
-      <div class="my-5">
+      <div class="">
         <%= form.label :city, 'City *', class: "fancy_label"  %>
         <%= form.text_field :city, placeholder: "City", class: "input_text_field" %>
       </div>
 
-      <div class="my-5">
+      <div class="">
         <label for="state" class="fancy_label">State *</label>
-        <%= form.select(:state, options_for_select(us_states), { include_blank: "Select State" }, { class: "input_text_field" }) %>
+        <%= form.select(:state, options_for_select(us_states, us_states.rassoc(params[:site].present? ? params[:site][:state] : "")), { include_blank: "Select State" }, { class: "input_text_field" }) %>
       </div>
 
-      <div class="my-5">
+      <div class="">
         <%= form.label :zip_code, 'Zip Code *', class: "fancy_label"  %>
         <%= form.text_field :zip_code, placeholder: "Zip Code", class: "input_text_field" %>
       </div>
@@ -46,14 +53,9 @@
 
     <%= form.hidden_field :unit_id, value: @site_program.unit_id %>
 
-    <div class="my-5 body-lg-text">
+    <p class="my-4 body-text">
       Add/edit site's contacts on the site' show page
-    </div>
-
-    <div class="my-2">
-      <label for="site_id" class="fancy_label">Select a Site</label>
-      <%= select_tag "site_id", options_from_collection_for_select(@all_sites, :id, :title), include_blank: "Select", class: "input_text_field" %>
-    </div>
+    </p>
 
     <div class="my-2">
       <%= form.submit "Add Site to Program", class: "secondary_blue_button", data: { "turbo-frame": "_top" } %>
