@@ -1,23 +1,25 @@
 <div class="w-full">
 
-  <div class="flex justify-between items-center">
+  <div class="lg:flex justify-between items-center">
     <h1>Update Contacts
       for Site:
       <%= link_to @site.title, site_path(@site), class: "link_to" %>
     </h1>
-    <%= link_to site_path(@site) do %>
-      <span class="primary_button mb-2">
-        <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
-        Exit Updating Contacts Page
-      </span>
-    <% end %>
+    <div class"flex-none">
+      <%= link_to site_path(@site) do %>
+        <span class="primary_button mb-2">
+          <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
+          Exit Updating Contacts Page
+        </span>
+      <% end %>
+    </div>
   </div>
 </div>
 
 <%= render "form", site_contact: @site_contact %>
 
 <div class="w-full">
-  <div class="my-2">
+  <div class="my-4">
     <div>
       <h2> Contacts List</h2>
     </div>

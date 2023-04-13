@@ -12,41 +12,43 @@
       </div>
     <% end %>
 
-    <div class="flex gap-2">
-      <div class="my-5">
+    <div class="lg:flex gap-2">
+      <div class="my-2 grow">
         <%= form.label :title, class: "fancy_label" %>
         <%= form.text_field :title, required: true, placeholder: "Title", class: "input_text_field" %>
       </div>
 
-      <div class="my-5">
+      <div class="my-2 grow">
         <%= form.label :first_name, class: "fancy_label" %>
         <%= form.text_field :first_name, required: true, placeholder: "First Name", class: "input_text_field" %>
       </div>
 
-      <div class="my-5">
+      <div class="my-2 grow">
         <%= form.label :last_name, class: "fancy_label" %>
         <%= form.text_field :last_name, required: true, placeholder: "Last Name", class: "input_text_field" %>
       </div>
     </div>
-    <div class="flex gap-2">
-      <div class="my-5">
+    <div class="lg:flex gap-2">
+      <div class="my-2">
         <%= form.label :phone_number, class: "fancy_label" %>
         <%= form.text_field :phone_number, required: true, placeholder: "XXX-XXX-XXXX", class: "input_text_field" %>
       </div>
 
-      <div class="my-5">
+      <div class="my-2 grow">
         <%= form.label :email, class: "fancy_label" %>
         <%= form.text_field :email, required: true, placeholder: "Email", class: "input_text_field" %>
       </div>
     </div>
 
-    <div class="inline">
-      <%= form.submit class: "secondary_blue_button" %>
+    <div class="my-2">
+      <div class="inline">
+        <%= form.submit class: "secondary_blue_button" %>
+      </div>
+      <%= link_to site_site_contacts_path do %>
+        <span class="tertiary_button">Clear
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </span>
+      <% end %>
     </div>
-    <%= link_to site_site_contacts_path do %>
-      <span class="tertiary_button">Clear
-        <i class="fa fa-times" aria-hidden="true"></i>
-      </span>
-    <% end %>
   <% end %>
 <% end %>
