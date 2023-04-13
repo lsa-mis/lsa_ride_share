@@ -19,38 +19,43 @@ class SitesController < ApplicationController
   end
 
   # GET /sites/new
-  def new
-    @site = Site.new
-    @site_contact = SiteContact.new
-    authorize @site
-  end
+  # def new
+  #   @site = Site.new
+  #   @site_contact = SiteContact.new
+  #   authorize @site
+  # end
 
   # GET /sites/1/edit
   def edit
   end
 
-  # POST /sites or /sites.json
-  def create
-    if params[:site_id].present?
-      @site = Site.find(params[:site_id])
-    else
-     @site = Site.new(site_params)
-    end
+  # def edit_program_sites
+  #   @site = Site.new
+  #   @sites = @site_program.sites
+  #   @all_sites = Site.all
+  #   authorize Site
+  # end
 
-    respond_to do |format|
-      if @site.save
-        # @site_program.sites << @site
-        format.turbo_stream { redirect_to @site_program, 
-                              notice: "The site was added" 
-                            }
-      else
-        format.turbo_stream { redirect_to @site_program, 
-          alert: "Fail: you need to enter a site data" 
-        }
-      end
-    end
+  # # POST /sites or /sites.json
+  # def create
+  #   if params[:site_id].present?
+  #     @site = Site.find(params[:site_id])
+  #   else
+  #    @site = Site.new(site_params)
+  #     unless @site.save
+  #       @site = Site.new
+  #       @sites = @site_program.sites
+  #       @all_sites = Site.all
+  #       return
+  #     end
+  #   end
+  #   @site_program.sites << @site
+  #   @site = Site.new
+  #   @sites = @site_program.sites
+  #   @all_sites = Site.all
+  #   flash.now[:notice] = "The site was added"
 
-  end
+  # end
 
   # PATCH/PUT /sites/1 or /sites/1.json
   def update
@@ -63,12 +68,6 @@ class SitesController < ApplicationController
         format.json { render json: @site.errors, status: :unprocessable_entity }
       end
     end
-  end
-
-  def edit_program_sites
-    @site = Site.new
-    @sites = @site_program.sites
-    authorize Site
   end
 
   # DELETE /sites/1 or /sites/1.json
