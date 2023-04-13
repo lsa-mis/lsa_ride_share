@@ -17,10 +17,7 @@ Rails.application.routes.draw do
     resources :notes, module: :cars
   end
   resources :students
-  resources :sites do
-    resources :notes, module: :sites
-    resources :site_contacts, module: :sites
-  end
+  
   resources :program_managers
   resources :programs do
     resources :cars, module: :programs
@@ -53,6 +50,10 @@ Rails.application.routes.draw do
   get 'application/delete_file_attachment/:id', to: 'application#delete_file_attachment', as: :delete_file
 
   resources :program_managers
+  resources :sites do
+    resources :notes, module: :sites
+    resources :site_contacts, module: :sites
+  end
   resources :notes
   
   get 'static_pages/home'
