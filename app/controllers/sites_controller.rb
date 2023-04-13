@@ -18,65 +18,15 @@ class SitesController < ApplicationController
     @site_contacts = @site.site_contacts
   end
 
-  # GET /sites/new
-  # def new
-  #   @site = Site.new
-  #   @site_contact = SiteContact.new
-  #   authorize @site
-  # end
-
   # GET /sites/1/edit
   def edit
+    session[:return_to] = request.referer
   end
-
-  # def edit_program_sites
-  #   @site = Site.new
-  #   @sites = @site_program.sites
-  #   @all_sites = Site.all
-  #   authorize Site
-  # end
-
-  # # POST /sites or /sites.json
-  # def create
-  #   if params[:site_id].present?
-  #     @site = Site.find(params[:site_id])
-  #   else
-  #    @site = Site.new(site_params)
-  #     unless @site.save
-  #       @site = Site.new
-  #       @sites = @site_program.sites
-  #       @all_sites = Site.all
-  #       return
-  #     end
-  #   end
-  #   @site_program.sites << @site
-  #   @site = Site.new
-  #   @sites = @site_program.sites
-  #   @all_sites = Site.all
-  #   flash.now[:notice] = "The site was added"
-
-  # end
 
   # PATCH/PUT /sites/1 or /sites/1.json
   def update
-    respond_to do |format|
-      if @site.update(site_params)
-        format.html { redirect_to site_url(@site), notice: "Site was successfully updated." }
-        format.json { render :show, status: :ok, location: @site }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @site.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /sites/1 or /sites/1.json
-  def destroy
-    @site.destroy
-
-    respond_to do |format|
-      format.html { redirect_to sites_url, notice: "Site was successfully destroyed." }
-      format.json { head :no_content }
+    if @site.update(site_params)
+      redirect_back_or_default("The site was updated", sites_url)
     end
   end
 
