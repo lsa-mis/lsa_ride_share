@@ -33,7 +33,7 @@ class Programs::SitesController < SitesController
   def edit_program_sites
     @site = Site.new
     @sites = @site_program.sites
-    @all_sites = Site.all
+    @all_sites = Site.all - @sites 
     authorize Site
   end
 
@@ -41,9 +41,11 @@ class Programs::SitesController < SitesController
   def create
     if params[:site_id].present?
       @site = Site.find(params[:site_id])
-      @site_program.sites << @site
-      @site = Site.new
       authorize @site
+      if @site_program.sites << @site
+        @site = Site.new
+        flash.now[:notice] = "The site was added"
+      end
     else
      @site = Site.new(site_params)
      authorize @site
@@ -54,7 +56,7 @@ class Programs::SitesController < SitesController
       end
     end
     @sites = @site_program.sites
-    @all_sites = Site.all
+    @all_sites = Site.all - @sites
   end
 
   # PATCH/PUT /sites/1 or /sites/1.json
@@ -72,24 +74,11 @@ class Programs::SitesController < SitesController
 
   # DELETE /sites/1 or /sites/1.json
   def destroy
-    # remove site from program, destroy - if the site belongs to no programs
+    # remove site from program, don't destroy
     if @site_program.sites.delete(@site)
-      unless @site.programs.present?
-        unless @site.destroy
-          @site = Site.new
-          return
-        else
-          @site = Site.new
-          flash.now[:notice] = "The site was removed from the program"
-        end
-      else
-        @site = Site.new
-        flash.now[:notice] = "The site was removed from the program"
-      end
-    else
-      @site = Site.new
-      return
+      flash.now[:notice] = "The site was removed from the program"
     end
+    @site = Site.new
   end
 
   private
@@ -97,7 +86,7 @@ class Programs::SitesController < SitesController
     def set_site_program
       @site_program = Program.find(params[:program_id])
       @sites = @site_program.sites
-      @all_sites = Site.all
+      @all_sites = Site.all - @sites
     end
 
     # Use callbacks to share common setup or constraints between actions.
