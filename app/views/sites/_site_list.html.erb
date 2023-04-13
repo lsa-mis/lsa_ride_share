@@ -5,6 +5,7 @@
         <tr>
           <th class="header_th">Site title</th>
           <th class="header_th">Address</th>
+          <th class="header_th">Programs</th>
         </tr>
       </thead>
       <tbody>
@@ -15,6 +16,11 @@
             </td>
             <td class="mi_tbody_td">
               <%= site.address %>
+            </td>
+            <td class="mi_tbody_td">
+              <% site.programs.each do |program| %>
+                <%= program.title %>;
+              <% end %>
             </td>
           </tr>
         <% end %>
