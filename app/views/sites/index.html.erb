@@ -1,7 +1,7 @@
 <div class="container px-1 mb-20" data-controller='autosubmit'>
 
   <h1>Sites</h1>
-  <h4>To Add a new Site, go to Programs and add the site there</h4>
+  <p class="body-text">To Add a new Site, go to Programs and add the site there</p>
   <div>
     <% if current_user.unit.count > 1 %>
       <%= form_with url: sites_path, method: :get, class: "", data: { autosubmit_target: "form", turbo_frame: "sites" } do |form| %>
