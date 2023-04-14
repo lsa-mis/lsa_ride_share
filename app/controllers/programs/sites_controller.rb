@@ -48,6 +48,8 @@ class Programs::SitesController < SitesController
       flash.now[:notice] = "The site was removed from the program"
     end
     @site = Site.new
+    @sites = @site_program.sites
+    @all_sites = Site.all - @sites
   end
 
   private
