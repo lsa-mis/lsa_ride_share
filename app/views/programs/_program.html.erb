@@ -7,73 +7,72 @@
     <label class="body-lg-bold-text">
       Unit:
     </label>
-    <p class="body-lg-text inline-block">
+    <p class="body-lg-text ml-2 inline-block">
       <%= program.unit.name %>
     </p>
   </div>
 
   <div class="py-2">
     <label class="body-lg-bold-text">
-    Term:
+      Term:
     </label>
-    <p class="body-lg-text inline-block">
+    <p class="body-lg-text ml-2 inline-block">
       <%= program.term.name %>
     </p>
   </div>
 
   <div class="py-2">
-    <label class="body-lg-medium-text">
-    Instructor:
+    <label class="body-lg-bold-text">
+      Instructor:
     </label>
-    <div class="body-lg-text ml-2 inline-block">
+    <p class="body-lg-text ml-2 inline-block">
       <%= program.instructor.display_name %>
-    </div>
+    </p>
   </div>
 
   <div class="py-2">
-    <label class="body-lg-medium-text">
-    Number of students:
+    <label class="body-lg-bold-text">
+      Number of students:
     </label>
-    <div class="body-lg-text ml-2 inline-block">
+    <p class="body-lg-text ml-2 inline-block">
       <%= number_of_students(program) %>
-    </div>
+    </p>
   </div>
 
   <div class="py-2">
-    <label class="body-lg-medium-text">
-    Number of students using ride share:
+    <label class="body-lg-bold-text">
+      Number of students using ride share:
     </label>
-    <div class="body-lg-text ml-2 inline-block">
+    <p class="body-lg-text ml-2 inline-block">
       <%= number_of_students_using_ride_share(program) %>
-    </div>
+    </p>
   </div>
 
   <div class="py-2">
-    <label class="body-lg-medium-text">
-    MVR link:
+    <label class="body-lg-bold-text">
+      MVR link:
     </label>
-    <div class="body-lg-text ml-2 inline-block">
+    <p class="body-lg-text ml-2 inline-block">
       <%= program.mvr_link %>
-    </div>
+    </p>
   </div>
 
   <div class="py-2">
-    <label class="body-lg-medium-text">
-    Canvas course link:
+    <label class="body-lg-bold-text">
+      Canvas course link:
     </label>
-    <div class="body-lg-text ml-2 inline-block">
+    <p class="body-lg-text ml-2 inline-block">
       <%= program.canvas_link %>
-    </div>
+    </p>
   </div>
   <% if program.additional_options.present? %>
     <div class="pt-2">
-      <label class="body-lg-medium-text flex-none">
-      Additional options:
+      <label class="body-lg-bold-text flex-none">
+        Additional options:
       </label>
-      <div class="body-lg-text ml-2">
+      <p class="body-lg-text ml-2">
         <%= sanitize program.additional_options %>
-      </div>
+      </p>
     </div>
   <% end %>
-
 </div>
