@@ -144,4 +144,21 @@ module StudentApi
     return returned_data
   end
 
+  def get_name(uniqname)
+    result = {'valid' => false, 'note' => '', 'last_name' => '', 'first_tname' => ''}
+    name = LdapLookup.get_simple_name(uniqname)
+    if name == "No such user"
+      result['note'] = "The '#{uniqname}' uniqname is not valid"
+    else
+      result['valid'] =  true
+      if name.nil?
+        result['note'] = "Mcommunity returns no name for '#{uniqname}' uniqname."
+      else
+        result['first_name'] = name.split(" ").first
+        result['last_name'] = name.split(" ").last
+      end
+    end
+    return result
+  end
+
 end
