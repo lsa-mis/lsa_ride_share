@@ -28,27 +28,23 @@ class Programs::StudentsController < ApplicationController
 
   def create
     uniqname = student_params[:uniqname]
-    @student = Student.new(uniqname: uniqname)
+    @student = Student.new(student_params)
     authorize @student
 
-    name = LdapLookup.get_simple_name(uniqname)
-    if name == "No such user"
-      flash.now[:alert] = "The '#{uniqname}' uniqname is not valid"
-      @students = @student_program.students.order(:last_name)
-      return
-    else
-      if name.nil?
-        note = "Mcommunity returns no name for '#{uniqname}' uniqname."
-      else
-        note = ''
-        @student.first_name = name.split(" ").first
-        @student.last_name = name.split(" ").last
-      end
-      @student.program_id = @student_program.id
+    result = get_name(uniqname)
+    if result['valid']
+      @student = Student.new(student_params)
+      @student.first_name = result['first_name']
+      @student.last_name = result['last_name']
+      authorize @student
       if @student.save
         @student = Student.new
-        flash.now[:notice] = "Student list is updated." + note
+        flash.now[:notice] = "Student list is updated." + result['note']
       end
+    else
+      flash.now[:alert] = result['note']
+      @students = @student_program.students.order(:last_name)
+      return
     end
     @students = @student_program.students.order(:last_name)
   end
@@ -125,7 +121,7 @@ class Programs::StudentsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def student_params
-      params.require(:student).permit(:uniqname, :last_name, :first_name, :mvr_expiration_date, :class_training_date, :canvas_course_complete_date, :meeting_with_admin_date)
+      params.require(:student).permit(:uniqname, :program_id, :last_name, :first_name, :mvr_expiration_date, :class_training_date, :canvas_course_complete_date, :meeting_with_admin_date)
     end
 
 end
