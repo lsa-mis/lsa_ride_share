@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class CarPolicy < ApplicationPolicy
+class SiteContactPolicy < ApplicationPolicy
   attr_reader :user, :record
 
   def initialize(user, record)
@@ -32,7 +32,7 @@ class CarPolicy < ApplicationPolicy
     update?
   end
 
-  def delete_file?
+  def destroy?
     user_in_access_group?
   end
 

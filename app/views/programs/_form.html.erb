@@ -95,23 +95,23 @@
     <%= form.number_field :canvas_course_id, required: true, placeholder: "Canvas Course Number", class: "input_text_field" %>
   </div>
 
-  <p class="body-sm-semibold-text">
+  <p class="body-text">
     Please check if the following options are required
   </p>
 
   <div class="my-5">
     <%= form.check_box :pictures_required_start, class: "check_box" %>
-    <%= form.label :pictures_required_start %>
+    <%= form.label :pictures_required_start, 'Users are required to add pictures at beginning of their trip' %>
   </div>
 
   <div class="my-5">
     <%= form.check_box :pictures_required_end, class: "check_box" %>
-    <%= form.label :pictures_required_end %>
+    <%= form.label :pictures_required_end, 'Users are required to add pictures at end of their trip' %>
   </div>
 
   <div class="my-5">
     <%= form.check_box :non_uofm_passengers, class: "check_box" %>
-    <%= form.label :non_uofm_passengers %>
+    <%= form.label :non_uofm_passengers, 'Reservation can include non U-M passengers' %>
   </div>
 
   <%= form.hidden_field :updated_by, value: current_user.id %>
@@ -119,9 +119,17 @@
   <div class="inline">
     <%= form.submit class: "primary_button" %>
   </div>
-  <%= link_to programs_path do %>
-    <span class="tertiary_button">Cancel
-    <i class="fa fa-times" aria-hidden="true"></i>
-    </span>
+  <% if program.persisted? %>
+    <%= link_to program_data_path(program) do %>
+      <span class="tertiary_button">Cancel
+      <i class="fa fa-times" aria-hidden="true"></i>
+      </span>
+    <% end %>
+  <% else %>
+    <%= link_to programs_path do %>
+      <span class="tertiary_button">Cancel
+      <i class="fa fa-times" aria-hidden="true"></i>
+      </span>
+    <% end %>
   <% end %>
 <% end %>

@@ -14,11 +14,14 @@ class SitesController < ApplicationController
 
   # GET /sites/1 or /sites/1.json
   def show
+    @programs = @site.programs
+    @site_contacts = @site.site_contacts
   end
 
   # GET /sites/new
   def new
     @site = Site.new
+    authorize @site
   end
 
   # GET /sites/1/edit
@@ -35,7 +38,7 @@ class SitesController < ApplicationController
 
     respond_to do |format|
       if @site.save
-        @site_program.sites << @site
+        # @site_program.sites << @site
         format.turbo_stream { redirect_to @site_program, 
                               notice: "The site was added" 
                             }

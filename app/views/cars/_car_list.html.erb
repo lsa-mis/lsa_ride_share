@@ -37,7 +37,7 @@
               <%= car.number_of_seats %>
             </td>
             <td class="mi_tbody_td">
-              <%= car.last_checked %>
+              <%= show_date_time(car.last_checked) %>
             </td>
             <td class="mi_tbody_td">
               <% if car.vehicle_reports_ids.present? %>
@@ -49,7 +49,7 @@
                 <%= link_to 'Vehicle Reports', vehicle_reports_path(car.vehicle_reports_ids), class: 'link_to' %>
               <% end %>
             </td>
-            <td class="mi_tbody_td">
+            <td class="mi_tbody_td <%= "#{car.status}" %>">
               <%= car.status.titleize %>
             </td>
           </tr>

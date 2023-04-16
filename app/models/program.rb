@@ -38,6 +38,8 @@ class Program < ApplicationRecord
 
   accepts_nested_attributes_for :instructor
 
+  before_save :upcase_subject
+
   validates_presence_of :title, :instructor_id, :unit_id
   validates_presence_of :subject, :catalog_number, :class_section, unless: -> { self.not_course }
   validates :term_id, uniqueness: { scope: [:subject, :catalog_number], message: "already has this program" }, unless: -> { self.not_course } 
@@ -59,22 +61,23 @@ class Program < ApplicationRecord
 
   def additional_options
     options = ''
-    if self.pictures_required_start || self.pictures_required_end
-      options = 'The program requires to upload pictures to the vehicle reports '
-      if self.pictures_required_start
-        options += '<br>at the start of the trip '
-      end
-      if self.pictures_required_start && self.pictures_required_end
-        options += 'and '
-      end
-      if self.pictures_required_end
-        options += '<br>at the end of the trip'
-      end
+    if self.pictures_required_start 
+      options += 'Users are required to add pictures at beginning of their trip<br>'
+    end
+    if self.pictures_required_end
+      options += 'Users are required to add pictures at beginning of their trip<br>'
     end
     if self.non_uofm_passengers
-      options += '<br><br>Non UofM passangers are allowed'
+      options += 'Reservation can include non U-M passengers<br>'
+    end
+    if self.add_managers
+      options += 'Program have managers<br>'
     end
     options
+  end
+
+  def upcase_subject
+    self.subject = subject.upcase
   end
 
   def display_name
@@ -82,6 +85,14 @@ class Program < ApplicationRecord
       "This program is not a course - #{self.term.name}"
     else
       "#{self.subject} #{self.catalog_number} - #{self.class_section} - #{self.term.name}" 
+    end
+  end
+
+  def display_name_with_title
+    if self.not_course
+      "#{self.title} - not a course - #{self.term.name}"
+    else
+      "#{self.title} - #{self.subject} #{self.catalog_number} - #{self.class_section} - #{self.term.name}"
     end
   end
 

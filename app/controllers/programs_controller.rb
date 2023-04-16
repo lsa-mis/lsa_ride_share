@@ -75,10 +75,10 @@ class ProgramsController < ApplicationController
     else
       instructor = ProgramManager.create(uniqname: uniqname)
     end
+    @program.instructor_id = instructor.id
     authorize @program
     respond_to do |format|
       if @program.update(program_params.except(:instructor_attributes))
-        @program.update(instructor_id: instructor.id)
         format.html { redirect_to program_data_path(@program), notice: "Program was successfully updated." }
         format.json { render :show, status: :ok, location: @program }
       else
