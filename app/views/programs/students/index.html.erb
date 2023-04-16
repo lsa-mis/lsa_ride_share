@@ -1,7 +1,7 @@
 <div class="w-full">
-  <div class="flex flex-row items-center justify-between m-2">
+  <div class="flex flex-row items-center justify-between mb-4">
     <div>
-      <h1> Student List</h1>
+      <h1>Student List</h1>
     </div>
     <div class="flex flex-row justify-between gap-2">
       <div>
@@ -20,10 +20,12 @@
     </div>
   </div>
 
-  <p class="my-5">
-  <strong class="block font-medium mb-1">Program:</strong>
-  <%= link_to @student_program.display_name, program_path(@student_program), class: "link_to" %>
-  </p>
+  <div class="mb-2">
+    <label class="body-lg-bold-text">
+      Program:
+    </label>
+    <%= link_to @student_program.display_name, program_path(@student_program), class: "link_to" %>
+  </div>
 
   <%= render "student_list" %>
 </div>

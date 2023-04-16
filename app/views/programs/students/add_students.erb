@@ -1,6 +1,6 @@
-<div class="w-full ml-4 mb-2">
+<div class="w-full mb-2">
 
-  <div class="flex justify-between items-center">
+  <div class="flex justify-between items-center mb-4">
     <h1>Update student list manually</h1>
     <div>
       <%= link_to program_students_path(@student_program) do %>
@@ -14,18 +14,20 @@
 
   <%= render "form", student: @student %>
 
-<div class="w-full ml-4">
-  <div class="flex flex-row items-center justify-between m-2">
+<div class="w-full">
+  <div class="flex flex-row items-center justify-between my-2">
     <div>
-      <h2> Student List</h2>
+      <h2>Student List</h2>
     </div>
     
   </div>
 
-  <p class="my-5">
-  <strong class="block font-medium mb-1">Program:</strong>
-  <%= link_to @student_program.display_name, program_path(@student_program), class: "link_to" %>
-  </p>
+  <div class="mb-2">
+    <label class="body-lg-bold-text">
+      Program:
+    </label>
+    <%= link_to @student_program.display_name, program_path(@student_program), class: "link_to" %>
+  </div>
 
   <%= render "student_list_manual" %>
 </div>
