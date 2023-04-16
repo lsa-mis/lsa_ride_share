@@ -28,8 +28,8 @@ module ApplicationHelper
     User.find(id).display_name_email
   end
 
-  def updated_on_and_by(program)
-    return "Updated on " + program.updated_at.strftime('%m/%d/%Y') + " by " + show_user_name_by_id(program.updated_by)
+  def updated_on_and_by(resource)
+    return "Updated on " + resource.updated_at.strftime('%m/%d/%Y') + " by " + show_user_name_by_id(resource.updated_by)
   end
 
   def number_of_students(program)
