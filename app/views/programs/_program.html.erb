@@ -1,81 +1,78 @@
-<div class="">
-  <div class="">
-    <div class="body-bold-text">
-      <%= program.display_name %>
-    </div>
+<div class="mt-2">
+  <div class="body-bold-text">
+    <%= program.display_name %>
+  </div>
 
-    <div class="py-2">
-      <label class="body-lg-medium-text">
-        Unit:
-      </label>
-      <div class="body-lg-text inline-block">
-        <%= program.unit.name %>
-      </div>
-    </div>
+  <div class="py-2">
+    <label class="body-lg-bold-text">
+      Unit:
+    </label>
+    <p class="body-lg-text ml-2 inline-block">
+      <%= program.unit.name %>
+    </p>
+  </div>
 
-    <div class="py-2">
-      <label class="body-lg-medium-text">
+  <div class="py-2">
+    <label class="body-lg-bold-text">
       Term:
-      </label>
-      <div class="body-lg-text inline-block">
-        <%= program.term.name %>
-      </div>
-    </div>
+    </label>
+    <p class="body-lg-text ml-2 inline-block">
+      <%= program.term.name %>
+    </p>
+  </div>
 
-    <div class="py-2">
-      <label class="body-lg-medium-text">
+  <div class="py-2">
+    <label class="body-lg-bold-text">
       Instructor:
-      </label>
-      <div class="body-lg-text ml-2 inline-block">
-        <%= program.instructor.display_name %>
-      </div>
-    </div>
+    </label>
+    <p class="body-lg-text ml-2 inline-block">
+      <%= program.instructor.display_name %>
+    </p>
+  </div>
 
-    <div class="py-2">
-      <label class="body-lg-medium-text">
+  <div class="py-2">
+    <label class="body-lg-bold-text">
       Number of students:
-      </label>
-      <div class="body-lg-text ml-2 inline-block">
-        <%= number_of_students(program) %>
-      </div>
-    </div>
+    </label>
+    <p class="body-lg-text ml-2 inline-block">
+      <%= number_of_students(program) %>
+    </p>
+  </div>
 
-    <div class="py-2">
-      <label class="body-lg-medium-text">
+  <div class="py-2">
+    <label class="body-lg-bold-text">
       Number of students using ride share:
-      </label>
-      <div class="body-lg-text ml-2 inline-block">
-        <%= number_of_students_using_ride_share(program) %>
-      </div>
-    </div>
+    </label>
+    <p class="body-lg-text ml-2 inline-block">
+      <%= number_of_students_using_ride_share(program) %>
+    </p>
+  </div>
 
-    <div class="py-2">
-      <label class="body-lg-medium-text">
+  <div class="py-2">
+    <label class="body-lg-bold-text">
       MVR link:
-      </label>
-      <div class="body-lg-text ml-2 inline-block">
-        <%= program.mvr_link %>
-      </div>
-    </div>
+    </label>
+    <p class="body-lg-text ml-2 inline-block">
+      <%= program.mvr_link %>
+    </p>
+  </div>
 
-    <div class="py-2">
-      <label class="body-lg-medium-text">
+  <div class="py-2">
+    <label class="body-lg-bold-text">
       Canvas course link:
-      </label>
-      <div class="body-lg-text ml-2 inline-block">
-        <%= program.canvas_link %>
-      </div>
-    </div>
+    </label>
+    <p class="body-lg-text ml-2 inline-block">
+      <%= program.canvas_link %>
+    </p>
   </div>
   <% if program.additional_options.present? %>
     <div class="pt-2">
-      <label class="body-lg-medium-text flex-none">
-      Additional options:
+      <label class="body-lg-bold-text flex-none">
+        Additional options:
       </label>
-      <div class="body-lg-text ml-2">
+      <p class="body-lg-text ml-2">
         <%= sanitize program.additional_options %>
-      </div>
+      </p>
     </div>
   <% end %>
-
 </div>

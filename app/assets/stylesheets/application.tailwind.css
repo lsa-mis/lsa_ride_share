@@ -32,7 +32,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   h1 {
-    @apply text-4xl font-medium leading-normal font-oswald;
+    @apply text-4xl font-medium leading-10 font-oswald;
   }
 
   h2 {
@@ -60,31 +60,31 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .body-text {
-    @apply text-xs font-normal leading-4 font-montserrat;
+    @apply text-sm font-normal font-montserrat;
   }
 
   .body-bold-text {
-    @apply text-xs font-medium leading-4 font-montserrat;
+    @apply text-sm font-bold font-montserrat;
   }
 
   .body-md-text {
-    @apply text-sm font-normal leading-5 font-montserrat;
+    @apply text-base font-normal font-montserrat;
   }
 
   .body-md-bold-text {
-    @apply text-sm font-medium leading-5 font-montserrat;
+    @apply text-base font-bold font-montserrat;
   }
 
   .body-lg-text {
-    @apply text-base font-normal leading-6 font-montserrat;
+    @apply text-lg font-normal font-montserrat;
   }
 
   .body-lg-medium-text {
-    @apply text-base font-medium leading-6 font-montserrat;
+    @apply text-lg font-medium font-montserrat;
   }
 
   .body-lg-bold-text {
-    @apply text-base font-bold leading-6 font-montserrat;
+    @apply text-lg font-bold font-montserrat;
   }
 
   .body-sm-semibold-text {
@@ -259,7 +259,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .alert {
-    @apply text-red-500;
+    @apply text-red-500 text-sm font-normal font-montserrat;
   }
 
   .notice {

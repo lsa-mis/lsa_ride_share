@@ -4,13 +4,13 @@
       <div class="w-0 flex-1 flex items-center">
         <%= link_to site.title, site_path(site), class: "link_to" %>
       </div>
-      <div class="flex-1 w-0 truncate">
+      <p class="flex-1 w-0 truncate">
         <%= site.address1 %>
-      </div>
+      </p>
     </div>
   <% end %>
 <% else %>
-    <div class="m-2 flex-1 truncate body-lg-text">
-      The program currently does not have any sites.
-    </div>
+  <p class="m-2 body-text">
+    The program currently does not have any sites.
+  </p>
 <% end %>
