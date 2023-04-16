@@ -30,13 +30,11 @@ class Programs::StudentsController < ApplicationController
     uniqname = student_params[:uniqname]
     @student = Student.new(student_params)
     authorize @student
-
     result = get_name(uniqname)
+    
     if result['valid']
-      @student = Student.new(student_params)
       @student.first_name = result['first_name']
       @student.last_name = result['last_name']
-      authorize @student
       if @student.save
         @student = Student.new
         flash.now[:notice] = "Student list is updated." + result['note']
