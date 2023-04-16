@@ -91,6 +91,10 @@ from https://tailwindcss.com/docs/adding-custom-styles
     @apply text-sm font-semibold text-gray-900
   }
 
+  .button_label {
+    @apply text-sm font-medium leading-4 text-gray-550 font-montserrat;
+  }
+
   .caption {
     @apply text-sm font-medium leading-4 italic text-gray-550;
   }
@@ -255,7 +259,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .alert {
-    @apply text-red-500;
+    @apply text-red-500 text-sm font-normal font-montserrat;
   }
 
   .notice {
