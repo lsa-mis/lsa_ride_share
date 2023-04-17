@@ -1,6 +1,6 @@
 class Programs::SitesController < SitesController
   before_action :set_site_program
-  before_action :set_site, only: %i[ edit destroy ]
+  before_action :set_site, only: %i[ edit remove_site_from_program ]
   before_action :set_units
 
   # GET /sites/new
@@ -26,7 +26,7 @@ class Programs::SitesController < SitesController
       authorize @site
       if @site_program.sites << @site
         @site = Site.new
-        flash.now[:notice] = "The site was added"
+        flash.now[:notice] = "The site was added."
       end
     else
      @site = Site.new(site_params)
@@ -34,7 +34,7 @@ class Programs::SitesController < SitesController
       if @site.save
         @site_program.sites << @site
         @site = Site.new
-        flash.now[:notice] = "The site was added"
+        flash.now[:notice] = "The site was added."
       end
     end
     @sites = @site_program.sites
@@ -42,10 +42,9 @@ class Programs::SitesController < SitesController
   end
 
   # DELETE /sites/1 or /sites/1.json
-  def destroy
-    # remove site from program, don't destroy
+  def remove_site_from_program
     if @site_program.sites.delete(@site)
-      flash.now[:notice] = "The site was removed from the program"
+      flash.now[:notice] = "The site was removed from the program."
     end
     @site = Site.new
     @sites = @site_program.sites

@@ -22,7 +22,7 @@
               <%= link_to 'Edit', edit_program_site_path(@site_program, site), class: "link_to" %>
             </td>
             <td>
-              <%= link_to 'Remove', program_site_path(@site_program, site), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete }, class: "link_to" %>
+              <%= link_to 'Remove', remove_site_from_program_path(@site_program, site), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete }, class: "link_to" %>
             </td>
           </tr>
         <% end %>

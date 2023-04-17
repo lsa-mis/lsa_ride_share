@@ -26,6 +26,8 @@ Rails.application.routes.draw do
     resources :sites, module: :programs
   end
   get '/programs/sites/edit_program_sites/:program_id', to: 'programs/sites#edit_program_sites', as: :edit_program_sites
+  delete 'programs/sites/:program_id/:id', to: 'programs/sites#remove_site_from_program', as: :remove_site_from_program
+
   resources :programs do
     resources :program_managers, module: :programs
   end
