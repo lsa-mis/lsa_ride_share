@@ -16,7 +16,7 @@ class Programs::SitesController < SitesController
 
   def edit_program_sites
     @site = Site.new
-    authorize Site
+    authorize @site
   end
 
   # POST /sites or /sites.json
