@@ -11,12 +11,12 @@
       </div>
     <% end %>
     <div class="sm:flex gap-2 items-end">
-      <div class="">
+      <div>
         <%= form.label :uniqname, "Uniqname *", class: "fancy_label" %>
         <%= form.text_field :uniqname, required: true, class: "input_text_field" %>
       </div>
       <%= form.hidden_field :program_id, value: @student_program.id %>
-      <div class="">
+      <div>
         <%= form.submit 'Add Student', class: "secondary_blue_button" %>
       </div>
     </div>
