@@ -1,12 +1,14 @@
 class Programs::StudentsController < ApplicationController
   before_action :auth_user
-  before_action :set_student, only: %i[ show ]
+  before_action :set_student, only: %i[ show destroy]
   before_action :set_student_program
   include StudentApi
 
   # GET /students or /students.json
   def index
-    update_students(@student_program)
+    unless @student_program.not_course
+      update_students(@student_program)
+    end
     @students = @student_program.students.order(:last_name)
     authorize @students
   end
@@ -16,6 +18,46 @@ class Programs::StudentsController < ApplicationController
     update_students(@student_program)
     @students = @student_program.students.order(:last_name)
     authorize @students
+  end
+
+  def add_students
+    @student = Student.new
+    @students = @student_program.students.order(:last_name)
+    authorize Student
+  end
+
+  def create
+    uniqname = student_params[:uniqname]
+    @student = Student.new(student_params)
+    authorize @student
+    result = get_name(uniqname)
+    
+    if result['valid']
+      @student.first_name = result['first_name']
+      @student.last_name = result['last_name']
+      if @student.save
+        @student = Student.new
+        flash.now[:notice] = "Student list is updated." + result['note']
+      end
+    else
+      flash.now[:alert] = result['note']
+      @students = @student_program.students.order(:last_name)
+      return
+    end
+    @students = @student_program.students.order(:last_name)
+  end
+
+  def destroy
+    authorize @student
+    if @student.destroy
+      @students = @student_program.students.order(:last_name)
+      @student = Student.new
+      flash.now[:notice] = "Student is removed"
+    else
+      @students = @student_program.students.order(:last_name)
+      render :add_students, status: :unprocessable_entity
+    end
+
   end
 
   # GET /students/1 or /students/1.json
@@ -77,7 +119,7 @@ class Programs::StudentsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def student_params
-      params.require(:student).permit(:uniqname, :last_name, :first_name, :mvr_expiration_date, :class_training_date, :canvas_course_complete_date, :meeting_with_admin_date)
+      params.require(:student).permit(:uniqname, :program_id, :last_name, :first_name, :mvr_expiration_date, :class_training_date, :canvas_course_complete_date, :meeting_with_admin_date)
     end
 
 end

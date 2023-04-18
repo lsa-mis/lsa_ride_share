@@ -76,7 +76,7 @@ module StudentApi
       end
       if students_in_db.present?
         # delete students who dropped the course
-        @student_program.students.delete(Student.where(uniqname: students_in_db))
+        Student.where(uniqname: students_in_db, program_id: @student_program).delete_all
       end
       unless @student_program.update(number_of_students: @student_program.students.count)
         flash.now[:error] = "Error updating number of students"
@@ -142,6 +142,23 @@ module StudentApi
       returned_data['error'] = response_json
     end
     return returned_data
+  end
+
+  def get_name(uniqname)
+    result = {'valid' => false, 'note' => '', 'last_name' => '', 'first_tname' => ''}
+    name = LdapLookup.get_simple_name(uniqname)
+    if name == "No such user"
+      result['note'] = "The '#{uniqname}' uniqname is not valid"
+    else
+      result['valid'] =  true
+      if name.nil?
+        result['note'] = "Mcommunity returns no name for '#{uniqname}' uniqname."
+      else
+        result['first_name'] = name.split(" ").first
+        result['last_name'] = name.split(" ").last
+      end
+    end
+    return result
   end
 
 end
