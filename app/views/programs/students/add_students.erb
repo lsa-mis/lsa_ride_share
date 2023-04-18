@@ -20,7 +20,7 @@
     <label class="body-lg-bold-text">
       Program:
     </label>
-    <%= link_to @student_program.display_name, program_path(@student_program), class: "link_to" %>
+    <%= link_to @student_program.display_name_with_title, program_path(@student_program), class: "link_to" %>
   </div>
 
   <%= render "student_list_manual" %>
