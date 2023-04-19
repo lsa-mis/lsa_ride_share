@@ -34,7 +34,7 @@ class CarsController < ApplicationController
     @car = Car.new(car_params)
     authorize @car
     if @car.save
-      redirect_to car_path(@car), notice: "A new car was added"
+      redirect_to car_path(@car), notice: "A new car was added."
     else
       render :new, status: :unprocessable_entity
     end
@@ -49,7 +49,7 @@ class CarsController < ApplicationController
       @car.last_checked = car_params[:checked]
     end
     if @car.update(car_params.except(:is_checked_today, :checked))
-      redirect_to car_path(@car), notice: "The car was updated"
+      redirect_to car_path(@car), notice: "The car was updated."
     else
       render :edit, status: :unprocessable_entity
     end

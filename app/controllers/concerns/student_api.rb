@@ -69,7 +69,7 @@ module StudentApi
         else
           student = Student.new(uniqname: student_info['Uniqname'], first_name: student_info['Name'].split(",").last, last_name: student_info['Name'].split(",").first, program: program)
           unless student.save
-            flash.now[:alert] = "Error saving student record"
+            flash.now[:alert] = "Error saving student record."
             return
           end
         end
@@ -79,10 +79,10 @@ module StudentApi
         Student.where(uniqname: students_in_db, program_id: @student_program).delete_all
       end
       unless @student_program.update(number_of_students: @student_program.students.count)
-        flash.now[:error] = "Error updating number of students"
+        flash.now[:error] = "Error updating number of students."
         return
       end
-      flash.now[:notice] = "Student list is updated"
+      flash.now[:notice] = "Student list is updated."
     else
       flash.now[:alert] = result['errorcode'] + ": " + result['error']
     end
@@ -148,7 +148,7 @@ module StudentApi
     result = {'valid' => false, 'note' => '', 'last_name' => '', 'first_tname' => ''}
     name = LdapLookup.get_simple_name(uniqname)
     if name == "No such user"
-      result['note'] = "The '#{uniqname}' uniqname is not valid"
+      result['note'] = "The '#{uniqname}' uniqname is not valid."
     else
       result['valid'] =  true
       if name.nil?

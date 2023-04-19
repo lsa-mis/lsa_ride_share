@@ -52,7 +52,7 @@ class Programs::StudentsController < ApplicationController
     if @student.destroy
       @students = @student_program.students.order(:last_name)
       @student = Student.new
-      flash.now[:notice] = "Student is removed"
+      flash.now[:notice] = "Student is removed."
     else
       @students = @student_program.students.order(:last_name)
       render :add_students, status: :unprocessable_entity
@@ -68,10 +68,10 @@ class Programs::StudentsController < ApplicationController
     @student_program.students.each do |student|
       status = mvr_status(student.uniqname)
       unless student.update(mvr_status: status)
-        redirect_to program_students_path(@student_program), alert: "Error updating student record"
+        redirect_to program_students_path(@student_program), alert: "Error updating student record."
       end
     end
-    flash.now[:notice] = "MVR status is updated"
+    flash.now[:notice] = "MVR status is updated."
     @students = @student_program.students.order(:last_name)
     authorize @students
   end
@@ -93,13 +93,13 @@ class Programs::StudentsController < ApplicationController
       @student_program.students.each do |student|
         if uniqnames.include?(student.uniqname)
           unless student.update(canvas_course_complete_date: students_with_good_score[student.uniqname])
-            flash.now[:alert] = "Error updating student record"
+            flash.now[:alert] = "Error updating student record."
             @students = @student_program.students.order(:last_name)
             return
           end
         end
       end
-      flash.now[:notice] = "Canvas results are updated"
+      flash.now[:notice] = "Canvas results are updated."
     else
       flash.now[:alert] = result['error']
     end
