@@ -25,7 +25,7 @@ class UnitPreferencesController < ApplicationController
         end
       end
     end
-    redirect_to unit_prefs_path, notice: "Preferences are updated"
+    redirect_to unit_prefs_path, notice: "Preferences are updated."
   end
 
   # GET /unit_preferences/new

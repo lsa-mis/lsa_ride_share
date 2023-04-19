@@ -82,7 +82,7 @@ class Program < ApplicationRecord
 
   def display_name
     if self.not_course
-      "This program is not a course - #{self.term.name}"
+      "Not a course - #{self.term.name}"
     else
       "#{self.subject} #{self.catalog_number} - #{self.class_section} - #{self.term.name}"
     end
