@@ -4,9 +4,6 @@
     <h1>Terms</h1>
     <%= link_to 'New term', new_term_path, class: "primary_button" %>
   </div>
-  <p class="body-text mb-2">
-    For this application the End Date of a term should be the date one day before the Start Date of the next term.
-  </p>
 
   <div id="terms" class="min-w-full">
     <%= render 'listing' %>
