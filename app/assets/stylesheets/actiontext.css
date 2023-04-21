@@ -11,6 +11,16 @@
  * <action-text-attachment> element we wrap around attachments. Otherwise,
  * images in galleries will be squished by the max-width: 33%; rule.
 */
+
+.trix-content {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 500;
+  font-family: 'Montserrat', sans-serif;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
 .trix-content .attachment-gallery>action-text-attachment,
 .trix-content .attachment-gallery>.attachment {
   flex: 1 0 33%;
