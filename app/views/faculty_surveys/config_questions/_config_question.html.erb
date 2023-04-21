@@ -1,0 +1,39 @@
+<%= turbo_frame_tag 'questions' do %>
+  <div class="min-w-full">
+    <table class="mi_table">
+      <thead class="mi_thead">
+        <tr>
+          <th class="header_th">  </th>
+          <th class="header_th">  </th>
+          <th class="header_th">Question</th>
+          <th class="header_th">Answer</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @config_questions.each do |q| %>
+          <tr class="mi_tbody_tr">
+            <td class="mi_tbody_td">
+              <% unless @faculty_survey.program_id.present? %>
+                <%= link_to "Delete", faculty_survey_config_question_path(@faculty_survey, q), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete}, class: "link_to" %>
+              <% end %>
+            </td>
+            <td class="mi_tbody_td">
+              <% unless @faculty_survey.program_id.present? %>
+                <%= link_to 'Edit', edit_faculty_survey_config_question_path(@faculty_survey, q), class: "link_to" %>
+              <% end %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= q.question.body.html_safe %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= q.answer.body.html_safe if q.answer.present? %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>
+
+
+

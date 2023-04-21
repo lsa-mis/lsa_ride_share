@@ -1,0 +1,34 @@
+<%= form_with model: [@faculty_survey, @config_question] do |form| %>
+  <% if @config_question.errors.any? %>
+    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
+      <h2><%= pluralize(@config_question.errors.count, "error") %> prohibited this config_question from being saved:</h2>
+      <ul>
+        <% @config_question.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <p class="my-5 body-text">
+    Faculty Survey for
+    <%= @faculty_survey.display_name %>
+  </p>
+
+  <%= form.hidden_field :faculty_survey_id %>
+
+  <div class="my-2">
+    <%= form.label :question, class: "text_field_label" %>
+    <%= form.rich_text_area :question %>
+  </div>
+  <%= form.hidden_field :faculty_survey_id, value: @faculty_survey.id %>
+
+  <div class="inline">
+    <%= form.submit class: "primary_button" %>
+  </div>
+  <%= link_to faculty_survey_config_questions_path(@faculty_survey) do %>
+    <span class="tertiary_button">Cancel
+      <i class="fa fa-times" aria-hidden="true"></i>
+    </span>
+  <% end %>
+<% end %>
