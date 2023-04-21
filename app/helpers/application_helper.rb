@@ -2,6 +2,11 @@ module ApplicationHelper
 
   def default_config_questions
     [
+      "Title - a program with this title will be created after you submit the survey.",
+      "Is the program a course? Please answer 'yes' or 'no'. If the program is not a course, no need to enter subject/catalog number/section",
+      "Subject (if exist)",
+      "Catalog number (if exist)",
+      "Section (if exist)",
       "Number of students using ride share",
       "<div>Type of car reservation&nbsp;</div><ul><li>Recurring</li><li>Sporadic</li><li>Events</li><li>Trips</li><li>Other</li></ul>",
       "Does The Course Have A $50 Lab Fee?",
@@ -63,6 +68,8 @@ module ApplicationHelper
   def is_super_admin?(user)
     user.membership.include?('lsa-was-rails-devs')
   end
+
+  
   
   def render_flash_stream
     turbo_stream.update "flash", partial: "layouts/notification"
