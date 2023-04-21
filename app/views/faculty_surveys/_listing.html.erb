@@ -1,0 +1,46 @@
+<%= turbo_frame_tag 'surveys' do %>
+  <div class="min-w-full">
+    <table class="mi_table">
+      <thead class="mi_thead">
+        <tr>
+          <th class="header_th">  </th>
+          <th class="header_th">Instructor Uniqname</th>
+          <th class="header_th">Unit</th>
+          <th class="header_th">Term</th>
+          <th class="header_th">Program</th>
+          <th class="header_th">Survey Questions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @faculty_surveys.each do |survey| %>
+          <tr class="mi_tbody_tr">
+            <td class="mi_tbody_td">
+              <% unless survey.program_id.present? %>
+                <%= link_to 'Edit', edit_faculty_survey_path(survey), class: "link_to" %>
+              <% end %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= survey.uniqname %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= survey.unit.name %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= survey.term.name %>
+            </td>
+            <td class="mi_tbody_td">
+              <% if survey.program_id.present? %>
+                <%= link_to Program.find_by(id: survey.program_id).display_name_with_title, program_path(Program.find_by(id: survey.program_id)), class: "link_to" %>
+              <% else %>
+                no program for this survey
+              <% end %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= link_to 'Questions', faculty_survey_config_questions_path(survey), class: "link_to" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>
