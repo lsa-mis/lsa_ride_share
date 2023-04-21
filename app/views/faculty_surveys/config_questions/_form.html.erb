@@ -24,7 +24,7 @@
   <%= form.hidden_field :faculty_survey_id, value: @faculty_survey.id %>
 
   <div class="inline">
-    <%= form.submit class: "primary_button" %>
+    <%= form.submit 'Update Question', class: "primary_button" %>
   </div>
   <%= link_to faculty_survey_config_questions_path(@faculty_survey) do %>
     <span class="tertiary_button">Cancel

@@ -2,7 +2,7 @@
   <div class="flex justify-between items-center mb-4">
     <h1><%= @faculty_survey.display_name %></h1>
     <% unless @faculty_survey.program_id.present? %>
-      <%= link_to 'New config question', new_faculty_survey_config_question_path(@faculty_survey), class: "secondary_blue_button" %>
+      <%= link_to 'New Survey Question', new_faculty_survey_config_question_path(@faculty_survey), class: "secondary_blue_button" %>
     <% end %>
   </div>
   <p class="body-text mb-2">
