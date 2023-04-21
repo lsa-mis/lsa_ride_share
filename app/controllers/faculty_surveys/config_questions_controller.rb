@@ -1,5 +1,6 @@
 class FacultySurveys::ConfigQuestionsController < ApplicationController
   before_action :set_faculty_survey
+  before_action :set_config_question, only: %i[ edit update destroy]
 
   def index
     @config_questions = @faculty_survey.config_questions.order(:id)
@@ -23,13 +24,9 @@ class FacultySurveys::ConfigQuestionsController < ApplicationController
   end
 
   def edit
-    @config_question = ConfigQuestion.find(params[:id])
-    authorize @config_question
   end
 
   def update
-    @config_question = ConfigQuestion.find(params[:id])
-    authorize @config_question
     if @config_question.update(config_question_params)
       redirect_to faculty_survey_config_questions_path(@faculty_survey), notice: "Question was updated."
     else
@@ -38,9 +35,6 @@ class FacultySurveys::ConfigQuestionsController < ApplicationController
   end
 
   def destroy
-    @config_question = @faculty_survey.config_questions.find(params[:id])
-    authorize @config_question
-
     if @config_question.destroy
       flash.now[:notice] =  "Question was deleted."
     end
@@ -52,6 +46,11 @@ class FacultySurveys::ConfigQuestionsController < ApplicationController
 
   def set_faculty_survey
     @faculty_survey = FacultySurvey.find(params[:faculty_survey_id])
+  end
+
+  def set_config_question
+    @config_question = ConfigQuestion.find(params[:id])
+    authorize @config_question
   end
 
   def config_question_params
