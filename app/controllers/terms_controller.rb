@@ -3,7 +3,7 @@ class TermsController < ApplicationController
 
   # GET /terms or /terms.json
   def index
-    @terms = Term.all.order(:term_start, term_end: :desc)
+    @terms = Term.sorted
     authorize @terms
   end
 

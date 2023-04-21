@@ -11,7 +11,10 @@
 #  updated_at :datetime         not null
 #
 class Term < ApplicationRecord
-  
-  scope :current, -> { where(':date BETWEEN term_start AND term_end', date: Date.today)}
+
+  validates_presence_of :code, :name, :term_start, :term_end
+
+  scope :sorted, -> { order(:term_start, term_end: :desc) }
+  scope :current, -> { all.where(':date BETWEEN term_start AND term_end', date: Date.today).or(all.where(term_start: all.where('term_start < :date', date: Date.today).max.term_start)) }
 
 end
