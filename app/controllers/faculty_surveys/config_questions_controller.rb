@@ -44,17 +44,17 @@ class FacultySurveys::ConfigQuestionsController < ApplicationController
 
   private
 
-  def set_faculty_survey
-    @faculty_survey = FacultySurvey.find(params[:faculty_survey_id])
-  end
+    def set_faculty_survey
+      @faculty_survey = FacultySurvey.find(params[:faculty_survey_id])
+    end
 
-  def set_config_question
-    @config_question = ConfigQuestion.find(params[:id])
-    authorize @config_question
-  end
+    def set_config_question
+      @config_question = ConfigQuestion.find(params[:id])
+      authorize @config_question
+    end
 
-  def config_question_params
-    params.require(:config_question).permit(:faculty_survey_id, :question)
-  end
+    def config_question_params
+      params.require(:config_question).permit(:faculty_survey_id, :question)
+    end
 
 end
