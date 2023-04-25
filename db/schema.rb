@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_20_203124) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_25_012357) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -93,6 +93,18 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_20_203124) do
     t.datetime "updated_at", null: false
     t.bigint "faculty_survey_id"
     t.index ["faculty_survey_id"], name: "index_config_questions_on_faculty_survey_id"
+  end
+
+  create_table "contacts", force: :cascade do |t|
+    t.string "title"
+    t.string "first_name"
+    t.string "last_name"
+    t.string "phone_number"
+    t.string "email"
+    t.bigint "site_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["site_id"], name: "index_contacts_on_site_id"
   end
 
   create_table "faculty_surveys", force: :cascade do |t|
@@ -203,18 +215,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_20_203124) do
     t.index ["site_id"], name: "index_reservations_on_site_id"
   end
 
-  create_table "site_contacts", force: :cascade do |t|
-    t.string "title"
-    t.string "first_name"
-    t.string "last_name"
-    t.string "phone_number"
-    t.string "email"
-    t.bigint "site_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["site_id"], name: "index_site_contacts_on_site_id"
-  end
-
   create_table "sites", force: :cascade do |t|
     t.string "title"
     t.string "address1"
@@ -311,6 +311,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_20_203124) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "cars_programs", "cars"
   add_foreign_key "cars_programs", "programs"
+  add_foreign_key "contacts", "sites"
   add_foreign_key "faculty_surveys", "terms"
   add_foreign_key "faculty_surveys", "units"
   add_foreign_key "notes", "users"
@@ -326,7 +327,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_20_203124) do
   add_foreign_key "reservations", "sites"
   add_foreign_key "reservations", "students", column: "backup_driver_id"
   add_foreign_key "reservations", "students", column: "driver_id"
-  add_foreign_key "site_contacts", "sites"
   add_foreign_key "students", "programs"
   add_foreign_key "unit_preferences", "units"
   add_foreign_key "vehicle_reports", "reservations"
