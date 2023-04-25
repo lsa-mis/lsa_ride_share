@@ -1,4 +1,4 @@
-<%= turbo_frame_tag 'site_contacts' do %>
+<%= turbo_frame_tag 'contacts' do %>
   <div class="min-w-full">
     <table class="mi_table">
       <thead class="border border-l-0 border-r-0 border-gray-um60">
@@ -13,28 +13,28 @@
         </tr>
       </thead>
       <tbody>
-        <% @site_contacts.each do |site_contact| %>
+        <% @contacts.each do |contact| %>
           <tr class="mi_tbody_tr">
             <td class="mi_tbody_td">
-              <%= site_contact.title %>
+              <%= contact.title %>
             </td>
             <td class="mi_tbody_td">
-              <%= site_contact.first_name %>
+              <%= contact.first_name %>
             </td>
             <td class="mi_tbody_td">
-              <%= site_contact.last_name %>
+              <%= contact.last_name %>
             </td>
             <td class="mi_tbody_td">
-              <%= site_contact.phone_number %>
+              <%= contact.phone_number %>
             </td>
             <td class="mi_tbody_td">
-              <%= site_contact.email %>
+              <%= contact.email %>
             </td>
             <td class="mi_tbody_td">
-              <%= link_to 'Edit', edit_site_site_contact_path(@site, site_contact), class: "link_to" %>
+              <%= link_to 'Edit', edit_site_contact_path(@site, contact), class: "link_to" %>
             </td>
             <td class="mi_tbody_td">
-              <%= link_to "Remove", site_site_contact_path(@site, site_contact), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete }, class: "link_to" %>
+              <%= link_to "Remove", site_contact_path(@site, contact), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete }, class: "link_to" %>
             </td>
           </tr>
         <% end %>

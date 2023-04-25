@@ -1,11 +1,11 @@
-<%= turbo_frame_tag 'new_site_contact' do %>
-  <%= form_for [@site, site_contact]  do |form| %>
-    <% if site_contact.errors.any? %>
+<%= turbo_frame_tag 'new_contact' do %>
+  <%= form_for [@site, contact]  do |form| %>
+    <% if contact.errors.any? %>
       <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
-        <h2><%= pluralize(site_contact.errors.count, "error") %> prohibited this site_contact from being saved:</h2>
+        <h2><%= pluralize(contact.errors.count, "error") %> prohibited this contact from being saved:</h2>
 
         <ul>
-          <% site_contact.errors.each do |error| %>
+          <% contact.errors.each do |error| %>
             <li><%= error.full_message %></li>
           <% end %>
         </ul>
@@ -44,7 +44,7 @@
       <div class="inline">
         <%= form.submit 'Add New Contact', class: "secondary_blue_button" %>
       </div>
-      <%= link_to site_site_contacts_path do %>
+      <%= link_to site_contacts_path do %>
         <span class="tertiary_button">Clear
           <i class="fa fa-times" aria-hidden="true"></i>
         </span>
