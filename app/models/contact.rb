@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: site_contacts
+# Table name: contacts
 #
 #  id           :bigint           not null, primary key
 #  title        :string
@@ -10,7 +10,7 @@
 #  email       :string
 #  site_id      :bigint
 
-class SiteContact < ApplicationRecord
+class Contact < ApplicationRecord
   belongs_to :site
 
   validates_presence_of :title, :first_name, :last_name

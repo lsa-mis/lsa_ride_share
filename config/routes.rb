@@ -54,7 +54,7 @@ Rails.application.routes.draw do
   resources :program_managers
   resources :sites do
     resources :notes, module: :sites
-    resources :site_contacts, module: :sites
+    resources :contacts, module: :sites
   end
   resources :notes
   
