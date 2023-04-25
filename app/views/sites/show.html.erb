@@ -3,16 +3,13 @@
     <h1 class="mb-4">Site: <%= @site.title %></h1>
     <div class="lg:grid lg:justify-items-end">
       <div class="py-2">
-        <%= link_to 'Edit Site', site_path(@site), class: "primary_button" %>
+        <%= link_to 'Edit Site', edit_site_path(@site), class: "primary_button" %>
       </div>
     </div>
   </div>
   <div>
     <%= render @site %>
   </div>
-  <p class="body-text m-2">
-    <%= updated_on_and_by(@site) %>
-  </p>
 
   <div class="container p-2 rounded-lg shadow-lg text-xl mb-20 bg-gray-50">
     <h2 class="mb-4">Notes:</h2>

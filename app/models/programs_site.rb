@@ -11,4 +11,7 @@
 class ProgramsSite < ApplicationRecord
   belongs_to :program
   belongs_to :site
+
+  validates :site_id, uniqueness: { scope: :program_id, message: "is already in the program list" }
+
 end

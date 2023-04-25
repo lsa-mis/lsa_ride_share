@@ -1,29 +1,24 @@
 <div class="container px-1 mb-20" data-controller='autosubmit'>
-
-  <h1 class="pb-4">Sites</h1>
-
+  <h1 class="mb-4">Sites</h1>
+    <p class="body-text">To Add a new Site, go to <%= link_to 'Programs', programs_path, class: "link_to" %> and add the site there</p>
   <div>
     <% if current_user.unit.count > 1 %>
-      <%= form_with url: sites_path, method: :get, class: "", data: { autosubmit_target: "form", turbo_frame: "turbo-sites" } do |form| %>
-
+      <%= form_with url: sites_path, method: :get, class: "", data: { autosubmit_target: "form", turbo_frame: "sites" } do |form| %>
         <div class="mb-4">
           <label for="unit_id" class="fancy_label">Select a Unit</label>
           <%= select_tag "unit_id", options_from_collection_for_select(@units, :id, :name, selected: params[:unit_id]), include_blank: "All Units", class: "filter_select w-48",
                       :"data-action" => "change->autosubmit#search" %>
         </div>
-
-        <%= turbo_frame_tag "turbo-sites" do %>
-          <div id="maincontent"></div>
-          <div class="mb-10" id="sites_listing">
-            <div id="sites" class="min-w-full">
-              <%= render 'site_list' %>
-            </div>
+        <div id="maincontent"></div>
+        <div class="mb-10">
+          <div id="sites" class="min-w-full">
+            <%= render 'listing' %>
           </div>
-        <% end %>
+        </div>
       <% end %>
     <% else %>
       <div id="sites" class="min-w-full">
-        <%= render 'site_list' %>
+        <%= render 'listing' %>
       </div>
     <% end %>
   </div>
