@@ -198,7 +198,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_25_012357) do
     t.bigint "car_id"
     t.datetime "start_time"
     t.datetime "end_time"
-    t.text "recurring"
+    t.string "recurring"
     t.bigint "driver_id"
     t.string "driver_phone"
     t.bigint "backup_driver_id"
