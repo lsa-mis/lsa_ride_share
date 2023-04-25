@@ -8,22 +8,24 @@
       <%= site.address %>
     </div>
   </div>
-
-  <div class="py-2">
-    <label class="body-lg-medium-text">
-      Contacts:
-    </label>
-    <div class="body-lg-text ml-2">
-      <% @site_contacts.each do |site_contact| %>
-        <div>
-          <% if policy(SiteContact).edit? %>
-            <%= link_to site_contact.display_name, site_contact_path(site_contact), class: "link_to" %>
-          <% else %>
-            <%= site_contact.display_name %>
-          <% end %>
-        </div>
-      <% end %>
+  <div class="flex items-center gap-2">
+    <div class="py-2">
+      <label class="body-lg-medium-text">
+        Contacts:
+      </label>
+      <div class="body-lg-text ml-2">
+        <% @contacts.each do |contact| %>
+          <div>
+              <%= contact.display_name %>
+          </div>
+        <% end %>
+      </div>
     </div>
+    <% if policy(Contact).edit? %>
+      <div class="py-2">
+        <%= link_to 'Edit Contacts', site_contacts_path(@site), class: "primary_button" %>
+      </div>
+    <% end %>
   </div>
 
   <div class="py-2">
@@ -42,5 +44,8 @@
       <% end %>
     </div>
   </div>
+  <p class="body-md-text m-2">
+    <%= updated_on_and_by(@site) %>
+  </p>
 
 </div>

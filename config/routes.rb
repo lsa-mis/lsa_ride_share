@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  resources :site_contacts
   
   resources :units
 
@@ -18,9 +17,7 @@ Rails.application.routes.draw do
     resources :notes, module: :cars
   end
   resources :students
-  resources :sites do
-    resources :notes, module: :sites
-  end
+  
   resources :program_managers
   resources :programs do
     resources :cars, module: :programs
@@ -28,6 +25,9 @@ Rails.application.routes.draw do
   resources :programs do
     resources :sites, module: :programs
   end
+  get '/programs/sites/edit_program_sites/:program_id', to: 'programs/sites#edit_program_sites', as: :edit_program_sites
+  delete 'programs/sites/:program_id/:id', to: 'programs/sites#remove_site_from_program', as: :remove_site_from_program
+
   resources :programs do
     resources :program_managers, module: :programs
   end
@@ -54,6 +54,10 @@ Rails.application.routes.draw do
   get 'application/delete_file_attachment/:id', to: 'application#delete_file_attachment', as: :delete_file
 
   resources :program_managers
+  resources :sites do
+    resources :notes, module: :sites
+    resources :contacts, module: :sites
+  end
   resources :notes
   
   get 'static_pages/home'

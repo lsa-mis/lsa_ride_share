@@ -32,7 +32,11 @@ class SitePolicy < ApplicationPolicy
     update?
   end
 
-  def destroy?
+  def edit_program_sites?
+    update?
+  end
+
+  def remove_site_from_program?
     user_in_access_group?
   end
 
