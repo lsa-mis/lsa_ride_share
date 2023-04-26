@@ -15,6 +15,9 @@ class Term < ApplicationRecord
   validates_presence_of :code, :name, :term_start, :term_end
 
   scope :sorted, -> { order(:term_start, term_end: :desc) }
-  scope :current, -> { all.where(':date BETWEEN term_start AND term_end', date: Date.today).or(all.where(term_start: all.where('term_start < :date', date: Date.today).max.term_start)) }
+  scope :between_start_and_end_dates, -> { sorted.where(':date BETWEEN term_start AND term_end', date: Date.today) }
+  scope :started_before_today, -> { sorted.where('term_start < :date', date: Date.today) }
+  scope :max_started_before_today, -> { sorted.where(term_start: started_before_today.max.term_start) }
+  scope :current, -> { between_start_and_end_dates.or(max_started_before_today) }
 
 end
