@@ -19,6 +19,7 @@ class ProgramsController < ApplicationController
   end
 
   def duplicate
+    @copy_from_id = @program.id
     @program = @program.dup
     render :new
   end
@@ -46,8 +47,7 @@ class ProgramsController < ApplicationController
 
   # POST /programs or /programs.json
   def create
-    
-    @program = Program.new(program_params.except(:instructor_attributes))
+    @program = Program.new(program_params.except(:instructor_attributes, :copy_from_id))
     uniqname = program_params[:instructor_attributes][:uniqname]
     if ProgramManager.find_by(uniqname: uniqname).present?
       instructor = ProgramManager.find_by(uniqname: uniqname)
@@ -58,6 +58,10 @@ class ProgramsController < ApplicationController
     authorize @program
     respond_to do |format|
       if @program.save
+        if params[:program][:copy_from_id].present?
+          # carry forward sites when program is carried forward
+          @program.sites << Program.find(params[:program][:copy_from_id]).sites
+        end
         format.html { redirect_to program_url(@program), notice: "Program was successfully created." }
         format.json { render :show, status: :created, location: @program }
       else
