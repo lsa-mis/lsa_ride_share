@@ -19,6 +19,7 @@ class ProgramsController < ApplicationController
   end
 
   def duplicate
+    @duplicate_program_id = @program.id
     @program = @program.dup
     render :new
   end
@@ -46,8 +47,7 @@ class ProgramsController < ApplicationController
 
   # POST /programs or /programs.json
   def create
-    
-    @program = Program.new(program_params.except(:instructor_attributes))
+    @program = Program.new(program_params.except(:instructor_attributes, :duplicate_program_id))
     uniqname = program_params[:instructor_attributes][:uniqname]
     if ProgramManager.find_by(uniqname: uniqname).present?
       instructor = ProgramManager.find_by(uniqname: uniqname)
@@ -58,6 +58,10 @@ class ProgramsController < ApplicationController
     authorize @program
     respond_to do |format|
       if @program.save
+        if params[:program][:duplicate_program_id].present?
+          # carry forward sites when program is carried forward
+          @program.sites << Program.find(params[:program][:duplicate_program_id]).sites
+        end
         format.html { redirect_to program_url(@program), notice: "Program was successfully created." }
         format.json { render :show, status: :created, location: @program }
       else
@@ -130,6 +134,6 @@ class ProgramsController < ApplicationController
       params.require(:program).permit(:active, :title, :term_start, :term_end, :term_id, :subject, :catalog_number, :class_section, 
                                      :number_of_students, :number_of_students_using_ride_share, :pictures_required_start, :pictures_required_end, 
                                      :non_uofm_passengers, :instructor_id, :mvr_link, :canvas_link, :canvas_course_id, :unit_id, :add_managers, 
-                                     :not_course, :updated_by, instructor_attributes: [:uniqname])
+                                     :not_course, :updated_by, :duplicate_program_id, instructor_attributes: [:uniqname])
     end
 end
