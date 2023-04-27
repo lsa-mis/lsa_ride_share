@@ -115,8 +115,8 @@
   </div>
 
   <%= form.hidden_field :updated_by, value: current_user.id %>
-  <% if @copy_from_id.present? %> 
-    <%= form.hidden_field :copy_from_id, value: @copy_from_id %>
+  <% if @duplicate_program_id.present? %> 
+    <%= form.hidden_field :duplicate_program_id, value: @duplicate_program_id %>
   <% end %>
 
   <div class="inline">
