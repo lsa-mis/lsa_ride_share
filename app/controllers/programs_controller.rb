@@ -121,7 +121,7 @@ class ProgramsController < ApplicationController
     end
 
     def set_terms_and_units
-      @terms = Term.all.order(:term_start)
+      @terms = Term.sorted
       @units = Unit.where(id: current_user.unit).order(:name)
     end
 
