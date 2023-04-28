@@ -5,7 +5,7 @@ class FacultySurveysController < ApplicationController
 
   # GET /faculty_surveys or /faculty_surveys.json
   def index
-    @faculty_surveys = FacultySurvey.all
+    @faculty_surveys = FacultySurvey.where(unit_id: current_user.unit)
     authorize @faculty_surveys
   end
 
