@@ -69,6 +69,6 @@ class TermsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def term_params
-      params.require(:term).permit(:code, :name, :term_start, :term_end)
+      params.require(:term).permit(:code, :name, :classes_begin_date, :classes_end_date)
     end
 end

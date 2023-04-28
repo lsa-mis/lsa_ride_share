@@ -5,8 +5,8 @@
         <tr>
           <th class="header_th">Name</th>
           <th class="header_th">Code</th>
-          <th class="header_th">Start Date</th>
-          <th class="header_th">End Date</th>
+          <th class="header_th">Classes Begin</th>
+          <th class="header_th">Classes End</th>
         </tr>
       </thead>
       <tbody>
@@ -19,10 +19,10 @@
               <%= term.code %>
             </td>
             <td class="mi_tbody_td">
-              <%= show_date(term.term_start) %>
+              <%= show_date(term.classes_begin_date) %>
             </td>
             <td class="mi_tbody_td">
-              <%= show_date(term.term_end) %>
+              <%= show_date(term.classes_end_date) %>
             </td>
           </tr>
         <% end %>
