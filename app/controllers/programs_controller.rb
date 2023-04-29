@@ -32,7 +32,7 @@ class ProgramsController < ApplicationController
   def new
     @program = Program.new
     @program.mvr_link = "https://ltp.umich.edu/fleet/vehicle-use/"
-    @instructor = ProgramManager.new
+    @instructor = Manager.new
     authorize @program
   end
 
@@ -49,10 +49,10 @@ class ProgramsController < ApplicationController
   def create
     @program = Program.new(program_params.except(:instructor_attributes, :duplicate_program_id))
     uniqname = program_params[:instructor_attributes][:uniqname]
-    if ProgramManager.find_by(uniqname: uniqname).present?
-      instructor = ProgramManager.find_by(uniqname: uniqname)
+    if Manager.find_by(uniqname: uniqname).present?
+      instructor = Manager.find_by(uniqname: uniqname)
     else
-      instructor = ProgramManager.create(uniqname: uniqname)
+      instructor = Manager.create(uniqname: uniqname)
     end
     @program.instructor = instructor
     authorize @program
@@ -74,10 +74,10 @@ class ProgramsController < ApplicationController
   # PATCH/PUT /programs/1 or /programs/1.json
   def update
     uniqname = program_params[:instructor_attributes][:uniqname]
-    if ProgramManager.find_by(uniqname: uniqname).present?
-      instructor = ProgramManager.find_by(uniqname: uniqname)
+    if Manager.find_by(uniqname: uniqname).present?
+      instructor = Manager.find_by(uniqname: uniqname)
     else
-      instructor = ProgramManager.create(uniqname: uniqname)
+      instructor = Manager.create(uniqname: uniqname)
     end
     @program.instructor_id = instructor.id
     authorize @program
@@ -112,8 +112,8 @@ class ProgramsController < ApplicationController
     redirect_to @program
   end
 
-  def remove_program_manager
-    @program.program_managers.delete(ProgramManager.find(params[:program_manager_id]))
+  def remove_manager
+    @program.managers.delete(Manager.find(params[:manager_id]))
     redirect_to @program
   end
 
