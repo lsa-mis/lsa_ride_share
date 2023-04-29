@@ -1,0 +1,22 @@
+<div class="lg:flex justify-between">
+  <h1>Edit Managers for 
+    <%= @manager_program.title %>
+    program
+  </h1>
+  <div class="mt-4 flex-none">
+    <%= link_to program_data_path(@manager_program) do %>
+      <span class="primary_button mb-2" %>
+        <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
+        Exit Edit Managers Page
+        </span>
+    <% end %>
+  </div>
+</div>
+
+<%= render 'form', manager: @manager %>
+
+<div class="mt-4">
+  <%= turbo_frame_tag "manager_list" do %>
+    <%= render "manager_list", locals: { program: @manager_program} %>
+  <% end %>
+</div>
