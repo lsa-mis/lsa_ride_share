@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_25_012357) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_28_213339) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -52,13 +52,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_25_012357) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "admin_accesses", force: :cascade do |t|
-    t.string "department"
-    t.string "ldap_group"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "cars", force: :cascade do |t|
     t.string "car_number"
     t.string "make"
@@ -89,10 +82,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_25_012357) do
   end
 
   create_table "config_questions", force: :cascade do |t|
+    t.bigint "program_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "faculty_survey_id"
-    t.index ["faculty_survey_id"], name: "index_config_questions_on_faculty_survey_id"
+    t.index ["program_id"], name: "index_config_questions_on_program_id"
   end
 
   create_table "contacts", force: :cascade do |t|
@@ -105,17 +98,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_25_012357) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["site_id"], name: "index_contacts_on_site_id"
-  end
-
-  create_table "faculty_surveys", force: :cascade do |t|
-    t.string "uniqname"
-    t.bigint "term_id"
-    t.bigint "unit_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "program_id"
-    t.index ["term_id"], name: "index_faculty_surveys_on_term_id"
-    t.index ["unit_id"], name: "index_faculty_surveys_on_unit_id"
   end
 
   create_table "notes", force: :cascade do |t|
@@ -196,8 +178,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_25_012357) do
     t.bigint "program_id", null: false
     t.bigint "site_id", null: false
     t.bigint "car_id"
-    t.datetime "start_time"
-    t.datetime "end_time"
+    t.datetime "start_date"
+    t.datetime "end_date"
     t.string "recurring"
     t.bigint "driver_id"
     t.string "driver_phone"
@@ -247,8 +229,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_25_012357) do
   create_table "terms", force: :cascade do |t|
     t.string "code"
     t.string "name"
-    t.date "term_start"
-    t.date "term_end"
+    t.date "classes_begin_date"
+    t.date "classes_end_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -311,9 +293,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_25_012357) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "cars_programs", "cars"
   add_foreign_key "cars_programs", "programs"
+  add_foreign_key "config_questions", "programs"
   add_foreign_key "contacts", "sites"
-  add_foreign_key "faculty_surveys", "terms"
-  add_foreign_key "faculty_surveys", "units"
   add_foreign_key "notes", "users"
   add_foreign_key "program_managers_programs", "program_managers"
   add_foreign_key "program_managers_programs", "programs"
