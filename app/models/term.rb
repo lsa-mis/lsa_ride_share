@@ -2,16 +2,19 @@
 #
 # Table name: terms
 #
-#  id         :bigint           not null, primary key
-#  code       :string
-#  name       :string
-#  term_start :date
-#  term_end   :date
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  id                 :bigint           not null, primary key
+#  code               :string
+#  name               :string
+#  classes_begin_date :date
+#  classes_end_date   :date
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
 #
 class Term < ApplicationRecord
-  
-  scope :current, -> { where(':date BETWEEN term_start AND term_end', date: Date.today)}
+
+  validates_presence_of :code, :name, :classes_begin_date, :classes_end_date
+
+  scope :sorted, -> { where.not(classes_begin_date: nil).order(:classes_begin_date, classes_end_date: :desc) }
+  scope :current, -> { sorted.where(':date BETWEEN classes_begin_date AND classes_end_date', date: Date.today) }
 
 end

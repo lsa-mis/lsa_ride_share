@@ -3,7 +3,8 @@ class TermsController < ApplicationController
 
   # GET /terms or /terms.json
   def index
-    @terms = Term.all
+    @terms = Term.sorted
+    authorize @terms
   end
 
   # GET /terms/1 or /terms/1.json
@@ -13,6 +14,7 @@ class TermsController < ApplicationController
   # GET /terms/new
   def new
     @term = Term.new
+    authorize @term
   end
 
   # GET /terms/1/edit
@@ -22,6 +24,7 @@ class TermsController < ApplicationController
   # POST /terms or /terms.json
   def create
     @term = Term.new(term_params)
+    authorize @term
 
     respond_to do |format|
       if @term.save
@@ -61,10 +64,11 @@ class TermsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_term
       @term = Term.find(params[:id])
+      authorize @term
     end
 
     # Only allow a list of trusted parameters through.
     def term_params
-      params.require(:term).permit(:code, :name, :term_start, :term_end)
+      params.require(:term).permit(:code, :name, :classes_begin_date, :classes_end_date)
     end
 end

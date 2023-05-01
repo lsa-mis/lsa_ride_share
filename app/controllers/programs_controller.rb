@@ -125,13 +125,13 @@ class ProgramsController < ApplicationController
     end
 
     def set_terms_and_units
-      @terms = Term.all.order(:term_start)
+      @terms = Term.sorted
       @units = Unit.where(id: current_user.unit).order(:name)
     end
 
     # Only allow a list of trusted parameters through.
     def program_params
-      params.require(:program).permit(:active, :title, :term_start, :term_end, :term_id, :subject, :catalog_number, :class_section, 
+      params.require(:program).permit(:active, :title, :term_id, :subject, :catalog_number, :class_section, 
                                      :number_of_students, :number_of_students_using_ride_share, :pictures_required_start, :pictures_required_end, 
                                      :non_uofm_passengers, :instructor_id, :mvr_link, :canvas_link, :canvas_course_id, :unit_id, :add_managers, 
                                      :not_course, :updated_by, :duplicate_program_id, instructor_attributes: [:uniqname])
