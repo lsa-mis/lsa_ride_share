@@ -17,15 +17,17 @@ terms = Term.create!([
   {code: "2480", name: "Spring 2024", classes_begin_date: DateTime.new(2024, 4, 30), classes_end_date: DateTime.new(2024, 6, 17)},
   {code: "2490", name: "Spring/Summer 2024", classes_begin_date: DateTime.new(2024, 4, 30), classes_end_date: DateTime.new(2024, 8, 13)},
   {code: "2500", name: "Summer 2024", classes_begin_date: DateTime.new(2024, 6, 26), classes_end_date: DateTime.new(2024, 8, 13)},
-  {code: "2510", name: "Fall 2024", classes_begin_date: DateTime.new(2024, 8, 26), classes_end_date: DateTime.new(2024, 12, 9)},
-  {code: "2520", name: "Winter 2025"},
-  {code: "2530", name: "Spring 2025"},
-  {code: "2540", name: "Spring/Summer 2025"},
-  {code: "2550", name: "Summer 2025"},
-  {code: "2560", name: "Fall 2025"},
-  {code: "2570", name: "Winter 2026"},
-  {code: "2580", name: "Spring 2026"} 
+  {code: "2510", name: "Fall 2024", classes_begin_date: DateTime.new(2024, 8, 26), classes_end_date: DateTime.new(2024, 12, 9)}
 ])
+# future_terms = Term.create!([
+#   {code: "2520", name: "Winter 2025"},
+#   {code: "2530", name: "Spring 2025"},
+#   {code: "2540", name: "Spring/Summer 2025"},
+#   {code: "2550", name: "Summer 2025"},
+#   {code: "2560", name: "Fall 2025"},
+#   {code: "2570", name: "Winter 2026"},
+#   {code: "2580", name: "Spring 2026"} 
+# ])
 
 Unit.create!(name: "Psychology", ldap_group: "psych.transportation")
-Unit.create!(name: "Psychology", ldap_group: "rc-rideshare-admins-test")
+Unit.create!(name: "Residential College", ldap_group: "rc-rideshare-admins-test")

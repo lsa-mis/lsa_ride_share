@@ -1,10 +1,12 @@
 class FacultySurveysController < ApplicationController
   before_action :set_faculty_survey, only: %i[ show edit update destroy ]
-  before_action :set_units_terms, only: %i[ index new edit ]
+  before_action :set_units, only: %i[ index new edit ]
+  before_action :set_terms, only: %i[ new edit ]
   include ConfigQuestionsHelper
 
   # GET /faculty_surveys or /faculty_surveys.json
   def index
+    @terms = Term.sorted
     if params[:unit_id].present?
       @faculty_surveys = FacultySurvey.where(unit_id: params[:unit_id])
     else
@@ -73,14 +75,17 @@ class FacultySurveysController < ApplicationController
       authorize @faculty_survey
     end
 
-    def set_units_terms
-      @terms = Term.sorted
+    def set_units
       @units = []
       current_user.unit.each do |unit|
         if unit_use_faculty_survey(unit)
           @units << Unit.find(unit)
         end
       end
+    end
+
+    def set_terms
+      @terms = Term.current_and_future
     end
 
     # Only allow a list of trusted parameters through.
