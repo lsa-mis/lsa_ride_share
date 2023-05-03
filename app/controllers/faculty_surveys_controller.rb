@@ -78,7 +78,7 @@ class FacultySurveysController < ApplicationController
       @units = []
       current_user.unit.each do |unit|
         if unit_use_faculty_survey(unit)
-          @units << Unit.find(unit.id)
+          @units << Unit.find(unit)
         end
       end
     end
