@@ -11,6 +11,7 @@
 #  updated_at         :datetime         not null
 #
 class Term < ApplicationRecord
+  has_many :faculty_surveys
 
   validates_presence_of :code, :name, :classes_begin_date, :classes_end_date
 
