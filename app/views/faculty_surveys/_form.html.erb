@@ -11,10 +11,14 @@
     </div>
   <% end %>
 
-  <div class="my-5">
-    <%= form.label :unit_id, 'Unit *', class: "fancy_label" %>
-    <%= form.collection_select :unit_id, @units, :id, :name, { required: true }, { class: "input_text_field" } %>
-  </div>
+  <% if @units.count > 1 %>
+    <div class="my-5">
+      <%= form.label :unit_id, 'Unit *', class: "fancy_label" %>
+      <%= form.collection_select :unit_id, @units, :id, :name, { include_blank: "Select ...", required: true }, { class: "input_text_field" } %>
+    </div>
+  <% else %>
+    <%= form.hidden_field :unit_id, value: @units[0].id %>
+  <% end %>
 
   <div class="my-5">
     <%= form.label :uniqname, 'Uniqname *', class: "fancy_label"  %>
