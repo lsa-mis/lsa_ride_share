@@ -54,8 +54,6 @@ module ApplicationHelper
     user.membership.include?('lsa-was-rails-devs')
   end
 
-  
-  
   def render_flash_stream
     turbo_stream.update "flash", partial: "layouts/notification"
   end

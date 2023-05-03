@@ -1,5 +1,4 @@
 module ConfigQuestionsHelper
-
   def default_config_questions
     [
       "Title - a program with this title will be created after you submit the survey.",
@@ -14,5 +13,4 @@ module ConfigQuestionsHelper
       "If whole class training is possible, what date would be best? (The admin will contact to coordinate time/location)"
     ]
   end
-
 end
