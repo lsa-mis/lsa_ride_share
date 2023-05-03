@@ -22,7 +22,7 @@ class ApplicationController < ActionController::Base
     if user_signed_in?
       current_user.membership = session[:user_memberships]
       if is_super_admin?(current_user)
-        current_user.unit = Unit.all
+        current_user.unit = Unit.all.pluck(:id)
       else
         current_user.unit = Unit.where(ldap_group: session[:user_memberships]).pluck(:id)
       end
