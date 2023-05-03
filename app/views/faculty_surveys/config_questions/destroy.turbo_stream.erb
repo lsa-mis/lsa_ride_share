@@ -1,0 +1,5 @@
+<%= render_flash_stream %>
+
+<%= turbo_stream.update "questions" do %>
+  <%= render "config_question" %>
+<% end %>
