@@ -1,7 +1,7 @@
 class FacultySurveysController < ApplicationController
   before_action :set_faculty_survey, only: %i[ show edit update destroy ]
   before_action :set_units_terms, only: %i[ index new edit ]
-  include ApplicationHelper
+  include ConfigQuestionsHelper
 
   # GET /faculty_surveys or /faculty_surveys.json
   def index
