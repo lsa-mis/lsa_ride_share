@@ -2,7 +2,7 @@
   <h1 class="mb-4">Sites</h1>
     <p class="body-text">To Add a new Site, go to <%= link_to 'Programs', programs_path, class: "link_to" %> and add the site there</p>
   <div>
-    <% if current_user.unit.count > 1 %>
+    <% if current_user.unit_ids.count > 1 %>
       <%= form_with url: sites_path, method: :get, class: "", data: { autosubmit_target: "form", turbo_frame: "sites" } do |form| %>
         <div class="mb-4">
           <label for="unit_id" class="fancy_label">Select a Unit</label>

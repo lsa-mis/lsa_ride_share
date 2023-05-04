@@ -37,8 +37,8 @@ class ApplicationPolicy
   end
 
   def unit_admin?
-    units = Unit.all.pluck(:id)
-    user.unit && (user.unit & units).any?
+    units_all_ids = Unit.all.pluck(:id)
+    user.unit_ids && (user.unit_ids & units_all_ids).any?
   end
 
   def user_admin?

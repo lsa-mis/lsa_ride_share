@@ -9,7 +9,7 @@ class CarsController < ApplicationController
     if params[:unit_id].present?
       @cars = Car.where(unit_id: params[:unit_id]).order(:car_number)
     else
-      @cars = Car.where(unit_id: current_user.unit).order(:car_number)
+      @cars = Car.where(unit_id: current_user.unit_ids).order(:car_number)
     end
     authorize @cars
     
@@ -77,7 +77,7 @@ class CarsController < ApplicationController
     end
 
     def set_units
-      @units = Unit.where(id: current_user.unit).order(:name)
+      @units = Unit.where(id: current_user.unit_ids).order(:name)
     end
 
     # Only allow a list of trusted parameters through.
