@@ -42,12 +42,12 @@ module ApplicationHelper
     if is_super_admin?(user)
       "SuperAdmin"
     else
-      Unit.where(id: current_user.unit).pluck(:name).join(' ')
+      Unit.where(id: current_user.unit_ids).pluck(:name).join(' ')
     end
   end
 
-  def unit_use_faculty_survey(unit)
-    UnitPreference.where(unit_id: unit, name: "faculty_survey").present? && UnitPreference.where(unit_id: unit, name: "faculty_survey").pluck(:value).include?(true)
+  def unit_use_faculty_survey(unit_id)
+    UnitPreference.where(unit_id: unit_id, name: "faculty_survey").present? && UnitPreference.where(unit_id: unit_id, name: "faculty_survey").pluck(:value).include?(true)
   end
 
   def is_super_admin?(user)

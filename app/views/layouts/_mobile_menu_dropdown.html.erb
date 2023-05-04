@@ -14,7 +14,7 @@
         <div>
           <% if user_signed_in? %>
             <div class="leading-tight text-sm font-medium text-white">
-              <%= Unit.where(id: current_user.unit).pluck(:name) %>
+              <%= Unit.where(id: current_user.unit_ids).pluck(:name) %>
             </div>
             <div class="leading-tight text-md font-medium text-white">
               <%= current_user.email %>

@@ -77,9 +77,9 @@ class FacultySurveysController < ApplicationController
 
     def set_units
       @units = []
-      current_user.unit.each do |unit|
-        if unit_use_faculty_survey(unit)
-          @units << Unit.find(unit)
+      current_user.unit_ids.each do |unit_id|
+        if unit_use_faculty_survey(unit_id)
+          @units << Unit.find(unit_id)
         end
       end
     end

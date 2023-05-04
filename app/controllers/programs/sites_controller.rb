@@ -66,7 +66,7 @@ class Programs::SitesController < SitesController
     end
 
     def set_units
-      @units = Unit.where(id: current_user.unit).order(:name)
+      @units = Unit.where(id: current_user.unit_ids).order(:name)
     end
 
     # Only allow a list of trusted parameters through.

@@ -13,7 +13,7 @@ class ProgramsController < ApplicationController
     if params[:unit_id].present?
       @programs = Program.where(unit_id: params[:unit_id])
     else
-      @programs = Program.where(unit_id: current_user.unit)
+      @programs = Program.where(unit_id: current_user.unit_ids)
     end
     @programs = @programs.data(params[:term_id])
     authorize @programs
@@ -128,7 +128,7 @@ class ProgramsController < ApplicationController
     end
 
     def set_units
-      @units = Unit.where(id: current_user.unit).order(:name)
+      @units = Unit.where(id: current_user.unit_ids).order(:name)
     end
 
     def set_terms

@@ -7,7 +7,7 @@ class SitesController < ApplicationController
     if params[:unit_id].present?
       @sites = Site.where(unit_id: params[:unit_id])
     else
-      @sites = Site.where(unit_id: current_user.unit)
+      @sites = Site.where(unit_id: current_user.unit_ids)
     end
     authorize @sites
   end
@@ -38,7 +38,7 @@ class SitesController < ApplicationController
     end
 
     def set_units
-      @units = Unit.where(id: current_user.unit).order(:name)
+      @units = Unit.where(id: current_user.unit_ids).order(:name)
     end
 
     # Only allow a list of trusted parameters through.
