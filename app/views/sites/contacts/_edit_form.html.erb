@@ -1,49 +1,47 @@
-
-  <%= form_for [@site, contact] do |form| %>
-    <% if contact.errors.any? %>
-      <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
-        <h2><%= pluralize(contact.errors.count, "error") %> prohibited this contact from being saved:</h2>
-
-        <ul>
-          <% contact.errors.each do |error| %>
-            <li><%= error.full_message %></li>
-          <% end %>
-        </ul>
-      </div>
-    <% end %>
-    <div>
-      <div class="my-5">
-        <%= form.label :title, class: "fancy_label" %>
-        <%= form.text_field :title, required: true, placeholder: "Title", class: "input_text_field" %>
-      </div>
-
-      <div class="my-5">
-        <%= form.label :first_name, class: "fancy_label" %>
-        <%= form.text_field :first_name, required: true, placeholder: "First Name", class: "input_text_field" %>
-      </div>
-
-      <div class="my-5">
-        <%= form.label :last_name, class: "fancy_label" %>
-        <%= form.text_field :last_name, required: true, placeholder: "Last Name", class: "input_text_field" %>
-      </div>
-
-      <div class="my-5">
-        <%= form.label :phone_number, class: "fancy_label" %>
-        <%= form.text_field :phone_number, required: true, placeholder: "XXX-XXX-XXXX", class: "input_text_field" %>
-      </div>
-
-      <div class="my-5">
-        <%= form.label :email, class: "fancy_label" %>
-        <%= form.text_field :email, required: true, placeholder: "Email", class: "input_text_field" %>
-      </div>
+<%= form_for [@site, contact] do |form| %>
+  <% if contact.errors.any? %>
+    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
+      <h2><%= pluralize(contact.errors.count, "error") %> prohibited this contact from being saved:</h2>
+      <ul>
+        <% contact.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
     </div>
-
-    <div class="inline">
-      <%= form.submit "Update Contacs", class: "secondary_blue_button" %>
-    </div>
-    <%= link_to site_contacts_path do %>
-      <span class="tertiary_button">Cancel
-        <i class="fa fa-times" aria-hidden="true"></i>
-      </span>
-    <% end %>
   <% end %>
+  <div>
+    <div class="my-5">
+      <%= form.label :title, class: "fancy_label" %>
+      <%= form.text_field :title, required: true, placeholder: "Title", class: "input_text_field" %>
+    </div>
+
+    <div class="my-5">
+      <%= form.label :first_name, class: "fancy_label" %>
+      <%= form.text_field :first_name, required: true, placeholder: "First Name", class: "input_text_field" %>
+    </div>
+
+    <div class="my-5">
+      <%= form.label :last_name, class: "fancy_label" %>
+      <%= form.text_field :last_name, required: true, placeholder: "Last Name", class: "input_text_field" %>
+    </div>
+
+    <div class="my-5">
+      <%= form.label :phone_number, class: "fancy_label" %>
+      <%= form.text_field :phone_number, required: true, placeholder: "XXX-XXX-XXXX", class: "input_text_field" %>
+    </div>
+
+    <div class="my-5">
+      <%= form.label :email, class: "fancy_label" %>
+      <%= form.text_field :email, required: true, placeholder: "Email", class: "input_text_field" %>
+    </div>
+  </div>
+
+  <div class="inline">
+    <%= form.submit "Update Contacs", class: "secondary_blue_button" %>
+  </div>
+  <%= link_to site_contacts_path do %>
+    <span class="tertiary_button">Cancel
+      <i class="fa fa-times" aria-hidden="true"></i>
+    </span>
+  <% end %>
+<% end %>

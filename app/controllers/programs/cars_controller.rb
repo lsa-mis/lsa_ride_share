@@ -3,8 +3,7 @@ class Programs::CarsController < CarsController
 
   private
 
-  def set_car_program
+    def set_car_program
       @car_program = Program.find(params[:program_id])
-  end
-
+    end
 end
