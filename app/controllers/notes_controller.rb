@@ -19,12 +19,12 @@ class NotesController < ApplicationController
 
   private
 
-  def set_note
-    @note = Note.find(params[:id])
-    authorize @note
-  end
+    def set_note
+      @note = Note.find(params[:id])
+      authorize @note
+    end
 
-  def note_params
-    params.require(:note).permit(:body, :alert)
-  end
+    def note_params
+      params.require(:note).permit(:body, :alert)
+    end
 end
