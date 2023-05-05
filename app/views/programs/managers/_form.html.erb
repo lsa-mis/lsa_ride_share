@@ -14,7 +14,7 @@
 
     <div class="my-2">
       <label for="manager_id" class="fancy_label">Select a Manager</label>
-      <%= select_tag "manager_id", options_from_collection_for_select(@all_managers, :id, :uniqname), include_blank: "Select", class: "input_text_field",
+      <%= select_tag "manager_id", options_from_collection_for_select(choose_managers_for_program(@manager_program), :id, :uniqname), include_blank: "Select", class: "input_text_field",
         :"data-action" => "change->autosubmit#search" %>
     </div>
 
