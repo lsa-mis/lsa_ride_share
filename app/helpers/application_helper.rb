@@ -50,6 +50,12 @@ module ApplicationHelper
     UnitPreference.where(unit_id: unit_id, name: "faculty_survey").present? && UnitPreference.where(unit_id: unit_id, name: "faculty_survey").pluck(:value).include?(true)
   end
 
+  def choose_managers_for_program(program)
+    managers = Manager.all - program.managers
+    managers.delete(program.instructor) if program.instructor.present?
+    managers
+  end
+
   def is_super_admin?(user)
     user.membership.include?('lsa-was-rails-devs')
   end
