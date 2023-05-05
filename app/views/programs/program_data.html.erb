@@ -6,8 +6,8 @@
         <div>
           <%= link_to edit_program_path(@program) do %>
             <span class="tertiary_button"> 
-            Edit Course Information
-            <i class="fa-solid fa-pen" aria-hidden="true"></i>
+              Edit Course Information
+              <i class="fa-solid fa-pen" aria-hidden="true"></i>
             </span>
           <% end %>
         </div>
@@ -27,16 +27,14 @@
       </div>
     </div>
   </div>
-
   <div>
-      <%= render 'program_car' %>
-      <%= render 'program_site' %>
-      <% if @program.add_managers %>
-        <%= render 'program_manager' %>
-      <% end %>
+    <%= render 'program_car' %>
+    <%= render 'program_site' %>
+    <% if @program.add_managers %>
+      <%= render 'program_manager' %>
+    <% end %>
   </div>
   <p class="body-text m-4">
     <%= updated_on_and_by(@program) %>
   </p>
-
 </div>
