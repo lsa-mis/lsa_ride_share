@@ -1,0 +1,44 @@
+<%= form_with(model: faculty_survey, class: "contents") do |form| %>
+  <% if faculty_survey.errors.any? %>
+    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
+      <h2><%= pluralize(faculty_survey.errors.count, "error") %> prohibited this faculty_survey from being saved:</h2>
+      <ul>
+        <% faculty_survey.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <% if @units.count > 1 %>
+    <div class="my-5">
+      <%= form.label :unit_id, 'Unit *', class: "fancy_label" %>
+      <%= form.collection_select :unit_id, @units, :id, :name, { include_blank: "Select ...", required: true }, { class: "input_text_field" } %>
+    </div>
+  <% else %>
+    <%= form.hidden_field :unit_id, value: @units[0].id %>
+  <% end %>
+
+  <div class="my-5">
+    <%= form.label :uniqname, 'Uniqname *', class: "fancy_label"  %>
+    <%= form.text_field :uniqname, class: "input_text_field" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :term_id, 'Term *', class: "fancy_label" %>
+    <%= form.collection_select :term_id, @terms, :id, :name, { include_blank: "Select ...", required: true }, { class: "input_text_field" } %>
+  </div>
+
+  <div class="inline">
+    <% if action_name == "new" %>
+      <%= form.submit 'Create Faculty Survey', class: "primary_button" %>
+    <% else %>
+      <%= form.submit 'Update Faculty Survey', class: "primary_button" %>
+    <% end %>
+  </div>
+  <%= link_to faculty_surveys_path do %>
+    <span class="tertiary_button">Cancel
+      <i class="fa fa-times" aria-hidden="true"></i>
+    </span>
+  <% end %>
+<% end %>

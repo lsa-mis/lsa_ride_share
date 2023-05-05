@@ -2,16 +2,18 @@ class ProgramsController < ApplicationController
   before_action :auth_user
 
   before_action :set_program, except: %i[ index new create]
-  before_action :set_terms_and_units
+  before_action :set_units
+  before_action :set_terms, only: %i[ duplicate new edit ]
 
   include ApplicationHelper
 
   # GET /programs or /programs.json
   def index
+    @terms = Term.sorted
     if params[:unit_id].present?
       @programs = Program.where(unit_id: params[:unit_id])
     else
-      @programs = Program.where(unit_id: current_user.unit)
+      @programs = Program.where(unit_id: current_user.unit_ids)
     end
     @programs = @programs.data(params[:term_id])
     authorize @programs
@@ -20,6 +22,7 @@ class ProgramsController < ApplicationController
 
   def duplicate
     @duplicate_program_id = @program.id
+    @terms.delete(@program.term)
     @program = @program.dup
     render :new
   end
@@ -124,9 +127,12 @@ class ProgramsController < ApplicationController
       authorize @program
     end
 
-    def set_terms_and_units
-      @terms = Term.sorted
-      @units = Unit.where(id: current_user.unit).order(:name)
+    def set_units
+      @units = Unit.where(id: current_user.unit_ids).order(:name)
+    end
+
+    def set_terms
+      @terms = Term.current_and_future
     end
 
     # Only allow a list of trusted parameters through.

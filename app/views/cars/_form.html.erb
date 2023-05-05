@@ -2,7 +2,6 @@
   <% if car.errors.any? %>
     <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
       <h2><%= pluralize(car.errors.count, "error") %> prohibited this car from being saved:</h2>
-
       <ul>
         <% car.errors.each do |error| %>
           <li><%= error.full_message %></li>
@@ -13,11 +12,11 @@
 
   <div class="grid grid-cols-1 sm:grid-cols-2">
     <div>
-
       <div class="my-5">
         <%= form.label :unit_id, 'Unit *', class: "fancy_label" %>
         <%= form.collection_select :unit_id, @units, :id, :name, { required: true }, { class: "input_text_field" } %>
       </div>
+
       <div class="my-5">
         <%= form.label :car_number, 'Car Number *', class: "fancy_label" %>
         <%= form.text_field :car_number, required: true, placeholder: "Car Number", class: "input_text_field" %>
@@ -61,7 +60,7 @@
       <%= form.hidden_field :updated_by, value: current_user.id %>
 
       <% if car.persisted? %>
-      <span class="body-lg-medium-text">Last time the car has been checked:<span>
+        <span class="body-lg-medium-text">Last time the car has been checked:<span>
         <div class="flex gap-2 items-center w-full">
           <div class="px-1">
             <%= form.check_box :is_checked_today, class: "check_box" %>
@@ -72,7 +71,6 @@
             <%= form.datetime_field(:checked, placeholder: "Last checked date", value: @last_checked, class: "input_text_field") %>
           </div>
         </div>
-
       <% end %>
 
       <div class="my-5">
@@ -100,14 +98,13 @@
                       <% if policy(Car).delete_file? %>
                         <%= link_to delete_file_path(image), data: { turbo_method: :get, turbo_confirm: 'Are you sure?' } do %>
                           <span class="tertiary_button">Remove
-                          <i class="fa fa-times" aria-hidden="true"></i>
+                            <i class="fa fa-times" aria-hidden="true"></i>
                           </span>
                         <% end %>
                       <% end %>
                     </div>
                   </div>
                 </li>
-                
               <% end %>
             </ul>
           </div>
@@ -121,7 +118,7 @@
   </div>
   <%= link_to cars_path do %>
     <span class="tertiary_button">Cancel
-    <i class="fa fa-times" aria-hidden="true"></i>
+      <i class="fa fa-times" aria-hidden="true"></i>
     </span>
   <% end %>
 <% end %>

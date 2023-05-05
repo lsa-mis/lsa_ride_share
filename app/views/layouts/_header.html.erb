@@ -36,9 +36,9 @@
                 <%= link_to "Unit Preferences", unit_preferences_path, class: "#{class_names(active: current_page?(unit_preferences_path))}" %>
               </div>
             <% end %>
-            <% if unit_use_faculty_survey(current_user.unit) %>
+            <% if unit_use_faculty_survey(current_user.unit_ids) %>
               <div class="header_link">
-                <%= link_to "Faculty Survey", root_path, class: "#{class_names(active: current_page?(root_path))}" %>
+                <%= link_to "Faculty Surveys", faculty_surveys_path, class: "#{class_names(active: current_page?(faculty_surveys_path))}" %>
               </div>
             <% end %>
           <% end %>
@@ -73,5 +73,4 @@
     </div>
     <%= render 'layouts/mobile_menu_dropdown' %>
   </div>
-  
 </nav>

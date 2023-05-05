@@ -9,12 +9,12 @@ class UnitPreferencesController < ApplicationController
   end
 
   def unit_prefs
-    @unit_prefs = UnitPreference.where(unit_id: current_user.unit).order(:description)
+    @unit_prefs = UnitPreference.where(unit_id: current_user.unit_ids).order(:description)
     authorize @unit_prefs
   end
 
   def save_unit_prefs
-    @unit_prefs = UnitPreference.where(unit_id: current_user.unit)
+    @unit_prefs = UnitPreference.where(unit_id: current_user.unit_ids)
     authorize @unit_prefs
     @unit_prefs.update(value: false)
     if params[:unit_prefs].present?
@@ -69,7 +69,7 @@ class UnitPreferencesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
 
     def set_units
-      @units = Unit.where(id: current_user.unit)
+      @units = Unit.where(id: current_user.unit_ids)
     end
 
     # Only allow a list of trusted parameters through.

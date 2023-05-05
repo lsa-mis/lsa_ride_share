@@ -1,12 +1,14 @@
 Rails.application.routes.draw do
-  
+  resources :faculty_surveys do
+    resources :config_questions, module: :faculty_surveys
+  end
+
   resources :units
 
   get 'unit_preference/:name', to: 'unit_preferences#delete_preference', as: :delete_preference
   get 'unit_preferences/unit_prefs', to: 'unit_preferences#unit_prefs', as: :unit_prefs
   post 'unit_preferences/unit_prefs/', to: 'unit_preferences#save_unit_prefs'
   resources :unit_preferences
-
 
   resources :terms
   get '/vehicle_reports/:reports_ids', to: 'vehicle_reports#index', as: 'vehicle_reports'
