@@ -10,14 +10,10 @@
         </tr>
       </thead>
       <tbody>
-        <% @managers.each do |manager| %>
+        <% @manager_program.managers.each do |manager| %>
           <tr class="mi_tbody_tr">
             <td class="mi_tbody_td">
-              <% if @manager_program.instructor.uniqname == manager.uniqname %>
-                Instructor
-              <% else %>
-                <%= link_to "Remove", remove_manager_from_program_path(@manager_program, manager), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete }, class: "link_to" %>
-              <% end %>
+              <%= link_to "Remove", remove_manager_from_program_path(@manager_program, manager), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete }, class: "link_to" %>
             </td>
             <td class="mi_tbody_td">
               <%= manager.uniqname %>
