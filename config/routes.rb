@@ -32,7 +32,7 @@ Rails.application.routes.draw do
     resources :managers, module: :programs, only: [ :new, :create ]
   end
   get '/programs/managers/edit_program_managers/:program_id', to: 'programs/managers#edit_program_managers', as: :edit_program_managers
-  delete 'programs/managers/:program_id/:id', to: 'programs/managers#remove_manager_from_program', as: :remove_manager_from_program
+  delete 'programs/managers/remove_manager/:program_id/:id', to: 'programs/managers#remove_manager_from_program', as: :remove_manager_from_program
 
   resources :programs do
     resources :config_questions, module: :programs
@@ -49,7 +49,6 @@ Rails.application.routes.draw do
   get 'programs/duplicate/:id', to: 'programs#duplicate', as: :duplicate
   delete 'programs/remove_car/:id/:car_id', to: 'programs#remove_car', as: :remove_car
   delete 'programs/remove_site/:id/:site_id', to: 'programs#remove_site', as: :remove_site
-  delete 'programs/remove_manager/:id/:manager_id', to: 'programs#remove_manager', as: :remove_manager
   delete 'programs/remove_config_question/:id/:config_question_id', to: 'programs#remove_config_question', as: :remove_config_question
   get 'programs/add_config_questions/:id/', to: 'programs#add_config_questions', as: :add_config_questions
   get 'programs/program_data/:id/', to: 'programs#program_data', as: :program_data

@@ -115,11 +115,6 @@ class ProgramsController < ApplicationController
     redirect_to @program
   end
 
-  def remove_manager
-    @program.managers.delete(Manager.find(params[:manager_id]))
-    redirect_to @program
-  end
-
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_program
