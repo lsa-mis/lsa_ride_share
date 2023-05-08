@@ -13,7 +13,9 @@
   </div>
 </div>
 
-<%= render 'form', manager: @manager %>
+<%= turbo_frame_tag 'new_manager' do %>
+  <%= render 'form', manager: @manager %>
+<% end %>
 
 <div class="mt-4">
   <%= turbo_frame_tag "manager_list" do %>

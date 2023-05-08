@@ -4,6 +4,6 @@
   <%= render "form", manager: @manager %>
 <% end %>
 
-<%= turbo_stream.update "managers" do %>
+<%= turbo_stream.update "manager_list" do %>
   <%= render "manager_list" %>
 <% end %>
