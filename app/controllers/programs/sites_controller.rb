@@ -37,8 +37,6 @@ class Programs::SitesController < SitesController
         flash.now[:notice] = "The site was added."
       end
     end
-    @sites = @site_program.sites
-    @all_sites = Site.all - @sites
   end
 
   # DELETE /sites/1 or /sites/1.json
@@ -47,16 +45,12 @@ class Programs::SitesController < SitesController
       flash.now[:notice] = "The site was removed from the program."
     end
     @site = Site.new
-    @sites = @site_program.sites
-    @all_sites = Site.all - @sites
   end
 
   private
 
     def set_site_program
       @site_program = Program.find(params[:program_id])
-      @sites = @site_program.sites
-      @all_sites = Site.all - @sites
     end
 
     # Use callbacks to share common setup or constraints between actions.

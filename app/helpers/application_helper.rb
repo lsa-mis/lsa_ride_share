@@ -50,6 +50,11 @@ module ApplicationHelper
     UnitPreference.where(unit_id: unit_id, name: "faculty_survey").present? && UnitPreference.where(unit_id: unit_id, name: "faculty_survey").pluck(:value).include?(true)
   end
 
+  def choose_sites_for_program(program)
+    sites = program.sites
+    Site.where(unit_id: program.unit) - sites
+  end
+
   def is_super_admin?(user)
     user.membership.include?('lsa-was-rails-devs')
   end
