@@ -50,8 +50,20 @@ module ApplicationHelper
     UnitPreference.where(unit_id: unit_id, name: "faculty_survey").present? && UnitPreference.where(unit_id: unit_id, name: "faculty_survey").pluck(:value).include?(true)
   end
 
+  def rich_text_value(field)
+    field.body.html_safe.downcase
+  end
+
+  def rich_text_no_tags_value(field)
+    strip_tags(field.body.to_s).strip
+  end
+
   def is_super_admin?(user)
     user.membership.include?('lsa-was-rails-devs')
+  end
+
+  def is_admin?(user)
+    user.membership.present?
   end
 
   def render_flash_stream

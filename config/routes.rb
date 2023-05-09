@@ -1,7 +1,11 @@
 Rails.application.routes.draw do
+
+  get 'faculty_surveys/faculty_index', to: 'faculty_surveys#faculty_index', as: :faculty_index
   resources :faculty_surveys do
     resources :config_questions, module: :faculty_surveys
   end
+  get '/faculty_surveys/survey/:faculty_survey_id', to: 'faculty_surveys/config_questions#survey', as: :survey
+  post '/faculty_surveys/survey/:faculty_survey_id', to: 'faculty_surveys/config_questions#save_survey'
 
   resources :units
 

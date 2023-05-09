@@ -12,6 +12,11 @@ class FacultySurveyPolicy < ApplicationPolicy
     user_in_access_group?
   end
 
+  def faculty_index?
+    # user_in_access_group?
+    true
+  end
+
   def show?
     user_in_access_group?
   end

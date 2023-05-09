@@ -25,7 +25,7 @@ class SitePolicy < ApplicationPolicy
   end
 
   def update?
-    user_in_access_group?
+    user_in_access_group? 
   end
 
   def edit?
@@ -33,11 +33,11 @@ class SitePolicy < ApplicationPolicy
   end
 
   def edit_program_sites?
-    update?
+    update? || instructor?
   end
 
   def remove_site_from_program?
-    user_in_access_group?
+    user_in_access_group? || instructor?
   end
 
 end

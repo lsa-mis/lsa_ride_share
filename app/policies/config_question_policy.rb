@@ -9,7 +9,7 @@ class ConfigQuestionPolicy < ApplicationPolicy
   end
 
   def index?
-    user_in_access_group?
+    @user.uniqname == FacultySurvey.find(@record.faculty_survey_id).uniqname || @user.unit_ids.include?(FacultySurvey.find(@record.faculty_survey_id).unit_id)
   end
 
   def create?
@@ -30,6 +30,12 @@ class ConfigQuestionPolicy < ApplicationPolicy
 
   def destroy?
     user_in_access_group?
+  end
+
+  def survey?
+    fail
+    # user_in_access_group?
+    true
   end
 
 end

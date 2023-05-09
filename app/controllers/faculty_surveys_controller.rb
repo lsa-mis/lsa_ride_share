@@ -16,6 +16,11 @@ class FacultySurveysController < ApplicationController
     authorize @faculty_surveys
   end
 
+  def faculty_index
+    @surveys_list = FacultySurvey.where(uniqname: current_user.uniqname)
+    authorize @surveys_list
+  end
+
   # GET /faculty_surveys/1 or /faculty_surveys/1.json
   def show
   end
