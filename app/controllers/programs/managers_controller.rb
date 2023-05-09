@@ -1,7 +1,6 @@
 class Programs::ManagersController < ApplicationController
   before_action :set_manager_program
   before_action :set_manager, only: %i[ new edit_program_managers ]
-  include ManagerApi
 
   def new
   end
@@ -19,7 +18,7 @@ class Programs::ManagersController < ApplicationController
       end
     else
       uniqname = manager_params[:uniqname]
-      result = get_name(uniqname, @manager_program)
+      result = get_manager_name(uniqname, @manager_program)
       @manager = Manager.new(manager_params)
       authorize @manager
       if result['valid'] 
