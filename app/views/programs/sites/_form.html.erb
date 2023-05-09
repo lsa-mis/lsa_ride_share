@@ -14,7 +14,7 @@
 
     <div class="my-2">
       <label for="site_id" class="fancy_label">Select a Site</label>
-      <%= select_tag "site_id", options_from_collection_for_select(@all_sites, :id, :title), include_blank: "Select", class: "input_text_field",
+      <%= select_tag "site_id", options_from_collection_for_select(choose_sites_for_program(@site_program), :id, :title), include_blank: "Select", class: "input_text_field",
         :"data-action" => "change->autosubmit#search" %>
     </div>
 
