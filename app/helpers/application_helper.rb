@@ -56,6 +56,15 @@ module ApplicationHelper
     managers
   end
 
+  def managers(program)
+    if program.managers.present?
+      managers = @program.managers.map{ |m| m.display_name }
+    else
+      managers = ["The program currently does not have any program managers."]
+    end
+    return managers
+  end
+
   def is_super_admin?(user)
     user.membership.include?('lsa-was-rails-devs')
   end
