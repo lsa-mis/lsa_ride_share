@@ -1,7 +1,7 @@
 module ManagerApi
 
   def get_name(uniqname, program)
-    result = {'valid' => false, 'note' => '', 'last_name' => '', 'first_tname' => ''}
+    result = {'valid' => false, 'note' => '', 'last_name' => '', 'first_name' => ''}
     name = LdapLookup.get_simple_name(uniqname)
     if name == "No such user"
       result['note'] = "The '#{uniqname}' uniqname is not valid."
