@@ -24,7 +24,6 @@ Rails.application.routes.draw do
   end
   resources :students
   
-  resources :program_managers
   resources :programs do
     resources :cars, module: :programs
   end
@@ -35,8 +34,11 @@ Rails.application.routes.draw do
   delete 'programs/sites/:program_id/:id', to: 'programs/sites#remove_site_from_program', as: :remove_site_from_program
 
   resources :programs do
-    resources :program_managers, module: :programs
+    resources :managers, module: :programs, only: [ :new, :create ]
   end
+  get '/programs/managers/edit_program_managers/:program_id', to: 'programs/managers#edit_program_managers', as: :edit_program_managers
+  delete 'programs/managers/remove_manager/:program_id/:id', to: 'programs/managers#remove_manager_from_program', as: :remove_manager_from_program
+
   resources :programs do
     resources :config_questions, module: :programs
   end
@@ -52,14 +54,12 @@ Rails.application.routes.draw do
   get 'programs/duplicate/:id', to: 'programs#duplicate', as: :duplicate
   delete 'programs/remove_car/:id/:car_id', to: 'programs#remove_car', as: :remove_car
   delete 'programs/remove_site/:id/:site_id', to: 'programs#remove_site', as: :remove_site
-  delete 'programs/remove_program_manager/:id/:program_manager_id', to: 'programs#remove_program_manager', as: :remove_program_manager
   delete 'programs/remove_config_question/:id/:config_question_id', to: 'programs#remove_config_question', as: :remove_config_question
   get 'programs/add_config_questions/:id/', to: 'programs#add_config_questions', as: :add_config_questions
   get 'programs/program_data/:id/', to: 'programs#program_data', as: :program_data
 
   get 'application/delete_file_attachment/:id', to: 'application#delete_file_attachment', as: :delete_file
 
-  resources :program_managers
   resources :sites do
     resources :notes, module: :sites
     resources :contacts, module: :sites

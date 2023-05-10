@@ -1,0 +1,9 @@
+<%= render_flash_stream %>
+
+<%= turbo_stream.update "new_manager" do %>
+  <%= render "form", manager: @manager %>
+<% end %>
+
+<%= turbo_stream.update "manager_list" do %>
+  <%= render "manager_list" %>
+<% end %>

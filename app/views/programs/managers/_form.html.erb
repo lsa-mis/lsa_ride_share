@@ -1,0 +1,30 @@
+<%= form_with model: [@manager_program, manager],
+  data: { controller: "autosubmit", autosubmit_target: "form" } do |form| %>
+  <% if manager.errors.any? %>
+    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
+      <h3><%= pluralize(manager.errors.count, "error") %> prohibited this manager from being saved:</h3>
+      <ul>
+        <% manager.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="my-2">
+    <label for="manager_id" class="fancy_label">Select a Manager</label>
+    <%= select_tag "manager_id", options_from_collection_for_select(choose_managers_for_program(@manager_program), :id, :uniqname), include_blank: "Select", class: "input_text_field",
+      :"data-action" => "change->autosubmit#search" %>
+  </div>
+
+  <div class="sm:flex gap-2 items-end">
+    <div>
+      <%= form.label :uniqname, "Uniqname *", class: "fancy_label" %>
+      <%= form.text_field :uniqname, required: true, class: "input_text_field" %>
+    </div>
+    <%= form.hidden_field :program_id, value: @manager_program.id %>
+    <div>
+      <%= form.submit 'Add Manager', class: "secondary_blue_button" %>
+    </div>
+  </div>
+<% end %>
