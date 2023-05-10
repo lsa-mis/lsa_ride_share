@@ -67,7 +67,7 @@ class FacultySurveysController < ApplicationController
     if @faculty_survey.save
       redirect_to faculty_surveys_path, notice: "Faculty survey was successfully updated."
     else
-      ender :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_entity
     end
   end
 
