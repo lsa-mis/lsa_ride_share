@@ -36,14 +36,46 @@ class Survey
 
   def update_answers(params)
     result = { 'success' => true, 'note' => '' }
+    course = false
+    # answers have rich_text format and params are something like this:
+    # {"item_17_1"=>"<ul><li>Events</li></ul><div><br></div>", 
+    # "item_18_2"=>"<div>no</div>", 
+    # "item_19_3"=>"<ul><li>Small Groups Via Zoom&nbsp;</li></ul><div><br></div>",
+    # "item_20_4"=>"<div>Monday</div>"}
+    #
+    # first two or five answers are required
+    #  
     params.each do |p|
+      fail
       if p[0].split("_").first == "item"
-        id = p[0].split("_").last
-        if id == '1' && strip_tags(p[1]).strip == ''
+        question_number = p[0].split("_").last
+        question_id = p[0].split("_").second
+        if question_number == '1' && strip_tags(p[1]).strip == ''
           result['success'] = false
           result['note'] = "The title is required"
         end
-        unless @survey_to_update.find(id).update(answer: p[1])
+        if question_number == '2'
+          if strip_tags(p[1]).strip == ''
+            result['success'] = false
+            result['note'] += "Is the program a course? The answer is required."
+          else
+            course = true if p[1].downcase.include?("yes")
+          end
+        end
+        if course && strip_tags(p[1]).strip == ''
+          case question_number
+          when '3'
+            result['success'] = false
+            result['note'] += "Subject is required. "
+          when '4'
+            result['success'] = false
+            result['note'] += "Catalog number is required. "
+          when '5'
+            result['success'] = false
+            result['note'] += "Section is required."
+          end
+        end
+        unless @survey_to_update.find(question_id).update(answer: p[1])
           result['success'] = false
           result['note'] = "Error updating survey"
           return result
