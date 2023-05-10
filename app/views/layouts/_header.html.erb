@@ -15,18 +15,18 @@
           <% end %>
         </div>
         <div class="hidden sm:ml-6 sm:flex sm:space-x-4 pl-2">
-          <% if user_signed_in? && policy(Program).index? %>
+          <% if user_signed_in? %>
             <div class="header_link">
-              <%= link_to "Programs", programs_path, class: "#{class_names(active: current_page?(programs_path))}" %>
+              <%= link_to "Programs", programs_path, class: "#{class_names(active: current_page?(programs_path))}" if policy(Program).index? %>
             </div>
             <div class="header_link">
-              <%= link_to "Cars", cars_path, class: "#{class_names(active: current_page?(cars_path))}" %>
+              <%= link_to "Cars", cars_path, class: "#{class_names(active: current_page?(cars_path))}" if policy(Car).index? %>
             </div>
             <div class="header_link">
-              <%= link_to "Sites", sites_path, class: "#{class_names(active: current_page?(sites_path))}" %>
+              <%= link_to "Sites", sites_path, class: "#{class_names(active: current_page?(sites_path))}" if policy(Site).index? %>
             </div>
             <div class="header_link">
-              <%= link_to "Terms", terms_path, class: "#{class_names(active: current_page?(terms_path))}" %>
+              <%= link_to "Terms", terms_path, class: "#{class_names(active: current_page?(terms_path))}" if policy(Term).index? %>
             </div>
             <% if policy(Unit).index? %>
               <div class="header_link">
@@ -36,14 +36,16 @@
                 <%= link_to "Unit Preferences", unit_preferences_path, class: "#{class_names(active: current_page?(unit_preferences_path))}" %>
               </div>
             <% end %>
-            <% if unit_use_faculty_survey(current_user.unit_ids) %>
+            <% if unit_use_faculty_survey?(current_user.unit_ids) %>
               <div class="header_link">
                 <%= link_to "Faculty Surveys", faculty_surveys_path, class: "#{class_names(active: current_page?(faculty_surveys_path))}" %>
               </div>
             <% end %>
-            <div class="header_link">
-              <%= link_to "Faculty Survey", faculty_index_path, class: "#{class_names(active: current_page?(faculty_surveys_path))}" %>
-            </div>
+            <% if faculty_has_survey?(current_user) %>
+              <div class="header_link">
+                <%= link_to "Faculty Survey", faculty_index_path, class: "#{class_names(active: current_page?(faculty_surveys_path))}" %>
+              </div>
+            <% end %>
           <% end %>
         </div>
       </div>
