@@ -33,11 +33,11 @@ class SitePolicy < ApplicationPolicy
   end
 
   def edit_program_sites?
-    update? || instructor?
+    update?
   end
 
   def remove_site_from_program?
-    user_in_access_group? || instructor?
+    user_in_access_group?
   end
 
 end
