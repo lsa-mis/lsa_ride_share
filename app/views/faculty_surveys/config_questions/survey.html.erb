@@ -23,8 +23,8 @@
           </div>
           <%= item.question %>
         </div>
-        <%= label_tag("survey[item_#{item.id}]", nil, class: "hidden") %>
-        <%= rich_text_area_tag "survey[item_#{item.id}]", "#{item.answer}", required: true %>
+        <%= label_tag("survey[item_#{item.id}_#{index+1}]", nil, class: "hidden") %>
+        <%= rich_text_area_tag "survey[item_#{item.id}_#{index+1}]", "#{item.answer}", required: true %>
       <% end %>
     <% end %>
 
