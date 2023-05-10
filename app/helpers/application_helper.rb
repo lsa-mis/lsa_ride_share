@@ -46,8 +46,12 @@ module ApplicationHelper
     end
   end
 
-  def unit_use_faculty_survey(unit_id)
+  def unit_use_faculty_survey?(unit_id)
     UnitPreference.where(unit_id: unit_id, name: "faculty_survey").present? && UnitPreference.where(unit_id: unit_id, name: "faculty_survey").pluck(:value).include?(true)
+  end
+
+  def faculty_has_survey?(current_user)
+    FacultySurvey.where(uniqname: current_user.uniqname).present?
   end
 
   def rich_text_value(field)
