@@ -35,15 +35,22 @@ class Survey
   end
 
   def update_answers(params)
+    result = { 'success' => true, 'note' => '' }
     params.each do |p|
       if p[0].split("_").first == "item"
         id = p[0].split("_").last
+        if id == '1' && strip_tags(p[1]).strip == ''
+          result['success'] = false
+          result['note'] = "The title is required"
+        end
         unless @survey_to_update.find(id).update(answer: p[1])
-          return false
+          result['success'] = false
+          result['note'] = "Error updating survey"
+          return result
         end
       end
     end
-    return true
+    return result
   end
 
   def create_program_from_survey(current_user)
