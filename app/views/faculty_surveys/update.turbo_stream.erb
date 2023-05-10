@@ -1,0 +1,5 @@
+<%= render_flash_stream %>
+
+<%= turbo_stream.update "new_faculty_survey" do %>
+  <%= render "form", faculty_survey: @faculty_survey %>
+<% end %>

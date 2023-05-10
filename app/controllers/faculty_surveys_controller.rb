@@ -1,7 +1,7 @@
 class FacultySurveysController < ApplicationController
   before_action :set_faculty_survey, only: %i[ show edit update destroy ]
-  before_action :set_units, only: %i[ index new create edit ]
-  before_action :set_terms, only: %i[ new create edit ]
+  before_action :set_units, only: %i[ index new create edit update ]
+  before_action :set_terms, only: %i[ new create edit update ]
   include ConfigQuestionsHelper
 
   # GET /faculty_surveys or /faculty_surveys.json
@@ -35,22 +35,17 @@ class FacultySurveysController < ApplicationController
     @faculty_survey = FacultySurvey.new(faculty_survey_params)
     authorize @faculty_survey
     uniqname = faculty_survey_params[:uniqname]
-    name = LdapLookup.get_simple_name(uniqname)
-    note = ''
-    if name == "No such user"
-      flash.now[:alert] = "The '#{uniqname}' uniqname is not valid."
-      return
+    result = get_faculty_name_for_survey(uniqname)
+    if result['valid']
+      @faculty_survey['first_name'] = result['first_name']
+      @faculty_survey['last_name'] = result['last_name']
     else
-      if name == ''
-        note = " Mcommunity returns no name for '#{uniqname}' uniqname."
-      else
-        @faculty_survey['first_name'] = name.split(" ").first
-        @faculty_survey['last_name'] = name.split(" ").last
-      end
+      flash.now[:alert] = result['note']
+      return
     end
     if @faculty_survey.save
       add_config_questions(@faculty_survey)
-      redirect_to faculty_surveys_path, notice: "Faculty survey was successfully created." + note
+      redirect_to faculty_surveys_path, notice: "Faculty survey was successfully created." + result['note']
     else
       render :new, status: :unprocessable_entity
     end
@@ -58,7 +53,18 @@ class FacultySurveysController < ApplicationController
 
   # PATCH/PUT /faculty_surveys/1 or /faculty_surveys/1.json
   def update
-    if @faculty_survey.update(faculty_survey_params)
+    @faculty_survey.attributes = faculty_survey_params
+    if @faculty_survey.uniqname_changed?
+      result = get_faculty_name_for_survey(@faculty_survey.uniqname)
+      if result['valid']
+        @faculty_survey['first_name'] = result['first_name']
+        @faculty_survey['last_name'] = result['last_name']
+      else
+        flash.now[:alert] = result['note']
+        return
+      end
+    end
+    if @faculty_survey.save
       redirect_to faculty_surveys_path, notice: "Faculty survey was successfully updated."
     else
       ender :edit, status: :unprocessable_entity
