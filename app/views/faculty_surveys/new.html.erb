@@ -1,6 +1,8 @@
 <div class="mx-auto w-full">
   <h1>New Faculty Survey</h1>
 
-  <%= render "form", faculty_survey: @faculty_survey %>
+  <%= turbo_frame_tag 'new_faculty_survey' do %>
+    <%= render "form", faculty_survey: @faculty_survey %>
+  <% end %>
 
 </div>

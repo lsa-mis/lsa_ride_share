@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_29_170944) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_10_163413) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -107,6 +107,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_29_170944) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "program_id"
+    t.string "first_name"
+    t.string "last_name"
     t.index ["term_id"], name: "index_faculty_surveys_on_term_id"
     t.index ["unit_id"], name: "index_faculty_surveys_on_unit_id"
   end
@@ -212,6 +214,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_29_170944) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "reserved_by"
+    t.text "non_uofm_passengers"
     t.index ["backup_driver_id"], name: "index_reservations_on_backup_driver_id"
     t.index ["car_id"], name: "index_reservations_on_car_id"
     t.index ["driver_id"], name: "index_reservations_on_driver_id"
