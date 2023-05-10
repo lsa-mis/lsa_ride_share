@@ -1,7 +1,7 @@
 class FacultySurveysController < ApplicationController
   before_action :set_faculty_survey, only: %i[ show edit update destroy ]
-  before_action :set_units, only: %i[ index new edit ]
-  before_action :set_terms, only: %i[ new edit ]
+  before_action :set_units, only: %i[ index new create edit ]
+  before_action :set_terms, only: %i[ new create edit ]
   include ConfigQuestionsHelper
 
   # GET /faculty_surveys or /faculty_surveys.json
@@ -34,9 +34,23 @@ class FacultySurveysController < ApplicationController
   def create
     @faculty_survey = FacultySurvey.new(faculty_survey_params)
     authorize @faculty_survey
+    uniqname = faculty_survey_params[:uniqname]
+    name = LdapLookup.get_simple_name(uniqname)
+    note = ''
+    if name == "No such user"
+      flash.now[:alert] = "The '#{uniqname}' uniqname is not valid."
+      return
+    else
+      if name == ''
+        note = " Mcommunity returns no name for '#{uniqname}' uniqname."
+      else
+        @faculty_survey['first_name'] = name.split(" ").first
+        @faculty_survey['last_name'] = name.split(" ").last
+      end
+    end
     if @faculty_survey.save
       add_config_questions(@faculty_survey)
-      redirect_to faculty_surveys_path, notice: "Faculty survey was successfully created."
+      redirect_to faculty_surveys_path, notice: "Faculty survey was successfully created." + note
     else
       render :new, status: :unprocessable_entity
     end
@@ -90,6 +104,6 @@ class FacultySurveysController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def faculty_survey_params
-      params.require(:faculty_survey).permit(:uniqname, :term_id, :unit_id)
+      params.require(:faculty_survey).permit(:uniqname, :term_id, :unit_id, :first_name, :last_name)
     end
 end
