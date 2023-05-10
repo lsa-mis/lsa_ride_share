@@ -36,10 +36,32 @@ Rails.application.configure do
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
+  # Devise setting - Ensure you have defined default url options
+  # host = 'http://localhost:3000'
+  host = 'https://rideshare-staging.lsa.umich.edu/'
+  config.action_mailer.default_url_options = { host: host }
+
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false
 
   config.action_mailer.perform_caching = false
+
+  #letter_opener settings
+  config.action_mailer.delivery_method = :letter_opener_web
+  config.action_mailer.perform_deliveries = true
+
+=begin
+  # From https://makandracards.com/makandra/52335-actionmailer-how-to-send-a-test-mail-directly-from-the-console
+  # To test the mailers in the Rails console, you can use the following command:
+  mailer = ActionMailer::Base.new
+
+  # check settings:
+  mailer.delivery_method # -> :smtp
+  mailer.smtp_settings # -> { address: "localhost", port: 25, domain: "localhost.localdomain", user_name: nil, password: nil, authentication: nil, enable_starttls_auto: true }
+
+  # send mail:
+  mailer.mail(from: 'sender@example.com', to: 'recipient@example.com', subject: 'test', body: "Hello, you've got mail!").deliver
+=end
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
