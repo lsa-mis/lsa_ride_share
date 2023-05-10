@@ -10,7 +10,7 @@
         </tr>
       </thead>
       <tbody>
-        <% @sites.each do |site| %>
+        <% @site_program.sites.each do |site| %>
           <tr class="mi_tbody_tr">
             <td class="mi_tbody_td">
               <%= link_to site.title, site_path(site), class: "link_to" %>
