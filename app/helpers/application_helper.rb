@@ -60,6 +60,11 @@ module ApplicationHelper
 
   def rich_text_no_tags_value(field)
     strip_tags(field.body.to_s).strip
+  end 
+  
+  def choose_sites_for_program(program)
+    sites = program.sites
+    Site.where(unit_id: program.unit) - sites
   end
 
   def is_super_admin?(user)
