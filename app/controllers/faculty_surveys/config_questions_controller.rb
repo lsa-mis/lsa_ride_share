@@ -1,4 +1,5 @@
 class FacultySurveys::ConfigQuestionsController < ApplicationController
+  before_action :auth_user
   before_action :set_faculty_survey
   before_action :set_config_question, only: %i[ edit update destroy]
 
