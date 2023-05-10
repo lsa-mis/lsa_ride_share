@@ -46,7 +46,6 @@ class Survey
     # first two or five answers are required
     #  
     params.each do |p|
-      fail
       if p[0].split("_").first == "item"
         question_number = p[0].split("_").last
         question_id = p[0].split("_").second
