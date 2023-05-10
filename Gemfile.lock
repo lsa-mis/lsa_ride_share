@@ -167,8 +167,17 @@ GEM
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
     jwt (2.7.0)
+    launchy (2.5.2)
+      addressable (~> 2.8)
     ldap_lookup (0.1.7)
       net-ldap (~> 0.17.0)
+    letter_opener (1.8.1)
+      launchy (>= 2.2, < 3)
+    letter_opener_web (2.0.0)
+      actionmailer (>= 5.2)
+      letter_opener (~> 1.7)
+      railties (>= 5.2)
+      rexml
     loofah (2.20.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
@@ -366,6 +375,7 @@ DEPENDENCIES
   importmap-rails
   jbuilder
   ldap_lookup (~> 0.1.6)
+  letter_opener_web (~> 2.0)
   omniauth-rails_csrf_protection
   omniauth-saml (~> 2.1)
   pg (~> 1.1)

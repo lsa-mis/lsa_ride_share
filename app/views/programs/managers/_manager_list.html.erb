@@ -1,0 +1,30 @@
+<div class="min-w-full">
+  <table class="mi_table">
+    <thead class="border border-l-0 border-r-0 border-gray-um60">
+      <tr>
+      <th class="header_th">  </th>
+      <th class="header_th">Uniqname</th>
+      <th class="header_th">Last name</th>
+      <th class="header_th">First name</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @manager_program.managers.each do |manager| %>
+        <tr class="mi_tbody_tr">
+          <td class="mi_tbody_td">
+            <%= link_to "Remove", remove_manager_from_program_path(@manager_program, manager), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete }, class: "link_to" %>
+          </td>
+          <td class="mi_tbody_td">
+            <%= manager.uniqname %>
+          </td>
+          <td class="mi_tbody_td">
+            <%= manager.last_name %>
+          </td>
+          <td class="mi_tbody_td">
+            <%= manager.first_name %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

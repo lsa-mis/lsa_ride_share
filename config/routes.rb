@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
+  root to: "static_pages#home"
 
+  mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
+  
   get 'faculty_surveys/faculty_index', to: 'faculty_surveys#faculty_index', as: :faculty_index
   resources :faculty_surveys do
     resources :config_questions, module: :faculty_surveys
@@ -23,7 +26,6 @@ Rails.application.routes.draw do
   end
   resources :students
   
-  resources :program_managers
   resources :programs do
     resources :cars, module: :programs
   end
@@ -34,8 +36,11 @@ Rails.application.routes.draw do
   delete 'programs/sites/:program_id/:id', to: 'programs/sites#remove_site_from_program', as: :remove_site_from_program
 
   resources :programs do
-    resources :program_managers, module: :programs
+    resources :managers, module: :programs, only: [ :new, :create ]
   end
+  get '/programs/managers/edit_program_managers/:program_id', to: 'programs/managers#edit_program_managers', as: :edit_program_managers
+  delete 'programs/managers/remove_manager/:program_id/:id', to: 'programs/managers#remove_manager_from_program', as: :remove_manager_from_program
+
   resources :programs do
     resources :config_questions, module: :programs
   end
@@ -51,14 +56,12 @@ Rails.application.routes.draw do
   get 'programs/duplicate/:id', to: 'programs#duplicate', as: :duplicate
   delete 'programs/remove_car/:id/:car_id', to: 'programs#remove_car', as: :remove_car
   delete 'programs/remove_site/:id/:site_id', to: 'programs#remove_site', as: :remove_site
-  delete 'programs/remove_program_manager/:id/:program_manager_id', to: 'programs#remove_program_manager', as: :remove_program_manager
   delete 'programs/remove_config_question/:id/:config_question_id', to: 'programs#remove_config_question', as: :remove_config_question
   get 'programs/add_config_questions/:id/', to: 'programs#add_config_questions', as: :add_config_questions
   get 'programs/program_data/:id/', to: 'programs#program_data', as: :program_data
 
   get 'application/delete_file_attachment/:id', to: 'application#delete_file_attachment', as: :delete_file
 
-  resources :program_managers
   resources :sites do
     resources :notes, module: :sites
     resources :contacts, module: :sites
@@ -66,11 +69,6 @@ Rails.application.routes.draw do
   resources :notes
   
   get 'static_pages/home'
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-  # Defines the root path route ("/")
-  # root "articles#index"
-  root to: "static_pages#home"
 
   devise_for :users, controllers: {omniauth_callbacks: "users/omniauth_callbacks", sessions: "users/sessions"} do
     delete 'sign_out', :to => 'users/sessions#destroy', :as => :destroy_user_session

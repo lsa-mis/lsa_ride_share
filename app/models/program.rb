@@ -25,8 +25,9 @@
 #  unit_id                             :bigint
 #
 class Program < ApplicationRecord
-  belongs_to :instructor, class_name: 'ProgramManager', foreign_key: :instructor_id
-  has_and_belongs_to_many :program_managers
+  belongs_to :instructor, class_name: 'Manager', foreign_key: :instructor_id
+  has_many :managers_programs
+  has_many :managers, through: :managers_programs
   has_many :programs_sites
   has_many :sites, through: :programs_sites
   has_many :students

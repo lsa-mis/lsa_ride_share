@@ -62,6 +62,21 @@ module ApplicationHelper
     strip_tags(field.body.to_s).strip
   end 
   
+  def choose_managers_for_program(program)
+    managers = Manager.all - program.managers
+    managers.delete(program.instructor) if program.instructor.present?
+    managers
+  end
+
+  def managers(program)
+    if program.managers.present?
+      managers = @program.managers.map{ |m| m.display_name }
+    else
+      managers = ["The program currently does not have any program managers."]
+    end
+    return managers
+  end
+  
   def choose_sites_for_program(program)
     sites = program.sites
     Site.where(unit_id: program.unit) - sites

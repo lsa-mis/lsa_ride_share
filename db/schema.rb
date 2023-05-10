@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_28_213339) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_29_170944) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -117,11 +117,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_28_213339) do
     t.bigint "noteable_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["noteable_type", "noteable_id"], name: "index_notes_on_noteable"
-    t.index ["user_id"], name: "index_notes_on_user_id"
+    t.integer "program_id"
+    t.index ["term_id"], name: "index_faculty_surveys_on_term_id"
+    t.index ["unit_id"], name: "index_faculty_surveys_on_unit_id"
   end
 
-  create_table "program_managers", force: :cascade do |t|
+  create_table "managers", force: :cascade do |t|
     t.string "uniqname"
     t.string "first_name"
     t.string "last_name"
@@ -129,16 +130,26 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_28_213339) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "program_id"
-    t.index ["program_id"], name: "index_program_managers_on_program_id"
+    t.index ["program_id"], name: "index_managers_on_program_id"
   end
 
-  create_table "program_managers_programs", force: :cascade do |t|
-    t.bigint "program_manager_id", null: false
-    t.bigint "program_id", null: false
+  create_table "managers_programs", force: :cascade do |t|
+    t.bigint "manager_id"
+    t.bigint "program_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["program_id"], name: "index_program_managers_programs_on_program_id"
-    t.index ["program_manager_id"], name: "index_program_managers_programs_on_program_manager_id"
+    t.index ["manager_id"], name: "index_managers_programs_on_manager_id"
+    t.index ["program_id"], name: "index_managers_programs_on_program_id"
+  end
+
+  create_table "notes", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "noteable_type", null: false
+    t.bigint "noteable_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["noteable_type", "noteable_id"], name: "index_notes_on_noteable"
+    t.index ["user_id"], name: "index_notes_on_user_id"
   end
 
   create_table "programs", force: :cascade do |t|
@@ -308,9 +319,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_28_213339) do
   add_foreign_key "faculty_surveys", "terms"
   add_foreign_key "faculty_surveys", "units"
   add_foreign_key "notes", "users"
-  add_foreign_key "program_managers_programs", "program_managers"
-  add_foreign_key "program_managers_programs", "programs"
-  add_foreign_key "programs", "program_managers", column: "instructor_id"
+  add_foreign_key "programs", "managers", column: "instructor_id"
   add_foreign_key "programs_sites", "programs"
   add_foreign_key "programs_sites", "sites"
   add_foreign_key "reservation_passengers", "reservations"

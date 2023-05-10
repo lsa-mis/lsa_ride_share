@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: program_managers
+# Table name: managers
 #
 #  id         :bigint           not null, primary key
 #  uniqname   :string
@@ -11,15 +11,18 @@
 #  updated_at :datetime         not null
 #  program_id :bigint
 #
-class ProgramManager < ApplicationRecord
-  has_and_belongs_to_many :programs
+class Manager < ApplicationRecord
+  has_many :managers_programs
+  has_many :programs, through: :managers_programs
+
+  validates :uniqname, uniqueness: true
 
   def instructor
     Program.where(instructor: self)
   end
 
   def manager
-    Program.includes(:program_managers).where(program_managers_programs: [self])
+    Program.includes(:managers).where(managers_programs: [self])
   end
 
   def programs

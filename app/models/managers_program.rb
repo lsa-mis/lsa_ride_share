@@ -1,0 +1,17 @@
+# == Schema Information
+#
+# Table name: managers_programs
+#
+#  id         :bigint           not null, primary key
+#  program_id :bigint           not null
+#  manager_id :bigint           not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+class ManagersProgram < ApplicationRecord
+  belongs_to :program
+  belongs_to :manager
+
+  validates :manager_id, uniqueness: { scope: :program_id, message: "is already a manager or instructor for this program" }
+
+end
