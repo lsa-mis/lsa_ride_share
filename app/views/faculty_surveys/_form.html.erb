@@ -21,8 +21,20 @@
 
   <div class="my-5">
     <%= form.label :uniqname, 'Uniqname *', class: "fancy_label"  %>
-    <%= form.text_field :uniqname, class: "input_text_field" %>
+    <%= form.text_field :uniqname, required: true, class: "input_text_field" %>
   </div>
+
+  <% if action_name == "edit" %>
+    <div class="my-5">
+      <%= form.label :first_name, 'First Name', class: "fancy_label"  %>
+      <%= form.text_field :first_name, class: "input_text_field" %>
+    </div>
+
+    <div class="my-5">
+      <%= form.label :last_name, 'Last Name', class: "fancy_label"  %>
+      <%= form.text_field :last_name, class: "input_text_field" %>
+    </div>
+  <% end %>
 
   <div class="my-5">
     <%= form.label :term_id, 'Term *', class: "fancy_label" %>
