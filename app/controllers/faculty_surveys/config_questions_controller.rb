@@ -50,8 +50,9 @@ class FacultySurveys::ConfigQuestionsController < ApplicationController
   def save_survey
     new_survey = Survey.new(@faculty_survey)
     authorize new_survey
-    unless new_survey.update_answers(params[:survey])
-      redirect_to faculty_index_path, alert: "Error updating survey."
+    result = new_survey.update_answers(params[:survey])
+    unless result['success']
+      redirect_to survey_path(@faculty_survey), alert: result['note']
       return
     end
     unless @faculty_survey.program_id.present?
