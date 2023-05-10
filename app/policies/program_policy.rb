@@ -13,7 +13,7 @@ class ProgramPolicy < ApplicationPolicy
   end
 
   def show?
-    user_in_access_group? || instructor?
+    user_in_access_group?
   end
 
   def create?
@@ -25,7 +25,7 @@ class ProgramPolicy < ApplicationPolicy
   end
 
   def update?
-    user_in_access_group? || instructor?
+    user_in_access_group?
   end
 
   def edit?
@@ -42,10 +42,6 @@ class ProgramPolicy < ApplicationPolicy
 
   def destroy?
     false
-  end
-
-  def instructor?
-    @record.instructor.uniqname == user.uniqname
   end
 
 end
