@@ -13,8 +13,7 @@ class FacultySurveyPolicy < ApplicationPolicy
   end
 
   def faculty_index?
-    # user_in_access_group?
-    true
+    @user.uniqname == @record[0].uniqname || @user.unit_ids.include?(@record.unit_id)
   end
 
   def show?

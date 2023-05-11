@@ -5,7 +5,7 @@ class FacultySurveys::ConfigQuestionsController < ApplicationController
 
   def index
     @config_questions = @faculty_survey.config_questions.order(:id)
-    authorize @config_questions.first
+    authorize @config_questions
   end
 
   def new
