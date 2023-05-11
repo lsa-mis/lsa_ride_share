@@ -49,14 +49,22 @@ class Survey
       if p[0].split("_").first == "item"
         question_number = p[0].split("_").last
         question_id = p[0].split("_").second
-        if question_number == '1' && strip_tags(p[1]).strip == ''
-          result['success'] = false
-          result['note'] = "The title is required"
+        if question_number == '1' 
+          if strip_tags(p[1]).strip == ''
+            result['success'] = false
+            result['note'] = "The title is required. "
+          else
+            title = strip_tags(p[1]).strip
+            if Program.find_by(title: title, term_id: @faculty_survey.term_id).present?
+              result['success'] = false
+              result['note'] = "A program with this title exist for term #{@faculty_survey.term.name}. "
+            end
+          end
         end
         if question_number == '2'
           if strip_tags(p[1]).strip == ''
             result['success'] = false
-            result['note'] += "Is the program a course? The answer is required."
+            result['note'] += "Is the program a course? The answer is required. "
           else
             course = true if p[1].downcase.include?("yes")
           end
@@ -70,8 +78,8 @@ class Survey
             result['success'] = false
             result['note'] += "Catalog number is required. "
           when '5'
-            result['success'] = false
-            result['note'] += "Section is required."
+            result['success'] = falses
+            result['note'] += "Section is required. "
           end
         end
         unless @survey_to_update.find(question_id).update(answer: p[1])
@@ -84,18 +92,11 @@ class Survey
     return result
   end
 
-  def create_program_from_survey(current_user)
-    title = ''
+  def create_program_from_survey
     not_course = false
-    subject = ''
-    catalog_number = ''
-    class_section = ''
-    number_of_students_using_ride_share = 0
-    need_to_create_program = false
     @survey_to_update.each do |s|
       if rich_text_value(s.question).include?("title")
         title = rich_text_no_tags_value(s.answer)
-        need_to_create_program = true
       end
       if rich_text_value(s.question).include?("not a course")
         if rich_text_value(s.answer).include?("no")
@@ -104,7 +105,6 @@ class Survey
       end
       if rich_text_value(s.question).include?("subject")
         subject = rich_text_no_tags_value(s.answer)
-        need_to_create_program = true
       end
       if rich_text_value(s.question).include?("catalog")
         catalog_number = rich_text_no_tags_value(s.answer)
@@ -116,19 +116,20 @@ class Survey
         number_of_students_using_ride_share = rich_text_no_tags_value(s.answer).to_i
       end
     end
-    if need_to_create_program && (not_course && title.present? || subject.present?)
-      program = Program.new(title: title, not_course: not_course, 
-                  subject: subject, catalog_number: catalog_number, class_section: class_section, 
-                  instructor_attributes: {uniqname: @faculty_survey.uniqname}, 
-                  term_id: @faculty_survey.term_id, unit_id: @faculty_survey.unit_id, updated_by: current_user.id, 
-                  number_of_students_using_ride_share: number_of_students_using_ride_share,
-                  mvr_link: "https://ltp.umich.edu/fleet/vehicle-use/")
-      if program.save(validate: false)
-        return program.id
-      else 
-        redirect_to faculty_index_path, alert: "Error creating program from survey"
-        return
-      end
+    if Manager.find_by(uniqname: @faculty_survey.uniqname).present?
+      instructor = Manager.find_by(uniqname: @faculty_survey.uniqname)
+    else
+      instructor = Manager.create(uniqname: @faculty_survey.uniqname, first_name: @faculty_survey.first_name, last_name: @faculty_survey.last_name)
+    end
+    program = Program.new(title: title, not_course: not_course, 
+                subject: subject, catalog_number: catalog_number, class_section: class_section, 
+                instructor_id: instructor.id, 
+                term_id: @faculty_survey.term_id, unit_id: @faculty_survey.unit_id, updated_by: current_user.id, 
+                number_of_students_using_ride_share: number_of_students_using_ride_share,
+                mvr_link: "https://ltp.umich.edu/fleet/vehicle-use/")
+    if program.save(validate: false)
+      instructor.update(program_id: program.id)
+      return program.id
     else 
       return false
     end
