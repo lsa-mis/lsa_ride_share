@@ -57,11 +57,11 @@ class FacultySurveys::ConfigQuestionsController < ApplicationController
       return
     end
     unless @faculty_survey.program_id.present?
-      program_id = new_survey.create_program_from_survey(current_user)
+      program_id = new_survey.create_program_from_survey
       if program_id
         @faculty_survey.update(program_id: program_id)
       else
-        redirect_to faculty_index_path, alert: "Error updating survey."
+        redirect_to faculty_index_path, alert: "Error creating program form the survey. Please report an issue."
         return
       end
     end
