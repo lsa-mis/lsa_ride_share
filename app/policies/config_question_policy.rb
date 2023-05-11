@@ -32,10 +32,4 @@ class ConfigQuestionPolicy < ApplicationPolicy
     user_in_access_group?
   end
 
-  def survey?
-    fail
-    # user_in_access_group?
-    true
-  end
-
 end

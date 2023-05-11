@@ -16,5 +16,4 @@ class SurveyPolicy < ApplicationPolicy
     @user.uniqname == @survey.uniqname
   end
 
-
 end
