@@ -46,10 +46,22 @@ module ApplicationHelper
     end
   end
 
-  def unit_use_faculty_survey(unit_id)
+  def unit_use_faculty_survey?(unit_id)
     UnitPreference.where(unit_id: unit_id, name: "faculty_survey").present? && UnitPreference.where(unit_id: unit_id, name: "faculty_survey").pluck(:value).include?(true)
   end
 
+  def faculty_has_survey?(current_user)
+    FacultySurvey.where(uniqname: current_user.uniqname).present?
+  end
+
+  def rich_text_value(field)
+    field.body.html_safe.downcase
+  end
+
+  def rich_text_no_tags_value(field)
+    strip_tags(field.body.to_s).strip
+  end 
+  
   def choose_managers_for_program(program)
     managers = Manager.all - program.managers
     managers.delete(program.instructor) if program.instructor.present?
@@ -72,6 +84,10 @@ module ApplicationHelper
 
   def is_super_admin?(user)
     user.membership.include?('lsa-was-rails-devs')
+  end
+
+  def is_admin?(user)
+    user.membership.present?
   end
 
   def render_flash_stream

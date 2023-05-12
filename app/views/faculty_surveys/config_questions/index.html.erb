@@ -4,11 +4,27 @@
     <% unless @faculty_survey.program_id.present? %>
       <%= link_to 'New Survey Question', new_faculty_survey_config_question_path(@faculty_survey), class: "secondary_blue_button" %>
     <% end %>
+    <% if current_user.uniqname == @faculty_survey.uniqname %>
+      <%= link_to 'Edit Survey Answers', survey_path(@faculty_survey), class: "primary_button" %>
+    <% end %>
   </div>
-  <p class="body-text mb-2">
-    If the survey contains a title, subject, catalog number, and section questions,
-    a program will be created from answers after the survey is submitted.
-  </p>
+  <div class="body-text mb-2">
+    <% if @faculty_survey.program_id.present? %>
+      <div class="inline">
+        Program
+        <%= link_to Program.find_by(id: @faculty_survey.program_id).display_name_with_title, program_path(Program.find_by(id: @faculty_survey.program_id)), class: "link_to" %>
+        was created for this survey. Follow the link to edit the program
+      </div>
+      <div class="inline">
+        <%= link_to 'Add Sites to Program', faculty_survey_config_questions_path(@faculty_survey), class: "secondary_blue_button" unless is_admin?(current_user) %> 
+      </div>
+    <% else %>
+      <p class="body-text mb-2">
+        If the survey contains a title, subject, catalog number, and section questions,
+        a program will be created from answers after the survey is submitted.
+      </p>
+    <% end %>
+  </div>
 
   <div id="config_questions" class="min-w-full">
     <%= render 'config_question', locals: { faculty_survey: @faculty_survey } %>

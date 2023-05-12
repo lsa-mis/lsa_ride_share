@@ -113,6 +113,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_10_163413) do
     t.index ["unit_id"], name: "index_faculty_surveys_on_unit_id"
   end
 
+  create_table "notes", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "noteable_type", null: false
+    t.bigint "noteable_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "program_id"
+    t.index ["term_id"], name: "index_faculty_surveys_on_term_id"
+    t.index ["unit_id"], name: "index_faculty_surveys_on_unit_id"
+  end
+
   create_table "managers", force: :cascade do |t|
     t.string "uniqname"
     t.string "first_name"

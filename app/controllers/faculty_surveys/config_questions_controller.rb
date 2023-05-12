@@ -1,4 +1,5 @@
 class FacultySurveys::ConfigQuestionsController < ApplicationController
+  before_action :auth_user
   before_action :set_faculty_survey
   before_action :set_config_question, only: %i[ edit update destroy]
 
@@ -39,7 +40,32 @@ class FacultySurveys::ConfigQuestionsController < ApplicationController
       flash.now[:notice] =  "Question was deleted."
     end
     @config_questions = @faculty_survey.config_questions.order(:id)
+  end
 
+  def survey
+    new_survey = Survey.new(@faculty_survey)
+    @survey = new_survey.questions_to_display
+    authorize new_survey
+  end
+
+  def save_survey
+    new_survey = Survey.new(@faculty_survey)
+    authorize new_survey
+    result = new_survey.update_answers(params[:survey])
+    unless result['success']
+      redirect_to survey_path(@faculty_survey), alert: result['note']
+      return
+    end
+    unless @faculty_survey.program_id.present?
+      program_id = new_survey.create_program_from_survey
+      if program_id
+        @faculty_survey.update(program_id: program_id)
+      else
+        redirect_to faculty_index_path, alert: "Error creating program form the survey. Please report an issue."
+        return
+      end
+    end
+    redirect_to faculty_survey_config_questions_path(@faculty_survey), notice: "The survey answers are updated."
   end
 
   private

@@ -25,7 +25,7 @@ class SitePolicy < ApplicationPolicy
   end
 
   def update?
-    user_in_access_group?
+    user_in_access_group? 
   end
 
   def edit?

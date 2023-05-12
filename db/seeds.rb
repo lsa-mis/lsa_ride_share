@@ -32,4 +32,3 @@ terms = Term.create!([
 Unit.create!(name: "Psychology", ldap_group: "psych.transportation")
 Unit.create!(name: "Residential College", ldap_group: "rc-rideshare-admins-test")
 Unit.create!(name: "Test Unit", ldap_group: "test-unit-rideshare-admins")
-

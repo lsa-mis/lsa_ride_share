@@ -1,4 +1,5 @@
 class FacultySurveysController < ApplicationController
+  before_action :auth_user
   before_action :set_faculty_survey, only: %i[ show edit update destroy ]
   before_action :set_units, only: %i[ index new create edit update ]
   before_action :set_terms, only: %i[ new create edit update ]
@@ -14,6 +15,11 @@ class FacultySurveysController < ApplicationController
     end
     @faculty_surveys = @faculty_surveys.data(params[:term_id])
     authorize @faculty_surveys
+  end
+
+  def faculty_index
+    @surveys_list = FacultySurvey.where(uniqname: current_user.uniqname)
+    authorize @surveys_list
   end
 
   # GET /faculty_surveys/1 or /faculty_surveys/1.json
@@ -98,7 +104,7 @@ class FacultySurveysController < ApplicationController
     def set_units
       @units = []
       current_user.unit_ids.each do |unit_id|
-        if unit_use_faculty_survey(unit_id)
+        if unit_use_faculty_survey?(unit_id)
           @units << Unit.find(unit_id)
         end
       end
