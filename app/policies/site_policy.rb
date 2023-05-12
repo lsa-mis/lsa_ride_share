@@ -13,11 +13,11 @@ class SitePolicy < ApplicationPolicy
   end
 
   def show?
-    user_in_access_group?
+    user_in_access_group? || is_instructor?
   end
 
   def create?
-    user_in_access_group?
+    user_in_access_group? || is_instructor?
   end
 
   def new?
@@ -25,7 +25,7 @@ class SitePolicy < ApplicationPolicy
   end
 
   def update?
-    user_in_access_group? 
+    user_in_access_group? || is_instructor?
   end
 
   def edit?
@@ -37,7 +37,12 @@ class SitePolicy < ApplicationPolicy
   end
 
   def remove_site_from_program?
-    user_in_access_group?
+    user_in_access_group? || is_instructor?
+  end
+
+  def is_instructor?
+    manager = Manager.find_by(uniqname: @user.uniqname)
+    Program.where(instructor_id: manager).present?
   end
 
 end
