@@ -90,6 +90,10 @@ module ApplicationHelper
     user.membership.present?
   end
 
+  def is_manager?(user)
+    Program.all.map { |p| p.all_managers.include?(user.uniqname) }.any?
+  end
+  
   def render_flash_stream
     turbo_stream.update "flash", partial: "layouts/notification"
   end
