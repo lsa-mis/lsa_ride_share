@@ -29,12 +29,14 @@
               <i class="fa-solid fa-pen"></i>
             <% end %>
           </div>
-          <div class="tertiary_button">
-            <%= link_to duplicate_path(program), data: { "turbo-frame": "_top" } do %>
-              Copy
-              <i class="fa-solid fa-clone"></i>
-            <% end %>
-          </div>
+          <% if is_admin?(current_user) %>
+            <div class="tertiary_button">
+              <%= link_to duplicate_path(program), data: { "turbo-frame": "_top" } do %>
+                Copy
+                <i class="fa-solid fa-clone"></i>
+              <% end %>
+            </div>
+          <% end %>
         </div>
       <% end %>
     </div>
