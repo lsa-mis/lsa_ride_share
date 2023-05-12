@@ -10,9 +10,11 @@
           <div class="py-2">
             <%= link_to 'Edit Program', program_data_path(@program), class: "primary_button" %>
           </div>
-          <div class="py-2">
-            <%= link_to 'Students List', program_students_path(@program), class: "secondary_blue_button" %>
-          </div>
+          <% if policy(Student).update_student_list? %>
+            <div class="py-2">
+              <%= link_to 'Students List', program_students_path(@program), class: "secondary_blue_button" %>
+            </div>
+          <% end %>
         </div>
       </div>
     </div>
