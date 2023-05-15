@@ -60,7 +60,11 @@ module ApplicationHelper
 
   def rich_text_no_tags_value(field)
     strip_tags(field.body.to_s).strip
-  end 
+  end
+
+  def has_answers?(faculty_survey)
+    Survey.new(faculty_survey).has_answers?
+  end
   
   def choose_managers_for_program(program)
     managers = Manager.all - program.managers
