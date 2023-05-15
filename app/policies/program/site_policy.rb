@@ -19,7 +19,7 @@ class Program::SitePolicy < ApplicationPolicy
   end
 
   def edit_program_sites?
-    is_program_instructor?
+    user_in_access_group? || is_program_instructor?
   end
 
   def remove_site_from_program?
