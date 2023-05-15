@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_10_163413) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_15_192706) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -109,17 +109,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_10_163413) do
     t.integer "program_id"
     t.string "first_name"
     t.string "last_name"
-    t.index ["term_id"], name: "index_faculty_surveys_on_term_id"
-    t.index ["unit_id"], name: "index_faculty_surveys_on_unit_id"
-  end
-
-  create_table "notes", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.string "noteable_type", null: false
-    t.bigint "noteable_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "program_id"
+    t.string "title"
     t.index ["term_id"], name: "index_faculty_surveys_on_term_id"
     t.index ["unit_id"], name: "index_faculty_surveys_on_unit_id"
   end
@@ -202,8 +192,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_10_163413) do
     t.bigint "program_id", null: false
     t.bigint "site_id", null: false
     t.bigint "car_id"
-    t.datetime "start_time"
-    t.datetime "end_time"
+    t.datetime "start_date"
+    t.datetime "end_date"
     t.string "recurring"
     t.bigint "driver_id"
     t.string "driver_phone"
@@ -214,7 +204,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_10_163413) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "reserved_by"
-    t.text "non_uofm_passengers"
     t.index ["backup_driver_id"], name: "index_reservations_on_backup_driver_id"
     t.index ["car_id"], name: "index_reservations_on_car_id"
     t.index ["driver_id"], name: "index_reservations_on_driver_id"
