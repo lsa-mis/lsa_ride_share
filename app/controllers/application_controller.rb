@@ -13,7 +13,7 @@ class ApplicationController < ActionController::Base
   end
 
   def pundit_user
-    { user: current_user, params: params[:program_id] }
+    { user: current_user, params: params.except("controller",  "action") }
   end
 
   def auth_user
