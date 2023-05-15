@@ -26,14 +26,6 @@ class SitePolicy < ApplicationPolicy
     update?
   end
 
-  # def edit_program_sites?
-  #   update?
-  # end
-
-  # def remove_site_from_program?
-  #   user_in_access_group? || is_instructor?
-  # end
-
   def is_instructor?
     manager = Manager.find_by(uniqname: @user.uniqname)
     Program.where(instructor_id: manager).present?
