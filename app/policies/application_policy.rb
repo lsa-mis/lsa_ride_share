@@ -5,7 +5,7 @@ class ApplicationPolicy
 
   def initialize(context, record)
     @user = context[:user]
-    @program_id = context[:params]
+    @params = context[:params]
     @record = record
   end
 
