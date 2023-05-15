@@ -19,7 +19,7 @@ class ProgramPolicy < ApplicationPolicy
   end
 
   def update?
-    user_in_access_group? || is_program_manager?
+    user_in_access_group? || is_instructor?
   end
 
   def edit?
@@ -44,6 +44,10 @@ class ProgramPolicy < ApplicationPolicy
 
   def is_program_manager?
     @record.all_managers.include?(@user.uniqname)
+  end
+
+  def is_instructor?
+    @record.instructor.uniqname == @user.uniqname
   end
 
 end
