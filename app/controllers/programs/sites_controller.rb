@@ -6,7 +6,7 @@ class Programs::SitesController < SitesController
   # GET /sites/new
   def new
     @site = Site.new
-    authorize @site
+    authorize([@site_program, @site]) 
   end
 
   # GET /sites/1/edit
@@ -16,21 +16,21 @@ class Programs::SitesController < SitesController
 
   def edit_program_sites
     @site = Site.new
-    authorize @site
+    authorize([@site_program, @site]) 
   end
 
   # POST /sites or /sites.json
   def create
     if params[:site_id].present?
       @site = Site.find(params[:site_id])
-      authorize @site
+      authorize([@site_program, @site]) 
       if @site_program.sites << @site
         @site = Site.new
         flash.now[:notice] = "The site was added."
       end
     else
      @site = Site.new(site_params)
-     authorize @site
+     authorize([@site_program, @site]) 
       if @site.save
         @site_program.sites << @site
         @site = Site.new
@@ -56,7 +56,7 @@ class Programs::SitesController < SitesController
     # Use callbacks to share common setup or constraints between actions.
     def set_site
       @site = Site.find(params[:id])
-      authorize @site
+      authorize([@site_program, @site]) 
     end
 
     def set_units
