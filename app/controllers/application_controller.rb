@@ -12,6 +12,10 @@ class ApplicationController < ActionController::Base
     redirect_to(root_path)
   end
 
+  def pundit_user
+    { user: current_user, params: params[:program_id] }
+  end
+
   def auth_user
     unless user_signed_in?
       redirect_to root_path, notice: 'You must sign in first!'
