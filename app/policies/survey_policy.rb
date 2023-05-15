@@ -1,19 +1,13 @@
 # frozen_string_literal: true
 
 class SurveyPolicy < ApplicationPolicy
-  attr_reader :user, :survey
-
-  def initialize(user, survey)
-    @user = user
-    @survey = survey
-  end
 
   def survey?
-    @user.uniqname == @survey.uniqname
+    @user.uniqname == @record.uniqname
   end
 
   def save_survey?
-    @user.uniqname == @survey.uniqname
+    @user.uniqname == @record.uniqname
   end
 
 end
