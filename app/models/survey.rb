@@ -34,6 +34,10 @@ class Survey
     return survey
   end
 
+  def has_answers?
+    rich_text_no_tags_value(@survey_to_update[0].answer).present?
+  end
+
   def update_answers(params)
     result = { 'success' => true, 'note' => '' }
     course = false
