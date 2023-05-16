@@ -1,4 +1,5 @@
 class Programs::SitesController < SitesController
+  before_action :auth_user
   before_action :set_site_program
   before_action :set_site, only: %i[ edit remove_site_from_program ]
   before_action :set_units

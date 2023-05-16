@@ -1,4 +1,5 @@
 class Programs::CarsController < CarsController
+  before_action :auth_user
   before_action :set_car_program
 
   private
