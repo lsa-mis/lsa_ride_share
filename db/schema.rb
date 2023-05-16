@@ -72,15 +72,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_16_195147) do
     t.index ["unit_id"], name: "index_cars_on_unit_id"
   end
 
-  create_table "cars_programs", force: :cascade do |t|
-    t.bigint "car_id", null: false
-    t.bigint "program_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["car_id"], name: "index_cars_programs_on_car_id"
-    t.index ["program_id"], name: "index_cars_programs_on_program_id"
-  end
-
   create_table "config_questions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -192,8 +183,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_16_195147) do
     t.bigint "program_id", null: false
     t.bigint "site_id", null: false
     t.bigint "car_id"
-    t.datetime "start_date"
-    t.datetime "end_date"
+    t.datetime "start_time"
+    t.datetime "end_time"
     t.string "recurring"
     t.bigint "driver_id"
     t.string "driver_phone"
@@ -204,6 +195,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_16_195147) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "reserved_by"
+    t.text "non_uofm_passengers"
     t.index ["backup_driver_id"], name: "index_reservations_on_backup_driver_id"
     t.index ["car_id"], name: "index_reservations_on_car_id"
     t.index ["driver_id"], name: "index_reservations_on_driver_id"
@@ -305,8 +297,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_16_195147) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "cars_programs", "cars"
-  add_foreign_key "cars_programs", "programs"
   add_foreign_key "contacts", "sites"
   add_foreign_key "faculty_surveys", "terms"
   add_foreign_key "faculty_surveys", "units"

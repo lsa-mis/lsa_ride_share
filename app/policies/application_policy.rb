@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 class ApplicationPolicy
-  attr_reader :user, :record
+  attr_reader :user, :params, :record
 
-  def initialize(user, record)
-    @user = user
+  def initialize(context, record)
+    @user = context[:user]
+    @params = context[:params]
     @record = record
   end
 
@@ -38,11 +39,11 @@ class ApplicationPolicy
 
   def unit_admin?
     units_all_ids = Unit.all.pluck(:id)
-    user.unit_ids && (user.unit_ids & units_all_ids).any?
+    @user.unit_ids && (@user.unit_ids & units_all_ids).any?
   end
 
   def user_admin?
-    user.membership && user.membership.include?('lsa-was-rails-devs')
+    @user.membership && @user.membership.include?('lsa-was-rails-devs')
   end
 
   def user_in_access_group?

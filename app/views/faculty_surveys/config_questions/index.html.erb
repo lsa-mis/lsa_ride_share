@@ -10,13 +10,13 @@
   </div>
   <div class="body-text mb-2">
     <% if @faculty_survey.program_id.present? %>
-      <div class="inline">
-        Program
-        <%= link_to Program.find_by(id: @faculty_survey.program_id).display_name_with_title, program_path(Program.find_by(id: @faculty_survey.program_id)), class: "link_to" %>
-        was created for this survey. Follow the link to edit the program
-      </div>
-      <div class="inline">
-        <%= link_to 'Add Sites to Program', faculty_survey_config_questions_path(@faculty_survey), class: "secondary_blue_button" unless is_admin?(current_user) %> 
+      <div class="flex justify-between items-center mb-4">
+        <p>
+          Program
+          <%= link_to Program.find_by(id: @faculty_survey.program_id).display_name_with_title, program_path(Program.find_by(id: @faculty_survey.program_id)), class: "link_to" %>
+          was created for this survey. Follow the link to edit the program
+        </p>
+        <%= link_to 'Add Sites to Program', edit_program_sites_path(@faculty_survey.program_id), class: "secondary_blue_button" unless is_admin?(current_user) %> 
       </div>
     <% else %>
       <p class="body-text mb-2">

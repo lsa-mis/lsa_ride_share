@@ -17,7 +17,7 @@
         <div class="hidden sm:ml-6 sm:flex sm:space-x-4 pl-2">
           <% if user_signed_in? %>
             <div class="header_link">
-              <%= link_to "Programs", programs_path, class: "#{class_names(active: current_page?(programs_path))}" if policy(Program).index? %>
+              <%= link_to "Programs", programs_path, class: "#{class_names(active: current_page?(programs_path))}" %>
             </div>
             <div class="header_link">
               <%= link_to "Cars", cars_path, class: "#{class_names(active: current_page?(cars_path))}" if policy(Car).index? %>

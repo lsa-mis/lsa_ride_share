@@ -1,4 +1,5 @@
 class Sites::ContactsController < ApplicationController
+  before_action :auth_user
   before_action :set_site
   before_action :set_contact, only: %i[ show edit update destroy ]
 

@@ -57,7 +57,7 @@ class FacultySurveys::ConfigQuestionsController < ApplicationController
       return
     end
     unless @faculty_survey.program_id.present?
-      program_id = new_survey.create_program_from_survey
+      program_id = new_survey.create_program_from_survey(current_user)
       if program_id
         @faculty_survey.update(program_id: program_id)
       else

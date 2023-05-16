@@ -34,6 +34,10 @@ class Survey
     return survey
   end
 
+  def has_answers?
+    rich_text_no_tags_value(@survey_to_update[0].answer).present?
+  end
+
   def update_answers(params)
     result = { 'success' => true, 'note' => '' }
     course = false
@@ -78,7 +82,7 @@ class Survey
             result['success'] = false
             result['note'] += "Catalog number is required. "
           when '5'
-            result['success'] = falses
+            result['success'] = false
             result['note'] += "Section is required. "
           end
         end
@@ -92,8 +96,13 @@ class Survey
     return result
   end
 
-  def create_program_from_survey
+  def create_program_from_survey(current_user)
     not_course = false
+    title = ''
+    subject = ''
+    catalog_number = ''
+    class_section = ''
+    number_of_students_using_ride_share = 0
     @survey_to_update.each do |s|
       if rich_text_value(s.question).include?("title")
         title = rich_text_no_tags_value(s.answer)

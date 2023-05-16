@@ -31,7 +31,6 @@ class Program < ApplicationRecord
   has_many :programs_sites
   has_many :sites, through: :programs_sites
   has_many :students
-  has_and_belongs_to_many :cars
   has_many :reservations
   belongs_to :unit
   belongs_to :term
@@ -92,6 +91,10 @@ class Program < ApplicationRecord
     else
       "#{self.title} - #{self.subject} #{self.catalog_number} - #{self.class_section} - #{self.term.name}"
     end
+  end
+
+  def all_managers
+    self.managers.map(&:uniqname) << self.instructor.uniqname
   end
 
 end
