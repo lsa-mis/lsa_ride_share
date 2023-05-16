@@ -94,4 +94,8 @@ class Program < ApplicationRecord
     end
   end
 
+  def all_managers
+    self.managers.map(&:uniqname) << self.instructor.uniqname
+  end
+
 end

@@ -60,7 +60,11 @@ module ApplicationHelper
 
   def rich_text_no_tags_value(field)
     strip_tags(field.body.to_s).strip
-  end 
+  end
+
+  def has_answers?(faculty_survey)
+    Survey.new(faculty_survey).has_answers?
+  end
   
   def choose_managers_for_program(program)
     managers = Manager.all - program.managers
@@ -90,6 +94,10 @@ module ApplicationHelper
     user.membership.present?
   end
 
+  def is_manager?(user)
+    Program.all.map { |p| p.all_managers.include?(user.uniqname) }.any?
+  end
+  
   def render_flash_stream
     turbo_stream.update "flash", partial: "layouts/notification"
   end
