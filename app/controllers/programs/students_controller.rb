@@ -108,12 +108,13 @@ class Programs::StudentsController < ApplicationController
       students_with_good_score = result['data']
       uniqnames = students_with_good_score.keys
       if uniqnames.include?(@student.uniqname)
-        unless @student.update(canvas_course_complete_date: students_with_good_score[student.uniqname])
+        unless @student.update(canvas_course_complete_date: students_with_good_score[@student.uniqname])
           redirect_to program_student_path(@student_program, @student), alert: "Error updating student record."
         end
         flash.now[:notice] = "Student pass the course."
+      else
+        flash.now[:notice] = "Student did not pass the course."
       end
-      flash.now[:notice] = "Student did not pass the course."
     else
       flash.now[:alert] = result['error']
     end
