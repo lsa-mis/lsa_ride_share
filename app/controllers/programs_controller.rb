@@ -44,8 +44,6 @@ class ProgramsController < ApplicationController
   end
 
   def program_data
-    @cars = @program.cars
-    @add_cars = Car.all - @cars
   end
 
   # POST /programs or /programs.json
