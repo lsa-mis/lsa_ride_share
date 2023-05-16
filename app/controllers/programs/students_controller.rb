@@ -1,6 +1,6 @@
 class Programs::StudentsController < ApplicationController
   before_action :auth_user
-  before_action :set_student, only: %i[ show destroy]
+  before_action :set_student, only: %i[ show edit update destroy]
   before_action :set_student_program
   include StudentApi
 
@@ -62,6 +62,12 @@ class Programs::StudentsController < ApplicationController
 
   # GET /students/1 or /students/1.json
   def show
+  end
+
+  def edit
+  end
+
+  def update
   end
 
   def update_mvr_status

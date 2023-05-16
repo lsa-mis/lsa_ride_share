@@ -32,6 +32,14 @@ class StudentPolicy < ApplicationPolicy
     create?
   end
 
+  def edit?
+    update?
+  end
+
+  def update?
+    user_in_access_group?
+  end
+
   def update_mvr_status?
     user_in_access_group?
   end
