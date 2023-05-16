@@ -1,4 +1,5 @@
 class UnitPreferencesController < ApplicationController
+  before_action :auth_user
   before_action :set_units
 
   # GET /unit_preferences or /unit_preferences.json

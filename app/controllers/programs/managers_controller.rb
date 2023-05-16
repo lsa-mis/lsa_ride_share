@@ -1,4 +1,5 @@
 class Programs::ManagersController < ApplicationController
+  before_action :auth_user
   before_action :set_manager_program
   before_action :set_manager, only: %i[ new edit_program_managers ]
 
