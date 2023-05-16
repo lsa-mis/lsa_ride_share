@@ -20,6 +20,11 @@
   <% end %>
 
   <div class="my-5">
+    <%= form.label :title, 'Title *', class: "fancy_label"  %>
+    <%= form.text_field :title, required: true, class: "input_text_field" %>
+  </div>
+
+  <div class="my-5">
     <%= form.label :uniqname, 'Uniqname *', class: "fancy_label"  %>
     <%= form.text_field :uniqname, required: true, class: "input_text_field" %>
   </div>

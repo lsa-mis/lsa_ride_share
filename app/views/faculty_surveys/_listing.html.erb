@@ -4,6 +4,7 @@
       <thead class="mi_thead">
         <tr>
           <th class="header_th">  </th>
+          <th class="header_th">Title</th>
           <th class="header_th">Instructor</th>
           <th class="header_th">Unit</th>
           <th class="header_th">Term</th>
@@ -18,6 +19,9 @@
               <% unless survey.program_id.present? %>
                 <%= link_to 'Edit', edit_faculty_survey_path(survey), class: "link_to" %>
               <% end %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= survey.title %>
             </td>
             <td class="mi_tbody_td">
               <%= survey.instructor %>

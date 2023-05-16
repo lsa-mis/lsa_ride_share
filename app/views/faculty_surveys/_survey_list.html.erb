@@ -4,6 +4,7 @@
       <thead class="mi_thead">
         <tr>
           <th class="header_th">Survey Questions</th>
+          <th class="header_th">Title</th>
           <th class="header_th">Instructor Uniqname</th>
           <th class="header_th">Unit</th>
           <th class="header_th">Term</th>
@@ -15,6 +16,9 @@
           <tr class="mi_tbody_tr">
             <td class="mi_tbody_td">
               <%= link_to 'Questions', survey_path(survey), class: "link_to" %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= survey.title %>
             </td>
             <td class="mi_tbody_td">
               <%= survey.uniqname %>
