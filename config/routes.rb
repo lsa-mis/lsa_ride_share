@@ -56,6 +56,8 @@ Rails.application.routes.draw do
   get '/programs/students/update_student_list/:program_id', to: 'programs/students#update_student_list', as: :update_student_list, defaults: { format: :turbo_stream }
   get '/programs/students/update_mvr_status/:program_id', to: 'programs/students#update_mvr_status', as: :update_mvr_status, defaults: { format: :turbo_stream }
   get '/programs/students/canvas_results/:program_id', to: 'programs/students#canvas_results', as: :canvas_results, defaults: { format: :turbo_stream }
+  get '/programs/students/update_student_mvr_status/:program_id/:id', to: 'programs/students#update_student_mvr_status', as: :update_student_mvr_status, defaults: { format: :turbo_stream }
+  get '/programs/students/student_canvas_result/:program_id/:id', to: 'programs/students#student_canvas_result', as: :student_canvas_result, defaults: { format: :turbo_stream }
 
   get 'programs/duplicate/:id', to: 'programs#duplicate', as: :duplicate
   delete 'programs/remove_car/:id/:car_id', to: 'programs#remove_car', as: :remove_car

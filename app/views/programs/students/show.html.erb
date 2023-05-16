@@ -1,15 +1,23 @@
 <div class="mx-auto w-full">
+  <h1 class="mb-4"><%= @student_program.display_name_with_title %></h1>
   <div class="grid grid-cols-1 lg:grid-cols-2">
-    <h1 class="mb-4"><%= @student_program.display_name_with_title %></h1>
+    <%= render @student %>
     <div class="lg:grid lg:justify-items-end">
       <div class="py-2">
         <%= link_to 'Edit Student', edit_program_student_path(@student_program, @student), class: "primary_button" %>
       </div>
+      <div class="py-2">
+        <%= link_to 'Update MVR Status', update_student_mvr_status_path(@student_program, @student), class: "secondary_blue_button" %>
+      </div>
+      <div class="py-2">
+        <%= link_to 'Update Canvas Status', student_canvas_result_path(@student_program, @student), class: "secondary_blue_button" %>
+      </div>
+      <div class="py-2">
+        <%= link_to 'Back to Student List', program_students_path(@student_program), class: "secondary_blue_button" %>
+      </div>
     </div>
   </div>
-  <div>
-    <%= render @student %>
-  </div>
+  
 </div>
 
 <div class="container p-2 rounded-lg shadow-lg text-xl mb-20 bg-gray-50">
