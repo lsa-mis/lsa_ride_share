@@ -48,6 +48,10 @@ Rails.application.routes.draw do
     resources :students, module: :programs
   end
 
+  resources :students do
+    resources :notes, module: :students
+  end
+
   get '/programs/students/add_students/:program_id', to: 'programs/students#add_students', as: :add_students
   get '/programs/students/update_student_list/:program_id', to: 'programs/students#update_student_list', as: :update_student_list, defaults: { format: :turbo_stream }
   get '/programs/students/update_mvr_status/:program_id', to: 'programs/students#update_mvr_status', as: :update_mvr_status, defaults: { format: :turbo_stream }

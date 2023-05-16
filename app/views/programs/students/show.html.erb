@@ -11,3 +11,15 @@
     <%= render @student %>
   </div>
 </div>
+
+<div class="container p-2 rounded-lg shadow-lg text-xl mb-20 bg-gray-50">
+  <h2 class="mb-4">Notes:</h2>
+  <% if user_signed_in? %>
+    <%= render partial: "notes/form", locals: { note: Note.new, noteable: @student } %>
+  <% end %>
+
+  <%= turbo_stream_from @student, :notes %>
+  <%= tag.div id: "#{dom_id(@student)}_notes" do %>
+    <%= render @student.notes %>
+  <% end %>
+</div>
