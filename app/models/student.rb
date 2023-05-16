@@ -38,4 +38,8 @@ class Student < ApplicationRecord
   def reservations
     driver + backup_driver + passenger
   end
+
+  def display_name
+    "#{self.first_name} #{self.last_name} - #{self.uniqname}" 
+  end
 end

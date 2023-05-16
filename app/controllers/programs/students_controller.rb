@@ -115,6 +115,7 @@ class Programs::StudentsController < ApplicationController
 
     def set_student
       @student = Student.find(params[:id])
+      authorize @student
     end
 
     # Only allow a list of trusted parameters through.

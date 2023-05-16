@@ -1,12 +1,13 @@
-<div class="mx-auto md:w-2/3 w-full flex">
-  <div class="mx-auto">
-    <% if notice.present? %>
-      <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
-    <% end %>
-
+<div class="mx-auto w-full">
+  <div class="grid grid-cols-1 lg:grid-cols-2">
+    <h1 class="mb-4"><%= @student_program.display_name_with_title %></h1>
+    <div class="lg:grid lg:justify-items-end">
+      <div class="py-2">
+        <%= link_to 'Edit Student', edit_program_student_path(@student_program, @student), class: "primary_button" %>
+      </div>
+    </div>
+  </div>
+  <div>
     <%= render @student %>
-
-    <%= link_to 'Edit this student', edit_student_path(@student), class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-    <%= link_to 'Back to students', program_students_path(@student_program), class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
   </div>
 </div>
