@@ -38,7 +38,7 @@
     <div id="error_text" class="error_text fields--hide" data-program-target="course_error">
      <span>Please enter course data</span>
     </div>
-    <% if program.persisted? && program.not_course %>
+    <% if program.not_course %>
       <div data-program-target="course_data" class="fields--hide">
     <% else %>
       <div data-program-target="course_data" class="fields--display">
