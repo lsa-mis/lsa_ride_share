@@ -60,12 +60,15 @@
     </div>
   </div>
 
-  <div class="my-5">
+  <div class="my-5" id="instructor">
     <%= form.fields_for :instructor, @instructor do |instructor_attributes| %>
       <%= form.label :uniqname, "Instructor's uniqname *", class: "fancy_label" %>
       <%= instructor_attributes.text_field :uniqname, required: true, placeholder: "Uniqname", class: "input_text_field" %>
     <% end %>
   </div>
+  <%= turbo_frame_tag 'instructor_error_text', autoscroll: "true", data: { autoscroll_block: "start" } do %>
+    <%= render 'validation_uniqname' %>
+  <% end %>
 
   <div class="px-1 pb-2">
     <%= form.check_box :add_managers, class: "check_box" %>
