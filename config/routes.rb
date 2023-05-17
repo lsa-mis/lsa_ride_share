@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   root to: "static_pages#home"
 
-  mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
+  mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development? || Rails.env.staging?
   
   get 'faculty_surveys/faculty_index', to: 'faculty_surveys#faculty_index', as: :faculty_index
   resources :faculty_surveys do
