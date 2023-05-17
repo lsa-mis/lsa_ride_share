@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_10_163413) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_16_182826) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -72,15 +72,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_10_163413) do
     t.index ["unit_id"], name: "index_cars_on_unit_id"
   end
 
-  create_table "cars_programs", force: :cascade do |t|
-    t.bigint "car_id", null: false
-    t.bigint "program_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["car_id"], name: "index_cars_programs_on_car_id"
-    t.index ["program_id"], name: "index_cars_programs_on_program_id"
-  end
-
   create_table "config_questions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -109,17 +100,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_10_163413) do
     t.integer "program_id"
     t.string "first_name"
     t.string "last_name"
-    t.index ["term_id"], name: "index_faculty_surveys_on_term_id"
-    t.index ["unit_id"], name: "index_faculty_surveys_on_unit_id"
-  end
-
-  create_table "notes", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.string "noteable_type", null: false
-    t.bigint "noteable_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "program_id"
+    t.string "title"
     t.index ["term_id"], name: "index_faculty_surveys_on_term_id"
     t.index ["unit_id"], name: "index_faculty_surveys_on_unit_id"
   end
@@ -316,8 +297,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_10_163413) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "cars_programs", "cars"
-  add_foreign_key "cars_programs", "programs"
   add_foreign_key "contacts", "sites"
   add_foreign_key "faculty_surveys", "terms"
   add_foreign_key "faculty_surveys", "units"

@@ -116,6 +116,6 @@ class FacultySurveysController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def faculty_survey_params
-      params.require(:faculty_survey).permit(:uniqname, :term_id, :unit_id, :first_name, :last_name)
+      params.require(:faculty_survey).permit(:title, :uniqname, :term_id, :unit_id, :first_name, :last_name)
     end
 end

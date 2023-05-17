@@ -1,4 +1,5 @@
 class NotesController < ApplicationController
+  before_action :auth_user
   before_action :set_note
 
   def update

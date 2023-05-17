@@ -1,4 +1,5 @@
 class VehicleReportsController < ApplicationController
+  before_action :auth_user
   before_action :set_vehicle_report, only: %i[ show edit update destroy ]
 
   # GET /vehicle_reports or /vehicle_reports.json

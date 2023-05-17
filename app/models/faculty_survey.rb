@@ -11,6 +11,7 @@
 #  program_id :integer
 #  first_name :string
 #  last_name  :string
+#  title      :string
 #
 
 class FacultySurvey < ApplicationRecord
@@ -18,7 +19,7 @@ class FacultySurvey < ApplicationRecord
   belongs_to :term
   belongs_to :unit
 
-  validates_presence_of :uniqname, :term_id, :unit_id
+  validates_presence_of :title, :uniqname, :term_id, :unit_id
 
   scope :current_term, -> { where(term_id: Term.current) }
   scope :data, ->(term_id) { term_id.present? ? where(term_id: term_id) : current_term }

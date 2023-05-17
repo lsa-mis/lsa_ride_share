@@ -1,4 +1,5 @@
 class TermsController < ApplicationController
+  before_action :auth_user
   before_action :set_term, only: %i[ show edit update destroy ]
 
   # GET /terms or /terms.json

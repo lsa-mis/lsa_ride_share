@@ -35,7 +35,7 @@
     <div class="body-lg-text ml-2">
       <% @programs.each do |program| %>
         <div>
-          <% if policy(Program).edit? %>
+          <% if policy(program).edit? %>
             <%= link_to program.display_name_with_title, program_path(program), class: "link_to" %>
           <% else %>
             <%= program.display_name_with_title %>

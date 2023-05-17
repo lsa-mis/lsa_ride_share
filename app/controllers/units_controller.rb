@@ -1,4 +1,5 @@
 class UnitsController < ApplicationController
+  before_action :auth_user
   before_action :set_unit, only: %i[ edit update destroy ]
 
   # GET /units or /units.json

@@ -4,6 +4,7 @@
       <thead class="mi_thead">
         <tr>
           <th class="header_th">Survey Questions</th>
+          <th class="header_th">Title</th>
           <th class="header_th">Instructor Uniqname</th>
           <th class="header_th">Unit</th>
           <th class="header_th">Term</th>
@@ -14,7 +15,14 @@
         <% @surveys_list.each do |survey| %>
           <tr class="mi_tbody_tr">
             <td class="mi_tbody_td">
-              <%= link_to 'Questions', survey_path(survey), class: "link_to" %>
+            <% if has_answers?(survey) %>
+              <%= link_to 'Edit the Survey', faculty_survey_config_questions_path(survey), class: "link_to" %>
+            <% else %>
+              <%= link_to 'Answer the Survey', survey_path(survey), class: "link_to" %>
+            <% end %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= survey.title %>
             </td>
             <td class="mi_tbody_td">
               <%= survey.uniqname %>
