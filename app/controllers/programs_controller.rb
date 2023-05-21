@@ -108,11 +108,6 @@ class ProgramsController < ApplicationController
     end
   end
 
-  def remove_car
-    @program.cars.delete(Car.find(params[:car_id]))
-    redirect_to @program
-  end
-
   def remove_site
     @program.sites.delete(Site.find(params[:site_id]))
     redirect_to @program
