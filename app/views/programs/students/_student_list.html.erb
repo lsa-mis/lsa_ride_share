@@ -18,10 +18,10 @@
         <% @students.each do |student| %>
           <tr class="mi_tbody_tr">
             <td class="mi_tbody_td">
-              <%= link_to "View", program_students_path(@student_program), class: "link_to" %>
+              <%= link_to "View", program_student_path(@student_program, student), class: "link_to" %>
             </td>
             <td class="mi_tbody_td">
-              <%= link_to 'Edit', program_students_path(@student_program), class: "link_to" %>
+              <%= link_to 'Edit', edit_program_student_path(@student_program, student), class: "link_to" %>
             </td>
             <td class="mi_tbody_td">
               <%= student.uniqname %>
