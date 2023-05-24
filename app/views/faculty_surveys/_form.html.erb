@@ -53,7 +53,7 @@
       <%= form.submit 'Update Faculty Survey', class: "primary_button" %>
     <% end %>
   </div>
-  <%= link_to faculty_surveys_path do %>
+  <%= link_to faculty_surveys_path(:term_id => faculty_survey.term_id) do %>
     <span class="tertiary_button">Cancel
       <i class="fa fa-times" aria-hidden="true"></i>
     </span>

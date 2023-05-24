@@ -13,7 +13,7 @@ class FacultySurveysController < ApplicationController
     else
       @faculty_surveys = FacultySurvey.where(unit_id: @units)
     end
-    @faculty_surveys = @faculty_surveys.data(params[:term_id])
+    @faculty_surveys = @faculty_surveys.data(params[:term_id]).order(created_at: :desc)
     authorize @faculty_surveys
   end
 
@@ -51,7 +51,7 @@ class FacultySurveysController < ApplicationController
     end
     if @faculty_survey.save
       add_config_questions(@faculty_survey)
-      redirect_to faculty_surveys_path, notice: "Faculty survey was successfully created." + result['note']
+      redirect_to faculty_surveys_path(:term_id => @faculty_survey.term_id), notice: "Faculty survey was successfully created." + result['note']
     else
       render :new, status: :unprocessable_entity
     end
@@ -71,7 +71,7 @@ class FacultySurveysController < ApplicationController
       end
     end
     if @faculty_survey.save
-      redirect_to faculty_surveys_path, notice: "Faculty survey was successfully updated."
+      redirect_to faculty_surveys_path(:term_id => @faculty_survey.term_id), notice: "Faculty survey was successfully updated."
     else
       render :edit, status: :unprocessable_entity
     end
