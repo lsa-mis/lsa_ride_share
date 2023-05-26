@@ -7,8 +7,8 @@
 #  program_id               :bigint           not null
 #  site_id                  :bigint           not null
 #  car_id                   :bigint
-#  start_date               :datetime
-#  end_date                 :datetime
+#  start_time               :datetime
+#  end_time                 :datetime
 #  recurring                :string
 #  driver_id                :bigint
 #  driver_phone             :string
