@@ -20,16 +20,37 @@
     </div>
   <% else %>
     <div class="my-5">
-        <%= form.label :unit_id, 'Unit *', class: "fancy_label" %>
-        <%= select_tag "unit_id", options_from_collection_for_select(@units, :id, :name), class: "input_text_field",
-        "data-reservation-target": "unit" %>
-      </div>
+      <%= form.label :unit_id, 'Unit *', class: "fancy_label" %>
+      <%= select_tag "unit_id", options_from_collection_for_select(@units, :id, :name), class: "input_text_field",
+      "data-reservation-target": "unit" %>
+    </div>
   <% end %>
 
   <div class="my-5">
     <%= form.label :term_id, 'Term *', class: "fancy_label" %>
     <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: params[:term_id]), include_blank: "Select ...", class: "input_text_field",
       "data-reservation-target": "term", "data-action": "change->reservation#changePrograms" %>
+  </div>
+
+  <div class="my-5">
+      <%= form.label :start_day, "Choose a date", class: "fancy_label" %>
+      <%= form.text_field :start_day, value: params[:start_date].to_date,
+        data: {
+        controller: "flatpickr",
+        flatpickr_date_format: "Y-m-d",
+        },
+        class: "input_text_field"
+      %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :time, 'Start Time *', class: "fancy_label" %>
+    <%= time_select 'game', 'game_time', {minute_step: 15, ampm: true} %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :available_time, 'Start Time *', class: "fancy_label" %>
+    <%= select_tag "available_time", options_for_select(available_time(params[:start_date].to_date)), class: "input_text_field" %>
   </div>
 
   <div class="my-5">
