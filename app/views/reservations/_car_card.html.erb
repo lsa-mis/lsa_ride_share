@@ -5,8 +5,10 @@
     </div>
     <div>
       <% available_ranges(car, day).each do |range| %>
-        <%= range %>
-       <% end %>
+        <div>
+          <%= range %>
+        </div>
+      <% end %>
     </div>
   </div>
 <% end %>
