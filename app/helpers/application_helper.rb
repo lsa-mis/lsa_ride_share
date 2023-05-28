@@ -97,6 +97,36 @@ module ApplicationHelper
   def is_manager?(user)
     Program.all.map { |p| p.all_managers.include?(user.uniqname) }.any?
   end
+
+  def available_ranges(car, day)
+    car_available = []
+    day_begin = DateTime.new(day.year, day.month, day.day, 8, 0, 0, 'EDT')
+    day_end = DateTime.new(day.year, day.month, day.day, 17, 0, 0, 'EDT')
+    space_begin = day_begin
+    car_day_reserv = car.reservations.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day).order(:start_time)
+    if car_day_reserv.present?
+      day_ranges = car_day_reserv.map { |res| res.start_time..res.end_time }
+      day_ranges.each do |range|
+        if space_begin < range.begin
+          r = space_begin..range.begin
+          car_available << show_time_range(r)
+          space_begin = range.end
+        end
+      end
+      if space_begin < day_end
+        r = space_begin..day_end
+        car_available << show_time_range(r)
+      end
+    else
+      r = day_begin..day_end
+      car_available << show_time_range(r)
+    end
+    return car_available
+  end
+
+  def show_time_range(day_range)
+    "#{day_range.begin.strftime("%I:%M%p")} - #{day_range.end.strftime("%I:%M%p")}"
+  end
   
   def render_flash_stream
     turbo_stream.update "flash", partial: "layouts/notification"

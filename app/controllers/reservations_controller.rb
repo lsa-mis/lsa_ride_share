@@ -1,6 +1,8 @@
 class ReservationsController < ApplicationController
   before_action :auth_user
-  before_action :set_reservation, only: %i[ show edit update destroy ]
+  before_action :set_reservation, only: %i[ show edit update destroy add_passengers remove_passenger]
+  before_action :set_terms_and_units
+  before_action :set_programs
 
   # GET /reservations or /reservations.json
   def index
@@ -14,7 +16,13 @@ class ReservationsController < ApplicationController
 
   # GET /reservations/new
   def new
+    @start_date = params[:start_date].to_date
+    @programs = Program.where(unit_id: current_user.unit_ids)
+    @students = []
+    @sites = []
+    @cars = Car.all
     @reservation = Reservation.new
+    @reservation.start_time = params[:start_date].to_date
     authorize @reservation
   end
 
@@ -65,6 +73,15 @@ class ReservationsController < ApplicationController
     def set_reservation
       @reservation = Reservation.find(params[:id])
       authorize @reservation
+    end
+
+    def set_terms_and_units
+      @terms = Term.sorted
+      @units = Unit.where(id: current_user.unit_ids).order(:name)
+    end
+
+    def set_programs
+      @programs = Program.where(unit_id: current_user.unit_ids)
     end
 
     # Only allow a list of trusted parameters through.
