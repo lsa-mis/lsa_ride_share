@@ -5,6 +5,7 @@ class ReservationsController < ApplicationController
   # GET /reservations or /reservations.json
   def index
     @reservations = Reservation.all
+    authorize @reservations
   end
 
   # GET /reservations/1 or /reservations/1.json
@@ -14,6 +15,7 @@ class ReservationsController < ApplicationController
   # GET /reservations/new
   def new
     @reservation = Reservation.new
+    authorize @reservation
   end
 
   # GET /reservations/1/edit
@@ -67,6 +69,6 @@ class ReservationsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def reservation_params
-      params.require(:reservation).permit(:status, :start_date, :end_date, :recurring, :driver_phone, :backup_driver_phone, :number_of_people_on_trip)
+      params.require(:reservation).permit(:status, :start_time, :end_time, :recurring, :driver_phone, :backup_driver_phone, :number_of_people_on_trip)
     end
 end

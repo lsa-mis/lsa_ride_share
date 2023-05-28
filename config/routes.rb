@@ -18,8 +18,9 @@ Rails.application.routes.draw do
   resources :unit_preferences
 
   resources :terms
-  get '/vehicle_reports/:reports_ids', to: 'vehicle_reports#index', as: 'vehicle_reports'
   resources :vehicle_reports
+  # get '/vehicle_reports/:reports_ids', to: 'vehicle_reports#index', as: 'vehicle_reports'
+
   resources :reservations
   resources :cars do
     resources :notes, module: :cars
