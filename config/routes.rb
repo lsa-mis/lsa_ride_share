@@ -22,6 +22,8 @@ Rails.application.routes.draw do
   # get '/vehicle_reports/:reports_ids', to: 'vehicle_reports#index', as: 'vehicle_reports'
 
   resources :reservations
+  get '/get_available_cars/:day_start/:number/:time_start/:time_end(.:format)', to: 'reservations#get_available_cars', as: 'get_available_cars'
+
   resources :cars do
     resources :notes, module: :cars
   end
