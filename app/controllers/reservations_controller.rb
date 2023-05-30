@@ -16,13 +16,18 @@ class ReservationsController < ApplicationController
 
   # GET /reservations/new
   def new
-    @start_date = params[:start_date].to_date
+    if params[:day_start].present?
+      @day_start = params[:day_start].to_date
+    else
+      @day_start = Date.today
+    end
     @programs = Program.where(unit_id: current_user.unit_ids)
     @students = []
     @sites = []
     @cars = Car.all
+    @number_of_seats = 1..Car.maximum(:number_of_seats)
     @reservation = Reservation.new
-    @reservation.start_time = params[:start_date].to_date
+    @reservation.start_time = @day_start 
     authorize @reservation
   end
 
@@ -30,8 +35,35 @@ class ReservationsController < ApplicationController
   def edit
   end
 
+  def get_available_cars
+    if params[:day_start].present?
+      @day_start = params[:day_start].to_date
+    else
+      @day_start = Date.today
+    end
+    if params[:number].present?
+      @cars = Car.where("number_of_seats >= ?", params[:number])
+    else
+      @cars = Car.all
+    end
+    if params[:time_start].present?
+      @time_start = params[:time_start]
+    end
+    if params[:time_end].present?
+      @time_end = params[:time_end]
+    end
+    unless params[:time_start] == params[:time_end]
+      @reserv_begin = Time.zone.parse(params[:day_start] + " " + params[:time_start]).to_datetime
+      @reserv_end = Time.zone.parse(params[:day_start] + " " + params[:time_end]).to_datetime
+      range = @reserv_begin..@reserv_end
+      @cars = available_cars(@cars, range)
+    end
+    authorize Reservation
+  end
+
   # POST /reservations or /reservations.json
   def create
+    fail
     @reservation = Reservation.new(reservation_params)
 
     respond_to do |format|

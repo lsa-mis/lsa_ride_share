@@ -161,14 +161,27 @@ module ApplicationHelper
         all_cars.each do |car|
           if available?(car, range)
             available_times << show_time(step)
+            available_times << show_time(step  + 15.minutes)
             break
           end
         end
       end
+      available_times = available_times.uniq
     else
       available_times = day_times_with_15_min_steps.map { |t| show_time(t) }
     end
     return available_times
+  end
+
+  def available_cars(cars, range)
+    available = []
+    day = range.begin.to_date
+    cars.each do |car|
+      if available?(car, range)
+        available << car
+      end
+    end
+    return available
   end
   
   def render_flash_stream

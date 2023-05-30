@@ -1,14 +1,15 @@
 <h2>Available Cars</h2>for
-<%= show_date(@start_date) %>
-<%= turbo_frame_tag "available-cars" do %>
-  <div class="mb-10" id="cars_listing">
-    <ul role="list" class="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-4 mt-4">
-      <% @cars.each do |car| %>
-        <li class="col-span-1 bg-white rounded-lg shadow-md divide-y divide-gray-400 px-2 place-items-stretch bg-white border border-gray-300 rounded-lg">
-          <%= render 'car_card', car: car, day: @start_date %>
-        </li>
-      <% end %>
-    </ul>
-  </div>
-<% end %>
+<%= show_date(@day_start) %>
+<h3>Reservation: 
+<%= show_date_time(@reserv_begin) %> - <%= show_date_time(@reserv_end) %> 
+</h3>
+<div class="mb-10" id="cars_listing">
+  <ul role="list" class="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-4 mt-4">
+    <% @cars.each do |car| %>
+      <li class="col-span-1 bg-white rounded-lg shadow-md divide-y divide-gray-400 px-2 place-items-stretch bg-white border border-gray-300 rounded-lg">
+        <%= render 'car_card', car: car, day: @day_start %>
+      </li>
+    <% end %>
+  </ul>
+</div>
 
