@@ -33,39 +33,32 @@
   </div>
 
   <div class="my-5">
-      <%= form.label :start_day, "Choose a date", class: "fancy_label" %>
-      <%= form.text_field :start_day, value: params[:start_date].to_date,
+      <%= form.label :day_start, "Choose a start date", class: "fancy_label" %>
+      <%= form.text_field :day_start, value: @day_start,
         data: {
         controller: "flatpickr",
         flatpickr_date_format: "Y-m-d",
-        },
+        }, "data-reservation-target": "day_start", "data-action": "change->reservation#availableCars",
         class: "input_text_field"
       %>
   </div>
 
   <div class="my-5">
-    <%= form.label :time, 'Start Time *', class: "fancy_label" %>
-    <%= time_select 'game', 'game_time', {minute_step: 15, ampm: true} %>
+    <%= form.label :number_of_people_on_trip, 'Number of People on Trip *', class: "fancy_label" %>
+    <%= select_tag :number_of_people_on_trip, options_for_select(@number_of_seats), class: "input_text_field",
+      "data-reservation-target": "number", "data-action": "change->reservation#availableCars" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :available_time, 'Start Time *', class: "fancy_label" %>
-    <%= select_tag "available_time", options_for_select(available_time(params[:start_date].to_date)), class: "input_text_field" %>
+    <%= form.label :time_start, 'Start Time *', class: "fancy_label" %>
+    <%= select_tag "time_start", options_for_select(available_time(@day_start)), class: "input_text_field",
+      "data-reservation-target": "time_start", "data-action": "change->reservation#availableCars" %>
   </div>
 
   <div class="my-5">
-    <%= form.label :start_time, 'Start Date and Time *', class: "fancy_label" %>
-    <%= form.datetime_field :start_time, class: "input_text_field" %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :end_time, 'End Date and Time  *', class: "fancy_label" %>
-    <%= form.datetime_field :end_time, class: "input_text_field" %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :recurring %>
-    <%= form.text_field :recurring, class: "input_text_field" %>
+    <%= form.label :time_end, 'End Time *', class: "fancy_label" %>
+    <%= select_tag "time_end", options_for_select(available_time(@day_start)), class: "input_text_field",
+      "data-reservation-target": "time_end", "data-action": "change->reservation#availableCars" %>
   </div>
 
   <%= form.hidden_field :reserved_by, value: current_user.id %>
@@ -75,7 +68,7 @@
   </p>
 
   <div class="inline">
-    <%= form.submit class: "primary_button" %>
+    <%= form.submit "Next", class: "primary_button" %>
   </div>
 
   <%= link_to reservations_path do %>
