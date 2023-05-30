@@ -22,7 +22,9 @@ Rails.application.routes.draw do
   # get '/vehicle_reports/:reports_ids', to: 'vehicle_reports#index', as: 'vehicle_reports'
 
   resources :reservations
-  get '/get_available_cars/:day_start/:number/:time_start/:time_end(.:format)', to: 'reservations#get_available_cars', as: 'get_available_cars'
+  get '/reservations/get_available_cars/:day_start/:number/:time_start/:time_end', to: 'reservations#get_available_cars'
+  get '/reservations/add_passengers/:id', to: 'reservations#add_passengers', as: :add_passengers
+  delete 'reservations/:id/:student_id', to: 'reservations#remove_passenger', as: :remove_passenger
 
   resources :cars do
     resources :notes, module: :cars
@@ -37,6 +39,9 @@ Rails.application.routes.draw do
   end
   get '/programs/sites/edit_program_sites/:program_id', to: 'programs/sites#edit_program_sites', as: :edit_program_sites
   delete 'programs/sites/:program_id/:id', to: 'programs/sites#remove_site_from_program', as: :remove_site_from_program
+  get '/programs/get_programs_list/:unit_id/:term_id', to: 'programs#get_programs_list'
+  get '/programs/get_students_list/:program_id', to: 'programs#get_students_list'
+  get '/programs/get_sites_list/:program_id', to: 'programs#get_sites_list'
 
   resources :programs do
     resources :managers, module: :programs, only: [ :new, :create ]
