@@ -1,13 +1,11 @@
 <div class="lg:flex justify-between">
-  <h1>New Reservation
-    <%= show_date(@start_date) %>
-  </h1>
+  <h1>New Reservation</h1>
 </div>
 
 <%= render 'form', reservation: @reservation %>
 
 <div>
   <%= turbo_frame_tag "available_cars" do %>
-    <%= render "available_cars", locals: { date: @start_date } %>
+    <%= render "available_cars", locals: { date: @day_start } %>
   <% end %>
 </div>
