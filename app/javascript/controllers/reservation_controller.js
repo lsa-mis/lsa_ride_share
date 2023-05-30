@@ -170,7 +170,7 @@ export default class extends Controller {
     console.log(time_start)
     console.log(time_end)
 
-    get(`/get_available_cars/${day_start}/${number}/${time_start}/${time_end}`, {
+    get(`/reservations/get_available_cars/${day_start}/${number}/${time_start}/${time_end}`, {
       responseKind: "turbo-stream"
     })
   }
