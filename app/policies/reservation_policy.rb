@@ -30,4 +30,12 @@ class ReservationPolicy < ApplicationPolicy
     create?
   end
 
+  def add_passengers?
+    update?
+  end
+
+  def remove_passenger?
+    update?
+  end
+
 end
