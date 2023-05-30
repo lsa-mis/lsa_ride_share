@@ -26,4 +26,8 @@ class ReservationPolicy < ApplicationPolicy
     update?
   end
 
+  def get_available_cars?
+    create?
+  end
+
 end
