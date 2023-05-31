@@ -1,0 +1,66 @@
+<div class="min-w-full">
+  <table class="mi_table">
+    <thead class="border border-l-0 border-r-0 border-gray-um60">
+      <tr>
+        <th class="header_th">Uniqname</th>
+        <th class="header_th">First Name</th>
+        <th class="header_th">Last Name</th>
+        <th class="header_th"></th>
+        <th class="header_th"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @passengers.each do |passenger| %>
+        <tr class="mi_tbody_tr">
+          <td class="mi_tbody_td">
+            <%= passenger.uniqname %>
+          </td>
+          <td class="mi_tbody_td">
+            <%= passenger.first_name %>
+          </td>
+          <td class="mi_tbody_td">
+            <%= passenger.last_name %>
+          </td>
+          <td class="mi_tbody_td">
+            Passenger
+          </td>
+          <td>
+            <%= link_to 'Remove', remove_passenger_path(@reservation, passenger), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete }, class: "link_to" %>
+          </td>
+        </tr>
+      <% end %>
+      <tr class="mi_tbody_tr">
+        <% if @reservation.driver.present? %>
+          <td class="mi_tbody_td">
+            <%= @reservation.driver.uniqname %>
+          </td>
+          <td class="mi_tbody_td">
+            <%= @reservation.driver.first_name %>
+          </td>
+          <td class="mi_tbody_td">
+            <%= @reservation.driver.last_name %>
+          </td>
+          <td class="mi_tbody_td">
+            Driver
+          </td>
+        <% end %>
+      </tr>
+      <% if @reservation.backup_driver.present? %>
+        <tr class="mi_tbody_tr">
+          <td class="mi_tbody_td">
+            <%= @reservation.backup_driver.uniqname %>
+          </td>
+          <td class="mi_tbody_td">
+            <%= @reservation.backup_driver.first_name %>
+          </td>
+          <td class="mi_tbody_td">
+            <%= @reservation.backup_driver.last_name %>
+          </td>
+          <td class="mi_tbody_td">
+            Backup Driver
+          </td>
+        <% end %>
+      </tr>
+    </tbody>
+  </table>
+</div>
