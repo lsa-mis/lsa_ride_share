@@ -3,7 +3,7 @@ import { get } from "@rails/request.js"
 
 // Connects to data-controller="program"
 export default class extends Controller {
-  static targets = ['form', 'term', 'unit', 'program', 'driver', 'backup_driver', 'site',
+  static targets = ['form', 'term', 'unit', 'program', 'site',
     'day_start', 'number', 'time_start', 'time_end']
   connect() {
     console.log("connect - reservation")
@@ -53,7 +53,7 @@ export default class extends Controller {
       // option.text = data[0].title;
       option.text = this.programTitle(data[0])
       dropdown.add(option);
-      this.setDriversAndSites()
+      this.setSites()
     } else {
       defaultOption.text = 'No programs for this term';
       dropdown.add(defaultOption);
@@ -67,65 +67,6 @@ export default class extends Controller {
     var title = program.title + " - " + program.subject + " " + program.catalog_number
     }
     return title
-  }
-
-  setDriversAndSites() {
-    this.setSites()
-    this.setDrivers()
-    
-  }
-
-  setDrivers() {
-    console.log("set drivers")
-    var program = this.programTarget.value
-    console.log(program)
-    fetch(`/programs/get_students_list/${program}`)
-        .then((response) => response.json())
-        .then((data) => { this.updateDriversSelect(data);
-        this.updateBackupDriversSelect(data);
-    });
-  }
-
-  updateDriversSelect(data) {
-    console.log(data)
-    let dropdown = this.driverTarget;
-    dropdown.length = 0;
-    let defaultOption = document.createElement('option');
-    defaultOption.value = '';
-    if (data.length > 1) {
-      defaultOption.text = 'Select driver...';
-
-      dropdown.add(defaultOption);
-      dropdown.selectedIndex = 0;
-      let option;
-      for (let i = 0; i < data.length; i++) {
-        option = document.createElement('option');
-        option.value = data[i].id;
-        option.text = data[i].uniqname;
-        dropdown.add(option);
-      }
-    }
-  }
-
-  updateBackupDriversSelect(data) {
-    console.log(data)
-    let dropdown = this.backup_driverTarget;
-    dropdown.length = 0;
-    let defaultOption = document.createElement('option');
-    defaultOption.value = '';
-    if (data.length > 1) {
-      defaultOption.text = 'Select driver...';
-
-      dropdown.add(defaultOption);
-      dropdown.selectedIndex = 0;
-      let option;
-      for (let i = 0; i < data.length; i++) {
-        option = document.createElement('option');
-        option.value = data[i].id;
-        option.text = data[i].uniqname;
-        dropdown.add(option);
-      }
-    }
   }
 
   setSites() {
