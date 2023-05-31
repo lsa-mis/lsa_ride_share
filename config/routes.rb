@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   resources :reservations
   get '/reservations/get_available_cars/:day_start/:number/:time_start/:time_end', to: 'reservations#get_available_cars'
   get '/reservations/add_passengers/:id', to: 'reservations#add_passengers', as: :add_passengers
+  get '/reservations/add_drivers/:id', to: 'reservations#add_drivers', as: :add_drivers
   delete 'reservations/:id/:student_id', to: 'reservations#remove_passenger', as: :remove_passenger
 
   resources :cars do
