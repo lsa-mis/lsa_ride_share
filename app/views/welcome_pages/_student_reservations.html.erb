@@ -13,16 +13,16 @@
         <tbody>
           <% @reservations.each do |reservation| %>
             <tr>
-              <% if @student.driver %>
+              <% if reservation.driver == @student %>
                 <td class="mi_tbody_td">
                   <%= link_to 'Driver', reservation_path(reservation), class: "link_to" %>
                 </td>
-              <% elsif @student.backup_driver %>
+              <% elsif reservation.backup_driver == @student %>
                 <td class="mi_tbody_td">
                   Backup Driver
                 </td>
               <% else %>
-                td class="mi_tbody_td">
+                <td class="mi_tbody_td">
                   Passenger
                 </td>
               <% end %>
