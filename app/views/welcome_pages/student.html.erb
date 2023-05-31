@@ -11,7 +11,9 @@
       non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
     </p>
     <div class="my-8">
-      <%= link_to "Reserve Car", new_reservation_path, class: "secondary_blue_button" %>
+      <% if @student.can_reserve_car? %>
+        <%= link_to "Reserve Car", new_reservation_path, class: "secondary_blue_button" %>
+      <% end %>
     </div>
     <div>
       <%= render 'student_reservations' %>

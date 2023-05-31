@@ -8,7 +8,7 @@
 #  first_name                  :string
 #  class_training_date         :date
 #  canvas_course_complete_date :date
-#  meeting_with_admin_date     :string
+#  meeting_with_admin_date     :date
 #  updated_by                  :integer
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
@@ -45,6 +45,10 @@ class Student < ApplicationRecord
 
   def name
     "#{self.first_name} #{self.last_name}" 
+  end
+
+  def can_reserve_car?
+    self.mvr_status.present? && self.mvr_status.include?("Approved") && self.canvas_course_complete_date.present? && self.meeting_with_admin_date.present?
   end
 
 end
