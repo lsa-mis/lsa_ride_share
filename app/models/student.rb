@@ -42,4 +42,9 @@ class Student < ApplicationRecord
   def display_name
     "#{self.first_name} #{self.last_name} - #{self.uniqname}" 
   end
+
+  def name
+    "#{self.first_name} #{self.last_name}" 
+  end
+
 end

@@ -97,6 +97,10 @@ module ApplicationHelper
   def is_manager?(user)
     Program.all.map { |p| p.all_managers.include?(user.uniqname) }.any?
   end
+
+  def is_sudent?(user)
+    Student.where(uniqname: user.uniqname, program: Program.current_term).present?
+  end
   
   def render_flash_stream
     turbo_stream.update "flash", partial: "layouts/notification"

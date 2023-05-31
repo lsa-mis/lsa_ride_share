@@ -1,0 +1,59 @@
+<div class="container px-1 mb-20" data-controller='autosubmit'>
+  <h1 class="m-4">Welcome <%= @student.name %></h1>
+  <h2 class="m-4">Program - <%= @program.display_name_with_title %></h2>
+  <div class="grid grid-cols-4 gap-2">
+  <div class="col-span-3">
+    <p class="body-sm-text">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut 
+      labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco 
+      laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in 
+      voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat 
+      non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+    </p>
+    <div class="my-8">
+      <%= link_to "Reserve Car", new_reservation_path, class: "secondary_blue_button" %>
+    </div>
+    <div>
+      <%= render 'student_reservations' %>
+    </div>
+  </div>
+  <div class="col-span-1 bg-white rounded-lg shadow-md divide-y divide-gray-400 px-2 place-items-stretch bg-white border border-gray-300 rounded-lg">
+    Things to complete
+    <div class="py-2">
+      <label class="body-sm-bold-text">
+        Mvr Status:
+      </label>
+      <p class="body-sm-text ml-2">
+        <%= @student.mvr_status %>
+      </p>
+    </div>
+
+    <div class="py-2">
+      <label class="body-sm-bold-text">
+        Canvas Course Complete Date:
+      </label>
+      <p class="body-sm-text ml-2">
+        Completed <%= show_date(@student.canvas_course_complete_date) %>
+      </p>
+    </div>
+
+    <div class="py-2">
+      <label class="body-sm-bold-text">
+        Class Training Date:
+      </label>
+      <p class="body-sm-text ml-2">
+        Completed <%= show_date(@student.class_training_date) %>
+      </p>
+    </div>
+
+    <div class="py-2">
+      <label class="body-sm-bold-text">
+        Meeting with Admin Date:
+      </label>
+      <p class="body-sm-text ml-2">
+        Completed <%= show_date(@student.meeting_with_admin_date) %>
+      </p>
+    </div>
+  </div>
+
+</div>
