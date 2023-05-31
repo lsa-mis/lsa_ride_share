@@ -3,9 +3,16 @@ class WelcomePagesController < ApplicationController
 
   def student
     user = User.second
-    @student = Student.find_by(uniqname: user.uniqname, program: Program.current_term)
-    @program = @student.program
-    @reservations = @student.reservations
+    @students = Student.where(uniqname: user.uniqname, program: Program.current_term)
+    if @students.count > 1
+      @students.each do |student|
+        
+      end
+    else 
+      @student = @students[0]
+      @program = @student.program
+      @reservations = @student.reservations
+    end
     authorize :welcome_page
   end
 end
