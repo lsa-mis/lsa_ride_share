@@ -32,7 +32,7 @@ class Student < ApplicationRecord
   end
 
   def passenger
-    Reservation.with_passengers.where(reservation_passengers: [self])
+    Reservation.joins(:passengers).where('reservation_passengers.student_id = ?', self)
   end
 
   def reservations
