@@ -1,42 +1,77 @@
-<div id="<%= dom_id reservation %>">
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Status:</strong>
-    <%= reservation.status %>
-  </p>
+<div class="mt-2">
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Start date:</strong>
-    <%= reservation.start_time %>
-  </p>
+  <div class="py-2">
+    <label class="body-lg-bold-text">
+      Site:
+    </label>
+    <p class="body-lg-text ml-2 inline-block">
+      <%= reservation.site.title %>
+    </p>
+  </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">End date:</strong>
-    <%= reservation.end_time %>
-  </p>
+  <div class="py-2">
+    <label class="body-lg-bold-text">
+      Start time:
+    </label>
+    <p class="body-lg-text ml-2 inline-block">
+      <%= reservation.start_time %>
+    </p>
+  </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Recurring:</strong>
-    <%= reservation.recurring %>
-  </p>
+  <div class="py-2">
+    <label class="body-lg-bold-text">
+      End time:
+    </label>
+    <p class="body-lg-text ml-2 inline-block">
+      <%= reservation.end_time %>
+    </p>
+  </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Driver phone:</strong>
-    <%= reservation.driver_phone %>
-  </p>
+  <div class="py-2">
+    <label class="body-lg-bold-text">
+      Driver:
+    </label>
+    <p class="body-lg-text ml-2 inline-block">
+      <%= reservation.driver.display_name %>
+    </p>
+  </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Backup driver phone:</strong>
-    <%= reservation.backup_driver_phone %>
-  </p>
+  <div class="py-2">
+    <label class="body-lg-bold-text">
+      Driver phone:
+    </label>
+    <p class="body-lg-text ml-2 inline-block">
+      <%= reservation.driver_phone %>
+    </p>
+  </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Number of people on trip:</strong>
-    <%= reservation.number_of_people_on_trip %>
-  </p>
+  <% if reservation.backup_driver.present? %>
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Driver:
+      </label>
+      <p class="body-lg-text ml-2 inline-block">
+        <%= reservation.backup_driver.display_name %>
+      </p>
+    </div>
 
-  <% if action_name != "show" %>
-    <%= link_to "Show this reservation", reservation, class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-    <%= link_to 'Edit this reservation', edit_reservation_path(reservation), class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
-    <hr class="mt-6">
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Backup driver phone:
+      </label>
+      <p class="body-lg-text ml-2 inline-block">
+        <%= reservation.backup_driver_phone %>
+      </p>
+    </div>
   <% end %>
+
+  <div class="py-2">
+    <label class="body-lg-bold-text">
+      Number of people on trip:
+    </label>
+    <p class="body-lg-text ml-2 inline-block">
+      <%= reservation.number_of_people_on_trip %>
+    </p>
+  </div>
+
 </div>
