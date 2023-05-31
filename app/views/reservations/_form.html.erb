@@ -3,7 +3,6 @@
   <% if reservation.errors.any? %>
     <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
       <h2><%= pluralize(reservation.errors.count, "error") %> prohibited this reservation from being saved:</h2>
-
       <ul>
         <% reservation.errors.each do |error| %>
           <li><%= error.full_message %></li>
@@ -14,7 +13,6 @@
 
   <% if is_admin?(current_user) && current_user.unit_ids.count > 1 %>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-
       <div>
         <%= form.label :unit_id, 'Unit *', class: "fancy_label" %>
         <%= select_tag "unit_id", options_from_collection_for_select(@units, :id, :name, selected: params[:unit_id]), include_blank: "Select ...", class: "input_text_field",
@@ -82,7 +80,6 @@
 
   <p class="body-text mt-4 mb-2">
     Select a car and click Create Reservation. You can add passengers after submitting the reservation.
-
   </p>
 
   <div class="mb-4">

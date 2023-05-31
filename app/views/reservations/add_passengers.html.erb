@@ -4,14 +4,12 @@
     <%= @reservation.program.unit.name %>
     <%= @reservation.program.display_name_with_title %>
   </h2>
-
   <h3>
     List of Students
   </h3>
   <div class="m-2">
     <%= render "students" %>
   </div>
-
   <h3>
     List of Passengers - Number of People on the Trip <%= @reservation.number_of_people_on_trip %>
   </h3>
@@ -28,7 +26,6 @@
         <% if @reservation.errors.any? %>
           <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
             <h2><%= pluralize(@reservation.errors.count, "error") %> prohibited this reservation from being saved:</h2>
-
             <ul>
               <% @reservation.errors.each do |error| %>
                 <li><%= error.full_message %></li>
@@ -48,7 +45,6 @@
         <div class="inline">
           <%= form.submit class: "primary_button" %>
         </div>
-
         <%= link_to reservations_path do %>
           <span class="tertiary_button">Cancel
           <i class="fa fa-times" aria-hidden="true"></i>

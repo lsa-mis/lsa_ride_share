@@ -1,7 +1,6 @@
 <%= turbo_frame_tag 'new_passenger' do %>
   <%= form_with model: [@reservation], 
     data: { controller: "autosubmit", autosubmit_target: "form" } do |form| %>
-
     <% @students.each do |student| %>
       <div>
         <%= label_tag("student_id_#{student.id}", nil, class: "hidden") %>

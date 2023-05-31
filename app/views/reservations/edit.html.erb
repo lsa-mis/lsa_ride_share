@@ -1,12 +1,9 @@
 <div class="mx-auto w-full">
   <h1>Editing reservation</h1>
-
   <%= render "form", reservation: @reservation %>
-
   <div>
     <%= turbo_frame_tag "available_cars" do %>
       <%= render "available_cars", locals: { date: @day_start } %>
     <% end %>
   </div>
-
 </div>
