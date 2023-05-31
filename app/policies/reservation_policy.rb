@@ -30,6 +30,10 @@ class ReservationPolicy < ApplicationPolicy
     create?
   end
 
+  def add_drivers?
+    update?
+  end
+
   def add_passengers?
     update?
   end
