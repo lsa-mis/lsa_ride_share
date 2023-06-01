@@ -3,7 +3,7 @@ class ProgramsController < ApplicationController
 
   before_action :set_program, except: %i[ index new create]
   before_action :set_units
-  before_action :set_terms, only: %i[ duplicate new edit ]
+  before_action :set_terms, only: %i[ duplicate new edit create]
 
   include ApplicationHelper
 
