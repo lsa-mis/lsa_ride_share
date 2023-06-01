@@ -98,7 +98,7 @@ module ApplicationHelper
     Program.all.map { |p| p.all_managers.include?(user.uniqname) }.any?
   end
 
-  def is_sudent?(user)
+  def is_student?(user)
     Student.where(uniqname: user.uniqname, program: Program.current_term).present?
   end
   

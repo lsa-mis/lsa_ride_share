@@ -1,10 +1,17 @@
 <div class="container px-1 mb-20" data-controller='autosubmit'>
-  <h1 class="m-4">Welcome <%= @student.name %></h1>
-  <h2 class="m-4">Program - <%= @program.display_name_with_title %></h2>
-  <div>
-    <% if 
+  <h1 class="m-4">Welcome <%= @user.display_name %></h1>
+  <div class="my-4">
+    <%= form_with url: welcome_pages_student_path, method: :get, class: "", data: { autosubmit_target: "form", turbo_frame: "turbo-programs" } do |form| %>
+      <% if @students.count > 1 %>
+        <div class="">
+          <label for="student_id" class="fancy_label">Select a Program</label>
+          <%= form.select "student_id", options_for_select(@students_data, selected: params[:student_id]), {include_blank: "All Programs"}, {class: "filter_select w-1/2",
+            :"data-action" => "change->autosubmit#search"} %>
+        </div>
+      <% end %>
+    <% end %>
   </div>
-  <div class="grid grid-cols-4 gap-2">
+  <div class="grid md:grid-cols-4 gap-2">
   <div class="col-span-3">
     <p class="body-sm-text">
       Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut 
@@ -14,51 +21,66 @@
       non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
     </p>
     <div class="my-8">
-      <% if @student.can_reserve_car? %>
-        <%= link_to "Reserve Car", new_reservation_path, class: "secondary_blue_button" %>
+      <% if @student.present? %>
+        <%= link_to "Reserve Car", new_reservation_path, class: "secondary_blue_button" if @student.can_reserve_car? %>
       <% end %>
     </div>
+    <% if @program.present? %>
+      <h2 class="m-4">Program - <%= @program.display_name_with_title %></h2>
+     <% end %>
     <div>
-      <%= render 'student_reservations' %>
+      <% if @reservations.present? %>
+        <%= render 'student_reservations' %>
+      <% end %>
     </div>
   </div>
   <div class="col-span-1 bg-white rounded-lg shadow-md divide-y divide-gray-400 px-2 place-items-stretch bg-white border border-gray-300 rounded-lg">
     Things to complete
-    <div class="py-2">
-      <label class="body-sm-bold-text">
-        Mvr Status:
-      </label>
-      <p class="body-sm-text ml-2">
-        <%= @student.mvr_status %>
-      </p>
-    </div>
+    <% if @student.present? %>
+      <div class="py-2">
+        <label class="body-sm-bold-text">
+          Mvr Status:
+        </label>
+        <p class="body-sm-text ml-2">
+          <% if @student.mvr_status.present? %>
+            <%= @student.mvr_status %>
+          <% else %>
+            Get your <%= link_to 'license approved', 'https://ltp.fo.umich.edu/mvr/index.php', class: "link_to" %> 
+          <% end %>
+        </p>
+      </div>
 
-    <div class="py-2">
-      <label class="body-sm-bold-text">
-        Canvas Course Complete Date:
-      </label>
-      <p class="body-sm-text ml-2">
-        Completed <%= show_date(@student.canvas_course_complete_date) %>
-      </p>
-    </div>
+      <div class="py-2">
+        <label class="body-sm-bold-text">
+          Canvas Course Complete Date:
+        </label>
+        <p class="body-sm-text ml-2">
+        <% if @student.canvas_course_complete_date.present? %>
+          Completed <%= show_date(@student.canvas_course_complete_date) %>
+          <% else %>
+            Take <%= link_to 'Canvas Course', @student.program.canvas_link, :target => "_blank", class: "link_to" %>
+          <% end %>
+        </p>
+      </div>
 
-    <div class="py-2">
-      <label class="body-sm-bold-text">
-        Class Training Date:
-      </label>
-      <p class="body-sm-text ml-2">
-        Completed <%= show_date(@student.class_training_date) %>
-      </p>
-    </div>
+      <div class="py-2">
+        <label class="body-sm-bold-text">
+          Class Training Date:
+        </label>
+        <p class="body-sm-text ml-2">
+          Completed <%= show_date(@student.class_training_date) %>
+        </p>
+      </div>
 
-    <div class="py-2">
-      <label class="body-sm-bold-text">
-        Meeting with Admin Date:
-      </label>
-      <p class="body-sm-text ml-2">
-        Completed <%= show_date(@student.meeting_with_admin_date) %>
-      </p>
-    </div>
+      <div class="py-2">
+        <label class="body-sm-bold-text">
+          Meeting with Admin Date:
+        </label>
+        <p class="body-sm-text ml-2">
+          Completed <%= show_date(@student.meeting_with_admin_date) %>
+        </p>
+      </div>
+    <% end %>
   </div>
 
 </div>
