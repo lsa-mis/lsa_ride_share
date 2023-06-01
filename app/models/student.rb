@@ -19,7 +19,7 @@ class Student < ApplicationRecord
   belongs_to :program
   has_many :reservation_passengers
   has_many :passengers, through: :reservation_passengers, source: :reservation
-  has_rich_text :note
+  has_many :notes, as: :noteable
 
   validates :uniqname, uniqueness: { scope: :program, message: "is already in the program list" }
 
@@ -37,5 +37,9 @@ class Student < ApplicationRecord
 
   def reservations
     driver + backup_driver + passenger
+  end
+
+  def display_name
+    "#{self.first_name} #{self.last_name} - #{self.uniqname}" 
   end
 end

@@ -1,37 +1,44 @@
-<div id="<%= dom_id student %>">
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Uniqname:</strong>
-    <%= student.uniqname %>
-  </p>
+<%= turbo_frame_tag "#{dom_id student}" do %>
+  <div class="mt-2">
+    <p class="body-bold-text">
+      <%= student.display_name %>
+    </p>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Last name:</strong>
-    <%= student.last_name %>
-  </p>
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Mvr Status:
+      </label>
+      <p class="body-lg-text ml-2 inline-block">
+        <%= student.mvr_status %>
+      </p>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">First name:</strong>
-    <%= student.first_name %>
-  </p>
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Canvas Course Complete Date:
+      </label>
+      <p class="body-lg-text ml-2 inline-block">
+        <%= show_date(student.canvas_course_complete_date) %>
+      </p>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Mvr expiration date:</strong>
-    <%= student.mvr_status %>
-  </p>
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Class Training Date:
+      </label>
+      <p class="body-lg-text ml-2 inline-block">
+        <%= show_date(student.class_training_date) %>
+      </p>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Class training date:</strong>
-    <%= student.class_training_date %>
-  </p>
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Meeting with Admin Date:
+      </label>
+      <p class="body-lg-text ml-2 inline-block">
+        <%= show_date(student.meeting_with_admin_date) %>
+      </p>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Canvas course complete date:</strong>
-    <%= student.canvas_course_complete_date %>
-  </p>
-
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Meeting with admin date:</strong>
-    <%= student.meeting_with_admin_date %>
-  </p>
-
-</div>
+  </div>
+<% end %>

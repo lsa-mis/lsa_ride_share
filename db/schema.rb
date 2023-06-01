@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_16_182826) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_26_140558) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -195,7 +195,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_16_182826) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "reserved_by"
-    t.text "non_uofm_passengers"
     t.index ["backup_driver_id"], name: "index_reservations_on_backup_driver_id"
     t.index ["car_id"], name: "index_reservations_on_car_id"
     t.index ["driver_id"], name: "index_reservations_on_driver_id"
@@ -223,12 +222,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_16_182826) do
     t.string "first_name"
     t.date "class_training_date"
     t.date "canvas_course_complete_date"
-    t.string "meeting_with_admin_date"
     t.integer "updated_by"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "mvr_status"
     t.bigint "program_id"
+    t.date "meeting_with_admin_date"
     t.index ["program_id"], name: "index_students_on_program_id"
   end
 

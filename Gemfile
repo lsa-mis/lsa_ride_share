@@ -56,6 +56,8 @@ gem "bootsnap", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 gem "image_processing", "~> 1.2"
 
+gem 'letter_opener_web'
+
 # Use OmniAuth gems to implement Shibboleth SAML authentication
 gem 'omniauth-saml', '~> 2.1'
 gem "omniauth-rails_csrf_protection"
@@ -75,6 +77,5 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem 'annotate', '~> 3.2'
-  gem 'letter_opener_web', '~> 2.0'
   gem "web-console"
 end

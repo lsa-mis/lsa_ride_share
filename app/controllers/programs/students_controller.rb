@@ -1,6 +1,6 @@
 class Programs::StudentsController < ApplicationController
   before_action :auth_user
-  before_action :set_student, only: %i[ show destroy]
+  before_action :set_student, only: %i[ show edit update destroy update_student_mvr_status student_canvas_result]
   before_action :set_student_program
   include StudentApi
 
@@ -64,6 +64,25 @@ class Programs::StudentsController < ApplicationController
   def show
   end
 
+  def edit
+  end
+
+  def update
+    if @student.update(student_params)
+      redirect_to program_student_path(@student_program, @student), notice: "The student record was updated."
+    else
+      render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def update_student_mvr_status
+    status = mvr_status(@student.uniqname)
+    unless @student.update(mvr_status: status)
+      redirect_to program_student_path(@student_program, @student), alert: "Error updating student record."
+    end
+    flash.now[:notice] = "MVR status is updated."
+  end
+
   def update_mvr_status
     @student_program.students.each do |student|
       status = mvr_status(student.uniqname)
@@ -74,6 +93,31 @@ class Programs::StudentsController < ApplicationController
     flash.now[:notice] = "MVR status is updated."
     @students = @student_program.students.order(:last_name)
     authorize @students
+  end
+
+  def student_canvas_result
+    scope = "canvasreadonly"
+    token = get_auth_token(scope)
+    if token['success']
+      result = canvas_readonly(@student_program.canvas_course_id, token['access_token'])
+    else
+      flash.now[:alert] = token['error']
+      return
+    end
+    if result['success']
+      students_with_good_score = result['data']
+      uniqnames = students_with_good_score.keys
+      if uniqnames.include?(@student.uniqname)
+        unless @student.update(canvas_course_complete_date: students_with_good_score[@student.uniqname])
+          redirect_to program_student_path(@student_program, @student), alert: "Error updating student record."
+        end
+        flash.now[:notice] = "Student pass the course."
+      else
+        flash.now[:notice] = "Student did not pass the course."
+      end
+    else
+      flash.now[:alert] = result['error']
+    end
   end
 
   def canvas_results
@@ -115,6 +159,7 @@ class Programs::StudentsController < ApplicationController
 
     def set_student
       @student = Student.find(params[:id])
+      authorize @student
     end
 
     # Only allow a list of trusted parameters through.

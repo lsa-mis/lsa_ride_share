@@ -7,8 +7,8 @@
 #  program_id               :bigint           not null
 #  site_id                  :bigint           not null
 #  car_id                   :bigint
-#  start_date               :datetime
-#  end_date                 :datetime
+#  start_time               :datetime
+#  end_time                 :datetime
 #  recurring                :string
 #  driver_id                :bigint
 #  driver_phone             :string
@@ -35,8 +35,8 @@ class Reservation < ApplicationRecord
   scope :with_passengers, -> { Reservation.includes(:passengers) }
 
   def reservation_date
-    start_d = start_date.present? ? start_date.strftime("%m/%d/%Y %I:%M%p") : ''
-    end_d = end_date.present? ? end_date.strftime("%m/%d/%Y %I:%M%p") : ''
+    start_d = start_time.present? ? start_time.strftime("%m/%d/%Y %I:%M%p") : ''
+    end_d = end_time.present? ? end_time.strftime("%m/%d/%Y %I:%M%p") : ''
     "#{start_d} - #{end_d}"
   end
 
