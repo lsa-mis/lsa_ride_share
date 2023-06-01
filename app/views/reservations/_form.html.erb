@@ -67,13 +67,13 @@
 
     <div>
       <%= form.label :time_start, 'Start Time *', class: "fancy_label" %>
-      <%= select_tag "time_start", options_for_select(available_time(@day_start)), class: "input_text_field",
+      <%= select_tag "time_start", options_for_select(available_time(@day_start, @cars)[:begin]), class: "input_text_field",
         "data-reservation-target": "time_start", "data-action": "change->reservation#availableCars" %>
     </div>
 
     <div>
       <%= form.label :time_end, 'End Time *', class: "fancy_label" %>
-      <%= select_tag "time_end", options_for_select(available_time(@day_start)), class: "input_text_field",
+      <%= select_tag "time_end", options_for_select(available_time(@day_start, @cars)[:end]), class: "input_text_field",
         "data-reservation-target": "time_end", "data-action": "change->reservation#availableCars" %>
     </div>
   </div>

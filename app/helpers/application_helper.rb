@@ -147,29 +147,32 @@ module ApplicationHelper
     end
   end
 
-  def available_time(day)
+  def available_time(day, cars)
     # array of time with 15 minutes step available to reserve cars
     day_begin = DateTime.new(day.year, day.month, day.day, 8, 0, 0, 'EDT')
     day_end = DateTime.new(day.year, day.month, day.day, 17, 0, 0, 'EDT')
     day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) } 
-    all_cars = Car.all
-    available_times = []
+    cars = Car.all
+    available_times_begin = []
+    available_times_end = []
     day_reservations = Reservation.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day).order(:start_time)
     if day_reservations.present?
       day_times_with_15_min_steps.each do |step|
         range = step..step + 15.minutes
-        all_cars.each do |car|
+        cars.each do |car|
           if available?(car, range)
-            available_times << show_time(step)
-            available_times << show_time(step  + 15.minutes)
+            available_times_begin << show_time(step)
+            available_times_end << show_time(step  + 15.minutes)
             break
           end
         end
       end
-      available_times = available_times.uniq
     else
       available_times = day_times_with_15_min_steps.map { |t| show_time(t) }
+      available_times_begin = available_times.shift
+      available_times_end = available_times.pop
     end
+    available_times = {:begin=>available_times_begin, :end=>available_times_end}
     return available_times
   end
 
