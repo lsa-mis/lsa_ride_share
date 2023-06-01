@@ -63,6 +63,8 @@ gem 'omniauth-saml', '~> 2.1'
 gem "omniauth-rails_csrf_protection"
 gem 'ldap_lookup', '~> 0.1.6'
 gem 'pundit', '~> 2.3'
+gem 'simple_calendar', '~> 2.4', '>= 2.4.3'
+gem 'requestjs-rails', '~> 0.0.10'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
