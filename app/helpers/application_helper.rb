@@ -152,7 +152,6 @@ module ApplicationHelper
     day_begin = DateTime.new(day.year, day.month, day.day, 8, 0, 0, 'EDT')
     day_end = DateTime.new(day.year, day.month, day.day, 17, 0, 0, 'EDT')
     day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) } 
-    cars = Car.all
     available_times_begin = []
     available_times_end = []
     day_reservations = Reservation.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day).order(:start_time)
@@ -168,9 +167,10 @@ module ApplicationHelper
         end
       end
     else
-      available_times = day_times_with_15_min_steps.map { |t| show_time(t) }
-      available_times_begin = available_times.shift
-      available_times_end = available_times.pop
+      available_times_begin = day_times_with_15_min_steps.map { |t| show_time(t) }
+      available_times_begin.pop
+      available_times_end = day_times_with_15_min_steps.map { |t| show_time(t) }
+      available_times_end.shift
     end
     available_times = {:begin=>available_times_begin, :end=>available_times_end}
     return available_times
