@@ -97,6 +97,95 @@ module ApplicationHelper
   def is_manager?(user)
     Program.all.map { |p| p.all_managers.include?(user.uniqname) }.any?
   end
+
+  def available_ranges(car, day)
+    # time renges when the car is available on the day
+    car_available = []
+    day_begin = DateTime.new(day.year, day.month, day.day, 8, 0, 0, 'EDT')
+    day_end = DateTime.new(day.year, day.month, day.day, 17, 0, 0, 'EDT')
+    space_begin = day_begin
+    car_day_reserv = car.reservations.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day).order(:start_time)
+    if car_day_reserv.present?
+      day_ranges = car_day_reserv.map { |res| res.start_time..res.end_time }
+      day_ranges.each do |range|
+        if space_begin == range.begin
+          space_begin = range.end
+        elsif space_begin < range.begin
+          r = space_begin..range.begin
+          car_available << show_time_range(r)
+          space_begin = range.end
+        end
+      end
+      if space_begin < day_end
+        r = space_begin..day_end
+        car_available << show_time_range(r)
+      end
+    else
+      r = day_begin..day_end
+      car_available << show_time_range(r)
+    end
+    return car_available
+  end
+
+  def show_time_range(day_range)
+    "#{day_range.begin.strftime("%I:%M%p")} - #{day_range.end.strftime("%I:%M%p")}"
+  end
+
+  def show_time(time)
+    "#{time.strftime("%I:%M%p")}"
+  end
+
+  def available?(car, range)
+    day = range.begin.to_date
+    day_reservations = car.reservations.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day).order(:start_time)
+    return true unless day_reservations.present?
+    car_ranges = day_reservations.map { |res| res.start_time..res.end_time }
+    if car_ranges.any? { |r| r.cover?(range)}
+      return false
+    else
+      return true
+    end
+  end
+
+  def available_time(day, cars)
+    # array of time with 15 minutes step available to reserve cars
+    day_begin = DateTime.new(day.year, day.month, day.day, 8, 0, 0, 'EDT')
+    day_end = DateTime.new(day.year, day.month, day.day, 17, 0, 0, 'EDT')
+    day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) } 
+    available_times_begin = []
+    available_times_end = []
+    day_reservations = Reservation.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day).order(:start_time)
+    if day_reservations.present?
+      day_times_with_15_min_steps.each do |step|
+        range = step..step + 15.minutes
+        cars.each do |car|
+          if available?(car, range)
+            available_times_begin << show_time(step)
+            available_times_end << show_time(step  + 15.minutes)
+            break
+          end
+        end
+      end
+    else
+      available_times_begin = day_times_with_15_min_steps.map { |t| show_time(t) }
+      available_times_begin.pop
+      available_times_end = day_times_with_15_min_steps.map { |t| show_time(t) }
+      available_times_end.shift
+    end
+    available_times = {:begin=>available_times_begin, :end=>available_times_end}
+    return available_times
+  end
+
+  def available_cars(cars, range)
+    available = []
+    day = range.begin.to_date
+    cars.each do |car|
+      if available?(car, range)
+        available << car
+      end
+    end
+    return available
+  end
   
   def render_flash_stream
     turbo_stream.update "flash", partial: "layouts/notification"

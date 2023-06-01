@@ -23,6 +23,8 @@ class Student < ApplicationRecord
 
   validates :uniqname, uniqueness: { scope: :program, message: "is already in the program list" }
 
+  scope :eligible_drivers, -> { where.not(class_training_date: nil) }
+
   def driver
     Reservation.where(driver: self)
   end
