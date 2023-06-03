@@ -6,7 +6,15 @@ class ReservationsController < ApplicationController
 
   # GET /reservations or /reservations.json
   def index
-    @reservations = Reservation.all
+    if current_user.unit_ids.count == 1
+      @unit_id = current_user.unit_ids[0]
+      @reservations = Reservation.where(program: Program.where(unit_id: @unit_id))
+    elsif params[:unit_id].present?
+      @unit_id = params[:unit_id]
+      @reservations = Reservation.where(program: Program.where(unit_id: @unit_id))
+    else
+      @reservations = Reservation.all
+    end
     authorize @reservations
   end
 
@@ -16,6 +24,7 @@ class ReservationsController < ApplicationController
 
   # GET /reservations/new
   def new
+    @unit_id = params[:unit_id].to_i
     if params[:day_start].present?
       @day_start = params[:day_start].to_date
     else
@@ -26,7 +35,7 @@ class ReservationsController < ApplicationController
     @cars = Car.all
     @number_of_seats = 1..Car.maximum(:number_of_seats)
     @reservation = Reservation.new
-    @reservation.start_time = @day_start 
+    @reservation.start_time = @day_start
     authorize @reservation
   end
 
