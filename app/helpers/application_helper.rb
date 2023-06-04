@@ -100,15 +100,10 @@ module ApplicationHelper
 
   def available_ranges(car, day, unit_id)
     # time renges when the car is available on the day
-    t_begin = UnitPreference.find_by(name: "reservation_time_begin", unit_id: unit_id).value
-    t_begin = Time.parse(t_begin).strftime("%H").to_i
-    t_end = UnitPreference.find_by(name: "reservation_time_end", unit_id: unit_id).value
-    t_end = Time.parse(t_end).strftime("%H").to_i
-    day_begin = DateTime.new(day.year, day.month, day.day, t_begin, 0, 0, 'EDT')
-    day_end = DateTime.new(day.year, day.month, day.day, t_end, 0, 0, 'EDT')
+    times = show_time_begin_end(day, unit_id)
+    day_begin  = times[0]
+    day_end  = times[1]
     car_available = []
-    # day_begin = DateTime.new(day.year, day.month, day.day, 8, 0, 0, 'EDT')
-    # day_end = DateTime.new(day.year, day.month, day.day, 17, 0, 0, 'EDT')
     space_begin = day_begin
     car_day_reserv = car.reservations.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day).order(:start_time)
     if car_day_reserv.present?
@@ -133,6 +128,16 @@ module ApplicationHelper
     return car_available
   end
 
+  def show_time_begin_end(day, unit_id)
+    t_begin = UnitPreference.find_by(name: "reservation_time_begin", unit_id: unit_id).value
+    t_begin = Time.parse(t_begin).strftime("%H").to_i
+    t_end = UnitPreference.find_by(name: "reservation_time_end", unit_id: unit_id).value
+    t_end = Time.parse(t_end).strftime("%H").to_i
+    day_begin = DateTime.new(day.year, day.month, day.day, t_begin, 0, 0, 'EDT')
+    day_end = DateTime.new(day.year, day.month, day.day, t_end, 0, 0, 'EDT')
+    return [day_begin, day_end]
+  end
+
   def show_time_range(day_range)
     "#{day_range.begin.strftime("%I:%M%p")} - #{day_range.end.strftime("%I:%M%p")}"
   end
@@ -155,12 +160,9 @@ module ApplicationHelper
 
   def available_time(day, cars, unit_id)
     # array of time with 15 minutes step available to reserve cars
-    t_begin = UnitPreference.find_by(name: "reservation_time_begin", unit_id: unit_id).value
-    t_begin = Time.parse(t_begin).strftime("%H").to_i
-    t_end = UnitPreference.find_by(name: "reservation_time_end", unit_id: unit_id).value
-    t_end = Time.parse(t_end).strftime("%H").to_i
-    day_begin = DateTime.new(day.year, day.month, day.day, t_begin, 0, 0, 'EDT')
-    day_end = DateTime.new(day.year, day.month, day.day, t_end, 0, 0, 'EDT')
+    times = show_time_begin_end(day, unit_id)
+    day_begin  = times[0]
+    day_end  = times[1]
     day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) }
     available_times_begin = []
     available_times_end = []
