@@ -54,25 +54,23 @@
       </p>
     </div>
 
-    <% if reservation.backup_driver.present? %>
-      <div class="py-2">
-        <label class="body-lg-bold-text">
-          Backup Driver:
-        </label>
-        <p class="body-lg-text ml-2 inline-block">
-          <%= show_backup_driver(reservation) %>
-        </p>
-      </div>
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Backup Driver:
+      </label>
+      <p class="body-lg-text ml-2 inline-block">
+        <%= show_backup_driver(reservation) %>
+      </p>
+    </div>
 
-      <div class="py-2">
-        <label class="body-lg-bold-text">
-          Backup driver phone:
-        </label>
-        <p class="body-lg-text ml-2 inline-block">
-          <%= reservation.backup_driver_phone %>
-        </p>
-      </div>
-    <% end %>
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Backup driver phone:
+      </label>
+      <p class="body-lg-text ml-2 inline-block">
+        <%= reservation.backup_driver_phone %>
+      </p>
+    </div>
 
     <div class="py-2">
       <label class="body-lg-bold-text">
