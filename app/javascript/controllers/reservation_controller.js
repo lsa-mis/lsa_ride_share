@@ -102,7 +102,7 @@ export default class extends Controller {
 
   availableCars(){
     console.log("availableCars")
-    var unit_id =this.unitTarget.value
+    var unit_id = this.unitTarget.value
     var day_start = this.day_startTarget.value
     var number = this.numberTarget.value
     var time_start = this.time_startTarget.value
