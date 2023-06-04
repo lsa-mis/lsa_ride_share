@@ -19,7 +19,7 @@ class UnitPreference < ApplicationRecord
   enum :pref_type, [:boolean, :string, :time], prefix: true, scopes: true
 
   validates :name, uniqueness: { scope: :unit_id, message: "should be unique." }
-  validates_presence_of :pref_type
+  validates_presence_of :pref_type, :description
 
   def name=(value)
     super(value.try(:strip))
