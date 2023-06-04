@@ -98,6 +98,22 @@ module ApplicationHelper
     Program.all.map { |p| p.all_managers.include?(user.uniqname) }.any?
   end
 
+  def show_driver(reservation)
+    if reservation.driver.present?
+      reservation.driver.display_name
+    else
+      "No driver selected"
+    end
+  end
+
+  def show_backup_driver(reservation)
+    if reservation.backup_driver.present?
+      reservation.backup_driver.display_name
+    else
+      "No backup driver selected"
+    end
+  end
+
   def available_ranges(car, day)
     # time renges when the car is available on the day
     car_available = []

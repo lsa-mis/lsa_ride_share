@@ -12,6 +12,7 @@ class ReservationsController < ApplicationController
 
   # GET /reservations/1 or /reservations/1.json
   def show
+    @passengers = @reservation.passengers
   end
 
   # GET /reservations/new
