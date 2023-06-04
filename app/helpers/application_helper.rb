@@ -98,11 +98,17 @@ module ApplicationHelper
     Program.all.map { |p| p.all_managers.include?(user.uniqname) }.any?
   end
 
-  def available_ranges(car, day)
+  def available_ranges(car, day, unit_id)
     # time renges when the car is available on the day
+    t_begin = UnitPreference.find_by(name: "reservation_time_begin", unit_id: unit_id).value
+    t_begin = Time.parse(t_begin).strftime("%H").to_i
+    t_end = UnitPreference.find_by(name: "reservation_time_end", unit_id: unit_id).value
+    t_end = Time.parse(t_end).strftime("%H").to_i
+    day_begin = DateTime.new(day.year, day.month, day.day, t_begin, 0, 0, 'EDT')
+    day_end = DateTime.new(day.year, day.month, day.day, t_end, 0, 0, 'EDT')
     car_available = []
-    day_begin = DateTime.new(day.year, day.month, day.day, 8, 0, 0, 'EDT')
-    day_end = DateTime.new(day.year, day.month, day.day, 17, 0, 0, 'EDT')
+    # day_begin = DateTime.new(day.year, day.month, day.day, 8, 0, 0, 'EDT')
+    # day_end = DateTime.new(day.year, day.month, day.day, 17, 0, 0, 'EDT')
     space_begin = day_begin
     car_day_reserv = car.reservations.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day).order(:start_time)
     if car_day_reserv.present?

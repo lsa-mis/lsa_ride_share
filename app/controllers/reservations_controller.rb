@@ -52,6 +52,9 @@ class ReservationsController < ApplicationController
   end
 
   def get_available_cars
+    if params[:unit_id].present?
+      @unit_id = params[:unit_id]
+    end
     if params[:day_start].present?
       @day_start = params[:day_start].to_date
     end
@@ -68,7 +71,7 @@ class ReservationsController < ApplicationController
       @reserv_begin = Time.zone.parse(params[:day_start] + " " + params[:time_start]).to_datetime
       @reserv_end = Time.zone.parse(params[:day_start] + " " + params[:time_end]).to_datetime
       range = @reserv_begin..@reserv_end
-      @cars = available_cars(@cars, range)
+      @cars = available_cars(@cars, range, @unit_id)
     end
     authorize Reservation
   end
