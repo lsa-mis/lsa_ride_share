@@ -24,7 +24,11 @@ class ReservationsController < ApplicationController
 
   # GET /reservations/new
   def new
-    @unit_id = params[:unit_id].to_i
+    if params[:unit_id].present?
+      @unit_id = params[:unit_id]
+    else
+      redirect_to reservations_path, notice: "You must select a unit first."
+    end
     if params[:day_start].present?
       @day_start = params[:day_start].to_date
     else
