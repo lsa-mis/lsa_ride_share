@@ -1,7 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import { get } from "@rails/request.js"
 
-// Connects to data-controller="program"
 export default class extends Controller {
   static targets = ['form', 'term', 'unit', 'program', 'site',
     'day_start', 'number', 'time_start', 'time_end',
@@ -119,13 +118,10 @@ export default class extends Controller {
   }
 
   submitForm(event) {
-    console.log("submit")
     var driver = this.driverTarget.value
     var driver_phone = this.driver_phoneTarget.value
     var backup_driver = this.backup_driverTarget.value
     var backup_driver_phone = this.backup_driver_phoneTarget.value
-    console.log(backup_driver)
-    console.log(backup_driver_phone)
 
     if(driver == "" || driver_phone == "") {
       this.driver_errorTarget.classList.add("fields--display")
@@ -133,7 +129,6 @@ export default class extends Controller {
       const error = document.getElementById("driver_error_text")
       event.preventDefault()
     } else if (backup_driver != "" && backup_driver_phone == "") {
-      console.log("back up")
       this.backup_driver_errorTarget.classList.add("fields--display")
       this.backup_driver_errorTarget.classList.remove("fields--hide")
       const error = document.getElementById("backup_driver_error_text")
