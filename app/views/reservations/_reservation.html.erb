@@ -5,7 +5,7 @@
       Car:
     </label>
     <p class="body-lg-text ml-2 inline-block">
-      <%= reservation.car.car_number %>
+      <%= show_car(reservation) %>
     </p>
   </div>
 
@@ -41,7 +41,7 @@
       Driver:
     </label>
     <p class="body-lg-text ml-2 inline-block">
-      <%= reservation.driver.display_name %>
+      <%= show_driver(reservation) %>
     </p>
   </div>
 
