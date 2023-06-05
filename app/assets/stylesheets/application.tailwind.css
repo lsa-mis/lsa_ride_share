@@ -112,7 +112,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .check_box {
-    @apply w-5 h-5 rounded mr-2 border-blue-umblue text-blue-umblue focus:ring-blue-umblue;
+    @apply w-5 h-5 rounded mr-2 border-blue-umblue text-blue-umblue focus:ring-blue-umblue disabled:border-gray-400;
   }
 
   .check_box_text {
