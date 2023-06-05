@@ -6,6 +6,14 @@ class ReservationPolicy < ApplicationPolicy
     user_in_access_group?
   end
 
+  def week_calendar?
+    user_in_access_group?
+  end
+
+  def cars_reservations?
+    index?
+  end
+
   def show?
     user_in_access_group?
   end

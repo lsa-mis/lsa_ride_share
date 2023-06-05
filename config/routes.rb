@@ -21,6 +21,8 @@ Rails.application.routes.draw do
   resources :vehicle_reports
   # get '/vehicle_reports/:reports_ids', to: 'vehicle_reports#index', as: 'vehicle_reports'
 
+  get '/reservations/cars_reservations', to: 'reservations#cars_reservations', as: 'cars_reservations'
+  get '/reservations/week_calendar/', to: 'reservations#week_calendar', as: 'week_calendar'
   resources :reservations
   get '/reservations/get_available_cars/:day_start/:number/:time_start/:time_end', to: 'reservations#get_available_cars'
   get '/reservations/add_passengers/:id', to: 'reservations#add_passengers', as: :add_passengers

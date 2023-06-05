@@ -1,20 +1,12 @@
 <div class="simple-calendar">
   <div class="calendar-heading">
-    <%= link_to calendar.url_for_previous_view do %>
-      <span class="tertiary_button">
-        <i class="fa-solid fa-less-than" aria-hidden="true"></i>
-        <%= t('simple_calendar.previous', default: Date::MONTHNAMES[start_date.to_date.month - 1]) %>
-      </span>
+    <%= link_to t('simple_calendar.previous', default: 'Previous'), calendar.url_for_previous_view %>
+    <% if calendar.number_of_weeks == 1 %>
+      <span class="calendar-title"><%= t('simple_calendar.week', default: 'Week') %> <%= calendar.week_number %></span>
+    <% else %>
+      <span class="calendar-title"><%= t('simple_calendar.week', default: 'Week') %> <%= calendar.week_number %> - <%= calendar.end_week %></span>
     <% end %>
-    <time datetime="<%= start_date.strftime('%Y-%m') %>" class="calendar-title"><%= t('date.month_names')[start_date.month] %> <%= start_date.year %></time>
-    <%= link_to calendar.url_for_next_view  do %>
-      <span class="tertiary_button">
-        <%= t('simple_calendar.next', default: Date::MONTHNAMES[start_date.to_date.month + 1]) %>
-        <i class="fa-solid fa-greater-than" aria-hidden="true"></i>
-      </span>
-    <% end %>
-
-    <%= link_to 'Today', reservations_path, class: "secondary_yellow_button" %>
+    <%= link_to t('simple_calendar.next', default: 'Next'), calendar.url_for_next_view %>
   </div>
 
   <table class="table table-striped">

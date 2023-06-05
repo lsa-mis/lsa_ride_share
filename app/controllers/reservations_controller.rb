@@ -10,6 +10,25 @@ class ReservationsController < ApplicationController
     authorize @reservations
   end
 
+  def week_calendar
+    unit_id = 3
+    @cars = Car.where(unit_id: unit_id)
+    @date_range = Date.today.beginning_of_week..Date.today.end_of_week
+    @dates = @date_range.to_a
+    @reservations = Reservation.all
+    authorize Reservation
+  end
+
+  def cars_reservations
+    unit_id = 3
+    fail
+    @cars = Car.where(unit_id: unit_is)
+    @date_range = Date.today.beginning_of_week..Date.today.end_of_week
+    @dates = @date_range.to_a
+    @reservations = Reservation.all
+    authorize @reservations
+  end
+
   # GET /reservations/1 or /reservations/1.json
   def show
   end
