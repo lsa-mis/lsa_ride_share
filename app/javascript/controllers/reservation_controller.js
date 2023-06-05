@@ -126,12 +126,12 @@ export default class extends Controller {
     if(driver == "" || driver_phone == "") {
       this.driver_errorTarget.classList.add("fields--display")
       this.driver_errorTarget.classList.remove("fields--hide")
-      const error = document.getElementById("driver_error_text")
       event.preventDefault()
     } else if (backup_driver != "" && backup_driver_phone == "") {
       this.backup_driver_errorTarget.classList.add("fields--display")
       this.backup_driver_errorTarget.classList.remove("fields--hide")
-      const error = document.getElementById("backup_driver_error_text")
+      this.driver_errorTarget.classList.remove("fields--display")
+      this.driver_errorTarget.classList.add("fields--hide")
       event.preventDefault()
     }
     else{
