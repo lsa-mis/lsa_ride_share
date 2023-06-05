@@ -34,6 +34,8 @@ class Car < ApplicationRecord
   
   enum :status, [:available, :unavailable], prefix: true, scopes: true
 
+  scope :data, ->(unit_id) { unit_id.present? ? where(unit_id: unit_id) : all }
+
   def last_vehicle_report
     VehicleReport.where(reservation_id: self.reservations.ids).present? ?
     VehicleReport.where(reservation_id: self.reservations.ids).order(:updated_at).last :
