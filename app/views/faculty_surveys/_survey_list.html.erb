@@ -3,7 +3,8 @@
     <table class="mi_table">
       <thead class="mi_thead">
         <tr>
-          <th class="header_th">Survey Questions</th>
+          <th class="header_th">Questions</th>
+          <th class="header_th">Created At</th>
           <th class="header_th">Title</th>
           <th class="header_th">Instructor Uniqname</th>
           <th class="header_th">Unit</th>
@@ -20,6 +21,9 @@
             <% else %>
               <%= link_to 'Answer the Survey', survey_path(survey), class: "link_to" %>
             <% end %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= show_date(survey.created_at) %>
             </td>
             <td class="mi_tbody_td">
               <%= survey.title %>
