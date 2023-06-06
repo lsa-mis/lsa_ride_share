@@ -1,5 +1,17 @@
 module ApplicationHelper
 
+  def root_path
+    if user_signed_in?
+      if is_student?(current_user)
+        welcome_pages_student_path
+      else
+        all_root_path
+      end
+    else
+      all_root_path
+    end
+  end
+  
   def svg(svg)
     file_path = "app/assets/images/svg/#{svg}.svg"
     return File.read(file_path).html_safe if File.exist?(file_path)
