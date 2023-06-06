@@ -1,9 +1,52 @@
-<div class="w-full">
-  <% if notice.present? %>
-    <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
-  <% end %>
+<div class="container px-1 mb-20" data-controller='autosubmit'>
 
-  <div id="vehicle_reports" class="min-w-full">
-    <%= render @vehicle_reports %>
+  <div class="flex justify-between items-center">
+    <h1>Vehicle reports</h1>
+  </div>
+
+ <div>
+    <%= form_with url: vehicle_reports_path, method: :get, data: { autosubmit_target: "form", turbo_frame: "turbo-vehicle_reports" } do |form| %>
+      <div class="flex gap-2 mb-4">
+        <div class="">
+          <% if Term.current.present? %>
+            <label for="term_id" class="fancy_label">Filter by Term</label>
+            <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: params[:term_id]), include_blank: "Current Term", class: "filter_select w-48",
+              :"data-action" => "change->autosubmit#search" %>
+          <% else %>
+            <label for="term_id" class="fancy_label">Select a Term</label>
+            <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: params[:term_id]), include_blank: "Select ...", class: "filter_select w-48",
+              :"data-action" => "change->autosubmit#search" %>
+          <% end %>
+        </div>
+
+        <% if current_user.unit_ids.count > 1 %>
+          <div class="">
+            <label for="unit_id" class="fancy_label">Select a Unit</label>
+            <%= select_tag "unit_id", options_from_collection_for_select(@units, :id, :name, selected: params[:unit_id]), include_blank: "All Units", class: "filter_select w-48",
+              :"data-action" => "change->autosubmit#search" %>
+          </div>
+        <% end %>
+
+        <% if Car.present? %>
+          <div class="">
+            <label for="car_id" class="fancy_label">Filter by Car</label>
+            <%= select_tag "car_id", options_from_collection_for_select(@cars, :id, :car_number, selected: params[:car_id]), include_blank: "Select ...", class: "filter_select w-48",
+              :"data-action" => "change->autosubmit#search" %>
+          </div>
+        <% end %>
+
+      </div>
+
+      <div>
+        <%= turbo_frame_tag "turbo-vehicle_reports" do %>
+          <div id="maincontent"></div>
+            <div class="mb-10" id="vehicle_reports_listing">
+              <div id="vehicle_reports" class="min-w-full">
+                <%= render 'vehicle_reports_list' %>
+             </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
   </div>
 </div>

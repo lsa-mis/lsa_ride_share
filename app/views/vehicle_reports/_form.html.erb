@@ -1,7 +1,8 @@
 <%= form_with(model: vehicle_report, class: "contents") do |form| %>
+
   <% if vehicle_report.errors.any? %>
     <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
-      <h2><%= pluralize(vehicle_report.errors.count, "error") %> prohibited this vehicle_report from being saved:</h2>
+      <h2><%= pluralize(vehicle_report.errors.count, "error") %> prohibited this vehicle_report from being saved: </h2>
 
       <ul>
         <% vehicle_report.errors.each do |error| %>
@@ -11,52 +12,237 @@
     </div>
   <% end %>
 
-  <div class="my-5">
-    <%= form.label :reservation_id %>
-    <%= form.text_field :reservation_id, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  <div class="grid grid-cols-1 sm:grid-cols-2">
+    <div>
+
+    <h2>ADMINS WILL NEED TO DECIDE WHAT GOES HERE - Car: 
+      <%= @reservation.car.car_number + " - " + @reservation.program.title %>
+    </h2>
+
+    <h3>
+      Reservation status:
+      <% if @vehicle_report.student_status %>
+      complete
+      <% else %>
+        not complete
+      <% end %>
+    </h3>
+
+
+    <%= form.hidden_field :reservation_id, value: @reservation.id %>
+
+      <div class="my-5">
+          <%= form.label :mileage_start, class: "fancy_label"  %>
+          <%= form.text_field :mileage_start, required: true, class: "input_text_field" %>
+      </div>
+
+      <div class="my-5">
+        <%= form.label :mileage_end, class: "fancy_label" %>
+        <%= form.text_field :mileage_end, class: "input_text_field" %>
+      </div>
+
+      <div class="my-5">
+        <%= form.label :gas_start, class: "fancy_label"  %>
+        <%= form.text_field :gas_start, required: true, class: "input_text_field" %>
+      </div>
+
+      <div class="my-5">
+        <%= form.label :gas_end, class: "fancy_label"  %>
+        <%= form.text_field :gas_end, class: "input_text_field" %>
+      </div>
+
+      <div class="my-5">
+        <%= form.label :parking_spot, class: "fancy_label"  %>
+        <%= form.text_field :parking_spot, class: "input_text_field" %>
+      </div>
+
+      <div class="my-5">
+        <%= form.label :status, class: "fancy_label"  %>
+      </div>
+        </div>
+
+    <div class="m-4 py-5">
+
+    <div class="mb-4 text-1xl font-bold text-gray-900">Images (jpg, png)</div>
+      <% if @reservation.program.pictures_required_start %>
+        <div class="grid grid-cols-5 gap-3">
+          <div class="">
+              <% if @vehicle_report.image_front_start.attached? %>
+                <div class="sm:col-span-3">
+                  <%= link_to @vehicle_report.image_front_start.filename, url_for(@vehicle_report.image_front_start), target: "_blank" %>
+                  <%= image_tag @vehicle_report.image_front_start.variant(:thumb), alt: 'Front of car (start)', class: "object-cover group-hover:opacity-75" %>
+                </div>
+              <% end %>
+          </div>
+          <div class="col-span-4">
+             <div class="my-5">
+               <%= form.label :image_front_start, "Front (start)", class: "fancy_label"  %>
+               <%= form.file_field :image_front_start, class: "input_text_field" %>
+             </div>
+           </div>
+
+        <div class="">
+            <% if @vehicle_report.image_driver_start.attached? %>
+              <div class="sm:col-span-3">
+                <%= link_to @vehicle_report.image_driver_start.filename, url_for(@vehicle_report.image_driver_start), target: "_blank" %>
+                <%= image_tag @vehicle_report.image_driver_start.variant(:thumb),  alt: 'Driver side of car (start)', class: "object-cover group-hover:opacity-75" %>
+            </div>
+          <% end %>
+        </div>
+        
+        <div class="col-span-4">
+          <div class="my-5">
+          <%= form.label :image_driver_start, "Driver (start)", class: "fancy_label"  %>
+          <%= form.file_field :image_driver_start, class: "input_text_field" %>
+          </div>
+        </div>
+
+        <div class="">
+            <% if @vehicle_report.image_passenger_start.attached? %>
+              <div class="sm:col-span-3">
+                <%= link_to @vehicle_report.image_passenger_start.filename, url_for(@vehicle_report.image_passenger_start), target: "_blank" %>
+                <%= image_tag @vehicle_report.image_passenger_start.variant(:thumb),  alt: 'Passenger side of car (start)', class: "object-cover group-hover:opacity-75" %>
+            </div>
+          <% end %>
+        </div>
+        <div class="col-span-4">
+          <div class="my-5">
+              <%= form.label :image_passenger_start, "Passenger (start)", class: "fancy_label"  %>
+            <%= form.file_field :image_passenger_start, class: "input_text_field" %>
+          </div>
+        </div>
+
+        <div class="">
+            <% if @vehicle_report.image_back_start.attached? %>
+              <div class="sm:col-span-3">
+                <%= link_to @vehicle_report.image_back_start.filename, url_for(@vehicle_report.image_back_start), target: "_blank" %>
+                <%= image_tag @vehicle_report.image_back_start.variant(:thumb),  alt: 'Back of car (start)', class: "object-cover group-hover:opacity-75" %>
+            </div>
+          <% end %>
+        </div>
+        <div class="col-span-4">
+          <div class="my-5">
+            <%= form.label :image_back_start, "Back (start)", class: "fancy_label"  %>
+            <%= form.file_field :image_back_start, class: "input_text_field" %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <% if @reservation.program.pictures_required_end %>
+      <div class="grid grid-cols-5 gap-3">
+        <div class="">
+            <% if @vehicle_report.image_front_end.attached? %>
+              <div class="sm:col-span-3">
+                <%= link_to @vehicle_report.image_front_end.filename, url_for(@vehicle_report.image_front_end), target: "_blank" %>
+                <%= image_tag @vehicle_report.image_front_end.variant(:thumb), alt: 'Front of car (end)', class: "object-cover group-hover:opacity-75" %>
+            </div>
+          <% end %>
+        </div>
+        <div class="col-span-4">
+          <div class="my-5">
+            <%= form.label :image_front_end, "Front (end)", class: "fancy_label"  %>
+            <%= form.file_field :image_front_end, class: "input_text_field" %>
+          </div>
+        </div>
+        <div class="">
+            <% if @vehicle_report.image_driver_end.attached? %>
+              <div class="sm:col-span-3">
+                <%= link_to @vehicle_report.image_driver_end.filename, url_for(@vehicle_report.image_driver_end), target: "_blank" %>
+                <%= image_tag @vehicle_report.image_driver_end.variant(:thumb),  alt: 'Driver side of car (end)', class: "object-cover group-hover:opacity-75" %>
+            </div>
+          <% end %>
+        </div>
+        <div class="col-span-4">
+          <div class="my-5">
+              <%= form.label :image_driver_end, "Driver (end)", class: "fancy_label"  %>
+            <%= form.file_field :image_driver_end, class: "input_text_field" %>
+          </div>
+        </div>
+        <div class="">
+            <% if @vehicle_report.image_passenger_end.attached? %>
+              <div class="sm:col-span-3">
+                <%= link_to @vehicle_report.image_passenger_end.filename, url_for(@vehicle_report.image_passenger_end), target: "_blank" %>
+                <%= image_tag @vehicle_report.image_passenger_end.variant(:thumb),  alt: 'Passenger side of car (end)', class: "object-cover group-hover:opacity-75" %>
+            </div>
+          <% end %>
+        </div>
+        <div class="col-span-4">
+          <div class="my-5">
+              <%= form.label :image_passenger_end, "Passenger (end)", class: "fancy_label"  %>
+            <%= form.file_field :image_passenger_end, class: "input_text_field" %>
+          </div>
+        </div>
+        <div class="">
+            <% if @vehicle_report.image_back_end.attached? %>
+              <div class="sm:col-span-3">
+                <%= link_to @vehicle_report.image_back_end.filename, url_for(@vehicle_report.image_back_end), target: "_blank" %>
+                <%= image_tag @vehicle_report.image_back_end.variant(:thumb),  alt: 'Back of car (end)', class: "object-cover group-hover:opacity-75" %>
+            </div>
+          <% end %>
+        </div>
+        <div class="col-span-4">
+          <div class="my-5">
+              <%= form.label :image_back_end, "Back (end)", class: "fancy_label"  %>
+            <%= form.file_field :image_back_end, class: "input_text_field" %>
+          </div>
+        </div>
+    </div>
+
+    <% end %>
+
+    <div class="my-5">
+        <%= form.label :image_damages, "Damage", class: "fancy_label"   %>
+        <%= form.file_field :image_damages, multiple: true, class: "input_text_field" %>
+      </div>
+
+      <div class="sm:col-span-3">
+        <% if @vehicle_report.image_damages.attached? %>
+          <div class="py-4 pl-4 sm:grid sm:py-5 sm:grid-cols-3 sm:gap-4">
+            <dt class="text-sm font-medium text-gray-500">
+            Other files currently uploaded:
+            </dt>
+            <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+              <ul class="border border-gray-200 rounded-md divide-y divide-gray-200">
+                <% @vehicle_report.image_damages.each do |car_image| %>
+                  <li class="pl-3 pr-4 py-3 flex items-center justify-between text-sm">
+                    <div class="w-0 flex-1 flex items-center">
+                      <i class="fas fa-paperclip text-gray-400"></i>
+                      <span class="ml-2 flex-1 w-0 truncate">
+                        <%= link_to car_image.filename, url_for(car_image), target: "_blank" %>
+                      </span>
+                      <% unless car_image.id.nil? %>
+                      
+                        <%= image_tag car_image.variant(:thumb),  alt: 'Damage of car', class: "object-cover group-hover:opacity-75" %>
+
+                        <button type="button" class="bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <%= link_to 'Remove', delete_file_path(car_image), data: {turbo_method: :get, turbo_confirm: 'Are you sure?'} %>
+                          </button>
+                      <% end %>
+                    </div>
+                  </li>
+                <% end %>
+              </ul>
+            </dd>
+          </div>
+        <% end %>
+      </div>
+    </div>
   </div>
 
-  <div class="my-5">
-    <%= form.label :mileage_start %>
-    <%= form.text_field :mileage_start, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+ <div class="my-5">
+     <%= form.label :note, class: "fancy_label"  %>
+    <%= form.rich_text_area :note, class: "input_text_field" %>
   </div>
 
-  <div class="my-5">
-    <%= form.label :mileage_end %>
-    <%= form.text_field :mileage_end, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :gas_start %>
-    <%= form.text_field :gas_start, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :gas_end %>
-    <%= form.text_field :gas_end, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :parking_spot %>
-    <%= form.text_field :parking_spot, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :created_by %>
-    <%= form.number_field :created_by, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :updated_by %>
-    <%= form.number_field :updated_by, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :status %>
-    <%= form.text_field :status, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
-
-  <div class="inline">
+   <div class="inline">
     <%= form.submit class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
   </div>
+
+<% if action_name == "new" %>
+  <%= form.hidden_field :created_by, value: current_user.id %>
+<% end %>
+
+  <%= form.hidden_field :updated_by, value: current_user.id %>
+
 <% end %>
