@@ -1,15 +1,19 @@
+<p class="body-lg-text mb-2">
+  <%= link_to 'View vehicle reservation', reservation_path(vehicle_report.reservation_id), class: "link_to" %>
+</p>
 <div class="grid grid-cols-1 sm:grid-cols-2">
-  <div class="">
-    <p class='body'>
-      <% if vehicle_report.student_status %>
-        Report is completed.
-      <% else %>
-        Report is not completed.
-      <% end %>
-    </p>
+  <div>
+    <div class="">
+      <p class='body'>
+        <% if vehicle_report.student_status %>
+          Report is completed.
+        <% else %>
+          Report is not completed.
+        <% end %>
+      </p>
+    </div>
 
-
-   <div class="py-2">
+    <div class="py-2">
       <label class="body-lg-bold-text">
         Mileage start:
       </label>
@@ -18,7 +22,7 @@
       </p>
     </div>
 
-   <div class="py-2">
+    <div class="py-2">
       <label class="body-lg-bold-text">
         Mileage end:
       </label>
@@ -27,7 +31,7 @@
       </p>
     </div>
 
-   <div class="py-2">
+    <div class="py-2">
       <label class="body-lg-bold-text">
         Gas start:
       </label>
@@ -36,16 +40,16 @@
       </p>
     </div>
 
-  <% if vehicle_report.gas_end.present? %>
-    <div class="py-2">
-      <label class="body-lg-bold-text">
-        Gas end:
-      </label>
-      <p class="body-lg-text inline-block">
-        <%= vehicle_report.gas_end %>
-      </p>
-    </div>
-  <% end%>
+    <% if vehicle_report.gas_end.present? %>
+      <div class="py-2">
+        <label class="body-lg-bold-text">
+          Gas end:
+        </label>
+        <p class="body-lg-text inline-block">
+          <%= vehicle_report.gas_end %>
+        </p>
+      </div>
+    <% end%>
 
     <div class="py-2">
       <label class="body-lg-bold-text">
@@ -70,7 +74,7 @@
         Updated by:
       </label>
       <p class="body-lg-text inline-block">
-         <%= User.find(vehicle_report.updated_by).display_name %>
+          <%= User.find(vehicle_report.updated_by).display_name %>
       </p>
     </div>
 
@@ -79,7 +83,7 @@
         Status:
       </label>
       <p class="body-lg-text inline-block">
-         <%= vehicle_report.status %>
+          <%= vehicle_report.status %>
       </p>
     </div>
 
@@ -88,17 +92,13 @@
         Last Updated:
       </label>
       <p class="body-lg-text inline-block">
-         <%= vehicle_report.updated_at %>
+          <%= vehicle_report.updated_at %>
       </p>
     </div>
 
-    <p class="body-lg-text inline-block">
-         <%= link_to 'View vehicle reservation', reservation_path(vehicle_report.reservation_id), class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
-    </p>
-
   </div>
   
-
+  <div>
     <% if @vehicle_report.image_damages.attached? %>
       <div class="">
         <p class="body-md-bold-text m-4">Images (damage):</p>
@@ -119,16 +119,6 @@
           </ul>
         </div>
       </div>
-    <% end %>
-  </div>
-</div>
-
-
-
-    <% if action_name != "show" %>
-      <%= link_to "Show this vehicle report", vehicle_report, class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-      <%= link_to 'Edit this vehicle report', edit_vehicle_report_path(vehicle_report), class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
-      <hr class="mt-6">
     <% end %>
   </div>
 </div>

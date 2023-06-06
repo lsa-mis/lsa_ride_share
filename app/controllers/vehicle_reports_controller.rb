@@ -1,20 +1,13 @@
 class VehicleReportsController < ApplicationController
   before_action :auth_user
   before_action :set_units
-  before_action :set_cars
   before_action :set_vehicle_report, only: %i[ show edit update destroy ]
 
   # GET /vehicle_reports or /vehicle_reports.json
   def index
+    @cars = Car.all
     @terms = Term.sorted
-
     @vehicle_reports = VehicleReport.all
-    
-    if params[:term_id].present?
-      #@vehicle_reports =  VehicleReport.data(params[:reports_ids])
-    else
-      #@vehicle_reports = VehicleReport.data(params[:reports_ids]).order(updated_at: :desc)
-    end
     authorize @vehicle_reports
   end
 
@@ -40,13 +33,13 @@ class VehicleReportsController < ApplicationController
 
     @pictures_start_required = false
 
-   if @reservation.program.pictures_required_start
-     @pictures_start_required = true
-   end 
+    if @reservation.program.pictures_required_start
+      @pictures_start_required = true
+    end 
     
-   if @reservation.program.pictures_required_end
-    @pictures_end_required = true
-  end 
+    if @reservation.program.pictures_required_end
+      @pictures_end_required = true
+    end
 
   end
 
@@ -57,7 +50,7 @@ class VehicleReportsController < ApplicationController
     if @reservation.program.pictures_required_start
       @pictures_start_required = true
     end 
-     
+
     if @reservation.program.pictures_required_end
      @pictures_end_required = true
    end 
@@ -66,9 +59,7 @@ class VehicleReportsController < ApplicationController
 
   # POST /vehicle_reports or /vehicle_reports.json
   def create
-
     @vehicle_report = VehicleReport.new(vehicle_report_params)
-
     authorize @vehicle_report
 
     respond_to do |format|
@@ -84,17 +75,13 @@ class VehicleReportsController < ApplicationController
 
   # PATCH/PUT /vehicle_reports/1 or /vehicle_reports/1.json
   def update
-
     @reservation = @vehicle_report.reservation
-
 
     respond_to do |format|
       if @vehicle_report.update(vehicle_report_params)
-
         car = @vehicle_report.reservation.car
-
-       if @vehicle_report.mileage_end.present?
-            car.update(mileage: @vehicle_report.mileage_end)
+        if @vehicle_report.mileage_end.present?
+          car.update(mileage: @vehicle_report.mileage_end)
         end
 
         if @vehicle_report.gas_end.present?
@@ -102,9 +89,7 @@ class VehicleReportsController < ApplicationController
         end
 
         if @vehicle_report.parking_spot.present?
-          car.update(parking_spot: @vehicle_report.parking_spot)
-          car.update(last_used: DateTime.now)
-          car.update(last_driver_id: @reservation.driver_id)
+          car.update(parking_spot: @vehicle_report.parking_spot, last_used: DateTime.now, last_driver_id: @reservation.driver_id)
         end
 
         format.html { redirect_to vehicle_report_url(@vehicle_report), notice: "Vehicle report was successfully updated." }
@@ -135,11 +120,6 @@ class VehicleReportsController < ApplicationController
 
     def set_units
       @units = Unit.where(id: current_user.unit_ids).order(:name)
-    end
-
-    def set_cars
-      #WORKING ON Car query
-      @cars = Car.all
     end
 
     # Only allow a list of trusted parameters through.
