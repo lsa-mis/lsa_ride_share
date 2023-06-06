@@ -34,53 +34,5 @@
       <% end %>
     </div>
   </div>
-  <div class="col-span-1 bg-white rounded-lg shadow-md divide-y divide-gray-400 px-2 place-items-stretch bg-white border border-gray-300 rounded-lg">
-    Things to complete
-    <% if @student.present? %>
-      <div class="py-2">
-        <label class="body-sm-bold-text">
-          Mvr Status:
-        </label>
-        <p class="body-sm-text ml-2">
-          <% if @student.mvr_status.present? %>
-            <%= @student.mvr_status %>
-          <% else %>
-            Get your <%= link_to 'license approved', 'https://ltp.fo.umich.edu/mvr/index.php', class: "link_to" %> 
-          <% end %>
-        </p>
-      </div>
-
-      <div class="py-2">
-        <label class="body-sm-bold-text">
-          Canvas Course Complete Date:
-        </label>
-        <p class="body-sm-text ml-2">
-        <% if @student.canvas_course_complete_date.present? %>
-          Completed <%= show_date(@student.canvas_course_complete_date) %>
-          <% else %>
-            Take <%= link_to 'Canvas Course', @student.program.canvas_link, :target => "_blank", class: "link_to" %>
-          <% end %>
-        </p>
-      </div>
-
-      <div class="py-2">
-        <label class="body-sm-bold-text">
-          Class Training Date:
-        </label>
-        <p class="body-sm-text ml-2">
-          Completed <%= show_date(@student.class_training_date) %>
-        </p>
-      </div>
-
-      <div class="py-2">
-        <label class="body-sm-bold-text">
-          Meeting with Admin Date:
-        </label>
-        <p class="body-sm-text ml-2">
-          Completed <%= show_date(@student.meeting_with_admin_date) %>
-        </p>
-      </div>
-    <% end %>
-  </div>
-
+  <%= render 'status_card' %>
 </div>
