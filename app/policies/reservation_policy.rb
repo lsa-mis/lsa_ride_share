@@ -7,11 +7,11 @@ class ReservationPolicy < ApplicationPolicy
   end
 
   def show?
-    user_in_access_group?
+    user_in_access_group? || is_student?
   end
 
   def create?
-    user_in_access_group?
+    user_in_access_group? || is_student?
   end
 
   def new?
@@ -19,7 +19,7 @@ class ReservationPolicy < ApplicationPolicy
   end
 
   def update?
-    user_in_access_group?
+    user_in_access_group? || is_student?
   end
 
   def edit?

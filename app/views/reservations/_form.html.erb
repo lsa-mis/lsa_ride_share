@@ -13,23 +13,39 @@
 
   <%= form.label :unit_id, 'Unit *', class: "hidden" %>
   <input type="hidden" id="unit_id" name="unit_id" value=<%= @unit_id %> data-reservation-target="unit">
-  <div>
-    <%= form.label :term_id, 'Term *', class: "fancy_label" %>
-    <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: params[:term_id]), include_blank: "Select ...", class: "input_text_field",
-      "data-reservation-target": "term", "data-action": "change->reservation#changePrograms" %>
-  </div>
-
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-    <div>
-      <%= form.label :program_id, 'Program *', class: "fancy_label" %>
-      <%= form.collection_select :program_id, @programs, :id, :display_name_with_title, { include_blank: "Select ..." }, { "data-reservation-target": "program", "data-action": "change->reservation#setSites", class: "input_text_field" } %>
-    </div>
-
+  <% if is_student?(current_user) %>
+    <p class="body-lg-text mt-2">
+      Program:
+      <%= @program.display_name_with_title %>
+    </p>
+    <%= form.label :term_id, 'Term *', class: "hidden" %>
+    <input type="hidden" id="term_id" name="term_id" value=<%= @term_id %> data-reservation-target="term">
+    <%= form.label :program_id, 'Program *', class: "hidden" %>
+    <input type="hidden" id="program_id" name="reservation[program_id]" value=<%= @program.id %> data-reservation-target="program">
+    
     <div>
       <%= form.label :site_id, 'Site *', class: "fancy_label" %>
-      <%= form.collection_select :site_id, @sites, :id, :title, { include_blank: "Select ..." }, { "data-reservation-target": "site", class: "input_text_field" } %>
+      <%= form.collection_select :site_id, @sites, :id, :title, { include_blank: "Select ..."}, { selected: @site_id, "data-reservation-target": "site", class: "input_text_field" } %>
+
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+  <% else %>
+    <div>
+      <%= form.label :term_id, 'Term *', class: "fancy_label" %>
+      <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: @term_id), include_blank: "Select ...", class: "input_text_field",
+        "data-reservation-target": "term", "data-action": "change->reservation#changePrograms" %>
     </div>
 
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+      <div>
+        <%= form.label :program_id, 'Program *', class: "fancy_label" %>
+        <%= form.collection_select :program_id, @programs, :id, :display_name_with_title, { include_blank: "Select ..."}, { selected: @program_id, "data-reservation-target": "program", "data-action": "change->reservation#setSites", class: "input_text_field" } %>
+      </div>
+      <div>
+        <%= form.label :site_id, 'Site *', class: "fancy_label" %>
+        <%= form.collection_select :site_id, @sites, :id, :title, { include_blank: "Select ..." }, { "data-reservation-target": "site", class: "input_text_field" } %>
+      </div>
+  <% end %>
     <div>
         <%= form.label :day_start, "Choose a start date", class: "fancy_label" %>
         <%= text_field_tag :day_start, @day_start,

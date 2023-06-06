@@ -26,7 +26,12 @@ class ReservationsController < ApplicationController
 
   # GET /reservations/new
   def new
-    if params[:unit_id].present?
+    if is_student?(current_user)
+      @program = Student.find(params[:student_id]).program
+      @unit_id = @program.unit_id
+      @term_id = @program.term.id
+      @sites = @program.sites
+    elsif params[:unit_id].present?
       @unit_id = params[:unit_id]
     else
       redirect_to reservations_path, notice: "You must select a unit first."
@@ -36,8 +41,13 @@ class ReservationsController < ApplicationController
     else
       @day_start = Date.today
     end
+    if params[:term_id].present?
+      @term_id = params[:term_id]
+    end
     @students = []
-    @sites = []
+    if is_admin?(current_user)
+      @sites = []
+    end
     @number_of_seats = 1..Car.maximum(:number_of_seats)
     @reservation = Reservation.new
     @reservation.start_time = @day_start
@@ -88,7 +98,14 @@ class ReservationsController < ApplicationController
       @students = @reservation.program.students 
       redirect_to add_drivers_path(@reservation), notice: "Reservation was successfully created. Please add drivers."
     else
-      @sites = []
+      if is_student?(current_user)
+        @program = Student.find(params[:student_id]).program
+        @unit_id = @program.unit_id
+        @term_id = @program.term.id
+        @sites = @program.sites
+      else
+        @sites = []
+      end
       @students = []
       @number_of_seats = 1..Car.maximum(:number_of_seats)
       @cars = Car.data(params[:unit_id])
