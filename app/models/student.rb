@@ -48,7 +48,7 @@ class Student < ApplicationRecord
   end
 
   def can_reserve_car?
-    self.mvr_status.present? && self.mvr_status.include?("Approved") && self.canvas_course_complete_date.present? && self.meeting_with_admin_date.present?
+    self.mvr_status.present? && self.mvr_status.include?("Approved") && self.canvas_course_complete_date.present? && self.meeting_with_admin_date.present? && self.class_training_date.present?
   end
   
   def self.eligible_drivers
