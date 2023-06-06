@@ -11,31 +11,13 @@
     </div>
   <% end %>
 
-  <% if is_admin?(current_user) && current_user.unit_ids.count > 1 %>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-      <div>
-        <%= form.label :unit_id, 'Unit *', class: "fancy_label" %>
-        <%= select_tag "unit_id", options_from_collection_for_select(@units, :id, :name, selected: params[:unit_id]), include_blank: "Select ...", class: "input_text_field",
-          "data-reservation-target": "unit" %>
-      </div>
-      <div>
-        <%= form.label :term_id, 'Term *', class: "fancy_label" %>
-        <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: params[:term_id]), include_blank: "Select ...", class: "input_text_field",
-          "data-reservation-target": "term", "data-action": "change->reservation#changePrograms" %>
-      </div>
-    </div>
-  <% elsif is_admin?(current_user) && current_user.unit_ids.count == 1 %>
-    <%= form.label :unit_id, 'Unit *', class: "hidden" %>
-    <input type="hidden" id="unit_id" name="unit_id" value=<%= current_user.unit_ids[0] %> data-reservation-target="unit">
-    <div>
-      <%= form.label :term_id, 'Term *', class: "fancy_label" %>
-      <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: params[:term_id]), include_blank: "Select ...", class: "input_text_field",
-        "data-reservation-target": "term", "data-action": "change->reservation#changePrograms" %>
-    </div>
-  <% else %>
-    <%= form.label :unit_id, 'Unit *', class: "hidden" %>
-    <input type="hidden" id="unit_id" name="unit_id" value=<%= Student.find_by(uniqname: current_user.uniqname).program.unit_id %> data-reservation-target="unit">
-  <% end %>
+  <%= form.label :unit_id, 'Unit *', class: "hidden" %>
+  <input type="hidden" id="unit_id" name="unit_id" value=<%= @unit_id %> data-reservation-target="unit">
+  <div>
+    <%= form.label :term_id, 'Term *', class: "fancy_label" %>
+    <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: params[:term_id]), include_blank: "Select ...", class: "input_text_field",
+      "data-reservation-target": "term", "data-action": "change->reservation#changePrograms" %>
+  </div>
 
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
     <div>
@@ -67,13 +49,13 @@
 
     <div>
       <%= form.label :time_start, 'Start Time *', class: "fancy_label" %>
-      <%= select_tag "time_start", options_for_select(available_time(@day_start, @cars)[:begin]), class: "input_text_field",
+      <%= select_tag "time_start", options_for_select(available_time(@day_start, @cars, @unit_id)[:begin]), class: "input_text_field",
         "data-reservation-target": "time_start", "data-action": "change->reservation#availableCars" %>
     </div>
 
     <div>
       <%= form.label :time_end, 'End Time *', class: "fancy_label" %>
-      <%= select_tag "time_end", options_for_select(available_time(@day_start, @cars)[:end]), class: "input_text_field",
+      <%= select_tag "time_end", options_for_select(available_time(@day_start, @cars, @unit_id)[:end]), class: "input_text_field",
         "data-reservation-target": "time_end", "data-action": "change->reservation#availableCars" %>
     </div>
   </div>
