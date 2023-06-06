@@ -98,6 +98,14 @@ module ApplicationHelper
     Program.all.map { |p| p.all_managers.include?(user.uniqname) }.any?
   end
 
+  def show_car(reservation)
+    if reservation.car.present?
+      reservation.car.car_number
+    else
+      "No car selected"
+    end
+  end
+
   def show_driver(reservation)
     if reservation.driver.present?
       reservation.driver.display_name
