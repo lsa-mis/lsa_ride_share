@@ -93,6 +93,14 @@ class Program < ApplicationRecord
     end
   end
 
+  def display_name_with_title_and_unit
+    if self.not_course
+      "#{self.unit.name} - #{self.title} - not a course - #{self.term.name}"
+    else
+      "#{self.unit.name} - #{self.title} - #{self.subject} #{self.catalog_number} - #{self.class_section} - #{self.term.name}"
+    end
+  end
+
   def all_managers
     self.managers.map(&:uniqname) << self.instructor.uniqname
   end

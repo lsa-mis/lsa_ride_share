@@ -1,16 +1,15 @@
 <div class="card_area">
   <h3>Contact information</h3>
   <p class="body-md-text">
-    <%= @contact_data.each do |id, data| %>
-      <%= Unit.find(id).name %>
-      <br>
+    <% @contact_data.each do |id, data| %>
+      <div class="body-md-bold-text">
+        <%= Unit.find(id).name %>
+      </div>
       <% data.each do |contact| %>
         <%= contact['name'].titleize %> - <%= contact['value'] %>
         <br>
       <% end %>
-      end of unit<br>
     <% end %>
-    end of all <br>
   </p>
   
   <% if @student.present? %>
