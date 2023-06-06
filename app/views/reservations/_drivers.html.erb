@@ -1,0 +1,53 @@
+<%= form_with model: [@reservation], class: "contents",
+  data: { controller: "reservation",
+          target: "form",
+          action: "submit->reservation#submitForm"
+        } do |form| %>
+
+    <div class="my-5">
+      <%= form.label :driver_id, "Driver *", class: "fancy_label" %>
+      <%= form.collection_select :driver_id, @drivers, :id, :display_name, { include_blank: "Select ..." }, class: "input_text_field",
+        "data-reservation-target": "driver" %>
+    </div>
+
+    <div class="error_text fields--hide" data-reservation-target="driver_error">
+      <span>Please enter driver's data</span>
+    </div>
+
+    <div class="my-5">
+      <%= form.label :driver_phone, "Driver's Phone *", class: "fancy_label" %>
+      <%= form.text_field :driver_phone, class: "input_text_field",
+        "data-reservation-target": "driver_phone" %>
+    </div>
+
+    <% if @reservation.number_of_people_on_trip > 1 %>
+      <div class="my-5">
+        <%= form.label :backup_driver_id, "Backup Driver", class: "fancy_label" %>
+        <%= form.collection_select :backup_driver_id, @drivers, :id, :display_name, { include_blank: "Select ..." }, class: "input_text_field",
+          "data-reservation-target": "backup_driver" %>
+      </div>
+
+      <div class="error_text fields--hide" data-reservation-target="backup_driver_error">
+        <span>Please enter backup driver's phone</span>
+      </div>
+
+      <div class="my-5">
+        <%= form.label :backup_driver_phone, "Backup Driver Phone", class: "fancy_label" %>
+        <%= form.text_field :backup_driver_phone, class: "input_text_field",
+          "data-reservation-target": "backup_driver_phone" %>
+      </div>
+    <% end %>
+
+    <div class="inline">
+      <% if @reservation.number_of_people_on_trip <= 2 %>
+        <%= form.submit "Save", class: "primary_button" %>
+      <% else %>
+        <%= form.submit "Save and Add Passengers", class: "primary_button" %>
+      <% end %>
+    </div>
+
+    <% if is_admin?(current_user) %>
+      <%= link_to "Add Drivers Later", reservation_path(@reservation), class: "primary_button" %>
+    <% end %>
+
+<% end %>

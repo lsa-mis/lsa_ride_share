@@ -38,6 +38,18 @@ class ProgramPolicy < ApplicationPolicy
     false
   end
 
+  def get_programs_list?
+    create?
+  end
+
+  def get_students_list?
+    create?
+  end
+
+  def get_sites_list?
+    create?
+  end
+
   def is_manager?
     Program.all.map { |p| p.all_managers.include?(@user.uniqname) }.any?
   end

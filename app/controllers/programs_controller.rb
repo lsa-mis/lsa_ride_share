@@ -1,9 +1,9 @@
 class ProgramsController < ApplicationController
   before_action :auth_user
 
-  before_action :set_program, except: %i[ index new create]
+  before_action :set_program, except: %i[ index new create get_programs_list get_students_list get_sites_list ]
   before_action :set_units
-  before_action :set_terms, only: %i[ duplicate new edit ]
+  before_action :set_terms, only: %i[ duplicate new edit create]
 
   include ApplicationHelper
 
@@ -116,6 +116,21 @@ class ProgramsController < ApplicationController
   def remove_site
     @program.sites.delete(Site.find(params[:site_id]))
     redirect_to @program
+  end
+
+  def get_programs_list
+    render json: Program.where(unit_id: params[:unit_id], term: params[:term_id])
+    authorize Program
+  end
+
+  def get_students_list
+    render json: Program.find(params[:program_id]).students
+    authorize Program
+  end
+
+  def get_sites_list
+    render json: Program.find(params[:program_id]).sites
+    authorize Program
   end
 
   private

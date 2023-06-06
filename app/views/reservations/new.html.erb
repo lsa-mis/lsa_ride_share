@@ -1,7 +1,9 @@
-<div class="mx-auto md:w-2/3 w-full">
-  <h1>New reservation</h1>
-
-  <%= render "form", reservation: @reservation %>
-
-  <%= link_to 'Back to reservations', reservations_path, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
+<div class="lg:flex justify-between">
+  <h1>New Reservation</h1>
+</div>
+<%= render 'form', reservation: @reservation %>
+<div>
+  <%= turbo_frame_tag "available_cars" do %>
+    <%= render "available_cars", locals: { date: @day_start } %>
+  <% end %>
 </div>
