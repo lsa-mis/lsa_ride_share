@@ -3,6 +3,7 @@ class ReservationsController < ApplicationController
   before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger ]
   before_action :set_terms_and_units
   before_action :set_programs
+  before_action :set_cars, only: %i[ new edit get_available_cars ]
 
   # GET /reservations or /reservations.json
   def index
@@ -36,7 +37,6 @@ class ReservationsController < ApplicationController
     end
     @students = []
     @sites = []
-    @cars = Car.all
     @number_of_seats = 1..Car.maximum(:number_of_seats)
     @reservation = Reservation.new
     @reservation.start_time = @day_start
@@ -48,7 +48,6 @@ class ReservationsController < ApplicationController
     @sites = @reservation.program.sites
     @number_of_seats = 1..Car.maximum(:number_of_seats)
     @day_start = @reservation.start_time.to_date
-    @cars = Car.all
   end
 
   def get_available_cars
@@ -59,7 +58,7 @@ class ReservationsController < ApplicationController
       @day_start = params[:day_start].to_date
     end
     if params[:number].present?
-      @cars = Car.where("number_of_seats >= ?", params[:number])
+      @cars = @cars.where("number_of_seats >= ?", params[:number])
     end
     if params[:time_start].present?
       @time_start = params[:time_start]
@@ -91,7 +90,7 @@ class ReservationsController < ApplicationController
       @sites = []
       @students = []
       @number_of_seats = 1..Car.maximum(:number_of_seats)
-      @cars = Car.all
+      @cars = Car.data(params[:unit_id])
       @day_start = params[:day_start]
       render :new, status: :unprocessable_entity
     end
@@ -176,6 +175,10 @@ class ReservationsController < ApplicationController
 
     def set_programs
       @programs = Program.where(unit_id: current_user.unit_ids)
+    end
+
+    def set_cars
+      @cars = Car.data(params[:unit_id])
     end
 
     # Only allow a list of trusted parameters through.
