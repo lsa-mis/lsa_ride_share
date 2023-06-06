@@ -100,9 +100,16 @@ class ReservationsController < ApplicationController
   # PATCH/PUT /reservations/1 or /reservations/1.json
   def update
     if params[:reservation][:driver_id].present?
-      @reservation.update(reservation_params)
-      redirect_to add_passengers_path(@reservation)
-      return
+      if @reservation.update(reservation_params)
+        fail
+        redirect_to add_passengers_path(@reservation)
+        return
+      else
+        flash.now[:alert] = "error"
+        @drivers = @reservation.program.students.eligible_drivers
+        format.turbo_stream { render :add_drivers, status: :unprocessable_entity }
+        return
+      end
     end
     if params[:reservation][:student_id].present?
       @reservation.passengers << Student.find(params[:reservation][:student_id])
