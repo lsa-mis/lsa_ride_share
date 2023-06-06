@@ -4,7 +4,7 @@
       <%= car.car_number %> - <%= car.number_of_seats %> seats
     </div>
     <div>
-      <% available_ranges(car, day).each do |range| %>
+      <% available_ranges(car, day, unit_id).each do |range| %>
         <div>
           <%= range %>
         </div>

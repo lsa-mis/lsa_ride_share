@@ -1,40 +1,53 @@
-<div class="w-full">
+<div class="w-full" data-controller='autosubmit'>
   <div class="pb-4">
     <h1 class="mb-2">Reservations</h1>
   </div>
-  <%= turbo_frame_tag 'calendar' do %>
-    <%= month_calendar(events: @reservations) do |date, reservations| %>
-      <div class="day-header">
-        <%= date.mday %>
+  <%= form_with url: reservations_path, method: :get, class: "", data: { autosubmit_target: "form", turbo_frame: "unit-calendar" } do |form| %>
+    <% if current_user.unit_ids.count > 1 %>
+      <div class="my-2">
+        <label for="unit_id" class="fancy_label">Select a Unit</label>
+        <%= select_tag "unit_id", options_from_collection_for_select(@units, :id, :name, selected: params[:unit_id]), include_blank: "All Units", class: "filter_select w-48",
+          :"data-action" => "change->autosubmit#search" %>
       </div>
-
-      <div class="flex flex-col justify-between">
-        <% reservations.each do |reservation| %>
-          <div>
-            <%= link_to reservation.display_name, reservation_path(reservation.id) %>
-            <p>
-              From: 
-              <%= show_date_time(reservation.start_time) %>
-            </p>
-            <p>
-              To: 
-              <%= show_date_time(reservation.end_time) %>
-            </p>
-          </div>
-        <% end %>
-        <div class="">
-          <%= link_to new_reservation_path(:day_start => date) do %>
-            <i class="fa fa-plus" aria-hidden="true"></i>
-            <span class="tertiary_button -m-4">
-              Add Reservation
-            </span>
-          <% end %>
-        </div>
-      </div>
+    <% else %>
+      <%= form.label :unit_id, 'Unit *', class: "hidden" %>
+      <input type="hidden" id="unit_id" name="unit_id" value=<%= @unit_id %>>
     <% end %>
-  <% end %>
 
-  <div id="reservations" class="min-w-full mt-2">
-    <%= render 'listing' %>
-  </div>
+    <%= turbo_frame_tag 'unit-calendar' do %>
+      <%= month_calendar(events: @reservations) do |date, reservations| %>
+        <div class="day-header">
+          <%= date.mday %>
+        </div>
+
+        <div class="flex flex-col justify-between">
+          <% reservations.each do |reservation| %>
+            <div>
+              <%= link_to reservation.display_name, reservation_path(reservation.id) %>
+              <p>
+                From: 
+                <%= show_date_time(reservation.start_time) %>
+              </p>
+              <p>
+                To: 
+                <%= show_date_time(reservation.end_time) %>
+              </p>
+            </div>
+          <% end %>
+          <div class="">
+            <%= link_to new_reservation_path(:unit_id => @unit_id, :day_start => date) do %>
+              <i class="fa fa-plus" aria-hidden="true"></i>
+              <span class="tertiary_button -m-4">
+                Add Reservation
+              </span>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+
+    <div id="reservations" class="min-w-full mt-2">
+      <%= render 'listing' %>
+    </div>
+  <% end %>
 </div>
