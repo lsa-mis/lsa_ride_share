@@ -236,6 +236,10 @@ from https://tailwindcss.com/docs/adding-custom-styles
     @apply block shadow rounded-md border border-gray-600 outline-none px-3 py-2 mt-2 w-full;
   }
 
+  .card_area {
+    @apply col-span-1 bg-white rounded-lg shadow-md divide-y divide-gray-400 px-2 place-items-stretch bg-white border border-gray-300 rounded-l
+  }
+
   /* table */
 
   .mi_table {
