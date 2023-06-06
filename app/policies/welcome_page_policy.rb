@@ -3,7 +3,7 @@
 class WelcomePagePolicy < ApplicationPolicy
 
   def student?
-    is_student? || true
+    is_student?
   end
 
 end

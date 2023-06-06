@@ -22,7 +22,7 @@
     </p>
     <div class="my-8">
       <% if @student.present? %>
-        <%= link_to "Reserve Car", new_reservation_path, class: "secondary_blue_button" if @student.can_reserve_car? %>
+        <%= link_to "Reserve Car", new_reservation_path(:student_id => params[:student_id]), class: "secondary_blue_button" if @student.can_reserve_car? %>
       <% end %>
     </div>
     <% if @program.present? %>

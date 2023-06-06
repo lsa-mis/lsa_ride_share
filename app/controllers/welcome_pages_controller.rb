@@ -5,6 +5,9 @@ class WelcomePagesController < ApplicationController
     @user = User.second
     @students = Student.where(uniqname: @user.uniqname, program: Program.current_term)
     @students_data = @students.map { |s| [s.program.display_name_with_title, s.id] }
+    program_ids = @students.map { |p| p.program.id }
+    unit_ids = Program.where(id: program_ids).pluck(:unit_id) 
+    @contact_data = UnitPreference.select(:unit_id, :name, :value).where(unit_id: unit_ids).where("name = 'unit_office' OR name = 'contact_phone'").group_by(&:unit_id).to_a
     @reservation = []
     if params[:student_id].present?
       @student = Student.find(params[:student_id])
