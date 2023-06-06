@@ -48,4 +48,8 @@ class Reservation < ApplicationRecord
     end
   end
 
+  def added_people
+    self.passengers.count + (self.driver.present? ? 1 : 0).to_i + (self.backup_driver.present? ? 1 : 0).to_i  
+  end
+
 end

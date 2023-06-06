@@ -1,10 +1,11 @@
 import { Controller } from "@hotwired/stimulus"
 import { get } from "@rails/request.js"
 
-// Connects to data-controller="program"
 export default class extends Controller {
   static targets = ['form', 'term', 'unit', 'program', 'site',
-    'day_start', 'number', 'time_start', 'time_end']
+    'day_start', 'number', 'time_start', 'time_end',
+    'driver', 'driver_phone', 'driver_error',
+    'backup_driver', 'backup_driver_phone', 'backup_driver_error']
   connect() {
     console.log("connect - reservation")
   }
@@ -116,4 +117,27 @@ export default class extends Controller {
       responseKind: "turbo-stream"
     })
   }
+
+  submitForm(event) {
+    var driver = this.driverTarget.value
+    var driver_phone = this.driver_phoneTarget.value
+    var backup_driver = this.backup_driverTarget.value
+    var backup_driver_phone = this.backup_driver_phoneTarget.value
+
+    if(driver == "" || driver_phone == "") {
+      this.driver_errorTarget.classList.add("fields--display")
+      this.driver_errorTarget.classList.remove("fields--hide")
+      event.preventDefault()
+    } else if (backup_driver != "" && backup_driver_phone == "") {
+      this.backup_driver_errorTarget.classList.add("fields--display")
+      this.backup_driver_errorTarget.classList.remove("fields--hide")
+      this.driver_errorTarget.classList.remove("fields--display")
+      this.driver_errorTarget.classList.add("fields--hide")
+      event.preventDefault()
+    }
+    else{
+      Turbo.navigator.submitForm(this.formTarget)
+    }
+  }
+
 }
