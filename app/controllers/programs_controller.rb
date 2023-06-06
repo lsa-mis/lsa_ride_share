@@ -141,7 +141,14 @@ class ProgramsController < ApplicationController
     end
 
     def set_units
+      if is_admin?(current_user)
       @units = Unit.where(id: current_user.unit_ids).order(:name)
+      elsif is_manager?(current_user)
+        manager = Manager.find_by(uniqname: current_user.uniqname)
+        @units = Unit.where(id: manager.programs.pluck(:unit_id).uniq).order(:name)
+      else
+        @units = Unit.all
+      end
     end
 
     def set_terms
