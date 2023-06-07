@@ -1,0 +1,10 @@
+  <a href="valid" style="display: none;">valid</a>
+  <% flash.each do |key, value| %>
+    <%= content_tag(:div, value, class: "flash #{key} -mt-2 mb-2", id: "#{key}") %>
+  <% end %>
+
+  <script>
+  if (document.getElementById("alert")) {
+    location.hash = '#valid';
+  }
+  </script>
