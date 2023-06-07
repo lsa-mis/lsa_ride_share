@@ -29,8 +29,6 @@ class Reservation < ApplicationRecord
   has_many :reservation_passengers
   has_many :passengers, through: :reservation_passengers, source: :student
   has_one :vehicle_report
-
-  validate :check_driver_and_backup_driver
   
   has_rich_text :note
 
@@ -52,10 +50,6 @@ class Reservation < ApplicationRecord
 
   def added_people
     self.passengers.count + (self.driver.present? ? 1 : 0).to_i + (self.backup_driver.present? ? 1 : 0).to_i  
-  end
-
-  def check_driver_and_backup_driver
-    errors.add(:backup_driver, "can't be the same as driver") if self.driver_id == self.backup_driver_id
   end
 
 end
