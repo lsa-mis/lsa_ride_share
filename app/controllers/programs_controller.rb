@@ -116,7 +116,7 @@ class ProgramsController < ApplicationController
           @instructor.last_name = name.split(" ").last
         end
         if @instructor.save
-          result['instructor_id'] = instructor.id
+          result['instructor_id'] = @instructor.id
         else 
           result['valid'] =  false
           result['note'] = 'Error saving instructor record. Please report the issue'
