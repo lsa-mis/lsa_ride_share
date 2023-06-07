@@ -179,7 +179,7 @@ class ReservationsController < ApplicationController
     end
 
     def set_cars
-      @cars = Car.data(params[:unit_id])
+      @cars = Car.data(params[:unit_id]).order(:car_number)
     end
 
     # Only allow a list of trusted parameters through.
