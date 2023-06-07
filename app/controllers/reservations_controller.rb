@@ -71,7 +71,7 @@ class ReservationsController < ApplicationController
       @reserv_begin = Time.zone.parse(params[:day_start] + " " + params[:time_start]).to_datetime
       @reserv_end = Time.zone.parse(params[:day_start] + " " + params[:time_end]).to_datetime
       range = @reserv_begin..@reserv_end
-      @cars = available_cars(@cars, range, @unit_id)
+      @cars = available_cars(@cars, range)
     end
     authorize Reservation
   end
