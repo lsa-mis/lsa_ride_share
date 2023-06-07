@@ -31,6 +31,10 @@
         <span>Please enter backup driver's phone</span>
       </div>
 
+      <div class="error_text fields--hide" data-driver-target="equal_drivers_error">
+        <span>Backup driver can't be the same as driver</span>
+      </div>
+
       <div class="my-5">
         <%= form.label :backup_driver_phone, "Backup Driver Phone", class: "fancy_label" %>
         <%= form.text_field :backup_driver_phone, class: "input_text_field",
