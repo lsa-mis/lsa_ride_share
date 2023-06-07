@@ -3,7 +3,8 @@
     <table class="mi_table">
       <thead class="mi_thead">
         <tr>
-          <th class="header_th">  </th>
+          <td></td>
+          <th class="header_th">Created At</th>
           <th class="header_th">Title</th>
           <th class="header_th">Instructor</th>
           <th class="header_th">Unit</th>
@@ -19,6 +20,9 @@
               <% unless survey.program_id.present? %>
                 <%= link_to 'Edit', edit_faculty_survey_path(survey), class: "link_to" %>
               <% end %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= show_date(survey.created_at) %>
             </td>
             <td class="mi_tbody_td">
               <%= survey.title %>
