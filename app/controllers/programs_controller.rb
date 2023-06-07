@@ -3,7 +3,7 @@ class ProgramsController < ApplicationController
 
   before_action :set_program, except: %i[ index new create get_programs_list get_students_list get_sites_list ]
   before_action :set_units
-  before_action :set_terms, only: %i[ duplicate new edit create]
+  before_action :set_terms, only: %i[ duplicate new edit create update]
 
   include ApplicationHelper
 
@@ -53,49 +53,77 @@ class ProgramsController < ApplicationController
 
   # POST /programs or /programs.json
   def create
+    note = ''
     @program = Program.new(program_params.except(:instructor_attributes, :duplicate_program_id))
-    uniqname = program_params[:instructor_attributes][:uniqname]
-    if Manager.find_by(uniqname: uniqname).present?
-      instructor = Manager.find_by(uniqname: uniqname)
-    else
-      instructor = Manager.create(uniqname: uniqname)
-    end
-    @program.instructor = instructor
     authorize @program
-    respond_to do |format|
-      if @program.save
-        if params[:program][:duplicate_program_id].present?
-          # carry forward sites when program is carried forward
-          @program.sites << Program.find(params[:program][:duplicate_program_id]).sites
-        end
-        format.html { redirect_to program_url(@program), notice: "Program was successfully created." }
-        format.json { render :show, status: :created, location: @program }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @program.errors, status: :unprocessable_entity }
+    uniqname = program_params[:instructor_attributes][:uniqname]
+    result = get_instructor_id(uniqname)
+    if result['valid']
+      @program.instructor_id = result['instructor_id']
+      note = result['note']
+    else
+      flash.now[:alert] = "The '#{uniqname}' uniqname is not valid."
+      return
+    end
+    if @program.save
+      if params[:program][:duplicate_program_id].present?
+        # carry forward sites when program is carried forward
+        @program.sites << Program.find(params[:program][:duplicate_program_id]).sites
       end
+      redirect_to program_data_path(@program), notice: "Program was successfully created." + note
     end
   end
 
   # PATCH/PUT /programs/1 or /programs/1.json
   def update
-    uniqname = program_params[:instructor_attributes][:uniqname]
-    if Manager.find_by(uniqname: uniqname).present?
-      instructor = Manager.find_by(uniqname: uniqname)
-    else
-      instructor = Manager.create(uniqname: uniqname)
-    end
-    @program.instructor_id = instructor.id
-    authorize @program
-    respond_to do |format|
-      if @program.update(program_params.except(:instructor_attributes))
-        format.html { redirect_to program_data_path(@program), notice: "Program was successfully updated." }
-        format.json { render :show, status: :ok, location: @program }
+    note = ''
+    @program.attributes = program_params.except(:instructor_attributes)
+    @program.instructor.attributes = program_params[:instructor_attributes]
+    if @program.instructor.uniqname_changed?
+      result = get_instructor_id(@program.instructor.uniqname)
+      if result['valid']
+        @program.instructor_id = result['instructor_id']
+        note = result['note']
       else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @program.errors, status: :unprocessable_entity }
+        flash.now[:alert] = "The '#{@program.instructor.uniqname}' uniqname is not valid."
+        render :edit, status: :unprocessable_entity
+        return
       end
     end
+    if @program.save
+      redirect_to program_data_path(@program), notice: "Program was successfully updated." + note
+    end
+  end
+
+  def get_instructor_id(uniqname)
+    result = {'valid' => false, 'note' => '', 'instructor_id' => 0}
+    if Manager.find_by(uniqname: uniqname).present?
+      result['valid'] =  true
+      result['instructor_id'] = Manager.find_by(uniqname: uniqname).id
+    else
+      @instructor = Manager.new(uniqname: uniqname)
+      name = LdapLookup.get_simple_name(uniqname)
+      if name == "No such user"
+        result['note'] = "The '#{uniqname}' uniqname is not valid."
+      else
+        result['valid'] =  true
+        if name.nil?
+          result['note'] = "Mcommunity returns no name for '#{uniqname}' uniqname."
+          @instructor.first_name = ''
+          @instructor.last_name = ''
+        else
+          @instructor.first_name = name.split(" ").first
+          @instructor.last_name = name.split(" ").last
+        end
+        if @instructor.save
+          result['instructor_id'] = @instructor.id
+        else 
+          result['valid'] =  false
+          result['note'] = 'Error saving instructor record. Please report the issue'
+        end
+      end
+    end
+    return result
   end
 
   # DELETE /programs/1 or /programs/1.json
@@ -155,6 +183,6 @@ class ProgramsController < ApplicationController
       params.require(:program).permit(:active, :title, :term_id, :subject, :catalog_number, :class_section, 
                                      :number_of_students, :number_of_students_using_ride_share, :pictures_required_start, :pictures_required_end, 
                                      :non_uofm_passengers, :instructor_id, :mvr_link, :canvas_link, :canvas_course_id, :unit_id, :add_managers, 
-                                     :not_course, :updated_by, :duplicate_program_id, instructor_attributes: [:uniqname])
+                                     :not_course, :updated_by, :duplicate_program_id, instructor_attributes: [:id, :uniqname])
     end
 end
