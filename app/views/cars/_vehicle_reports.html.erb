@@ -13,7 +13,7 @@
         <% @car.vehicle_reports.each do |vehicle_report| %>
           <tr class="mi_tbody_tr">
             <td class="mi_tbody_td">
-              <%= link_to show_date(vehicle_report.updated_at) , vehicle_report_path(vehicle_report.reservation_id), class: "link_to" %>
+              <%= link_to show_date(vehicle_report.updated_at) , vehicle_report_path(vehicle_report.reservation_id), class: "link_to", data: { "turbo-frame": "_top" } %>
             </td>
             <td class="mi_tbody_td">
               <%= show_date(vehicle_report.created_at) %>
