@@ -31,6 +31,7 @@ class ReservationsController < ApplicationController
       @unit_id = @program.unit_id
       @term_id = @program.term.id
       @sites = @program.sites
+      @cars = @cars.where(unit_id: @unit_id)
     elsif params[:unit_id].present?
       @unit_id = params[:unit_id]
     else
