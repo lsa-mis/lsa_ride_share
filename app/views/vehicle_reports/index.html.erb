@@ -28,7 +28,7 @@
         <% if Car.present? %>
           <div class="">
             <label for="car_id" class="fancy_label">Filter by Car</label>
-            <%= select_tag "car_id", options_from_collection_for_select(@cars, :id, :car_number, selected: params[:car_id]), include_blank: "Select ...", class: "filter_select w-48",
+            <%= select_tag "car_id", options_from_collection_for_select(@cars, :id, :car_number, selected: params[:car_id]), include_blank: "All Cars", class: "filter_select w-48",
               :"data-action" => "change->autosubmit#search" %>
           </div>
         <% end %>
