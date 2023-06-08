@@ -18,7 +18,7 @@ class UnitPreferencesController < ApplicationController
   def save_unit_prefs
     @unit_prefs = UnitPreference.where(unit_id: current_user.unit_ids)
     authorize @unit_prefs
-    @unit_prefs.update(value: false)
+    @unit_prefs.where(pref_type: 'boolean').update(on_off: false)
     if params[:unit_prefs].present?
       params[:unit_prefs].each do |unit, p|
         unit_id = unit.to_i
