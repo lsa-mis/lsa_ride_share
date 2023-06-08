@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
-  root to: "static_pages#home"
+ 
+  root to: "static_pages#home", as: :all_root
 
   mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development? || Rails.env.staging?
   
@@ -84,6 +85,8 @@ Rails.application.routes.draw do
     resources :contacts, module: :sites
   end
   resources :notes
+
+  get 'welcome_pages/student'
   
   get 'static_pages/home'
 

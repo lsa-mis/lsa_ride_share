@@ -37,7 +37,9 @@ class ApplicationController < ActionController::Base
 
   def after_sign_in_path_for(resource)
     if session[:user_memberships].present?
-      programs_path 
+      programs_path
+    elsif is_student?(resource)
+      welcome_pages_student_path
     else
       root_path
     end

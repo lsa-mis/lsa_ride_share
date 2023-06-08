@@ -8,7 +8,7 @@
 #  first_name                  :string
 #  class_training_date         :date
 #  canvas_course_complete_date :date
-#  meeting_with_admin_date     :string
+#  meeting_with_admin_date     :date
 #  updated_by                  :integer
 #  created_at                  :datetime         not null
 #  updated_at                  :datetime         not null
@@ -32,7 +32,7 @@ class Student < ApplicationRecord
   end
 
   def passenger
-    Reservation.with_passengers.where(reservation_passengers: [self])
+    Reservation.joins(:passengers).where('reservation_passengers.student_id = ?', self)
   end
 
   def reservations
@@ -43,6 +43,14 @@ class Student < ApplicationRecord
     "#{self.first_name} #{self.last_name} - #{self.uniqname}" 
   end
 
+  def name
+    "#{self.first_name} #{self.last_name}" 
+  end
+
+  def can_reserve_car?
+    self.mvr_status.present? && self.mvr_status.include?("Approved") && self.canvas_course_complete_date.present? && self.meeting_with_admin_date.present? && self.class_training_date.present?
+  end
+  
   def self.eligible_drivers
     mvr_status.canvas_pass.class_training.meeting_with_admin
   end
