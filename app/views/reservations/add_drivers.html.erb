@@ -7,14 +7,6 @@
   <h3 class="mt-2">
     List of Students Who are Eligible to Drive
   </h3>
-  <p class="body-text">
-    Number of People on the Trip - <%= @reservation.number_of_people_on_trip %>
-  </p>
-  <% if @reservation.passengers.present? %>
-    <p class="body-text">
-      The reservation has <%= pluralize(@reservation.passengers.count, 'passenger') %> already
-    </p>
-  <% end %>
   <%= turbo_frame_tag 'drivers' do %>
     <%= render "drivers" %>
   <% end %>
