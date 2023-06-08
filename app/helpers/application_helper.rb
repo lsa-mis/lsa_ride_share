@@ -190,8 +190,8 @@ module ApplicationHelper
     day = range.begin.to_date
     day_reservations = car.reservations.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day).order(:start_time)
     return true unless day_reservations.present?
-    car_ranges = day_reservations.map { |res| res.start_time..res.end_time }
-    if car_ranges.any? { |r| r.cover?(range)}
+    car_ranges = day_reservations.map { |res| (res.start_time + 1.minute)..(res.end_time - 1.minute) }
+    if car_ranges.any? { |r| r.overlaps?(range)}
       return false
     else
       return true
@@ -230,7 +230,6 @@ module ApplicationHelper
 
   def available_cars(cars, range)
     available = []
-    day = range.begin.to_date
     cars.each do |car|
       if available?(car, range)
         available << car

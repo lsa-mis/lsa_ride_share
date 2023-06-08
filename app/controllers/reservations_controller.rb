@@ -3,7 +3,7 @@ class ReservationsController < ApplicationController
   before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger ]
   before_action :set_terms_and_units
   before_action :set_programs
-  before_action :set_cars, only: %i[ new edit get_available_cars ]
+  before_action :set_cars, only: %i[ new get_available_cars ]
 
   # GET /reservations or /reservations.json
   def index
@@ -59,6 +59,12 @@ class ReservationsController < ApplicationController
     @sites = @reservation.program.sites
     @number_of_seats = 1..Car.maximum(:number_of_seats)
     @day_start = @reservation.start_time.to_date
+    @unit_id = @reservation.program.unit.id
+    @term_id = @reservation.program.term.id
+    @cars = Car.data(@unit_id)
+    @time_start = @reservation.start_time.strftime("%I:%M%p")
+    @time_end = @reservation.end_time.strftime("%I:%M%p")
+    @number_of_people_on_trip = @reservation.number_of_people_on_trip
   end
 
   def get_available_cars
@@ -77,9 +83,9 @@ class ReservationsController < ApplicationController
     if params[:time_end].present?
       @time_end = params[:time_end]
     end
-    if ((Time.zone.parse(params[:time_end]).to_datetime - Time.zone.parse(params[:time_start]).to_datetime) * 24 * 60).to_i > 15
-      @reserv_begin = Time.zone.parse(params[:day_start] + " " + params[:time_start]).to_datetime
-      @reserv_end = Time.zone.parse(params[:day_start] + " " + params[:time_end]).to_datetime
+    if ((Time.zone.parse(@time_end).to_datetime - Time.zone.parse(@time_start).to_datetime) * 24 * 60).to_i > 15
+      @reserv_begin = Time.zone.parse(params[:day_start] + " " + @time_start).to_datetime
+      @reserv_end = Time.zone.parse(params[:day_start] + " " + @time_end).to_datetime
       range = @reserv_begin..@reserv_end
       @cars = available_cars(@cars, range, @unit_id)
     end
@@ -109,7 +115,8 @@ class ReservationsController < ApplicationController
       @students = []
       @number_of_seats = 1..Car.maximum(:number_of_seats)
       @cars = Car.data(params[:unit_id])
-      @day_start = params[:day_start]
+      @day_start = params[:day_start].to_date
+      @unit_id = params[:unit_id]
       render :new, status: :unprocessable_entity
     end
   end
@@ -117,9 +124,15 @@ class ReservationsController < ApplicationController
   # PATCH/PUT /reservations/1 or /reservations/1.json
   def update
     if params[:reservation][:driver_id].present?
-      @reservation.update(reservation_params)
-      redirect_to add_passengers_path(@reservation)
-      return
+      if @reservation.update(reservation_params)
+        redirect_to add_passengers_path(@reservation)
+        return
+      else
+        flash.now[:alert] = "error"
+        @drivers = @reservation.program.students.eligible_drivers
+        format.turbo_stream { render :add_drivers, status: :unprocessable_entity }
+        return
+      end
     end
     if params[:reservation][:student_id].present?
       @reservation.passengers << Student.find(params[:reservation][:student_id])
@@ -132,6 +145,10 @@ class ReservationsController < ApplicationController
       redirect_to add_passengers_path(@reservation)
       return
     end
+    @reservation.attributes = reservation_params
+    @reservation.start_time = Time.zone.parse(params[:day_start] + " " + params[:time_start]).to_datetime
+    @reservation.end_time = Time.zone.parse(params[:day_start] + " " + params[:time_end]).to_datetime
+    @reservation.number_of_people_on_trip = params[:number_of_people_on_trip]
     respond_to do |format|
       if @reservation.update(reservation_params)
         format.html { redirect_to reservation_url(@reservation), notice: "Reservation was successfully updated." }
@@ -147,6 +164,7 @@ class ReservationsController < ApplicationController
 
   def add_drivers
     @drivers = @reservation.program.students.eligible_drivers
+    @passengers = @reservation.passengers
     unless is_admin?(current_user)
       driver = Student.find_by(program_id: @reservation.program_id, uniqname: current_user.uniqname)
       @reservation.update(driver_id: driver.id)
@@ -196,7 +214,7 @@ class ReservationsController < ApplicationController
     end
 
     def set_cars
-      @cars = Car.data(params[:unit_id])
+      @cars = Car.data(params[:unit_id]).order(:car_number)
     end
 
     # Only allow a list of trusted parameters through.
