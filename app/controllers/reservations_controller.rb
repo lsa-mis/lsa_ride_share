@@ -67,7 +67,7 @@ class ReservationsController < ApplicationController
     if params[:time_end].present?
       @time_end = params[:time_end]
     end
-    if ((Time.zone.parse(params[:time_end]).to_datetime - Time.zone.parse(params[:time_start]).to_datetime) * 24 * 60).to_i > 15
+    if ((Time.zone.parse(@time_end).to_datetime - Time.zone.parse(@time_start).to_datetime) * 24 * 60).to_i > 15
       @reserv_begin = Time.zone.parse(params[:day_start] + " " + @time_start).to_datetime
       @reserv_end = Time.zone.parse(params[:day_start] + " " + @time_end ).to_datetime
       range = @reserv_begin..@reserv_end
