@@ -31,6 +31,13 @@ class VehicleReportsController < ApplicationController
       @vehicle_reports = VehicleReport.all
     end
 
+    #WORKING ON
+    if params[:car_id].present? && params[:unit_id].present?
+      ids = Reservation.where(car_id: params[:car_id]).pluck(:id)
+      car_ids = Car.where(unit_id: params[:unit_id]).pluck(:id)
+    else
+    end
+
 
     authorize @vehicle_reports
   end
