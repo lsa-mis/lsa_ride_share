@@ -1,5 +1,4 @@
 import { Controller } from "@hotwired/stimulus"
-import { get } from "@rails/request.js"
 
 export default class extends Controller {
   static targets = ['form', 'number_of_people_on_trip', 'number_of_passengers',
@@ -23,7 +22,7 @@ export default class extends Controller {
       error_place.innerHTML = ''
       event.preventDefault()
     } else if (backup_driver != "" && number == 0) {
-      error_place.innerHTML = 'Please remove one passenger to get room for the backup driver';
+      error_place.innerHTML = 'Please remove one passenger then add a backup driver';
       this.driver_errorTarget.classList.remove("fields--display")
       this.driver_errorTarget.classList.add("fields--hide")
       event.preventDefault()
