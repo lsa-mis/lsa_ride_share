@@ -6,6 +6,7 @@ class VehicleReportsController < ApplicationController
   # GET /vehicle_reports or /vehicle_reports.json
   def index
     @cars = Car.all
+    @terms = Term.sorted
 
     if params[:car_id].present?
       ids = Reservation.where(car_id: params[:car_id]).pluck(:id)
@@ -14,8 +15,17 @@ class VehicleReportsController < ApplicationController
       @vehicle_reports = VehicleReport.all
     end
 
-    @terms = Term.sorted
+    if params[:unit_id].present?
+      car_ids = Car.where(unit_id: params[:unit_id]).pluck(:id)
+      reservation_ids = Reservation.where(car_id: car_ids)
+      @vehicle_reports = VehicleReport.where(reservation_id: reservation_ids)
+    else
+      @vehicle_reports = VehicleReport.all
+    end
+
+
     
+
     authorize @vehicle_reports
   end
 
