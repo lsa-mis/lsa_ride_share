@@ -147,6 +147,7 @@ class ReservationsController < ApplicationController
 
   def add_drivers
     @drivers = @reservation.program.students.eligible_drivers
+    @passengers = @reservation.passengers
     unless is_admin?(current_user)
       driver = Student.find_by(program_id: @reservation.program_id, uniqname: current_user.uniqname)
       @reservation.update(driver_id: driver.id)
