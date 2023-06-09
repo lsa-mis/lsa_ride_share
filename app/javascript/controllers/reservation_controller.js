@@ -2,10 +2,8 @@ import { Controller } from "@hotwired/stimulus"
 import { get } from "@rails/request.js"
 
 export default class extends Controller {
-  static targets = ['form', 'term', 'unit', 'program', 'site',
-    'day_start', 'number', 'time_start', 'time_end',
-    'driver', 'driver_phone', 'driver_error',
-    'backup_driver', 'backup_driver_phone', 'backup_driver_error']
+  static targets = ['form', 'term', 'unit', 'program', 'site', 'required_fields',
+    'day_start', 'number', 'time_start', 'time_end', 'car', 'car_field']
   connect() {
     console.log("connect - reservation")
   }
@@ -119,23 +117,30 @@ export default class extends Controller {
   }
 
   submitForm(event) {
-    var driver = this.driverTarget.value
-    var driver_phone = this.driver_phoneTarget.value
-    var backup_driver = this.backup_driverTarget.value
-    var backup_driver_phone = this.backup_driver_phoneTarget.value
+    console.log("hellll")
+    var term = this.termTarget.value
+    var program = this.programTarget.value
+    var site = this.siteTarget.value
+    var time_start = this.time_startTarget.value
+    var time_end = this.time_endTarget.value
+    console.log(time_start)
+    console.log(time_end)
+    var car = this.carTarget.value
 
-    if(driver == "" || driver_phone == "") {
-      this.driver_errorTarget.classList.add("fields--display")
-      this.driver_errorTarget.classList.remove("fields--hide")
+
+    if(term == "" || program == "" || site == "") {
+      this.required_fieldsTarget.classList.add("fields--display")
+      this.required_fieldsTarget.classList.remove("fields--hide")
+      this.car_fieldTarget.classList.remove("fields--display")
+      this.car_fieldTarget.classList.add("fields--hide")
       event.preventDefault()
-    } else if (backup_driver != "" && backup_driver_phone == "") {
-      this.backup_driver_errorTarget.classList.add("fields--display")
-      this.backup_driver_errorTarget.classList.remove("fields--hide")
-      this.driver_errorTarget.classList.remove("fields--display")
-      this.driver_errorTarget.classList.add("fields--hide")
+    } else if (car == "") {
+      this.car_fieldTarget.classList.add("fields--display")
+      this.car_fieldTarget.classList.remove("fields--hide")
+      this.required_fieldsTarget.classList.remove("fields--display")
+      this.required_fieldsTarget.classList.add("fields--hide")
       event.preventDefault()
-    }
-    else{
+    } else {
       Turbo.navigator.submitForm(this.formTarget)
     }
   }
