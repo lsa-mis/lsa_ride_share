@@ -95,6 +95,7 @@ class ReservationsController < ApplicationController
 
   def list_of_available_cars(unit_id, day, number, time_start, time_end)
     cars = Car.data(unit_id).order(:car_number)
+    cars = cars.where("number_of_seats >= ?", number)
     
     if ((Time.zone.parse(time_end).to_datetime - Time.zone.parse(time_start).to_datetime) * 24 * 60).to_i > 15
       reserv_begin = Time.zone.parse(day_start + " " + time_start).to_datetime
