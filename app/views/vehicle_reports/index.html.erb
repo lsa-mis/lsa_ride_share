@@ -6,33 +6,30 @@
     <%= form_with url: vehicle_reports_path, method: :get, data: { autosubmit_target: "form", turbo_frame: "turbo-vehicle_reports" } do |form| %>
       <div class="flex gap-2 mb-4">
         <div class="">
-          <% if Term.current.present? %>
-            <label for="term_id" class="fancy_label">Filter by Term</label>
-            <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: params[:term_id]), include_blank: "Current Term", class: "filter_select w-48",
-              :"data-action" => "change->autosubmit#search" %>
-          <% else %>
-            <label for="term_id" class="fancy_label">Select a Term</label>
-            <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: params[:term_id]), include_blank: "Select ...", class: "filter_select w-48",
-              :"data-action" => "change->autosubmit#search" %>
-          <% end %>
-        </div>
-
-        <% if current_user.unit_ids.count > 1 %>
-          <div class="">
+          <% if current_user.unit_ids.count > 1 %>
             <label for="unit_id" class="fancy_label">Select a Unit</label>
             <%= select_tag "unit_id", options_from_collection_for_select(@units, :id, :name, selected: params[:unit_id]), include_blank: "All Units", class: "filter_select w-48",
               :"data-action" => "change->autosubmit#search" %>
-          </div>
-        <% end %>
-
-        <% if Car.present? %>
-          <div class="">
+          <% end %>
+        </div>
+        <div class="">
+          <% if Term.current.present? %>
+            <label for="term_id" class="fancy_label">Filter by Term</label>
+            <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: params[:term_id]), include_blank: "Current Term", class: "filter_select w-48",
+               :"data-action" => "change->autosubmit#search" %>
+            <% else %>
+              <label for="term_id" class="fancy_label">Select a Term</label>
+              <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: params[:term_id]), include_blank: "Select ...", class: "filter_select w-48",
+                :"data-action" => "change->autosubmit#search" %>
+            <% end %>
+        </div>
+        <div class="">
+          <% if Car.present? %>
             <label for="car_id" class="fancy_label">Filter by Car</label>
-            <%= select_tag "car_id", options_from_collection_for_select(@cars, :id, :car_number, selected: params[:car_id]), include_blank: "Select ...", class: "filter_select w-48",
+            <%= select_tag "car_id", options_from_collection_for_select(@cars, :id, :car_number, selected: params[:car_id]), include_blank: "All Cars", class: "filter_select w-48",
               :"data-action" => "change->autosubmit#search" %>
-          </div>
-        <% end %>
-
+          <% end %>
+        </div>
       </div>
 
       <div>
