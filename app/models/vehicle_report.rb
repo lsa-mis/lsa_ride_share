@@ -176,7 +176,7 @@ class VehicleReport < ApplicationRecord
 
   def check_mileage_end
     if self.mileage_end.present? && self.mileage_end < self.mileage_start
-       errors.add(mileage_end.to_s, "must be bigger than mileage start")
+       errors.add("Mileage end must be bigger than mileage start - current value: ", mileage_end.to_s)
     end
   end
 
