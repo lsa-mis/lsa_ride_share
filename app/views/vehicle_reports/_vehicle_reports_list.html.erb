@@ -23,10 +23,10 @@
               <%= link_to vehicle_report.id, vehicle_report_path(vehicle_report), class: "link_to" %>
             </td>
             <td class="mi_tbody_td">
-              <%= show_car(vehicle_report.reservation) %>
+              <%= vehicle_report.reservation_id %>
             </td>
             <td class="mi_tbody_td">
-              <%= vehicle_report.reservation_id %>
+              <%= show_car(vehicle_report.reservation) %>
             </td>
             <td class="mi_tbody_td">
               <%= vehicle_report.mileage_start %>
@@ -48,15 +48,11 @@
                 <%= vehicle_report.updated_at %>
               <% end %>
             </td>
-            <td class="mi_tbody_td <%= "#{vehicle_report.status}" %>">
+            <td class="mi_tbody_td status-<%= vehicle_report.status %>">
               <%= vehicle_report.status %>
             </td>
-            <td class="mi_tbody_td <%= "#{vehicle_report.student_status}" %>">
-              <% if vehicle_report.student_status %>
-                Completed
-              <% else %>
-                Not Completed
-              <% end %>
+            <td class="mi_tbody_td status-<%= vehicle_report.student_status %>">
+              <%= show_vehicle_report_student_status(vehicle_report) %>
             </td>
           </tr>
         <% end %>
