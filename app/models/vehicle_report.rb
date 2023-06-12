@@ -6,8 +6,8 @@
 #  reservation_id :bigint           not null
 #  mileage_start  :float
 #  mileage_end    :float
-#  gas_start      :float
-#  gas_end        :float
+#  gas_start      :int
+#  gas_end        :int
 #  parking_spot   :string
 #  created_by     :integer
 #  updated_by     :integer
