@@ -31,14 +31,14 @@
   <%= form.hidden_field :reservation_id, value: @reservation.id %>
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
     <div>
-      <div class="error_text fields--hide" data-vehiclereport-target="mileage_error">
-        <span>End mileage should be higher than start mileage. Please enter a valid value for end mileage.</span>
-      </div>    
-
       <div class="my-5">
           <%= form.label :mileage_start, class: "fancy_label"  %>
           <%= form.number_field :mileage_start, required: true, class: "input_text_field", "data-vehiclereport-target": "mileage_start"  %>
       </div>
+
+      <div class="error_text fields--hide" data-vehiclereport-target="mileage_error">
+        <span>End mileage should be higher than start mileage. Please enter a valid value.</span>
+      </div>    
 
       <div class="my-5">
         <%= form.label :mileage_end, class: "fancy_label" %>
