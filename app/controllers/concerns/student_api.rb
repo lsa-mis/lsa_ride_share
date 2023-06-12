@@ -60,29 +60,33 @@ module StudentApi
       return
     end
     if result['success']
-      data = result['data']['Classes']['Class']['ClassSections']['ClassSection']['ClassStudents']['ClassStudent']
-      students_in_db = @student_program.students.pluck(:uniqname)
-      data.each do |student_info|
-        uniqname = student_info['Uniqname']
-        if students_in_db.include?(uniqname)
-          students_in_db.delete(uniqname)
-        else
-          student = Student.new(uniqname: student_info['Uniqname'], first_name: student_info['Name'].split(",").last, last_name: student_info['Name'].split(",").first, program: program)
-          unless student.save
-            flash.now[:alert] = "Error saving student record."
-            return
+      if result['data']['Classes']['Class']['ClassSections']['ClassSection']['ClassStudents'].present?
+        data = result['data']['Classes']['Class']['ClassSections']['ClassSection']['ClassStudents']['ClassStudent']
+        students_in_db = @student_program.students.pluck(:uniqname)
+        data.each do |student_info|
+          uniqname = student_info['Uniqname']
+          if students_in_db.include?(uniqname)
+            students_in_db.delete(uniqname)
+          else
+            student = Student.new(uniqname: student_info['Uniqname'], first_name: student_info['Name'].split(",").last, last_name: student_info['Name'].split(",").first, program: program)
+            unless student.save
+              flash.now[:alert] = "Error saving student record."
+              return
+            end
           end
         end
+        if students_in_db.present?
+          # delete students who dropped the course
+          Student.where(uniqname: students_in_db, program_id: @student_program).delete_all
+        end
+        unless @student_program.update(number_of_students: @student_program.students.count)
+          flash.now[:error] = "Error updating number of students."
+          return
+        end
+        flash.now[:notice] = "Student list is updated."
+      else
+        flash.now[:notice] = "The course has no students registered."
       end
-      if students_in_db.present?
-        # delete students who dropped the course
-        Student.where(uniqname: students_in_db, program_id: @student_program).delete_all
-      end
-      unless @student_program.update(number_of_students: @student_program.students.count)
-        flash.now[:error] = "Error updating number of students."
-        return
-      end
-      flash.now[:notice] = "Student list is updated."
     else
       flash.now[:alert] = result['errorcode'] + ": " + result['error']
     end

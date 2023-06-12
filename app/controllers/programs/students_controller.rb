@@ -14,7 +14,6 @@ class Programs::StudentsController < ApplicationController
   end
 
   def update_student_list
-    # to test create program with: subject = RCCORE, catalog_number = 205, section = 165
     update_students(@student_program)
     @students = @student_program.students.order(:last_name)
     authorize @students
@@ -36,6 +35,7 @@ class Programs::StudentsController < ApplicationController
       @student.first_name = result['first_name']
       @student.last_name = result['last_name']
       if @student.save
+        @student_program.update(number_of_students: @student_program.students.count)
         @student = Student.new
         flash.now[:notice] = "Student list is updated." + result['note']
       end
