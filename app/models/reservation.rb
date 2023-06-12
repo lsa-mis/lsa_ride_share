@@ -32,6 +32,8 @@ class Reservation < ApplicationRecord
   
   has_rich_text :note
 
+  validate :check_start_and_end_time
+
   scope :with_passengers, -> { Reservation.includes(:passengers) }
 
   def reservation_date
@@ -50,6 +52,12 @@ class Reservation < ApplicationRecord
 
   def added_people
     self.passengers.count + (self.driver.present? ? 1 : 0).to_i + (self.backup_driver.present? ? 1 : 0).to_i  
+  end
+
+  def check_start_and_end_time
+    if ((self.end_time - self.start_time)/60).to_i < 16
+      errors.add(:end_time, "is too close to the start time.")
+    end
   end
 
 end

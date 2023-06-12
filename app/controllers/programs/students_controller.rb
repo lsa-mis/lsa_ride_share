@@ -48,14 +48,21 @@ class Programs::StudentsController < ApplicationController
   end
 
   def destroy
-    authorize @student
-    if @student.destroy
+    if @student.reservations.present?
+      flash.now[:alert] = "Student has reservations and can't be removed."
       @students = @student_program.students.order(:last_name)
-      @student = Student.new
-      flash.now[:notice] = "Student is removed."
+      return
     else
-      @students = @student_program.students.order(:last_name)
-      render :add_students, status: :unprocessable_entity
+      authorize @student
+      if @student.destroy
+        @student_program.update(number_of_students: @student_program.students.count)
+        @students = @student_program.students.order(:last_name)
+        @student = Student.new
+        flash.now[:notice] = "Student is removed."
+      else
+        @students = @student_program.students.order(:last_name)
+        render :add_students, status: :unprocessable_entity
+      end
     end
 
   end
