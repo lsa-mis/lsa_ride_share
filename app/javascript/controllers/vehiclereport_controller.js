@@ -25,17 +25,20 @@ export default class extends Controller {
     if(gas_start > 100 || gas_start < 0 || gas_end > 100 || gas_end < 0) {
       this.gas_errorTarget.classList.add("fields--display")
       this.gas_errorTarget.classList.remove("fields--hide")
-
       submitForm = false
+    } else {
+      this.gas_errorTarget.classList.remove("fields--display")
+      this.gas_errorTarget.classList.add("fields--hide")
     }
 
     if(Number(mileage_end) < Number(mileage_start)) {
       this.mileage_errorTarget.classList.add("fields--display")
       this.mileage_errorTarget.classList.remove("fields--hide")
-
       submitForm = false
+    } else {
+      this.mileage_errorTarget.classList.remove("fields--display")
+      this.mileage_errorTarget.classList.add("fields--hide")
     }
-
 
     if(submitForm == false) {
       event.preventDefault()
