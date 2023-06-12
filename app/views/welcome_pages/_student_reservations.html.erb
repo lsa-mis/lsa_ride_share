@@ -4,11 +4,12 @@
     <table class="mi_table">
       <thead class="border border-l-0 border-r-0 border-gray-um60">
         <tr>
-          <th class="header_th">View if Driver</th>
+          <th class="header_th">Reservation</th>
           <th class="header_th">Pick-up</th>
           <th class="header_th">Drop-off</th>
           <th class="header_th">Site</th>
           <th class="header_th">Car</th>
+          <th class="header_th">Vehicle Report</th>
         </tr>
       </thead>
       <tbody>
@@ -38,6 +39,13 @@
             </td>
             <td class="mi_tbody_td">
               <%= show_car(reservation) %>
+            </td>
+            <td class="mi_tbody_td">
+              <% if reservation.vehicle_report.present? %>
+                <%= link_to 'Vehicle report', vehicle_report_path(reservation.vehicle_report), class: "link_to" %>
+              <% else %>
+                <%= link_to 'New vehicle report', new_reservation_vehicle_report_path(reservation), class: "link_to" %>
+              <% end %>
             </td>
           </tr>
         <% end %>

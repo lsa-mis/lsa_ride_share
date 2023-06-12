@@ -242,6 +242,14 @@ module ApplicationHelper
     turbo_stream.update "flash", partial: "layouts/notification"
   end
 
+  def show_vehicle_report_student_status(vehicle_report)
+    if vehicle_report.student_status
+      "Completed"
+    else
+      "Not Completed"
+    end
+  end
+
   def us_states
     [
       ['Alabama', 'AL'],
