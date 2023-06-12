@@ -111,6 +111,10 @@ class ReservationsController < ApplicationController
   # POST /reservations or /reservations.json
   def create
     @reservation = Reservation.new(reservation_params)
+    if params[:car_id].present?
+      @reservation.car_id = params[:car_id]
+      @car_id = params[:car_id]
+    end
     @reservation.start_time = Time.zone.parse(params[:day_start] + " " + params[:time_start]).to_datetime
     @reservation.end_time = Time.zone.parse(params[:day_start] + " " + params[:time_end]).to_datetime
     @reservation.number_of_people_on_trip = params[:number_of_people_on_trip]
@@ -131,6 +135,7 @@ class ReservationsController < ApplicationController
       
       @day_start = params[:day_start].to_date
       @unit_id = params[:unit_id]
+      @car_id = params[:car_id]
       @cars = list_of_available_cars(@unit_id, @day_start, @number_of_people_on_trip, params[:time_start], params[:time_end])
       render :new, status: :unprocessable_entity
     end
@@ -161,6 +166,7 @@ class ReservationsController < ApplicationController
       return
     end
     @reservation.attributes = reservation_params
+    @reservation.car_id = params[:car_id]
     @reservation.start_time = Time.zone.parse(params[:day_start] + " " + params[:time_start]).to_datetime
     @reservation.end_time = Time.zone.parse(params[:day_start] + " " + params[:time_end]).to_datetime
     @reservation.number_of_people_on_trip = params[:number_of_people_on_trip]
