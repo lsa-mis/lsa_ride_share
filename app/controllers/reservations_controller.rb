@@ -124,14 +124,12 @@ class ReservationsController < ApplicationController
       @students = @reservation.program.students 
       redirect_to add_drivers_path(@reservation), notice: "Reservation was successfully created. Please add drivers."
     else
-      @program_id = params[:reservation][:program_id]
-      # @unit_id = params[:unit_id]
+      @program = Program.find(params[:reservation][:program_id])
       @term_id = params[:term_id]
-      @sites = Program.find(@program_id).sites
-      # @site = params[:site_id]
+      # @sites = Program.find(@program_id).sites
+      @sites = @program.sites
       @number_of_seats = 1..Car.maximum(:number_of_seats)
       @number_of_people_on_trip = params[:number_of_people_on_trip]
-      # @cars = Car.data(params[:unit_id])
       
       @day_start = params[:day_start].to_date
       @unit_id = params[:unit_id]

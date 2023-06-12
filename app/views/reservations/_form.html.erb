@@ -13,7 +13,7 @@
 
   <%= form.label :unit_id, 'Unit *', class: "hidden" %>
   <div class="error_text fields--hide mt-2" data-reservation-target="required_fields">
-    <span>Please select Term, Program and Site </span>
+    <span>Please select required data </span>
   </div>
   <input type="hidden" id="unit_id" name="unit_id" value=<%= @unit_id %> data-reservation-target="unit">
   <% if is_student?(current_user) %>
