@@ -55,6 +55,7 @@ class Programs::StudentsController < ApplicationController
     else
       authorize @student
       if @student.destroy
+        @student_program.update(number_of_students: @student_program.students.count)
         @students = @student_program.students.order(:last_name)
         @student = Student.new
         flash.now[:notice] = "Student is removed."
