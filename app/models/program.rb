@@ -41,7 +41,7 @@ class Program < ApplicationRecord
 
   validates_presence_of :title, :instructor_id, :unit_id
   validates_presence_of :subject, :catalog_number, :class_section, unless: -> { self.not_course }
-  validates :term_id, uniqueness: { scope: [:subject, :catalog_number], message: "already has this program" }, unless: -> { self.not_course } 
+  validates :term_id, uniqueness: { scope: [:subject, :catalog_number, :class_section], message: "already has this program" }, unless: -> { self.not_course } 
   validates :term_id, uniqueness: { scope: [:title], message: "already has this program" }, if: -> { self.not_course }
 
   scope :current_term, -> { where(term_id: Term.current) }
