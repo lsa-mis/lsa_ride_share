@@ -14,12 +14,6 @@ export default class extends Controller {
 
     gas_start = Number(gas_start)
     gas_end = Number(gas_end)
-
-    console.log(gas_start)
-    console.log(gas_end)
-    console.log(mileage_start)
-    console.log(mileage_end)
-
     var submitForm = true
 
     if(gas_start > 100 || gas_start < 0 || gas_end > 100 || gas_end < 0) {
@@ -32,7 +26,6 @@ export default class extends Controller {
     }
 
     if (mileage_start && mileage_end) {
-      console.log("here")
       if(Number(mileage_end) < Number(mileage_start)) {
         this.mileage_errorTarget.classList.add("fields--display")
         this.mileage_errorTarget.classList.remove("fields--hide")
