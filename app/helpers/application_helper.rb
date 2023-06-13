@@ -239,7 +239,9 @@ module ApplicationHelper
   end
 
   def allow_student_to_edit_reservation?(reservation)
-    if ((reservation.start_time - DateTime.now)*24).round > 72
+    return true unless is_student?(current_user)
+    student = Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program)
+    if ((reservation.start_time - DateTime.now)*24).round > 72 && reservation.program.students.include?(student)
       return true
     else
       return false
