@@ -1,4 +1,8 @@
-<%= form_with(model: vehicle_report, class: "contents") do |form| %>
+<%= form_with model: vehicle_report, class: "contents",
+  data: { controller: "vehiclereport",
+          target: "form",
+          action: "submit->vehiclereport#submitForm"
+        } do |form| %>
 
   <% if vehicle_report.errors.any? %>
     <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
@@ -15,7 +19,7 @@
   </h2>
 
   <h3>
-    Report status:
+    Student status:
     <% if @vehicle_report.student_status %>
     complete
     <% else %>
@@ -29,22 +33,30 @@
     <div>
       <div class="my-5">
           <%= form.label :mileage_start, class: "fancy_label"  %>
-          <%= form.text_field :mileage_start, required: true, class: "input_text_field" %>
+          <%= form.number_field :mileage_start, required: true, class: "input_text_field", "data-vehiclereport-target": "mileage_start"  %>
       </div>
+
+      <div class="error_text fields--hide" data-vehiclereport-target="mileage_error">
+        <span>End mileage should be higher than start mileage. Please enter a valid value.</span>
+      </div>    
 
       <div class="my-5">
         <%= form.label :mileage_end, class: "fancy_label" %>
-        <%= form.text_field :mileage_end, class: "input_text_field" %>
+        <%= form.number_field :mileage_end, class: "input_text_field", "data-vehiclereport-target": "mileage_end"  %>
       </div>
+
+      <div class="error_text fields--hide" data-vehiclereport-target="gas_error">
+        <span>Gas value should be 0 to 100. Please enter a valid value for gas.</span>
+      </div>    
 
       <div class="my-5">
         <%= form.label :gas_start, class: "fancy_label"  %>
-        <%= form.text_field :gas_start, required: true, class: "input_text_field" %>
+        <%= form.number_field :gas_start, required: true, class: "input_text_field", "data-vehiclereport-target": "gas_start"  %>
       </div>
 
       <div class="my-5">
         <%= form.label :gas_end, class: "fancy_label"  %>
-        <%= form.text_field :gas_end, class: "input_text_field" %>
+        <%= form.number_field :gas_end, class: "input_text_field", "data-vehiclereport-target": "gas_end"  %>
       </div>
 
       <div class="my-5">
