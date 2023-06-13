@@ -14,7 +14,6 @@ class Programs::StudentsController < ApplicationController
   end
 
   def update_student_list
-    # to test create program with: subject = RCCORE, catalog_number = 205, section = 165
     update_students(@student_program)
     @students = @student_program.students.order(:last_name)
     authorize @students
@@ -36,6 +35,7 @@ class Programs::StudentsController < ApplicationController
       @student.first_name = result['first_name']
       @student.last_name = result['last_name']
       if @student.save
+        @student_program.update(number_of_students: @student_program.students.count)
         @student = Student.new
         flash.now[:notice] = "Student list is updated." + result['note']
       end
@@ -48,14 +48,21 @@ class Programs::StudentsController < ApplicationController
   end
 
   def destroy
-    authorize @student
-    if @student.destroy
+    if @student.reservations.present?
+      flash.now[:alert] = "Student has reservations and can't be removed."
       @students = @student_program.students.order(:last_name)
-      @student = Student.new
-      flash.now[:notice] = "Student is removed."
+      return
     else
-      @students = @student_program.students.order(:last_name)
-      render :add_students, status: :unprocessable_entity
+      authorize @student
+      if @student.destroy
+        @student_program.update(number_of_students: @student_program.students.count)
+        @students = @student_program.students.order(:last_name)
+        @student = Student.new
+        flash.now[:notice] = "Student is removed."
+      else
+        @students = @student_program.students.order(:last_name)
+        render :add_students, status: :unprocessable_entity
+      end
     end
 
   end
