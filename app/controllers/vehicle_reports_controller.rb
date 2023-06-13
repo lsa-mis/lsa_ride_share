@@ -52,10 +52,6 @@ class VehicleReportsController < ApplicationController
     @vehicle_report = VehicleReport.new
     authorize @vehicle_report
 
-    @vehicle_report.mileage_start = @reservation.car.mileage
-    @vehicle_report.gas_start = @reservation.car.gas
-    @vehicle_report.parking_spot = @reservation.car.parking_spot
-
     @pictures_start_required = false
 
     if @reservation.program.pictures_required_start
