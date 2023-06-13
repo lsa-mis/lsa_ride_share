@@ -31,13 +31,16 @@ export default class extends Controller {
       this.gas_errorTarget.classList.add("fields--hide")
     }
 
-    if(Number(mileage_end) < Number(mileage_start)) {
-      this.mileage_errorTarget.classList.add("fields--display")
-      this.mileage_errorTarget.classList.remove("fields--hide")
-      submitForm = false
-    } else {
-      this.mileage_errorTarget.classList.remove("fields--display")
-      this.mileage_errorTarget.classList.add("fields--hide")
+    if (mileage_start && mileage_end) {
+      console.log("here")
+      if(Number(mileage_end) < Number(mileage_start)) {
+        this.mileage_errorTarget.classList.add("fields--display")
+        this.mileage_errorTarget.classList.remove("fields--hide")
+        submitForm = false
+      } else {
+        this.mileage_errorTarget.classList.remove("fields--display")
+        this.mileage_errorTarget.classList.add("fields--hide")
+      }
     }
 
     if(submitForm == false) {
