@@ -7,19 +7,19 @@ class VehicleReportPolicy < ApplicationPolicy
   end
 
   def show?
-    user_in_access_group?
+    user_in_access_group? || is_student?
   end
 
   def create?
-    user_admin?
+    user_in_access_group? || is_student?
   end
 
   def new?
-    user_in_access_group?
+    create?
   end
   
   def update?
-    user_in_access_group?
+    user_in_access_group? || is_student?
   end
 
   def edit?
@@ -27,6 +27,6 @@ class VehicleReportPolicy < ApplicationPolicy
   end
 
   def destroy?
-    user_in_access_group?
+    false
   end
 end
