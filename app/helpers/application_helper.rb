@@ -237,6 +237,14 @@ module ApplicationHelper
     end
     return available
   end
+
+  def allow_student_to_edit_reservation?(reservation)
+    if ((reservation.start_time - DateTime.now)*24).round > 72
+      return true
+    else
+      return false
+    end
+  end
   
   def render_flash_stream
     turbo_stream.update "flash", partial: "layouts/notification"
