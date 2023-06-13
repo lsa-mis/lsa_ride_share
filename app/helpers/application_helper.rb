@@ -237,9 +237,27 @@ module ApplicationHelper
     end
     return available
   end
+
+  def allow_student_to_edit_reservation?(reservation)
+    return true unless is_student?(current_user)
+    student = Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program)
+    if ((reservation.start_time - DateTime.now)*24).round > 72 && reservation.program.students.include?(student)
+      return true
+    else
+      return false
+    end
+  end
   
   def render_flash_stream
     turbo_stream.update "flash", partial: "layouts/notification"
+  end
+
+  def show_vehicle_report_student_status(vehicle_report)
+    if vehicle_report.student_status
+      "Completed"
+    else
+      "Not Completed"
+    end
   end
 
   def us_states

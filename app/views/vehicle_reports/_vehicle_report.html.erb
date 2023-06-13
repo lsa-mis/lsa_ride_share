@@ -1,15 +1,18 @@
 <p class="body-lg-text mb-2">
   <%= link_to 'View vehicle reservation', reservation_path(vehicle_report.reservation_id), class: "link_to" %>
 </p>
+
+<p class="body-lg-text mb-2">
+  <%= link_to car_path(vehicle_report.reservation.car), class: "link_to" do %>
+    Car - <%= vehicle_report.reservation.car.car_number %>
+  <% end %>
+</p>
+
 <div class="grid grid-cols-1 sm:grid-cols-2">
   <div>
     <div class="">
-      <p class='body'>
-        <% if vehicle_report.student_status %>
-          Report is completed.
-        <% else %>
-          Report is not completed.
-        <% end %>
+      <p class='body-md-text status-<%= vehicle_report.student_status %>'>
+        <%= show_vehicle_report_student_status(vehicle_report) %>
       </p>
     </div>
 
@@ -75,15 +78,6 @@
       </label>
       <p class="body-lg-text inline-block">
           <%= User.find(vehicle_report.updated_by).display_name %>
-      </p>
-    </div>
-
-    <div class="py-2">
-      <label class="body-lg-bold-text">
-        Status:
-      </label>
-      <p class="body-lg-text inline-block">
-          <%= vehicle_report.status %>
       </p>
     </div>
 

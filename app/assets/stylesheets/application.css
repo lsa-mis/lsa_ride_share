@@ -21,3 +21,11 @@
 .field_with_errors select {
   border-color: #d70303 !important;
 }
+
+.status-false {
+  color: #d70303
+}
+
+.status-true {
+  color: green
+}
