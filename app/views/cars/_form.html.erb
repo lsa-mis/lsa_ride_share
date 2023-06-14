@@ -44,7 +44,7 @@
 
       <div class="my-5">
         <%= form.label :mileage, 'Mileage *', class: "fancy_label" %>
-        <%= form.text_field :mileage, required: true, placeholder: "Mileage", class: "input_text_field" %>
+        <%= form.number_field :mileage, value: number_with_precision(form.object.mileage, precision: 2), required: true, placeholder: "Mileage", class: "input_text_field" %>
       </div>
 
       <div class="my-5">
