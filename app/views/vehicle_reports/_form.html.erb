@@ -38,11 +38,15 @@
 
       <div class="error_text fields--hide" data-vehiclereport-target="mileage_error">
         <span>End mileage should be higher than start mileage. Please enter a valid value.</span>
-      </div>    
+      </div>
 
       <div class="my-5">
         <%= form.label :mileage_end, class: "fancy_label" %>
         <%= form.number_field :mileage_end, class: "input_text_field", "data-vehiclereport-target": "mileage_end"  %>
+      </div>
+
+      <div class="my-5">
+          Trip Mileage Total: <%= calculate_mileage(@vehicle_report) %>
       </div>
 
       <div class="error_text fields--hide" data-vehiclereport-target="gas_error">
