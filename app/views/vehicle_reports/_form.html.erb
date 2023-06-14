@@ -14,7 +14,7 @@
       </ul>
     </div>
   <% end %>
-  <h2>ADMINS WILL NEED TO DECIDE WHAT GOES HERE - Car: 
+  <h2>Car: 
     <%= @reservation.car.car_number + " - " + @reservation.program.title %>
   </h2>
 
@@ -50,12 +50,12 @@
       </div>    
 
       <div class="my-5">
-        <%= form.label :gas_start, class: "fancy_label"  %>
+        <%= form.label :gas_start, 'Percent of Fuel Remaining (Departure)', class: "fancy_label"  %>
         <%= form.number_field :gas_start, required: true, class: "input_text_field", "data-vehiclereport-target": "gas_start"  %>
       </div>
 
       <div class="my-5">
-        <%= form.label :gas_end, class: "fancy_label"  %>
+        <%= form.label :gas_end, 'Percent of Fuel Remaining (Return)', class: "fancy_label"  %>
         <%= form.number_field :gas_end, class: "input_text_field", "data-vehiclereport-target": "gas_end"  %>
       </div>
 
