@@ -46,7 +46,9 @@ class VehicleReport < ApplicationRecord
   has_many_attached :image_damages do |attachable|
    attachable.variant :thumb, resize_to_limit: [250, 250]
   end
-  has_rich_text :note
+  has_rich_text :comment
+
+  has_many :notes, as: :noteable
 
   before_save :set_student_status
 
