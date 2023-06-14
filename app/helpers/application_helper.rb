@@ -260,6 +260,15 @@ module ApplicationHelper
     end
   end
 
+  def calculate_mileage(vehicle_report)
+    if vehicle_report.mileage_end.present?
+      mileage_trip_total = vehicle_report.mileage_end - vehicle_report.mileage_start
+    else
+      mileage_trip_total = "N/A"
+    end
+      return mileage_trip_total
+  end
+
   def us_states
     [
       ['Alabama', 'AL'],
