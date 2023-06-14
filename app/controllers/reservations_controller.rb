@@ -126,7 +126,6 @@ class ReservationsController < ApplicationController
     else
       @program = Program.find(params[:reservation][:program_id])
       @term_id = params[:term_id]
-      # @sites = Program.find(@program_id).sites
       @sites = @program.sites
       @number_of_seats = 1..Car.maximum(:number_of_seats)
       @number_of_people_on_trip = params[:number_of_people_on_trip]
@@ -199,12 +198,8 @@ class ReservationsController < ApplicationController
 
   def remove_passenger
     @reservation.passengers.delete(Student.find(params[:student_id]))
-    @passengers = @reservation.passengers
-    @students = @reservation.program.students - @passengers
-    @students.delete(@reservation.driver)
-    @students.delete(@reservation.backup_driver)
+    add_passengers
   end
-
 
   # DELETE /reservations/1 or /reservations/1.json
   def destroy
