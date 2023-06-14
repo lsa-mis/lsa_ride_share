@@ -54,6 +54,10 @@
         <%= form.number_field :gas_start, required: true, class: "input_text_field", "data-vehiclereport-target": "gas_start"  %>
       </div>
 
+      <div class="error_text fields--hide" data-vehiclereport-target="gas_error_lowfuel">
+        <span>Car must refueled - fuel remaining should be over 50%</span>
+      </div>   
+
       <div class="my-5">
         <%= form.label :gas_end, 'Percent of Fuel Remaining (Return)', class: "fancy_label"  %>
         <%= form.number_field :gas_end, class: "input_text_field", "data-vehiclereport-target": "gas_end"  %>
