@@ -232,8 +232,8 @@
   </div>
 
   <div class="my-5">
-    <%= form.label :note, class: "fancy_label"  %>
-    <%= form.rich_text_area :note, class: "input_text_field" %>
+    <%= form.label :comment, class: "fancy_label"  %>
+    <%= form.rich_text_area :comment, class: "input_text_field" %>
   </div>
   <% if action_name == "new" %>
     <%= form.hidden_field :created_by, value: current_user.id %>

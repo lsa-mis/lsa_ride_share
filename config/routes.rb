@@ -19,7 +19,9 @@ Rails.application.routes.draw do
   resources :unit_preferences
 
   resources :terms
-  resources :vehicle_reports
+  resources :vehicle_reports do
+    resources :notes, module: :vehicle_reports
+  end
   # get '/vehicle_reports/:reports_ids', to: 'vehicle_reports#index', as: 'vehicle_reports'
 
   resources :reservations do
@@ -33,7 +35,6 @@ Rails.application.routes.draw do
   resources :cars do
     resources :notes, module: :cars
   end
-  resources :students
   
   resources :programs do
     resources :cars, module: :programs
