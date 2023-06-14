@@ -15,7 +15,7 @@
     <% end %>
     <input type="hidden" id="number_of_passengers" name="number_of_passengers" value=<%= @reservation.passengers.count %> data-driver-target="number_of_passengers">    
     <% if is_student?(current_user) %>
-      <%= form.hidden_field :driver_id, value: @reservation.driver_id  %>
+      <input type="hidden" name="reservation[driver_id]" id="reservation_driver_id" value=<%= @reservation.driver_id %> data-driver-target="driver">
       <div class="mt-2">
         <label class="body-lg-bold-text">
           Driver:
@@ -32,8 +32,7 @@
       </div>
     <% end %>
 
-    <div class="error_text fields--hide" data-driver-target="driver_error">
-      <span>Please enter driver's data</span>
+    <div class="error_text" id="driver_error">
     </div>
 
     <div class="my-5">
