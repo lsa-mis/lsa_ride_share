@@ -51,6 +51,12 @@
       <div class="error_text" id="backup_driver_error">
       </div>
 
+      <div>
+        <p class="body-sm-bold-text">
+          If a Backup Driver is selected the Backup Driver Phone is required
+        </p>
+      </div>
+
       <div class="my-5">
         <%= form.label :backup_driver_phone, "Backup Driver Phone", class: "fancy_label" %>
         <%= form.text_field :backup_driver_phone, class: "input_text_field",
@@ -59,11 +65,7 @@
     <% end %>
 
     <div class="inline">
-      <% if @reservation.number_of_people_on_trip <= 2 %>
-        <%= form.submit "Save", class: "primary_button" %>
-      <% else %>
-        <%= form.submit "Save and Add Passengers", class: "primary_button" %>
-      <% end %>
+      <%= form.submit "Save and Add Passengers", class: "primary_button" %>
     </div>
 
     <% if is_admin?(current_user) %>
