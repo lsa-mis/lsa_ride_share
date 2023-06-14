@@ -87,7 +87,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
     @apply text-lg font-bold font-montserrat;
   }
 
-  .body-sm-semibold-text {
+  .body-sm-bold-text {
     @apply text-sm font-semibold text-gray-900
   }
 
