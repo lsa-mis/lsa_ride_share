@@ -24,6 +24,7 @@ class Site < ApplicationRecord
   accepts_nested_attributes_for :contacts
   validates_presence_of :title, :address1, :city, :state
   validates :zip_code, presence: true, format: { with: /\d{5}(-\d{4})?/, message: "should be in the form 12345 or 12345-1234"}
+  validates :title, uniqueness: { scope: [:unit_id], message: "already exist" }
 
   def address
     "#{self.address1} #{self.address2} #{self.city} #{self.state} #{self.zip_code}"

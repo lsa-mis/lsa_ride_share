@@ -5,7 +5,7 @@
         Car:
       </label>
       <p class="body-lg-text ml-2 inline-block">
-        <%= show_car(reservation) %>
+        <%= link_to show_car(reservation), car_path(reservation.car), class: "link_to" %>
       </p>
     </div>
 

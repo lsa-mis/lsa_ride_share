@@ -18,7 +18,7 @@
     <%= turbo_frame_tag "passenger_list" do %>
       <% if @reservation.added_people == @reservation.number_of_people_on_trip %>
         <p class="my-5 body-text">
-          No space for more pasenders in the car - please click Finish Creating Reservation button
+          No space for more passengers in the car - please click Finish Creating Reservation button
         </p>
       <% end %>
       <%= render "passenger_list", locals: { reservation: @reservation} %>
