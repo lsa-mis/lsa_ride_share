@@ -32,8 +32,10 @@ class ReservationsController < ApplicationController
       @term_id = @program.term.id
       @sites = @program.sites
       @cars = @cars.where(unit_id: @unit_id)
+      @min_date =  DateTime.now + 72.hours
     elsif params[:unit_id].present?
       @unit_id = params[:unit_id]
+      @min_date =  DateTime.now
     else
       redirect_to reservations_path, notice: "You must select a unit first."
     end
