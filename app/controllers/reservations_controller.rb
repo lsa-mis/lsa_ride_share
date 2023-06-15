@@ -42,7 +42,7 @@ class ReservationsController < ApplicationController
     if params[:day_start].present?
       @day_start = params[:day_start].to_date
     else
-      @day_start = Date.today
+      @day_start = default_reservation_for_students
     end
     if params[:term_id].present?
       @term_id = params[:term_id]
