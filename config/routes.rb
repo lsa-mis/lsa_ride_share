@@ -55,9 +55,6 @@ Rails.application.routes.draw do
   delete 'programs/managers/remove_manager/:program_id/:id', to: 'programs/managers#remove_manager_from_program', as: :remove_manager_from_program
 
   resources :programs do
-    resources :config_questions, module: :programs
-  end
-  resources :programs do
     resources :students, module: :programs
   end
 
