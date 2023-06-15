@@ -121,6 +121,7 @@ class ReservationsController < ApplicationController
     @reservation.reserved_by = current_user.id
     authorize @reservation
     if @reservation.save
+      ReservationMailer.with(reservation: @reservation).car_reservation_created.deliver_now
       @students = @reservation.program.students 
       redirect_to add_drivers_path(@reservation), notice: "Reservation was successfully created. Please add drivers."
     else
@@ -170,6 +171,7 @@ class ReservationsController < ApplicationController
     @reservation.number_of_people_on_trip = params[:number_of_people_on_trip]
     respond_to do |format|
       if @reservation.update(reservation_params)
+        # ReservationMailer.with(reservation: @reservation).car_reservation_created.deliver_now
         format.html { redirect_to reservation_url(@reservation), notice: "Reservation was successfully updated." }
         format.json { render :show, status: :ok, location: @reservation }
       else
