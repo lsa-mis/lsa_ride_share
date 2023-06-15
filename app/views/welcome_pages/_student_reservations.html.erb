@@ -21,11 +21,11 @@
               </td>
             <% elsif reservation.backup_driver == @student %>
               <td class="mi_tbody_td">
-                Backup Driver
+                <%= link_to 'Backup Driver', reservation_path(reservation), class: "link_to" %>
               </td>
             <% else %>
               <td class="mi_tbody_td">
-                Passenger
+                <%= link_to 'Passenger', reservation_path(reservation), class: "link_to" %>
               </td>
             <% end %>
             <td class="mi_tbody_td">

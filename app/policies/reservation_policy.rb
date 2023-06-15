@@ -7,7 +7,7 @@ class ReservationPolicy < ApplicationPolicy
   end
 
   def show?
-    user_in_access_group? || is_student?
+    user_in_access_group? || is_reservation_student?
   end
 
   def create?
@@ -19,7 +19,7 @@ class ReservationPolicy < ApplicationPolicy
   end
 
   def update?
-    user_in_access_group? || is_student?
+    user_in_access_group? || is_reservation_driver?
   end
 
   def edit?
@@ -40,6 +40,16 @@ class ReservationPolicy < ApplicationPolicy
 
   def remove_passenger?
     update?
+  end
+
+  def is_reservation_student?
+    student = Student.find_by(program_id: @record.program, uniqname: @user.uniqname)
+    @record.driver == student || @record.backup_driver == student || @record.passengers.include?(student)
+  end
+
+  def is_reservation_driver?
+    student = Student.find_by(program_id: @record.program, uniqname: @user.uniqname)
+    @record.driver == student
   end
 
 end
