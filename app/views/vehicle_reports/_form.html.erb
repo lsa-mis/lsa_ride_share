@@ -32,8 +32,8 @@
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
     <div>
       <div class="my-5">
-          <%= form.label :mileage_start, class: "fancy_label"  %>
-          <%= form.number_field :mileage_start, required: true, class: "input_text_field", "data-vehiclereport-target": "mileage_start"  %>
+          <%= form.label :mileage_start, 'Mileage Start *', class: "fancy_label"  %>
+          <%= form.number_field :mileage_start, required: true, placeholder: "000.00", class: "input_text_field", "data-vehiclereport-target": "mileage_start"  %>
       </div>
 
       <div class="error_text fields--hide" data-vehiclereport-target="mileage_error">
@@ -42,7 +42,7 @@
 
       <div class="my-5">
         <%= form.label :mileage_end, class: "fancy_label" %>
-        <%= form.number_field :mileage_end, class: "input_text_field", "data-vehiclereport-target": "mileage_end"  %>
+        <%= form.number_field :mileage_end, class: "input_text_field", placeholder: "000.00", "data-vehiclereport-target": "mileage_end"  %>
       </div>
 
       <div class="my-5">
@@ -54,18 +54,18 @@
       </div>
 
       <div class="my-5">
-        <%= form.label :gas_start, class: "fancy_label"  %>
-        <%= form.number_field :gas_start, required: true, class: "input_text_field", "data-vehiclereport-target": "gas_start"  %>
+        <%= form.label :gas_start, 'Gas Start (should be % 0 to 100) *', class: "fancy_label"  %>
+        <%= form.number_field :gas_start, required: true, placeholder: "00", class: "input_text_field", "data-vehiclereport-target": "gas_start"  %>
       </div>
 
       <div class="my-5">
-        <%= form.label :gas_end, class: "fancy_label"  %>
-        <%= form.number_field :gas_end, class: "input_text_field", "data-vehiclereport-target": "gas_end"  %>
+        <%= form.label :gas_end, 'Gas End(should be % 0 to 100)', class: "fancy_label"  %>
+        <%= form.number_field :gas_end, placeholder: "00", class: "input_text_field", "data-vehiclereport-target": "gas_end"  %>
       </div>
 
       <div class="my-5">
         <%= form.label :parking_spot, class: "fancy_label"  %>
-        <%= form.text_field :parking_spot, class: "input_text_field" %>
+        <%= form.text_field :parking_spot, placeholder: "Parking Spot", class: "input_text_field" %>
       </div>
 
     </div>
