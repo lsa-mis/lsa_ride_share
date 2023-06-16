@@ -14,7 +14,7 @@
       </ul>
     </div>
   <% end %>
-  <h2>ADMINS WILL NEED TO DECIDE WHAT GOES HERE - Car: 
+  <h2>Car: 
     <%= @reservation.car.car_number + " - " + @reservation.program.title %>
   </h2>
 
@@ -54,13 +54,17 @@
       </div>
 
       <div class="my-5">
-        <%= form.label :gas_start, 'Gas Start (should be % 0 to 100) *', class: "fancy_label"  %>
-        <%= form.number_field :gas_start, required: true, placeholder: "00", class: "input_text_field", "data-vehiclereport-target": "gas_start"  %>
+        <%= form.label :gas_start, 'Percent of Fuel Remaining (Departure)', class: "fancy_label"  %>
+        <%= form.number_field :gas_start, required: true, class: "input_text_field", "data-vehiclereport-target": "gas_start"  %>
       </div>
 
+      <div class="error_text fields--hide" data-vehiclereport-target="gas_error_lowfuel">
+        <span>Car must refueled - fuel remaining should be over 50%</span>
+      </div>   
+
       <div class="my-5">
-        <%= form.label :gas_end, 'Gas End(should be % 0 to 100)', class: "fancy_label"  %>
-        <%= form.number_field :gas_end, placeholder: "00", class: "input_text_field", "data-vehiclereport-target": "gas_end"  %>
+        <%= form.label :gas_end, 'Percent of Fuel Remaining (Return)', class: "fancy_label"  %>
+        <%= form.number_field :gas_end, class: "input_text_field", "data-vehiclereport-target": "gas_end"  %>
       </div>
 
       <div class="my-5">
