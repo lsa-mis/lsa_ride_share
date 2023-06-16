@@ -11,11 +11,13 @@ class WelcomePagesController < ApplicationController
     if params[:student_id].present?
       @student = Student.find(params[:student_id])
       @program = @student.program
-      @reservations = @student.reservations
+      @reservations_past = @student.reservations_past.sort_by(&:start_time).reverse
+      @reservations_future = @student.reservations_future.sort_by(&:start_time)
     elsif @students.count == 1
       @student = @students[0]
       @program = @student.program
-      @reservations = @student.reservations
+      @reservations_past = @student.reservations_past.sort_by(&:start_time).reverse
+      @reservations_future = @student.reservations_future.sort_by(&:start_time)
     end
     authorize :welcome_page
   end
