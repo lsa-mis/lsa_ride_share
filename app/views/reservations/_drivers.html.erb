@@ -37,7 +37,7 @@
 
     <div class="my-5">
       <%= form.label :driver_phone, "Driver's Phone *", class: "fancy_label" %>
-      <%= form.text_field :driver_phone, class: "input_text_field",
+      <%= form.text_field :driver_phone, placeholder: "XXX-XXX-XXXX", class: "input_text_field",
         "data-driver-target": "driver_phone" %>
     </div>
 
@@ -59,7 +59,7 @@
 
       <div class="my-5">
         <%= form.label :backup_driver_phone, "Backup Driver Phone", class: "fancy_label" %>
-        <%= form.text_field :backup_driver_phone, class: "input_text_field",
+        <%= form.text_field :backup_driver_phone, placeholder: "XXX-XXX-XXXX", class: "input_text_field",
           "data-driver-target": "backup_driver_phone" %>
       </div>
     <% end %>
