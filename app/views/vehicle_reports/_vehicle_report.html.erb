@@ -53,6 +53,15 @@
         </p>
       </div>
     <% end%>
+      
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Trip mileage total:
+      </label>
+      <p class="body-lg-text inline-block">
+        <%= calculate_mileage(vehicle_report) %>
+      </p>
+    </div>
 
     <div class="py-2">
       <label class="body-lg-bold-text">
@@ -60,6 +69,15 @@
       </label>
       <p class="body-lg-text inline-block">
         <%= vehicle_report.parking_spot %>
+      </p>
+    </div>
+
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Comment:
+      </label>
+      <p class="body-lg-text inline-block">
+        <%= vehicle_report.comment %>
       </p>
     </div>
 

@@ -19,7 +19,9 @@ Rails.application.routes.draw do
   resources :unit_preferences
 
   resources :terms
-  resources :vehicle_reports
+  resources :vehicle_reports do
+    resources :notes, module: :vehicle_reports
+  end
   # get '/vehicle_reports/:reports_ids', to: 'vehicle_reports#index', as: 'vehicle_reports'
 
   resources :reservations do
@@ -33,7 +35,6 @@ Rails.application.routes.draw do
   resources :cars do
     resources :notes, module: :cars
   end
-  resources :students
   
   resources :programs do
     resources :cars, module: :programs
@@ -53,9 +54,6 @@ Rails.application.routes.draw do
   get '/programs/managers/edit_program_managers/:program_id', to: 'programs/managers#edit_program_managers', as: :edit_program_managers
   delete 'programs/managers/remove_manager/:program_id/:id', to: 'programs/managers#remove_manager_from_program', as: :remove_manager_from_program
 
-  resources :programs do
-    resources :config_questions, module: :programs
-  end
   resources :programs do
     resources :students, module: :programs
   end

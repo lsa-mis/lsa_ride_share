@@ -239,9 +239,9 @@ module ApplicationHelper
   end
 
   def allow_student_to_edit_reservation?(reservation)
-    return true unless is_student?(current_user)
-    student = Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program)
-    if ((reservation.start_time - DateTime.now)*24).round > 72 && reservation.program.students.include?(student)
+    return false unless is_student?(current_user)
+    return false unless Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program).present?
+    if ((reservation.start_time - DateTime.now)*24).round > 72 
       return true
     else
       return false
@@ -258,6 +258,22 @@ module ApplicationHelper
     else
       "Not Completed"
     end
+  end
+
+  def calculate_mileage(vehicle_report)
+    if vehicle_report.mileage_end.present?
+      mileage_trip_total = vehicle_report.mileage_end - vehicle_report.mileage_start
+    else
+      mileage_trip_total = "N/A"
+    end
+      return mileage_trip_total
+  end
+
+  def default_reservation_for_students
+    day = Date.today + 72.hours
+    return day + 48.hours if day.saturday?
+    return day + 24.hours if day.sunday
+    return day
   end
 
   def us_states
