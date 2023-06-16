@@ -59,20 +59,6 @@
 
       <%= form.hidden_field :updated_by, value: current_user.id %>
 
-      <% if car.persisted? %>
-        <span class="body-lg-medium-text">Last time the car has been checked:<span>
-        <div class="flex gap-2 items-center w-full">
-          <div class="px-1">
-            <%= form.check_box :is_checked_today, class: "check_box" %>
-            <%= form.label :is_checked_today, "Now - or", class: "body-lg-medium-text" %>
-          </div>
-          <div class="flex-1">
-            <%= form.label :checked, "Select date and time", class: "fancy_label" %>
-            <%= form.datetime_field(:checked, placeholder: "Last checked date", value: @last_checked, class: "input_text_field") %>
-          </div>
-        </div>
-      <% end %>
-
       <div class="my-5">
         <%= form.label :status, 'Status *', class: "fancy_label" %>
         <%= form.select :status, @statuses.map{ |key| [key.titleize, key] }, { selected: @car.status || :available }, { class: "input_text_field" } %>
