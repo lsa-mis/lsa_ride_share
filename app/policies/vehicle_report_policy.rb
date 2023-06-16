@@ -11,7 +11,7 @@ class VehicleReportPolicy < ApplicationPolicy
   end
 
   def create?
-    user_in_access_group? || is_reservation__report_student?
+    user_in_access_group? || can_student_save_report?
   end
 
   def new?
@@ -26,17 +26,19 @@ class VehicleReportPolicy < ApplicationPolicy
     update?
   end
 
-  def destroy?
-    false
-  end
-
   def can_student_create_report?
-    program = Reservation.find(params[:reservation_id].to_i).program
-    Student.find_by(program_id: program, uniqname: @user.uniqname).present?
+    reservation = Reservation.find(params[:reservation_id])
+    student = Student.find_by(program_id: reservation.program, uniqname: @user.uniqname)
+    return false unless student.present?
+    if reservation.passengers.include?(student) || reservation.driver == student || reservation.backup_driver == student
+      return true
+    else
+      return false
+    end
   end
 
-  def is_reservation__report_student?
-    program = Reservation.find(params[:vehicle_report][:reservation_id].to_i).program
+  def can_student_save_report?
+    program = Reservation.find(params[:vehicle_report][:reservation_id]).program
     Student.find_by(program_id: program, uniqname: @user.uniqname).present?
   end
 
