@@ -13,43 +13,43 @@
       <%= form.label :unit_id, 'Unit *', class: "hidden" %>
       <input type="hidden" id="unit_id" name="unit_id" value=<%= @unit_id %>>
     <% end %>
-
-    <%= turbo_frame_tag 'unit-calendar' do %>
-      <%= month_calendar(events: @reservations) do |date, reservations| %>
-        <div class="day-header">
-          <%= date.mday %>
-        </div>
-
-        <div class="flex flex-col justify-between">
-          <% reservations.each do |reservation| %>
-            <div>
-              <%= link_to reservation.display_name, reservation_path(reservation.id) %>
-              <p>
-                From: 
-                <%= show_date_time(reservation.start_time) %>
-              </p>
-              <p>
-                To: 
-                <%= show_date_time(reservation.end_time) %>
-              </p>
-            </div>
-          <% end %>
-          <div class="">
-            <% if date >= Date.today %>
-              <%= link_to new_reservation_path(:unit_id => @unit_id, :day_start => date) do %>
-                <i class="fa fa-plus" aria-hidden="true"></i>
-                <span class="tertiary_button -m-4">
-                  Add Reservation
-                </span>
-              <% end %>
-            <% end %>
-          </div>
-        </div>
-      <% end %>
-    <% end %>
-
-    <div id="reservations" class="min-w-full mt-2">
-      <%= render 'listing' %>
-    </div>
   <% end %>
+
+  <%= turbo_frame_tag 'unit-calendar' do %>
+    <%= month_calendar(events: @reservations) do |date, reservations| %>
+      <div class="day-header">
+        <%= date.mday %>
+      </div>
+
+      <div class="flex flex-col justify-between">
+        <% reservations.each do |reservation| %>
+          <div>
+            <%= link_to reservation.display_name, reservation_path(reservation.id) %>
+            <p>
+              From:
+              <%= show_date_time(reservation.start_time) %>
+            </p>
+            <p>
+              To:
+              <%= show_date_time(reservation.end_time) %>
+            </p>
+          </div>
+        <% end %>
+        <div class="">
+          <% if date >= Date.today %>
+            <%= link_to new_reservation_path(:unit_id => @unit_id, :day_start => date) do %>
+              <i class="fa fa-plus" aria-hidden="true"></i>
+              <span class="tertiary_button -m-4">
+                Add Reservation
+              </span>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+
+  <div id="reservations" class="min-w-full mt-2">
+    <%= render 'listing' %>
+  </div>
 </div>

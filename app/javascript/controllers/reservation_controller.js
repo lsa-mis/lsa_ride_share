@@ -83,16 +83,16 @@ export default class extends Controller {
     defaultOption.value = '';
     if (data.length > 1) {
       defaultOption.text = 'Select Site ...';
-
       dropdown.add(defaultOption);
-      dropdown.selectedIndex = 0;
-      let option;
-      for (let i = 0; i < data.length; i++) {
-        option = document.createElement('option');
-        option.value = data[i].id;
-        option.text = data[i].title;
-        dropdown.add(option);
-      }
+    }
+
+    dropdown.selectedIndex = 0;
+    let option;
+    for (let i = 0; i < data.length; i++) {
+      option = document.createElement('option');
+      option.value = data[i].id;
+      option.text = data[i].title;
+      dropdown.add(option);
     }
   }
 
