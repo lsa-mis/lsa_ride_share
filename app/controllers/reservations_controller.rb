@@ -4,6 +4,7 @@ class ReservationsController < ApplicationController
   before_action :set_terms_and_units
   before_action :set_programs
   before_action :set_cars, only: %i[ new get_available_cars ]
+  before_action :set_number_of_seats, only: %i[ new create edit ]
 
   # GET /reservations or /reservations.json
   def index
@@ -51,7 +52,6 @@ class ReservationsController < ApplicationController
     if is_admin?(current_user)
       @sites = []
     end
-    @number_of_seats = 1..Car.available.maximum(:number_of_seats)
     @reservation = Reservation.new
     @reservation.start_time = @day_start
     authorize @reservation
@@ -60,7 +60,6 @@ class ReservationsController < ApplicationController
   # GET /reservations/1/edit
   def edit
     @sites = @reservation.program.sites
-    @number_of_seats = 1..Car.available.maximum(:number_of_seats)
     @day_start = @reservation.start_time.to_date
     @unit_id = @reservation.program.unit.id
     @term_id = @reservation.program.term.id
@@ -129,7 +128,6 @@ class ReservationsController < ApplicationController
       @program = Program.find(params[:reservation][:program_id])
       @term_id = params[:term_id]
       @sites = @program.sites
-      @number_of_seats = 1..Car.available.maximum(:number_of_seats)
       @number_of_people_on_trip = params[:number_of_people_on_trip]
       
       @day_start = params[:day_start].to_date
@@ -231,6 +229,10 @@ class ReservationsController < ApplicationController
 
     def set_cars
       @cars = Car.available.data(params[:unit_id]).order(:car_number)
+    end
+
+    def set_number_of_seats
+      @number_of_seats = 1..Car.available.maximum(:number_of_seats)
     end
 
     # Only allow a list of trusted parameters through.
