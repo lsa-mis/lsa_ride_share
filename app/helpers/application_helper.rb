@@ -270,9 +270,9 @@ module ApplicationHelper
   end
 
   def default_reservation_for_students
-    day = Date.today + 72.hours
+    day = DateTime.now + 72.hours
     return day + 48.hours if day.saturday?
-    return day + 24.hours if day.sunday
+    return day + 24.hours if day.sunday?
     return day
   end
 
