@@ -108,6 +108,17 @@
       </p>
     </div>
 
+    <% if is_admin?(current_user) %>
+      <div class="py-2">
+        <label class="body-lg-bold-text">
+          Admin Comment:
+        </label>
+        <p class="body-lg-text inline-block">
+          <%= vehicle_report.admin_comment %>
+        </p>
+      </div>
+    <% end %>
+
   </div>
   
   <div>

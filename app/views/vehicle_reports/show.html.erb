@@ -1,10 +1,24 @@
 <div class="mx-auto w-full">
-  <div class="grid grid-cols-1 lg:grid-cols-2">
-    <h1 class="mb-4">Vehicle Report: <%= @vehicle_report.id %></h1>
-    <div class="lg:grid lg:justify-items-end">
-      <div class="py-2">
-        <%= link_to 'Edit Vehicle report', edit_vehicle_report_path(@vehicle_report), class: "primary_button" %>
+  <h1 class="mb-4">Vehicle Report: <%= @vehicle_report.id %></h1>
+  <div class="grid grid-cols-1 lg:grid-cols-2 items-center">
+    <%= form_with model: @vehicle_report, html: { class: "sm:flex sm:items-center" },
+      data: { controller: "approve",
+              approve_target: "form"
+            } do |f| %>
+      <div class="sm:col-span-4">
+        <ol class="switches">
+          <li>
+            <%= f.check_box :approved, "data-action": "change->approve#toggleApprove"  %>
+            <%= f.label :approved do %>
+              <span class="label-text">Approved</span>
+              <span></span>
+            <% end %>
+          </li>
+        </ol>
       </div>
+    <% end %>
+    <div class="lg:grid lg:justify-items-end">
+      <%= link_to 'Edit Vehicle report', edit_vehicle_report_path(@vehicle_report), class: "primary_button" %>
     </div>
   </div>
   <div class="grid grid-cols-1 lg:grid-cols-2">
@@ -13,15 +27,15 @@
     </div>
   </div>
 
-  <div class="container p-2 rounded-lg shadow-lg text-xl mb-20 bg-gray-50">
-    <h2 class="mb-4">Notes:</h2>
-    <% if user_signed_in? %>
+  <% if user_signed_in? && is_admin?(current_user) %>
+    <div class="container p-2 rounded-lg shadow-lg text-xl mb-20 bg-gray-50">
+      <h2 class="mb-4">Notes:</h2>
       <%= render partial: "notes/form", locals: { note: Note.new, noteable: @vehicle_report } %>
-    <% end %>
-  
-    <%= turbo_stream_from @vehicle_report, :notes %>
-    <%= tag.div id: "#{dom_id(@vehicle_report)}_notes" do %>
-      <%= render @vehicle_report.notes %>
-    <% end %>
-  </div>
+    
+      <%= turbo_stream_from @vehicle_report, :notes %>
+      <%= tag.div id: "#{dom_id(@vehicle_report)}_notes" do %>
+        <%= render @vehicle_report.notes %>
+      <% end %>
+    </div>
+  <% end %>
 </div>

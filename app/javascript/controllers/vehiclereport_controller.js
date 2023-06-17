@@ -1,7 +1,8 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ['form', 'gas_error', 'gas_start', 'gas_end', 'mileage_error', 'mileage_start', 'mileage_end', 'gas_error_lowfuel']
+  static targets = ['form', 'gas_error', 'gas_start', 'gas_end',
+          'mileage_error', 'mileage_start', 'mileage_end', 'gas_error_lowfuel']
   connect() {
     console.log("connect - vehicle report")
   }
@@ -51,8 +52,6 @@ export default class extends Controller {
     else {
       Turbo.navigator.submitForm(this.formTarget)
     }
-
-
   }
 
 }

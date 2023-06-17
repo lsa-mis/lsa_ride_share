@@ -117,6 +117,10 @@ class VehicleReportsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def vehicle_report_params
-      params.require(:vehicle_report).permit(:reservation_id, :mileage_start, :mileage_end, :gas_start, :gas_end, :parking_spot, :image_front_start, :image_driver_start, :image_passenger_start, :image_back_start, :image_front_end, :image_driver_end, :image_passenger_end, :image_back_end, :created_by, :updated_by, :status, :comment, image_damages: [] )
+      params.require(:vehicle_report).permit(:reservation_id, :mileage_start, :mileage_end, 
+                    :gas_start, :gas_end, :parking_spot, :image_front_start, :image_driver_start, 
+                    :image_passenger_start, :image_back_start, :image_front_end, :image_driver_end, 
+                    :image_passenger_end, :image_back_end, :created_by, :updated_by, :status, :comment,
+                    :admin_comment, :approved, image_damages: [] )
     end
 end
