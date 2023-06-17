@@ -47,6 +47,7 @@ class VehicleReport < ApplicationRecord
    attachable.variant :thumb, resize_to_limit: [250, 250]
   end
   has_rich_text :comment
+  has_rich_text :admin_comment
 
   has_many :notes, as: :noteable
 
