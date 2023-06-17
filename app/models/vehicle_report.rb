@@ -14,7 +14,8 @@
 #  status         :string
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
-#  student_status :boolean          default false  
+#  student_status :boolean          default false
+#  approved       :boolean          default false
 #
 class VehicleReport < ApplicationRecord
   belongs_to :reservation

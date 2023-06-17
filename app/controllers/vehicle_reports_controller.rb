@@ -121,6 +121,6 @@ class VehicleReportsController < ApplicationController
                     :gas_start, :gas_end, :parking_spot, :image_front_start, :image_driver_start, 
                     :image_passenger_start, :image_back_start, :image_front_end, :image_driver_end, 
                     :image_passenger_end, :image_back_end, :created_by, :updated_by, :status, :comment,
-                    :admin_comment, image_damages: [] )
+                    :admin_comment, :approved, image_damages: [] )
     end
 end
