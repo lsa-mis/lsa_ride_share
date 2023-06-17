@@ -44,12 +44,12 @@
 
       <div class="my-5">
         <%= form.label :mileage, 'Mileage *', class: "fancy_label" %>
-        <%= form.text_field :mileage, required: true, placeholder: "Mileage", class: "input_text_field" %>
+        <%= form.number_field :mileage, value: number_with_precision(form.object.mileage, precision: 2), required: true, placeholder: "000.00", class: "input_text_field" %>
       </div>
 
       <div class="my-5">
-        <%= form.label :gas, 'Gas *',class: "fancy_label" %>
-        <%= form.text_field :gas, required: true, placeholder: "Gas", class: "input_text_field" %>
+        <%= form.label :gas, 'Gas (should be % 0 to 100) *',class: "fancy_label" %>
+        <%= form.number_field :gas, required: true, placeholder: "00", class: "input_text_field" %>
       </div>
 
       <div class="my-5">
@@ -58,20 +58,6 @@
       </div>
 
       <%= form.hidden_field :updated_by, value: current_user.id %>
-
-      <% if car.persisted? %>
-        <span class="body-lg-medium-text">Last time the car has been checked:<span>
-        <div class="flex gap-2 items-center w-full">
-          <div class="px-1">
-            <%= form.check_box :is_checked_today, class: "check_box" %>
-            <%= form.label :is_checked_today, "Now - or", class: "body-lg-medium-text" %>
-          </div>
-          <div class="flex-1">
-            <%= form.label :checked, "Select date and time", class: "fancy_label" %>
-            <%= form.datetime_field(:checked, placeholder: "Last checked date", value: @last_checked, class: "input_text_field") %>
-          </div>
-        </div>
-      <% end %>
 
       <div class="my-5">
         <%= form.label :status, 'Status *', class: "fancy_label" %>

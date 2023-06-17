@@ -23,20 +23,36 @@ class Student < ApplicationRecord
 
   validates :uniqname, uniqueness: { scope: :program, message: "is already in the program list" }
 
-  def driver
-    Reservation.where(driver: self)
+  def driver_past
+    Reservation.where('driver_id = ? AND start_time <= ?', self, DateTime.now)
   end
 
-  def backup_driver
-    Reservation.where(backup_driver: self)
+  def driver_future
+    Reservation.where('driver_id = ? AND start_time > ?', self, DateTime.now)
   end
 
-  def passenger
-    Reservation.joins(:passengers).where('reservation_passengers.student_id = ?', self)
+  def backup_driver_past
+    Reservation.where('backup_driver_id = ? AND start_time <= ?', self, DateTime.now)
   end
 
-  def reservations
-    driver + backup_driver + passenger
+  def backup_driver_future
+    Reservation.where('backup_driver_id = ? AND start_time > ?', self, DateTime.now)
+  end
+
+  def passenger_past
+    Reservation.joins(:passengers).where('reservation_passengers.student_id = ? AND start_time <= ?', self, DateTime.now)
+  end
+
+  def passenger_future
+    Reservation.joins(:passengers).where('reservation_passengers.student_id = ? AND start_time > ?', self, DateTime.now)
+  end
+
+  def reservations_past
+    driver_past + backup_driver_past + passenger_past
+  end
+
+  def reservations_future
+    driver_future + backup_driver_future + passenger_future
   end
 
   def display_name

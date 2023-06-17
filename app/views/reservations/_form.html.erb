@@ -51,11 +51,12 @@
       </div>
   <% end %>
     <div>
-        <%= form.label :day_start, "Choose a start date", class: "fancy_label" %>
+        <%= form.label :day_start, "Choose a Start Date", class: "fancy_label" %>
         <%= text_field_tag :day_start, @day_start,
           data: {
           controller: "flatpickr",
           flatpickr_date_format: "Y-m-d",
+          flatpickr_min_date: @min_date
           }, "data-reservation-target": "day_start", "data-action": "change->reservation#availableCars",
           class: "input_text_field"
         %>

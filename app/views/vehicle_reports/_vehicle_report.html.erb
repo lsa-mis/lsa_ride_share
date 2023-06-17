@@ -36,7 +36,7 @@
 
     <div class="py-2">
       <label class="body-lg-bold-text">
-        Gas start:
+        Gas % (departure):
       </label>
       <p class="body-lg-text inline-block">
         <%= vehicle_report.gas_start %>
@@ -46,13 +46,22 @@
     <% if vehicle_report.gas_end.present? %>
       <div class="py-2">
         <label class="body-lg-bold-text">
-          Gas end:
+          Gas % (return):
         </label>
         <p class="body-lg-text inline-block">
           <%= vehicle_report.gas_end %>
         </p>
       </div>
     <% end%>
+      
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Trip mileage total:
+      </label>
+      <p class="body-lg-text inline-block">
+        <%= calculate_mileage(vehicle_report) %>
+      </p>
+    </div>
 
     <div class="py-2">
       <label class="body-lg-bold-text">
@@ -60,6 +69,15 @@
       </label>
       <p class="body-lg-text inline-block">
         <%= vehicle_report.parking_spot %>
+      </p>
+    </div>
+
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Comment:
+      </label>
+      <p class="body-lg-text inline-block">
+        <%= vehicle_report.comment %>
       </p>
     </div>
 
@@ -89,6 +107,17 @@
           <%= vehicle_report.updated_at %>
       </p>
     </div>
+
+    <% if is_admin?(current_user) %>
+      <div class="py-2">
+        <label class="body-lg-bold-text">
+          Admin Comment:
+        </label>
+        <p class="body-lg-text inline-block">
+          <%= vehicle_report.admin_comment %>
+        </p>
+      </div>
+    <% end %>
 
   </div>
   

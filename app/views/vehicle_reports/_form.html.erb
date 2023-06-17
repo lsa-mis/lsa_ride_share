@@ -14,7 +14,7 @@
       </ul>
     </div>
   <% end %>
-  <h2>ADMINS WILL NEED TO DECIDE WHAT GOES HERE - Car: 
+  <h2>Car: 
     <%= @reservation.car.car_number + " - " + @reservation.program.title %>
   </h2>
 
@@ -32,36 +32,44 @@
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
     <div>
       <div class="my-5">
-          <%= form.label :mileage_start, class: "fancy_label"  %>
-          <%= form.number_field :mileage_start, required: true, class: "input_text_field", "data-vehiclereport-target": "mileage_start"  %>
+          <%= form.label :mileage_start, 'Mileage Start *', class: "fancy_label"  %>
+          <%= form.number_field :mileage_start, required: true, placeholder: "000.00", class: "input_text_field", "data-vehiclereport-target": "mileage_start"  %>
       </div>
 
       <div class="error_text fields--hide" data-vehiclereport-target="mileage_error">
         <span>End mileage should be higher than start mileage. Please enter a valid value.</span>
-      </div>    
+      </div>
 
       <div class="my-5">
         <%= form.label :mileage_end, class: "fancy_label" %>
-        <%= form.number_field :mileage_end, class: "input_text_field", "data-vehiclereport-target": "mileage_end"  %>
+        <%= form.number_field :mileage_end, class: "input_text_field", placeholder: "000.00", "data-vehiclereport-target": "mileage_end"  %>
+      </div>
+
+      <div class="my-5">
+          Trip Mileage Total: <%= calculate_mileage(@vehicle_report) %>
       </div>
 
       <div class="error_text fields--hide" data-vehiclereport-target="gas_error">
         <span>Gas value should be 0 to 100. Please enter a valid value for gas.</span>
-      </div>    
-
-      <div class="my-5">
-        <%= form.label :gas_start, class: "fancy_label"  %>
-        <%= form.number_field :gas_start, required: true, class: "input_text_field", "data-vehiclereport-target": "gas_start"  %>
       </div>
 
       <div class="my-5">
-        <%= form.label :gas_end, class: "fancy_label"  %>
+        <%= form.label :gas_start, 'Percent of Fuel Remaining (Departure)', class: "fancy_label"  %>
+        <%= form.number_field :gas_start, required: true, class: "input_text_field", "data-vehiclereport-target": "gas_start"  %>
+      </div>
+
+      <div class="error_text fields--hide" data-vehiclereport-target="gas_error_lowfuel">
+        <span>Car must refueled - fuel remaining should be over 50%</span>
+      </div>   
+
+      <div class="my-5">
+        <%= form.label :gas_end, 'Percent of Fuel Remaining (Return)', class: "fancy_label"  %>
         <%= form.number_field :gas_end, class: "input_text_field", "data-vehiclereport-target": "gas_end"  %>
       </div>
 
       <div class="my-5">
         <%= form.label :parking_spot, class: "fancy_label"  %>
-        <%= form.text_field :parking_spot, class: "input_text_field" %>
+        <%= form.text_field :parking_spot, placeholder: "Parking Spot", class: "input_text_field" %>
       </div>
 
     </div>
@@ -191,7 +199,7 @@
       <% end %>
 
       <div class="my-5">
-        <%= form.label :image_damages, "Damage", class: "fancy_label"   %>
+        <%= form.label :image_damages, "Damage (upload multiple images)", class: "fancy_label"   %>
         <%= form.file_field :image_damages, multiple: true, class: "input_text_field" %>
       </div>
 
@@ -228,9 +236,17 @@
   </div>
 
   <div class="my-5">
-    <%= form.label :note, class: "fancy_label"  %>
-    <%= form.rich_text_area :note, class: "input_text_field" %>
+    <%= form.label :comment, class: "fancy_label"  %>
+    <%= form.rich_text_area :comment, class: "input_text_field" %>
   </div>
+
+  <% if is_admin?(current_user) %>
+    <div class="my-5">
+      <%= form.label :admin_comment, class: "fancy_label"  %>
+      <%= form.rich_text_area :admin_comment, class: "input_text_field" %>
+    </div>
+  <% end %>
+  
   <% if action_name == "new" %>
     <%= form.hidden_field :created_by, value: current_user.id %>
   <% end %>
@@ -238,6 +254,13 @@
 
   <div class="">
     <%= form.submit class: "primary_button" %>
+    <% if action_name == "edit" %>
+      <%= link_to vehicle_report_path(vehicle_report) do %>
+        <span class="tertiary_button">Cancel
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </span>
+      <% end %>
+    <% end %>
   </div>
 
 <% end %>

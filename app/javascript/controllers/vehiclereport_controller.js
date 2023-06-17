@@ -1,7 +1,8 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ['form', 'gas_error', 'gas_start', 'gas_end', 'mileage_error', 'mileage_start', 'mileage_end']
+  static targets = ['form', 'gas_error', 'gas_start', 'gas_end',
+          'mileage_error', 'mileage_start', 'mileage_end', 'gas_error_lowfuel']
   connect() {
     console.log("connect - vehicle report")
   }
@@ -11,7 +12,7 @@ export default class extends Controller {
     var gas_end = this.gas_endTarget.value
     var mileage_start = this.mileage_startTarget.value
     var mileage_end = this.mileage_endTarget.value
-
+  
     gas_start = Number(gas_start)
     gas_end = Number(gas_end)
     var submitForm = true
@@ -36,14 +37,21 @@ export default class extends Controller {
       }
     }
 
+    if (gas_end <= 50 ) {
+      this.gas_error_lowfuelTarget.classList.add("fields--display")
+      this.gas_error_lowfuelTarget.classList.remove("fields--hide")
+      submitForm = false
+    } else {
+      this.gas_error_lowfuelTarget.classList.remove("fields--display")
+      this.gas_errorT_lowfuelarget.classList.add("fields--hide")
+    }
+
     if(submitForm == false) {
       event.preventDefault()
     }
     else {
       Turbo.navigator.submitForm(this.formTarget)
     }
-
-
   }
 
 }

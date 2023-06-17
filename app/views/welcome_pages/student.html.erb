@@ -29,8 +29,13 @@
       <h2 class="m-4"><%= @program.display_name_with_title_and_unit %></h2>
      <% end %>
     <div>
-      <% if @reservations.present? %>
-        <%= render 'student_reservations' %>
+      <% if @reservations_future.present? %>
+        <%= render 'student_reservations_future' %>
+      <% end %>
+    </div>
+    <div>
+      <% if @reservations_past.present? %>
+        <%= render 'student_reservations_past' %>
       <% end %>
     </div>
   </div>

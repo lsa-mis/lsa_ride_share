@@ -32,15 +32,17 @@ class ReservationsController < ApplicationController
       @term_id = @program.term.id
       @sites = @program.sites
       @cars = @cars.where(unit_id: @unit_id)
+      @min_date = default_reservation_for_students
     elsif params[:unit_id].present?
       @unit_id = params[:unit_id]
+      @min_date =  DateTime.now
     else
       redirect_to reservations_path, notice: "You must select a unit first."
     end
     if params[:day_start].present?
       @day_start = params[:day_start].to_date
     else
-      @day_start = Date.today
+      @day_start = default_reservation_for_students
     end
     if params[:term_id].present?
       @term_id = params[:term_id]
