@@ -51,7 +51,7 @@ class ReservationsController < ApplicationController
     if is_admin?(current_user)
       @sites = []
     end
-    @number_of_seats = 1..Car.maximum(:number_of_seats)
+    @number_of_seats = 1..Car.available.maximum(:number_of_seats)
     @reservation = Reservation.new
     @reservation.start_time = @day_start
     authorize @reservation
@@ -60,11 +60,11 @@ class ReservationsController < ApplicationController
   # GET /reservations/1/edit
   def edit
     @sites = @reservation.program.sites
-    @number_of_seats = 1..Car.maximum(:number_of_seats)
+    @number_of_seats = 1..Car.available.maximum(:number_of_seats)
     @day_start = @reservation.start_time.to_date
     @unit_id = @reservation.program.unit.id
     @term_id = @reservation.program.term.id
-    @cars = Car.data(@unit_id)
+    @cars = Car.available.data(@unit_id)
     @time_start = @reservation.start_time.strftime("%I:%M%p")
     @time_end = @reservation.end_time.strftime("%I:%M%p")
     @number_of_people_on_trip = @reservation.number_of_people_on_trip
@@ -96,7 +96,7 @@ class ReservationsController < ApplicationController
   end
 
   def list_of_available_cars(unit_id, day, number, time_start, time_end)
-    cars = Car.data(unit_id).order(:car_number)
+    cars = Car.available.data(unit_id).order(:car_number)
     cars = cars.where("number_of_seats >= ?", number)
     
     if ((Time.zone.parse(time_end).to_datetime - Time.zone.parse(time_start).to_datetime) * 24 * 60).to_i > 15
@@ -129,7 +129,7 @@ class ReservationsController < ApplicationController
       @program = Program.find(params[:reservation][:program_id])
       @term_id = params[:term_id]
       @sites = @program.sites
-      @number_of_seats = 1..Car.maximum(:number_of_seats)
+      @number_of_seats = 1..Car.available.maximum(:number_of_seats)
       @number_of_people_on_trip = params[:number_of_people_on_trip]
       
       @day_start = params[:day_start].to_date
@@ -230,7 +230,7 @@ class ReservationsController < ApplicationController
     end
 
     def set_cars
-      @cars = Car.data(params[:unit_id]).order(:car_number)
+      @cars = Car.available.data(params[:unit_id]).order(:car_number)
     end
 
     # Only allow a list of trusted parameters through.
