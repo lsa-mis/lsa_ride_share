@@ -56,14 +56,18 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   hr {
-    @apply border-blue-900 border m-4;
+    @apply border-gray-um50 border my-2;
   }
 
-  .body-text {
+  .body-sm-text {
     @apply text-sm font-normal font-montserrat;
   }
 
-  .body-bold-text {
+  .body-sm-semibold-text {
+    @apply text-sm font-semibold text-gray-900
+  }
+
+  .body-sm-bold-text {
     @apply text-sm font-bold font-montserrat;
   }
 
@@ -87,10 +91,6 @@ from https://tailwindcss.com/docs/adding-custom-styles
     @apply text-lg font-bold font-montserrat;
   }
 
-  .body-sm-bold-text {
-    @apply text-sm font-semibold text-gray-900
-  }
-
   .button_label {
     @apply text-sm font-medium leading-4 text-gray-550 font-montserrat;
   }
@@ -105,10 +105,6 @@ from https://tailwindcss.com/docs/adding-custom-styles
 
   .text_field_label {
     @apply text-base font-semibold leading-4 text-gray-900 font-montserrat mb-2;
-  }
-
-  .text_small {
-    @apply ml-2 text-sm text-gray-700;
   }
 
   .check_box {
@@ -237,7 +233,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .card_area {
-    @apply col-span-1 bg-white rounded-lg shadow-md divide-y divide-gray-400 px-2 place-items-stretch bg-white border border-gray-300 rounded-l
+    @apply col-span-1 bg-white rounded-lg shadow-md px-2 place-items-stretch bg-white border border-gray-300 rounded-l
   }
 
   /* table */
