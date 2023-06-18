@@ -1,6 +1,6 @@
 <div class="grid grid-cols-1 sm:grid-cols-2">
   <div class="">
-    <p class='body-bold-text <%= "#{car.status}" %>'>
+    <p class='body-sm-bold-text <%= "#{car.status}" %>'>
       <%= car.status.titleize %>
     </p>
 
@@ -126,7 +126,7 @@
                   <div class="group block w-full h-40 rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-indigo-500 overflow-hidden">
                     <%= image_tag image.variant(:thumb), class: "object-cover h-full w-full group-hover:opacity-75" %>
                   </div>
-                  <p alertclass="body-text pt-2">
+                  <p alertclass="body-sm-text pt-2">
                     Uploaded on <%= show_date_time(image.created_at) %>
                   </p>
                   <div>
@@ -147,6 +147,6 @@
     <% end %>
   </div>
 </div>
-<p class="body-text m-2">
+<p class="body-sm-text m-2">
   <%= updated_on_and_by(@car) %>
 </p>
