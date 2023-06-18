@@ -63,10 +63,12 @@ class ReservationsController < ApplicationController
     @day_start = @reservation.start_time.to_date
     @unit_id = @reservation.program.unit.id
     @term_id = @reservation.program.term.id
-    @cars = Car.available.data(@unit_id)
-    @time_start = @reservation.start_time.strftime("%I:%M%p")
-    @time_end = @reservation.end_time.strftime("%I:%M%p")
+    @car_id = @reservation.car_id
+    @start_time = @reservation.start_time.to_s
+    @end_time = @reservation.end_time.to_s
     @number_of_people_on_trip = @reservation.number_of_people_on_trip
+    @cars = list_of_available_cars(@unit_id, @day_start, @number_of_people_on_trip, @start_time, @end_time)
+
   end
 
   def get_available_cars
@@ -79,31 +81,27 @@ class ReservationsController < ApplicationController
     if params[:number].present?
       @cars = @cars.where("number_of_seats >= ?", params[:number])
     end
-    if params[:time_start].present?
-      @time_start = params[:time_start]
+    if params[:start_time].present?
+      @start_time = params[:start_time]
     end
-    if params[:time_end].present?
-      @time_end = params[:time_end]
+    if params[:end_time].present?
+      @end_time = params[:end_time]
     end
-    fail
-    if (@time_end.to_datetime - @time_start.to_datetime) * 24 * 60).to_i > 30
-      @reserv_begin = @time_start.to_datetime
-      @reserv_end = @time_end.to_datetime
+    if ((@end_time.to_datetime - @start_time.to_datetime) * 24 * 60).to_i > 30
+      @reserv_begin = @start_time.to_datetime
+      @reserv_end = @end_time.to_datetime
       range = @reserv_begin..@reserv_end
       @cars = available_cars(@cars, range)
-    # end
+    end
     authorize Reservation
   end
 
-  def list_of_available_cars(unit_id, day_start, number, time_start, time_end)
+  def list_of_available_cars(unit_id, day_start, number, start_time, end_time)
     cars = Car.available.data(unit_id).order(:car_number)
     cars = cars.where("number_of_seats >= ?", number)
     
-    if ((time_end - time_start) * 24 * 60).to_i > 30
-      # reserv_begin = Time.zone.parse(day_start + " " + time_start).to_datetime
-      # reserv_end = Time.zone.parse(day_start + " " + time_end).to_datetime
-      # range = reserv_begin..reserv_end
-      range = time_start..time_end
+    if ((end_time.to_datetime - start_time.to_datetime) * 24 * 60).to_i > 30
+      range = start_time.to_datetime..end_time.to_datetime
     else
       range = day_start.beginning_of_day..day_start.end_of_day
     end
@@ -118,12 +116,11 @@ class ReservationsController < ApplicationController
       @reservation.car_id = params[:car_id]
       @car_id = params[:car_id]
     end
-    @reservation.start_time = (params[:time_start]).to_datetime
-    @reservation.end_time = (params[:time_end]).to_datetime
+    @reservation.start_time = (params[:start_time]).to_datetime
+    @reservation.end_time = (params[:end_time]).to_datetime
     @reservation.number_of_people_on_trip = params[:number_of_people_on_trip]
     @reservation.reserved_by = current_user.id
     authorize @reservation
-    fail
     if @reservation.save
       @students = @reservation.program.students 
       redirect_to add_drivers_path(@reservation), notice: "Reservation was successfully created. Please add drivers."
@@ -136,7 +133,9 @@ class ReservationsController < ApplicationController
       @day_start = params[:day_start].to_date
       @unit_id = params[:unit_id]
       @car_id = params[:car_id]
-      @cars = list_of_available_cars(@unit_id, @day_start, @number_of_people_on_trip, params[:time_start], params[:time_end])
+      @start_time = params[:start_time]
+      @end_time = params[:end_time]
+      @cars = list_of_available_cars(@unit_id, @day_start, @number_of_people_on_trip, @start_time, @end_time)
       render :new, status: :unprocessable_entity
     end
   end
@@ -167,8 +166,8 @@ class ReservationsController < ApplicationController
     end
     @reservation.attributes = reservation_params
     @reservation.car_id = params[:car_id]
-    @reservation.start_time = (params[:time_start]).to_datetime
-    @reservation.end_time = (params[:time_end]).to_datetime
+    @reservation.start_time = (params[:start_time]).to_datetime
+    @reservation.end_time = (params[:end_time]).to_datetime
     @reservation.number_of_people_on_trip = params[:number_of_people_on_trip]
     respond_to do |format|
       if @reservation.update(reservation_params)

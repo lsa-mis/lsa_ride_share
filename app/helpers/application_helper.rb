@@ -219,9 +219,9 @@ module ApplicationHelper
         end
       end
     else
-      available_times_begin = day_times_with_15_min_steps.map { |t| [t, show_time(t)] }
+      available_times_begin = day_times_with_15_min_steps.map { |t| [show_time(t), t.to_s] }
       available_times_begin.pop
-      available_times_end = day_times_with_15_min_steps.map { |t| [t, show_time(t)] }
+      available_times_end = day_times_with_15_min_steps.map { |t| [show_time(t), t.to_s] }
       available_times_end.shift
     end
     available_times = {:begin=>available_times_begin, :end=>available_times_end}

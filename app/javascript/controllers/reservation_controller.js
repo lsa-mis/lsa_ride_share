@@ -3,7 +3,7 @@ import { get } from "@rails/request.js"
 
 export default class extends Controller {
   static targets = ['form', 'term', 'unit', 'program', 'site', 'required_fields',
-    'day_start', 'number', 'time_start', 'time_end', 'selected_time_error', 'car', 'car_field']
+    'day_start', 'number', 'start_time', 'end_time', 'selected_time_error', 'car', 'car_field']
 
   connect() {
     console.log("connect - reservation")
@@ -95,11 +95,11 @@ export default class extends Controller {
     let unit_id = this.unitTarget.value
     let day_start = this.day_startTarget.value
     let number = this.numberTarget.value
-    let time_start = this.time_startTarget.value
-    let time_end = this.time_endTarget.value
-    let time_start_format = new Date(time_start)
-    let time_end_format = new Date(time_end)
-    let diff_time = parseInt(time_end_format - time_start_format)/60000;
+    let start_time = this.start_timeTarget.value
+    let end_time = this.end_timeTarget.value
+    let start_time_format = new Date(start_time)
+    let end_time_format = new Date(end_time)
+    let diff_time = parseInt(end_time_format - start_time_format)/60000;
 
     let time_field_error = document.getElementById('time_field')
     let required_fields_error = document.getElementById('required_fields')
@@ -109,7 +109,7 @@ export default class extends Controller {
       time_field_error.innerHTML = 'End time is too close to start time'
       required_fields_error.innerHTML = ''
       car_field_error.innerHTML = ''
-    } else if (time_start_format > time_end_format) {
+    } else if (start_time_format > end_time_format) {
       time_field_error.innerHTML = 'Start time should occur before end time'
       required_fields_error.innerHTML = ''
       car_field_error.innerHTML = ''
@@ -117,10 +117,10 @@ export default class extends Controller {
       time_field_error.innerHTML = ''
     }
 
-    get(`/reservations/get_available_cars/${unit_id}/${day_start}/${number}/${time_start}/${time_end}`, {
+    get(`/reservations/get_available_cars/${unit_id}/${day_start}/${number}/${start_time}/${end_time}`, {
       responseKind: "turbo-stream"
     })
-    
+
   }
 
   submitForm(event) {
@@ -129,11 +129,11 @@ export default class extends Controller {
     let site = this.siteTarget.value
     let car = this.carTarget.value
 
-    let time_start = this.time_startTarget.value
-    let time_end = this.time_endTarget.value
-    let time_start_format = new Date(time_start)
-    let time_end_format = new Date(time_end)
-    let diff_time = parseInt(time_end_format - time_start_format)/60000;
+    let start_time = this.start_timeTarget.value
+    let end_time = this.end_timeTarget.value
+    let start_time_format = new Date(start_time)
+    let end_time_format = new Date(end_time)
+    let diff_time = parseInt(end_time_format - start_time_format)/60000;
     
     let time_field_error = document.getElementById('time_field')
     let required_fields_error = document.getElementById('required_fields')
