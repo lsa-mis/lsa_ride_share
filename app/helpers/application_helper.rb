@@ -247,6 +247,10 @@ module ApplicationHelper
       return false
     end
   end
+
+  def future_reservation?(reservation)
+    reservation.start_time > DateTime.now
+  end
   
   def render_flash_stream
     turbo_stream.update "flash", partial: "layouts/notification"
