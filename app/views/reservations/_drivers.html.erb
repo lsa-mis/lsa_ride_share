@@ -4,12 +4,12 @@
           action: "submit->driver#submitForm"
         } do |form| %>
 
-    <p class="body-text">
+    <p class="body-sm-text">
       Number of People on the Trip - <%= @reservation.number_of_people_on_trip %>
     </p>
     <input type="hidden" id="number_of_people_on_trip" name="number_of_people_on_trip" value=<%= @reservation.number_of_people_on_trip %> data-driver-target="number_of_people_on_trip">
     <% if @reservation.passengers.present? %>
-      <p class="body-text">
+      <p class="body-sm-text">
         The reservation has <%= pluralize(@reservation.passengers.count, 'passenger') %> already
       </p>
     <% end %>

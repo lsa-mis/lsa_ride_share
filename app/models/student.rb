@@ -55,6 +55,10 @@ class Student < ApplicationRecord
     driver_future + backup_driver_future + passenger_future
   end
 
+  def reservations
+    reservations_past + reservations_future
+  end
+
   def display_name
     "#{self.first_name} #{self.last_name} - #{self.uniqname}" 
   end
