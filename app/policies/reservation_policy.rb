@@ -31,7 +31,7 @@ class ReservationPolicy < ApplicationPolicy
   end
 
   def add_drivers?
-    update?
+    user_in_access_group? || is_reserved_by?
   end
 
   def add_passengers?
@@ -50,6 +50,10 @@ class ReservationPolicy < ApplicationPolicy
   def is_reservation_driver?
     student = Student.find_by(program_id: @record.program, uniqname: @user.uniqname)
     @record.driver == student
+  end
+
+  def is_reserved_by?
+    @record.reserved_by == user.id
   end
 
 end
