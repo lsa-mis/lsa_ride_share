@@ -13,7 +13,7 @@
 
   <div class="py-2">
     <label class="body-lg-bold-text">
-    Term:
+      Term:
     </label>
     <p class="body-lg-text ml-2 inline-block">
       <%= @reservation.program.term.name %>
@@ -22,19 +22,20 @@
 
   <div class="py-2">
     <label class="body-lg-bold-text">
-    Term:
+      Program:
     </label>
     <p class="body-lg-text ml-2 inline-block">
       <%= @reservation.program.display_name_with_title %>
     </p>
   </div>
+  <input type="hidden" id="unit_id" name="unit_id" value=<%= @unit_id %> data-driver-target="unit">
 
-    <div>
-      <%= form.label :site_id, 'Site *', class: "fancy_label" %>
-      <%= form.collection_select :site_id, @sites, :id, :title, { include_blank: "Select Site ..."}, { selected: @site_id, "data-reservation-target": "site", class: "input_text_field" } %>
-    </div>
-    
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+  <div>
+    <%= form.label :site_id, 'Site *', class: "fancy_label" %>
+    <%= form.collection_select :site_id, @sites, :id, :title, { include_blank: "Select Site ..."}, { selected: @site_id, "data-reservation-target": "site", class: "input_text_field" } %>
+  </div>
+  
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
     <div>
         <%= form.label :day_start, "Choose a Start Date", class: "fancy_label" %>
         <%= text_field_tag :day_start, @day_start,
@@ -54,16 +55,18 @@
     </div>
 
     <div>
-      <%= form.label :time_start, 'Start Time *', class: "fancy_label" %>
-      <%= select_tag "time_start", options_for_select(available_time(@day_start, @cars, @unit_id)[:begin], @time_start), class: "input_text_field",
-        "data-reservation-target": "time_start", "data-action": "change->reservation#availableCars" %>
+      <%= form.label :start_time, 'Start Time *', class: "fancy_label" %>
+      <%= select_tag "start_time", options_for_select(available_time(@day_start, @cars, @unit_id)[:begin], @start_time), class: "input_text_field",
+        "data-reservation-target": "start_time", "data-action": "change->reservation#availableCars" %>
     </div>
 
     <div>
-      <%= form.label :time_end, 'End Time *', class: "fancy_label" %>
-      <%= select_tag "time_end", options_for_select(available_time(@day_start, @cars, @unit_id)[:end], @time_end), class: "input_text_field",
-        "data-reservation-target": "time_end", "data-action": "change->reservation#availableCars" %>
+      <%= form.label :end_time, 'End Time *', class: "fancy_label" %>
+      <%= select_tag "end_time", options_for_select(available_time(@day_start, @cars, @unit_id)[:end], @end_time), class: "input_text_field",
+        "data-reservation-target": "end_time", "data-action": "change->reservation#availableCars" %>
     </div>
+    <div class="error_text" id="time_field"></div>
+  
   </div>
 
   <%= render 'cars_dropdown' %>

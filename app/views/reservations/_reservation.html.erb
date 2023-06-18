@@ -5,7 +5,11 @@
         Car:
       </label>
       <p class="body-lg-text ml-2 inline-block">
-        <%= link_to show_car(reservation), car_path(reservation.car), class: "link_to" %>
+        <% if reservation.car.present? %>
+          <%= link_to show_car(reservation), car_path(reservation.car), class: "link_to" %>
+        <% else %>
+          No car selected
+        <% end %>
       </p>
     </div>
 

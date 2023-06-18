@@ -67,8 +67,8 @@ class ReservationsController < ApplicationController
     @start_time = @reservation.start_time.to_s
     @end_time = @reservation.end_time.to_s
     @number_of_people_on_trip = @reservation.number_of_people_on_trip
-    @cars = list_of_available_cars(@unit_id, @day_start, @number_of_people_on_trip, @start_time, @end_time)
-
+    @cars = Car.available.where(unit_id: @unit_id)
+    # @cars = list_of_available_cars(@unit_id, @day_start, @number_of_people_on_trip, @start_time, @end_time)
   end
 
   def get_available_cars
