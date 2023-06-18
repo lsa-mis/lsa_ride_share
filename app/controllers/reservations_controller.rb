@@ -85,25 +85,27 @@ class ReservationsController < ApplicationController
     if params[:time_end].present?
       @time_end = params[:time_end]
     end
-    if ((Time.zone.parse(@time_end).to_datetime - Time.zone.parse(@time_start).to_datetime) * 24 * 60).to_i > 15
-      @reserv_begin = Time.zone.parse(params[:day_start] + " " + @time_start).to_datetime
-      @reserv_end = Time.zone.parse(params[:day_start] + " " + @time_end).to_datetime
+    fail
+    if (@time_end.to_datetime - @time_start.to_datetime) * 24 * 60).to_i > 30
+      @reserv_begin = @time_start.to_datetime
+      @reserv_end = @time_end.to_datetime
       range = @reserv_begin..@reserv_end
       @cars = available_cars(@cars, range)
-    end
+    # end
     authorize Reservation
   end
 
-  def list_of_available_cars(unit_id, day, number, time_start, time_end)
+  def list_of_available_cars(unit_id, day_start, number, time_start, time_end)
     cars = Car.available.data(unit_id).order(:car_number)
     cars = cars.where("number_of_seats >= ?", number)
     
-    if ((Time.zone.parse(time_end).to_datetime - Time.zone.parse(time_start).to_datetime) * 24 * 60).to_i > 15
-      reserv_begin = Time.zone.parse(day_start + " " + time_start).to_datetime
-      reserv_end = Time.zone.parse(day_start + " " + time_end).to_datetime
-      range = reserv_begin..reserv_end
+    if ((time_end - time_start) * 24 * 60).to_i > 30
+      # reserv_begin = Time.zone.parse(day_start + " " + time_start).to_datetime
+      # reserv_end = Time.zone.parse(day_start + " " + time_end).to_datetime
+      # range = reserv_begin..reserv_end
+      range = time_start..time_end
     else
-      range = day.beginning_of_day..day.end_of_day
+      range = day_start.beginning_of_day..day_start.end_of_day
     end
       cars = available_cars(cars, range)
       return cars
@@ -116,11 +118,12 @@ class ReservationsController < ApplicationController
       @reservation.car_id = params[:car_id]
       @car_id = params[:car_id]
     end
-    @reservation.start_time = Time.zone.parse(params[:day_start] + " " + params[:time_start]).to_datetime
-    @reservation.end_time = Time.zone.parse(params[:day_start] + " " + params[:time_end]).to_datetime
+    @reservation.start_time = (params[:time_start]).to_datetime
+    @reservation.end_time = (params[:time_end]).to_datetime
     @reservation.number_of_people_on_trip = params[:number_of_people_on_trip]
     @reservation.reserved_by = current_user.id
     authorize @reservation
+    fail
     if @reservation.save
       @students = @reservation.program.students 
       redirect_to add_drivers_path(@reservation), notice: "Reservation was successfully created. Please add drivers."
@@ -164,8 +167,8 @@ class ReservationsController < ApplicationController
     end
     @reservation.attributes = reservation_params
     @reservation.car_id = params[:car_id]
-    @reservation.start_time = Time.zone.parse(params[:day_start] + " " + params[:time_start]).to_datetime
-    @reservation.end_time = Time.zone.parse(params[:day_start] + " " + params[:time_end]).to_datetime
+    @reservation.start_time = (params[:time_start]).to_datetime
+    @reservation.end_time = (params[:time_end]).to_datetime
     @reservation.number_of_people_on_trip = params[:number_of_people_on_trip]
     respond_to do |format|
       if @reservation.update(reservation_params)

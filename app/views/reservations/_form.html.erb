@@ -12,9 +12,8 @@
   <% end %>
 
   <%= form.label :unit_id, 'Unit *', class: "hidden" %>
-  <div class="error_text fields--hide mt-2" data-reservation-target="required_fields">
-    <span>Please select required data </span>
-  </div>
+  <div class="error_text mt-2" id="required_fields"></div>
+
   <input type="hidden" id="unit_id" name="unit_id" value=<%= @unit_id %> data-reservation-target="unit">
   <% if is_student?(current_user) %>
     <p class="body-lg-text mt-2">
@@ -79,6 +78,7 @@
       <%= select_tag "time_end", options_for_select(available_time(@day_start, @cars, @unit_id)[:end], @time_end), class: "input_text_field",
         "data-reservation-target": "time_end", "data-action": "change->reservation#availableCars" %>
     </div>
+    <div class="error_text" id="time_field"></div>
   </div>
 
   <%= render 'cars_dropdown' %>

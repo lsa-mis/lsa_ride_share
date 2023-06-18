@@ -3,17 +3,16 @@ import { get } from "@rails/request.js"
 
 export default class extends Controller {
   static targets = ['form', 'term', 'unit', 'program', 'site', 'required_fields',
-    'day_start', 'number', 'time_start', 'time_end', 'car', 'car_field']
+    'day_start', 'number', 'time_start', 'time_end', 'selected_time_error', 'car', 'car_field']
+
   connect() {
     console.log("connect - reservation")
   }
 
   changePrograms() {
-    var unit =this.unitTarget.value
-    var term =this.termTarget.value
+    let unit =this.unitTarget.value
+    let term =this.termTarget.value
     if (unit && term) {
-      console.log("unit:" + unit)
-      console.log("term:" + term)
       fetch(`/programs/get_programs_list/${unit}/${term}`)
         .then((response) => response.json())
         .then((data) => this.updateProgramsSelect(data)
@@ -22,6 +21,7 @@ export default class extends Controller {
       console.log("no unit")
     }
   }
+
   updateProgramsSelect(data) {
     let dropdown = this.programTarget;
     dropdown.length = 0;
@@ -30,7 +30,6 @@ export default class extends Controller {
     defaultOption.value = '';
     if (data.length > 1) {
       defaultOption.text = 'Select Program ...';
-
       dropdown.add(defaultOption);
       dropdown.selectedIndex = 0;
       let option;
@@ -60,15 +59,13 @@ export default class extends Controller {
     if (program.not_course) {
       var title = program.title + ' - not a course'
     } else {
-    var title = program.title + " - " + program.subject + " " + program.catalog_number
+      var title = program.title + " - " + program.subject + " " + program.catalog_number
     }
     return title
   }
 
   setSites() {
-    console.log("set sites")
-    var program = this.programTarget.value
-    console.log(program)
+    let program = this.programTarget.value
     fetch(`/programs/get_sites_list/${program}`)
         .then((response) => response.json())
         .then((data) => { this.updateSitesSelect(data);
@@ -76,7 +73,6 @@ export default class extends Controller {
   }
 
   updateSitesSelect(data) {
-    console.log(data)
     let dropdown = this.siteTarget;
     dropdown.length = 0;
     let defaultOption = document.createElement('option');
@@ -85,7 +81,6 @@ export default class extends Controller {
       defaultOption.text = 'Select Site ...';
       dropdown.add(defaultOption);
     }
-
     dropdown.selectedIndex = 0;
     let option;
     for (let i = 0; i < data.length; i++) {
@@ -96,37 +91,79 @@ export default class extends Controller {
     }
   }
 
-  availableCars(){
-    var unit_id = this.unitTarget.value
-    var day_start = this.day_startTarget.value
-    var number = this.numberTarget.value
-    var time_start = this.time_startTarget.value
-    var time_end = this.time_endTarget.value
+  availableCars(event){
+    let unit_id = this.unitTarget.value
+    let day_start = this.day_startTarget.value
+    let number = this.numberTarget.value
+    let time_start = this.time_startTarget.value
+    let time_end = this.time_endTarget.value
+    let time_start_format = new Date(time_start)
+    let time_end_format = new Date(time_end)
+    let diff_time = parseInt(time_end_format - time_start_format)/60000;
+
+    let time_field_error = document.getElementById('time_field')
+    let required_fields_error = document.getElementById('required_fields')
+    let car_field_error = document.getElementById('car_field')
+
+    if (diff_time > 0 && diff_time < 31) {
+      time_field_error.innerHTML = 'End time is too close to start time'
+      required_fields_error.innerHTML = ''
+      car_field_error.innerHTML = ''
+    } else if (time_start_format > time_end_format) {
+      time_field_error.innerHTML = 'Start time should occur before end time'
+      required_fields_error.innerHTML = ''
+      car_field_error.innerHTML = ''
+    }else {
+      time_field_error.innerHTML = ''
+    }
 
     get(`/reservations/get_available_cars/${unit_id}/${day_start}/${number}/${time_start}/${time_end}`, {
       responseKind: "turbo-stream"
     })
+    
   }
 
   submitForm(event) {
-    var term = this.termTarget.value
-    var program = this.programTarget.value
-    var site = this.siteTarget.value
-    var car = this.carTarget.value
+    let term = this.termTarget.value
+    let program = this.programTarget.value
+    let site = this.siteTarget.value
+    let car = this.carTarget.value
+
+    let time_start = this.time_startTarget.value
+    let time_end = this.time_endTarget.value
+    let time_start_format = new Date(time_start)
+    let time_end_format = new Date(time_end)
+    let diff_time = parseInt(time_end_format - time_start_format)/60000;
+    
+    let time_field_error = document.getElementById('time_field')
+    let required_fields_error = document.getElementById('required_fields')
+    let car_field_error = document.getElementById('car_field')
+    let submitForm = true
 
     if(term == "" || program == "" || site == "") {
-      this.required_fieldsTarget.classList.add("fields--display")
-      this.required_fieldsTarget.classList.remove("fields--hide")
-      this.car_fieldTarget.classList.remove("fields--display")
-      this.car_fieldTarget.classList.add("fields--hide")
-      event.preventDefault()
+      required_fields_error.innerHTML = "Please select required data"
+      car_field_error.innerHTML = ''
+      submitForm = false
     } else if (car == "") {
-      this.car_fieldTarget.classList.add("fields--display")
-      this.car_fieldTarget.classList.remove("fields--hide")
-      this.required_fieldsTarget.classList.remove("fields--display")
-      this.required_fieldsTarget.classList.add("fields--hide")
-      event.preventDefault()
+      car_field_error.innerHTML = "Please select a car"
+      required_fields_error.innerHTML = ''
+      submitForm = false
     } else {
+      required_fields_error.innerHTML = ''
+      car_field_error.innerHTML = ''
+    }
+
+    if (diff_time < 31) {
+      time_field_error.innerHTML = "End time is too close to the start time"
+      submitForm = false
+    } else {
+      time_field_error.innerHTML = ''
+    }
+
+    if(submitForm == false) {
+      event.preventDefault()
+    }
+    else {
       Turbo.navigator.submitForm(this.formTarget)
     }
   }

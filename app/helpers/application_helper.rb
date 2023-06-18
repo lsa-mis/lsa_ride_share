@@ -212,16 +212,16 @@ module ApplicationHelper
         range = step..step + 15.minutes
         cars.each do |car|
           if available?(car, range)
-            available_times_begin << show_time(step)
-            available_times_end << show_time(step  + 15.minutes)
+            available_times_begin << [show_time(step), step]
+            available_times_end << [show_time(step + 15.minutes), step + 15.minutes]
             break
           end
         end
       end
     else
-      available_times_begin = day_times_with_15_min_steps.map { |t| show_time(t) }
+      available_times_begin = day_times_with_15_min_steps.map { |t| [t, show_time(t)] }
       available_times_begin.pop
-      available_times_end = day_times_with_15_min_steps.map { |t| show_time(t) }
+      available_times_end = day_times_with_15_min_steps.map { |t| [t, show_time(t)] }
       available_times_end.shift
     end
     available_times = {:begin=>available_times_begin, :end=>available_times_end}
