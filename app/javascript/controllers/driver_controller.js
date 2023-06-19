@@ -71,8 +71,10 @@ export default class extends Controller {
           backup_driver_error_place.innerHTML += "<br>Drivers' phones should be different"
           submitForm = false
         }
-        if (!regex.test(backup_driver_phone)) {
-          backup_driver_error_place.innerHTML += '<br>Phone number format is incorrect'
+        if (regex.test(backup_driver_phone)) {
+          backup_driver_error_place.innerHTML = ''
+        } else {
+          backup_driver_error_place.innerHTML += "<br>Backup driver's phone number format is incorrect"
           submitForm = false
         }
       } else {
