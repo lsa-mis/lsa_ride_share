@@ -21,8 +21,8 @@ class ReservationsController < ApplicationController
 
   def cars_reservations
     unit_id = 3
-    fail
-    @cars = Car.where(unit_id: unit_is)
+    # fail
+    @cars = Car.where(unit_id: unit_id)
     @date_range = Date.today.beginning_of_week..Date.today.end_of_week
     @dates = @date_range.to_a
     @reservations = Reservation.all
