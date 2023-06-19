@@ -5,6 +5,7 @@
       <thead class="border border-l-0 border-r-0 border-gray-um60">
         <tr>
           <th class="header_th">Reservation</th>
+          <th class="header_th">Approved</th>
           <th class="header_th">Pick-up</th>
           <th class="header_th">Drop-off</th>
           <th class="header_th">Site</th>
@@ -29,7 +30,12 @@
               </td>
             <% end %>
             <td class="mi_tbody_td">
-            <%= show_date_time(reservation.start_time) %>
+              <% if reservation.approved %>
+                <i class="fa-solid fa-check"></i>
+              <% end %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= show_date_time(reservation.start_time) %>
             </td>
             <td class="mi_tbody_td">
               <%= show_date_time(reservation.end_time) %>
@@ -42,7 +48,13 @@
             </td>
             <td class="mi_tbody_td">
               <% if reservation.vehicle_report.present? %>
-                <%= link_to 'Vehicle report', vehicle_report_path(reservation.vehicle_report), class: "link_to" %>
+                <% if reservation.vehicle_report.approved %>
+                  Approved by admin
+                <% elsif reservation.vehicle_report.student_status %>
+                  Completed
+                <% else %>
+                  <%= link_to 'Vehicle report', vehicle_report_path(reservation.vehicle_report), class: "link_to" %>
+                <% end %>
               <% else %>
                 <%= link_to 'New vehicle report', new_reservation_vehicle_report_path(reservation), class: "link_to" %>
               <% end %>
