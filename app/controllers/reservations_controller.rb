@@ -147,6 +147,16 @@ class ReservationsController < ApplicationController
 
   # PATCH/PUT /reservations/1 or /reservations/1.json
   def update
+    if params[:reservation][:approved].present?
+      if @reservation.update(reservation_params)
+        redirect_to reservation_path(@reservation), notice: "Reservation was updated"
+        return
+      else
+        flash.now[:alert] = "error"
+        format.turbo_stream { render :show, status: :unprocessable_entity }
+        return
+      end
+    end
     if params[:reservation][:driver_id].present?
       if @reservation.update(reservation_params)
         redirect_to add_passengers_path(@reservation)
@@ -245,6 +255,6 @@ class ReservationsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def reservation_params
       params.require(:reservation).permit(:status, :start_time, :end_time, :recurring, :driver_id, :driver_phone, :backup_driver_id, :backup_driver_phone, 
-      :number_of_people_on_trip, :program_id, :site_id, :car_id, :reserved_by)
+      :number_of_people_on_trip, :program_id, :site_id, :car_id, :reserved_by, :approved)
     end
 end

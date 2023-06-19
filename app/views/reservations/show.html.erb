@@ -4,9 +4,25 @@
       <h1>
         <%= @reservation.program.unit.name %> reservation
       </h1>
-      <h2>
+      <h2 class="mb-2">
         <%= @reservation.program.display_name_with_title %>
       </h2>
+      <%= form_with model: @reservation, html: { class: "sm:flex sm:items-center" },
+        data: { controller: "approve",
+                approve_target: "form"
+              } do |f| %>
+        <div class="sm:col-span-4">
+          <ol class="switches">
+            <li>
+              <%= f.check_box :approved, "data-action": "change->approve#toggleApprove"  %>
+              <%= f.label :approved do %>
+                <span class="label-text">Approved</span>
+                <span></span>
+              <% end %>
+            </li>
+          </ol>
+        </div>
+      <% end %>
     </div>
     <div class="lg:grid lg:justify-items-end py-2">
       <% if (is_admin?(current_user) || allow_student_to_edit_reservation?(@reservation)) && future_reservation?(@reservation) %>
@@ -17,9 +33,9 @@
       <div></div>
       <% end %>
       <% if @reservation.vehicle_report.present? %>
-        <%= link_to 'Vehicle report', vehicle_report_path(@reservation.vehicle_report), class: "secondary_blue_button" %>
+        <%= link_to 'Vehicle Report', vehicle_report_path(@reservation.vehicle_report), class: "secondary_blue_button" %>
       <% else %>
-        <%= link_to 'New vehicle report', new_reservation_vehicle_report_path(@reservation), class: "secondary_blue_button" %>
+        <%= link_to 'New Vehicle Report', new_reservation_vehicle_report_path(@reservation), class: "secondary_blue_button" %>
       <% end %>
     </div>
   </div>
