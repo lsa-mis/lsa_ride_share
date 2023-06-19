@@ -32,7 +32,7 @@ class ReservationsController < ApplicationController
       @unit_id = @program.unit_id
       @term_id = @program.term.id
       @sites = @program.sites
-      @cars = @cars.where(unit_id: @unit_id)
+      @cars = @cars.where(unit_id: @unit_id).order(:car_number)
       @min_date = default_reservation_for_students
     elsif params[:unit_id].present?
       @unit_id = params[:unit_id]
@@ -67,8 +67,8 @@ class ReservationsController < ApplicationController
     @start_time = @reservation.start_time.to_s
     @end_time = @reservation.end_time.to_s
     @number_of_people_on_trip = @reservation.number_of_people_on_trip
-    @cars = list_of_available_cars(@unit_id, @day_start, @number_of_people_on_trip, @start_time, @end_time)
-
+    @cars = Car.available.where(unit_id: @unit_id).where("number_of_seats >= ?", @number_of_people_on_trip).order(:car_number)
+    # @cars = list_of_available_cars(@unit_id, @day_start, @number_of_people_on_trip, @start_time, @end_time)
   end
 
   def get_available_cars
@@ -79,7 +79,9 @@ class ReservationsController < ApplicationController
       @day_start = params[:day_start].to_date
     end
     if params[:number].present?
-      @cars = @cars.where("number_of_seats >= ?", params[:number])
+      @cars = @cars.where("number_of_seats >= ?", params[:number]).order(:car_number)
+      Rails.logger.debug "******************************** params[:number]: #params[:number]"
+      Rails.logger.debug "******************************** cars: #{@cars}"
     end
     if params[:start_time].present?
       @start_time = params[:start_time]
@@ -87,12 +89,15 @@ class ReservationsController < ApplicationController
     if params[:end_time].present?
       @end_time = params[:end_time]
     end
+    Rails.logger.debug "******************************** start_time: #{@start_time}"
+    Rails.logger.debug "******************************** end_time: #{@end_time}"
     if ((@end_time.to_datetime - @start_time.to_datetime) * 24 * 60).to_i > 30
       @reserv_begin = @start_time.to_datetime
       @reserv_end = @end_time.to_datetime
       range = @reserv_begin..@reserv_end
       @cars = available_cars(@cars, range)
     end
+      Rails.logger.debug "******************************** final cars: #{@cars}"
     authorize Reservation
   end
 

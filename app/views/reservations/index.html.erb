@@ -24,7 +24,7 @@
       <div class="flex flex-col justify-between">
         <% reservations.each do |reservation| %>
           <div>
-            <%= link_to reservation.display_name, reservation_path(reservation.id) %>
+            <%= link_to reservation.display_name, reservation_path(reservation.id), class: "link_to" %>
             <p>
               From:
               <%= show_date_time(reservation.start_time) %>

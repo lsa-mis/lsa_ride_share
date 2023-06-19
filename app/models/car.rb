@@ -38,6 +38,14 @@ class Car < ApplicationRecord
   scope :data, ->(unit_id) { unit_id.present? ? where(unit_id: unit_id) : all }
   scope :available, -> { where(status: 'available') }
 
+  def reservations_past
+    self.reservations.where('start_time <= ?', DateTime.now).sort_by(&:start_time).reverse
+  end
+
+  def reservations_future
+    self.reservations.where('start_time > ?', DateTime.now).sort_by(&:start_time)
+  end
+
   def last_vehicle_report
     VehicleReport.where(reservation_id: self.reservations.ids).present? ?
     VehicleReport.where(reservation_id: self.reservations.ids).order(:updated_at).last :

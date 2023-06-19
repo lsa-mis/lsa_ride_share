@@ -17,6 +17,8 @@ class CarsController < ApplicationController
   end
 
   def show
+    @reservations_past = @car.reservations_past
+    @reservations_future = @car.reservations_future
   end
 
   # GET /cars/new
