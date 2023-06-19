@@ -20,19 +20,23 @@ export default class extends Controller {
     if (driver == "" && driver_phone == "") {
       driver_error_place.innerHTML = "Please select a driver and enter driver's phone"
       submitForm = false
+    } else if (driver != "" && driver_phone == "") {
+      driver_error_place.innerHTML = "Please enter driver's phone"
+      submitForm = false
     } else if (driver == "" && driver_phone != "") {
       driver_error_place.innerHTML = 'Please select a driver'
       submitForm = false
       if (!regex.test(driver_phone)) {
         driver_error_place.innerHTML += '<br>Phone number format is incorrect'
+        submitForm = false
       }
     } else if (driver != "" && driver_phone != "") {
-      if (!regex.test(driver_phone)) {
+      if (regex.test(driver_phone)) {
+        driver_error_place.innerHTML = ''
+      } else {
         driver_error_place.innerHTML = 'Phone number format is incorrect'
+        submitForm = false
       }
-    } else if (driver != "" && driver_phone == "") {
-      driver_error_place.innerHTML = "Please enter driver's phone"
-      submitForm = false
     } else {
       driver_error_place.innerHTML = ''
     }
