@@ -27,7 +27,7 @@
         Start time:
       </label>
       <p class="body-lg-text ml-2 inline-block">
-        <%= reservation.start_time %>
+        <%= show_date_time(reservation.start_time) %>
       </p>
     </div>
 
@@ -36,7 +36,7 @@
         End time:
       </label>
       <p class="body-lg-text ml-2 inline-block">
-        <%= reservation.end_time %>
+        <%= show_date_time(reservation.end_time) %>
       </p>
     </div>
 
