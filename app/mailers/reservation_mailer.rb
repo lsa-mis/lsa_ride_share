@@ -1,6 +1,4 @@
 class ReservationMailer < ApplicationMailer
-  # before_action :set_reservation
-  # before_action :set_recipient
 
   def car_reservation_created
     @reservation = params[:reservation]
