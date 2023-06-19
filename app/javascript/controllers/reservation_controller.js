@@ -91,7 +91,7 @@ export default class extends Controller {
     }
   }
 
-  availableCars(event){
+  availableCars(){
     let unit_id = this.unitTarget.value
     let day_start = this.day_startTarget.value
     let number = this.numberTarget.value
@@ -162,9 +162,6 @@ export default class extends Controller {
 
     if(submitForm == false) {
       event.preventDefault()
-    }
-    else {
-      Turbo.navigator.submitForm(this.formTarget)
     }
   }
 
