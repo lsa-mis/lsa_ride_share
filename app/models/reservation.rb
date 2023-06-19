@@ -19,6 +19,7 @@
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
 #  reserved_by              :integer
+#  approved                 :boolean          default false
 #
 class Reservation < ApplicationRecord
   belongs_to :program
