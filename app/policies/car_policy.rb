@@ -7,7 +7,7 @@ class CarPolicy < ApplicationPolicy
   end
 
   def show?
-    user_in_access_group?
+    user_in_access_group? || is_student?
   end
 
   def create?
