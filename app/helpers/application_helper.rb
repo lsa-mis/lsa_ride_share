@@ -198,6 +198,20 @@ module ApplicationHelper
     end
   end
 
+  def all_day_available_time(day, unit_id)
+    # all day time renges for unit
+    times = show_time_begin_end(day, unit_id)
+    day_begin  = times[0]
+    day_end  = times[1]
+    day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) }
+    available_times_begin = day_times_with_15_min_steps.map { |t| [show_time(t), t.to_s] }
+    available_times_begin.pop
+    available_times_end = day_times_with_15_min_steps.map { |t| [show_time(t), t.to_s] }
+    available_times_end.shift
+    available_times = {:begin=>available_times_begin, :end=>available_times_end}
+    return available_times
+  end
+
   def available_time(day, cars, unit_id)
     # array of time with 15 minutes step available to reserve cars
     times = show_time_begin_end(day, unit_id)
@@ -206,6 +220,8 @@ module ApplicationHelper
     day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) }
     available_times_begin = []
     available_times_end = []
+    # available_times_begin << ["Select time ...", "0"]
+    # available_times_end << ["Select time ...", "0"]
     day_reservations = Reservation.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day).order(:start_time)
     if day_reservations.present?
       day_times_with_15_min_steps.each do |step|
