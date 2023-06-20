@@ -37,18 +37,18 @@
             <% if @programs.present? %>
               <ul role="list" class="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-4 mt-4">
                 <% @programs.each do |program| %>
-                  <li class="col-span-1 bg-white rounded-lg shadow-md divide-y divide-gray-400 px-2 place-items-stretch bg-white border border-gray-300 rounded-lg">
+                  <li class="card_area">
                     <%= render 'program_card', program: program %>
                   </li>
                 <% end %>
               </ul>
             <% else %>
-              <p class="body-text mt-4">
+              <p class="body-sm-text mt-4">
                 There are no programs for this term.
               </p>
             <% end %>
           <% else %>
-            <p class="body-text mt-4">
+            <p class="body-sm-text mt-4">
               The previous term has already ended while the next one has not yet begun.
             </p>
           <% end %>

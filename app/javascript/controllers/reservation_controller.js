@@ -1,21 +1,18 @@
 import { Controller } from "@hotwired/stimulus"
 import { get } from "@rails/request.js"
 
-// Connects to data-controller="program"
 export default class extends Controller {
-  static targets = ['form', 'term', 'unit', 'program', 'site',
-    'day_start', 'number', 'time_start', 'time_end']
+  static targets = ['form', 'term', 'unit', 'program', 'site', 'required_fields',
+    'day_start', 'number', 'start_time', 'end_time', 'selected_time_error', 'car', 'car_field']
+
   connect() {
     console.log("connect - reservation")
   }
 
   changePrograms() {
-    console.log("changeProgram")
-    var unit =this.unitTarget.value
-    var term =this.termTarget.value
+    let unit =this.unitTarget.value
+    let term =this.termTarget.value
     if (unit && term) {
-      console.log("unit:" + unit)
-      console.log("term:" + term)
       fetch(`/programs/get_programs_list/${unit}/${term}`)
         .then((response) => response.json())
         .then((data) => this.updateProgramsSelect(data)
@@ -24,17 +21,15 @@ export default class extends Controller {
       console.log("no unit")
     }
   }
+
   updateProgramsSelect(data) {
-    console.log("select" + data.length)
-    console.log(data[0])
     let dropdown = this.programTarget;
     dropdown.length = 0;
 
     let defaultOption = document.createElement('option');
     defaultOption.value = '';
     if (data.length > 1) {
-      defaultOption.text = 'Select program...';
-
+      defaultOption.text = 'Select Program ...';
       dropdown.add(defaultOption);
       dropdown.selectedIndex = 0;
       let option;
@@ -64,15 +59,13 @@ export default class extends Controller {
     if (program.not_course) {
       var title = program.title + ' - not a course'
     } else {
-    var title = program.title + " - " + program.subject + " " + program.catalog_number
+      var title = program.title + " - " + program.subject + " " + program.catalog_number
     }
     return title
   }
 
   setSites() {
-    console.log("set sites")
-    var program = this.programTarget.value
-    console.log(program)
+    let program = this.programTarget.value
     fetch(`/programs/get_sites_list/${program}`)
         .then((response) => response.json())
         .then((data) => { this.updateSitesSelect(data);
@@ -80,39 +73,96 @@ export default class extends Controller {
   }
 
   updateSitesSelect(data) {
-    console.log(data)
     let dropdown = this.siteTarget;
     dropdown.length = 0;
     let defaultOption = document.createElement('option');
     defaultOption.value = '';
     if (data.length > 1) {
-      defaultOption.text = 'Select Site...';
-
+      defaultOption.text = 'Select Site ...';
       dropdown.add(defaultOption);
-      dropdown.selectedIndex = 0;
-      let option;
-      for (let i = 0; i < data.length; i++) {
-        option = document.createElement('option');
-        option.value = data[i].id;
-        option.text = data[i].title;
-        dropdown.add(option);
-      }
+    }
+    dropdown.selectedIndex = 0;
+    let option;
+    for (let i = 0; i < data.length; i++) {
+      option = document.createElement('option');
+      option.value = data[i].id;
+      option.text = data[i].title;
+      dropdown.add(option);
     }
   }
 
   availableCars(){
-    console.log("availableCars")
-    var day_start = this.day_startTarget.value
-    var number = this.numberTarget.value
-    var time_start = this.time_startTarget.value
-    var time_end = this.time_endTarget.value
-    console.log(day_start)
-    console.log(number)
-    console.log(time_start)
-    console.log(time_end)
+    let unit_id = this.unitTarget.value
+    let day_start = this.day_startTarget.value
+    let number = this.numberTarget.value
+    let start_time = this.start_timeTarget.value
+    let end_time = this.end_timeTarget.value
+    let start_time_format = new Date(start_time)
+    let end_time_format = new Date(end_time)
+    let diff_time = parseInt(end_time_format - start_time_format)/60000;
 
-    get(`/reservations/get_available_cars/${day_start}/${number}/${time_start}/${time_end}`, {
+    let time_field_error = document.getElementById('time_field')
+    let required_fields_error = document.getElementById('required_fields')
+    let car_field_error = document.getElementById('car_field')
+
+    if (diff_time > 0 && diff_time < 31) {
+      time_field_error.innerHTML = 'End time is too close to start time'
+      required_fields_error.innerHTML = ''
+      car_field_error.innerHTML = ''
+    } else if (start_time_format > end_time_format) {
+      time_field_error.innerHTML = 'Start time should occur before end time'
+      required_fields_error.innerHTML = ''
+      car_field_error.innerHTML = ''
+    }else {
+      time_field_error.innerHTML = ''
+    }
+
+    get(`/reservations/get_available_cars/${unit_id}/${day_start}/${number}/${start_time}/${end_time}`, {
       responseKind: "turbo-stream"
     })
+
   }
+
+  submitForm(event) {
+    let term = this.termTarget.value
+    let program = this.programTarget.value
+    let site = this.siteTarget.value
+    let car = this.carTarget.value
+
+    let start_time = this.start_timeTarget.value
+    let end_time = this.end_timeTarget.value
+    let start_time_format = new Date(start_time)
+    let end_time_format = new Date(end_time)
+    let diff_time = parseInt(end_time_format - start_time_format)/60000;
+    
+    let time_field_error = document.getElementById('time_field')
+    let required_fields_error = document.getElementById('required_fields')
+    let car_field_error = document.getElementById('car_field')
+    let submitForm = true
+
+    if(term == "" || program == "" || site == "") {
+      required_fields_error.innerHTML = "Please select required data"
+      car_field_error.innerHTML = ''
+      submitForm = false
+    } else if (car == "") {
+      car_field_error.innerHTML = "Please select a car"
+      required_fields_error.innerHTML = ''
+      submitForm = false
+    } else {
+      required_fields_error.innerHTML = ''
+      car_field_error.innerHTML = ''
+    }
+
+    if (diff_time < 31) {
+      time_field_error.innerHTML = "End time is too close to the start time"
+      submitForm = false
+    } else {
+      time_field_error.innerHTML = ''
+    }
+
+    if(submitForm == false) {
+      event.preventDefault()
+    }
+  }
+
 }

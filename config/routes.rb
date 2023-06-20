@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
-  root to: "static_pages#home"
+ 
+  root to: "static_pages#home", as: :all_root
 
   mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development? || Rails.env.staging?
   
@@ -18,13 +19,17 @@ Rails.application.routes.draw do
   resources :unit_preferences
 
   resources :terms
-  resources :vehicle_reports
+  resources :vehicle_reports do
+    resources :notes, module: :vehicle_reports
+  end
   # get '/vehicle_reports/:reports_ids', to: 'vehicle_reports#index', as: 'vehicle_reports'
 
   get '/reservations/cars_reservations', to: 'reservations#cars_reservations', as: 'cars_reservations'
   get '/reservations/week_calendar/', to: 'reservations#week_calendar', as: 'week_calendar'
-  resources :reservations
-  get '/reservations/get_available_cars/:day_start/:number/:time_start/:time_end', to: 'reservations#get_available_cars'
+  resources :reservations do
+    resources :vehicle_reports, module: :reservations
+  end
+  get '/reservations/get_available_cars/:unit_id/:day_start/:number/:start_time/:end_time', to: 'reservations#get_available_cars'
   get '/reservations/add_passengers/:id', to: 'reservations#add_passengers', as: :add_passengers
   get '/reservations/add_drivers/:id', to: 'reservations#add_drivers', as: :add_drivers
   delete 'reservations/:id/:student_id', to: 'reservations#remove_passenger', as: :remove_passenger
@@ -32,7 +37,6 @@ Rails.application.routes.draw do
   resources :cars do
     resources :notes, module: :cars
   end
-  resources :students
   
   resources :programs do
     resources :cars, module: :programs
@@ -52,9 +56,6 @@ Rails.application.routes.draw do
   get '/programs/managers/edit_program_managers/:program_id', to: 'programs/managers#edit_program_managers', as: :edit_program_managers
   delete 'programs/managers/remove_manager/:program_id/:id', to: 'programs/managers#remove_manager_from_program', as: :remove_manager_from_program
 
-  resources :programs do
-    resources :config_questions, module: :programs
-  end
   resources :programs do
     resources :students, module: :programs
   end
@@ -84,6 +85,8 @@ Rails.application.routes.draw do
     resources :contacts, module: :sites
   end
   resources :notes
+
+  get 'welcome_pages/student'
   
   get 'static_pages/home'
 

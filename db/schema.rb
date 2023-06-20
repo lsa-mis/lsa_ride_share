@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_26_140558) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_19_123551) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -59,11 +59,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_140558) do
     t.string "color"
     t.integer "number_of_seats"
     t.float "mileage"
-    t.float "gas"
+    t.integer "gas"
     t.string "parking_spot"
     t.datetime "last_used"
     t.datetime "last_checked"
-    t.integer "last_driver"
+    t.integer "last_driver_id"
     t.integer "updated_by"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -195,6 +195,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_140558) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "reserved_by"
+    t.boolean "approved", default: false
     t.index ["backup_driver_id"], name: "index_reservations_on_backup_driver_id"
     t.index ["car_id"], name: "index_reservations_on_car_id"
     t.index ["driver_id"], name: "index_reservations_on_driver_id"
@@ -243,10 +244,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_140558) do
   create_table "unit_preferences", force: :cascade do |t|
     t.string "name"
     t.string "description"
-    t.boolean "value"
+    t.boolean "on_off"
     t.bigint "unit_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "value"
+    t.integer "pref_type"
     t.index ["unit_id"], name: "index_unit_preferences_on_unit_id"
   end
 
@@ -283,14 +286,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_26_140558) do
     t.bigint "reservation_id", null: false
     t.float "mileage_start"
     t.float "mileage_end"
-    t.float "gas_start"
-    t.float "gas_end"
+    t.integer "gas_start"
+    t.integer "gas_end"
     t.string "parking_spot"
     t.integer "created_by"
     t.integer "updated_by"
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "student_status", default: false
+    t.boolean "approved", default: false
     t.index ["reservation_id"], name: "index_vehicle_reports_on_reservation_id"
   end
 

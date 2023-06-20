@@ -9,7 +9,7 @@
 #  color           :string
 #  number_of_seats :integer
 #  mileage         :float
-#  gas             :float
+#  gas             :integer
 #  parking_spot    :string
 #  last_used       :datetime
 #  last_checked    :datetime
@@ -31,8 +31,20 @@ class Car < ApplicationRecord
 
   validates_presence_of :car_number, :make, :model, :color, :number_of_seats, :mileage, :gas, :parking_spot, :status, :updated_by
   validate :acceptable_image
+  validates_numericality_of :gas, greater_than: 0, less_than_or_equal_to: 100, message: 'must be between 0 & 100'
   
   enum :status, [:available, :unavailable], prefix: true, scopes: true
+
+  scope :data, ->(unit_id) { unit_id.present? ? where(unit_id: unit_id) : all }
+  scope :available, -> { where(status: 'available') }
+
+  def reservations_past
+    self.reservations.where('start_time <= ?', DateTime.now).sort_by(&:start_time).reverse
+  end
+
+  def reservations_future
+    self.reservations.where('start_time > ?', DateTime.now).sort_by(&:start_time)
+  end
 
   def last_vehicle_report
     VehicleReport.where(reservation_id: self.reservations.ids).present? ?

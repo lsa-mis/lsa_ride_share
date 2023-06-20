@@ -19,6 +19,7 @@
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
 #  reserved_by              :integer
+#  approved                 :boolean          default false
 #
 class Reservation < ApplicationRecord
   belongs_to :program
@@ -46,6 +47,10 @@ class Reservation < ApplicationRecord
     else
       "reservation ID - #{self.id}"
     end
+  end
+
+  def added_people
+    self.passengers.count + (self.driver.present? ? 1 : 0).to_i + (self.backup_driver.present? ? 1 : 0).to_i  
   end
 
 end

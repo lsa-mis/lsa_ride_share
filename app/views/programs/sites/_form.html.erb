@@ -13,12 +13,12 @@
     <% end %>
 
     <div class="my-2">
-      <label for="site_id" class="fancy_label">Select a Site</label>
+      <label for="site_id" class="fancy_label">Select a Site from the list</label>
       <%= select_tag "site_id", options_from_collection_for_select(choose_sites_for_program(@site_program), :id, :title), include_blank: "Select", class: "input_text_field",
         :"data-action" => "change->autosubmit#search" %>
     </div>
 
-    <p class="body-text pt-2">Or create a new site</p>
+    <p class="body-lg-bold-text pt-2">Or create a new site</p>
 
     <div class="my-2">
       <%= form.label :title, 'Title *', class: "fancy_label"  %>
@@ -55,7 +55,7 @@
     <%= form.hidden_field :unit_id, value: @site_program.unit_id %>
     <%= form.hidden_field :updated_by, value: current_user.id %>
 
-    <p class="my-4 body-text">
+    <p class="my-4 body-sm-text">
       Add/edit site's contacts on the site' show page
     </p>
 

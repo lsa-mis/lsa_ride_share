@@ -11,11 +11,16 @@
     <%= render "students" %>
   </div>
   <h3>
-    List of Passengers - Number of People on the Trip <%= @reservation.number_of_people_on_trip %>
+    List of Passengers - Number of People on the Trip - <%= @reservation.number_of_people_on_trip %>
   </h3>
 
   <div class="m-2">
     <%= turbo_frame_tag "passenger_list" do %>
+      <% if @reservation.added_people == @reservation.number_of_people_on_trip %>
+        <p class="my-5 body-sm-text">
+          No space for more passengers in the car - please click Finish Creating Reservation button
+        </p>
+      <% end %>
       <%= render "passenger_list", locals: { reservation: @reservation} %>
     <% end %>
   </div>

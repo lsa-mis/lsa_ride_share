@@ -1,0 +1,50 @@
+<%= turbo_frame_tag 'reservations_past' do %>
+  <h3 class="my-4">Past Reservations</h3>
+  <div class="min-w-full">
+    <table class="mi_table">
+      <thead class="border border-l-0 border-r-0 border-gray-um60">
+        <tr>
+          <th class="header_th">Reservation Date</th>
+          <th class="header_th">Site</th>
+          <th class="header_th">Program</th>
+          <th class="header_th">Reserved By</th>
+          <th class="header_th">Vehicle Report Date</th>
+          <th class="header_th">Status (student)</th>
+          <th class="header_th">Updated By</th>
+
+        </tr>
+      </thead>
+      <tbody>
+        <% @reservations_past.each do |reservation| %>
+          <tr class="mi_tbody_tr">
+            <td class="mi_tbody_td">
+              <%= link_to reservation.reservation_date, reservation_path(reservation.id), class: "link_to", data: { "turbo-frame": "_top" } %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= reservation.site.title %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= reservation.program.display_name %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= reservation.reserved_by %>
+            </td>
+            <% if reservation.vehicle_report.present? %>
+              <td class="mi_tbody_td">
+                <%= link_to show_date(reservation.vehicle_report.updated_at), reservation_vehicle_report_path(reservation.vehicle_report), class: "link_to", data: { "turbo-frame": "_top" } %>
+              </td>
+              <td class="mi_tbody_td status-<%= reservation.vehicle_report.student_status %>">
+                <%= show_vehicle_report_student_status(reservation.vehicle_report) %>
+              </td>
+              <td class="mi_tbody_td">
+                <%= show_user_name_by_id(reservation.vehicle_report.updated_by)  %>
+              </td>
+            <% else %>
+              <tr></tr><tr></tr><tr></tr>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

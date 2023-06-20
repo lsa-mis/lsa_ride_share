@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <h1> Reservation for:  <%= link_to "#{@reservation.display_name}", reservation_url(@reservation) %> </h1>
+    <p>
+     Details:
+      <ul>
+        <li>PROGRAM: <%= link_to @reservation.program.title, program_url(@reservation.program) %></li>
+        <li>SITE: <%= link_to @reservation.site.title, site_url(@reservation.site) %> </li>
+        <li>CAR #: <%= link_to @reservation.car.car_number, car_url(@reservation.car) %></li>
+        <li>DATE: <%= "#{@reservation.start_time} - #{@reservation.end_time}" %></li>
+      </ul>
+      Thank you
+    </p>
+    <p>
+      <%= link_to "LSA Ride Share", all_root_url %>
+    </p>
+  </body>
+</html>

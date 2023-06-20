@@ -18,7 +18,7 @@ class FacultySurveysController < ApplicationController
   end
 
   def faculty_index
-    @surveys_list = FacultySurvey.where(uniqname: current_user.uniqname)
+    @surveys_list = FacultySurvey.where(uniqname: current_user.uniqname).order(created_at: :desc)
     authorize @surveys_list
   end
 

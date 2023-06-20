@@ -1,0 +1,7 @@
+<%= turbo_stream.update "instructor_error_text" do %>
+  <%= render 'validation_uniqname' %>
+<% end %>
+
+<%= turbo_stream.update "new_program" do %>
+  <%= render "form", program: @program %>
+<% end %>

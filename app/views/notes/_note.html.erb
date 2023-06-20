@@ -3,25 +3,27 @@
   <hr class= "flex-1 border-t border-blue-600 my-1">
   <div>
     <div class="w-full text-xs">
-      <div class="flex body-text space-x-2 items-center pt-1">
+      <div class="flex body-sm-text space-x-2 items-center pt-1">
         <p><%= note.body %></p>
       </div>
       <div class="flex items-center">
-        <p class="body-text my-2">
+        <p class="body-sm-text my-2">
           Updated on 
           <%= note.updated_at.strftime('%m/%d/%Y') %>
           by
           <%= note.user.display_name %>
         </p>
-        <%= link_to edit_note_path(note) do %>
-          <span class="tertiary_button">Edit
-            <i class="fa-solid fa-pen"></i>
-          </span>
-        <% end %>
-        <%= link_to note_path(note), data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' } do %>
-          <span class="tertiary_button">Delete
-            <i class="fa fa-times" aria-hidden="true"></i>
-          </span>
+        <% if session["user_memberships"].present? %>
+          <%= link_to edit_note_path(note) do %>
+            <span class="tertiary_button">Edit
+              <i class="fa-solid fa-pen"></i>
+            </span>
+          <% end %>
+          <%= link_to note_path(note), data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' } do %>
+            <span class="tertiary_button">Delete
+              <i class="fa fa-times" aria-hidden="true"></i>
+            </span>
+          <% end %>
         <% end %>
       </div>
     </div>

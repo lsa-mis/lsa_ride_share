@@ -1,52 +1,147 @@
-<div id="<%= dom_id vehicle_report %>">
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Reservation:</strong>
-    <%= vehicle_report.reservation_id %>
-  </p>
+<p class="body-lg-text mb-2">
+  <%= link_to 'View vehicle reservation', reservation_path(vehicle_report.reservation_id), class: "link_to" %>
+</p>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Mileage start:</strong>
-    <%= vehicle_report.mileage_start %>
-  </p>
-
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Mileage end:</strong>
-    <%= vehicle_report.mileage_end %>
-  </p>
-
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Gas start:</strong>
-    <%= vehicle_report.gas_start %>
-  </p>
-
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Gas end:</strong>
-    <%= vehicle_report.gas_end %>
-  </p>
-
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Parking spot:</strong>
-    <%= vehicle_report.parking_spot %>
-  </p>
-
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Created by:</strong>
-    <%= vehicle_report.created_by %>
-  </p>
-
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Updated by:</strong>
-    <%= vehicle_report.updated_by %>
-  </p>
-
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Status:</strong>
-    <%= vehicle_report.status %>
-  </p>
-
-  <% if action_name != "show" %>
-    <%= link_to "Show this vehicle report", vehicle_report, class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-    <%= link_to 'Edit this vehicle report', edit_vehicle_report_path(vehicle_report), class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
-    <hr class="mt-6">
+<p class="body-lg-text mb-2">
+  <%= link_to car_path(vehicle_report.reservation.car), class: "link_to" do %>
+    Car - <%= vehicle_report.reservation.car.car_number %>
   <% end %>
+</p>
+
+<div class="grid grid-cols-1 sm:grid-cols-2">
+  <div>
+    <div class="">
+      <p class='body-md-text status-<%= vehicle_report.student_status %>'>
+        <%= show_vehicle_report_student_status(vehicle_report) %>
+      </p>
+    </div>
+
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Mileage start:
+      </label>
+      <p class="body-lg-text inline-block">
+        <%= vehicle_report.mileage_start %>
+      </p>
+    </div>
+
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Mileage end:
+      </label>
+      <p class="body-lg-text inline-block">
+        <%= vehicle_report.mileage_end %>
+      </p>
+    </div>
+
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Gas % (departure):
+      </label>
+      <p class="body-lg-text inline-block">
+        <%= vehicle_report.gas_start %>
+      </p>
+    </div>
+
+    <% if vehicle_report.gas_end.present? %>
+      <div class="py-2">
+        <label class="body-lg-bold-text">
+          Gas % (return):
+        </label>
+        <p class="body-lg-text inline-block">
+          <%= vehicle_report.gas_end %>
+        </p>
+      </div>
+    <% end%>
+      
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Trip mileage total:
+      </label>
+      <p class="body-lg-text inline-block">
+        <%= calculate_mileage(vehicle_report) %>
+      </p>
+    </div>
+
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Parking spot:
+      </label>
+      <p class="body-lg-text inline-block">
+        <%= vehicle_report.parking_spot %>
+      </p>
+    </div>
+
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Comment:
+      </label>
+      <p class="body-lg-text inline-block">
+        <%= vehicle_report.comment %>
+      </p>
+    </div>
+
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Created by:
+      </label>
+      <p class="body-lg-text inline-block">
+        <%= User.find(vehicle_report.created_by).display_name %>
+      </p>
+    </div>
+
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Updated by:
+      </label>
+      <p class="body-lg-text inline-block">
+          <%= User.find(vehicle_report.updated_by).display_name %>
+      </p>
+    </div>
+
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Last Updated:
+      </label>
+      <p class="body-lg-text inline-block">
+          <%= vehicle_report.updated_at %>
+      </p>
+    </div>
+
+    <% if is_admin?(current_user) %>
+      <div class="py-2">
+        <label class="body-lg-bold-text">
+          Admin Comment:
+        </label>
+        <p class="body-lg-text inline-block">
+          <%= vehicle_report.admin_comment %>
+        </p>
+      </div>
+    <% end %>
+
+  </div>
+  
+  <div>
+    <% if @vehicle_report.image_damages.attached? %>
+      <div class="">
+        <p class="body-md-bold-text m-4">Images (damage):</p>
+        <div>
+          <ul class="list-none grid grid-cols-2 gap-x-4 gap-y-8 px-4 mb-2">
+            <% @vehicle_report.image_damages.order(created_at: :desc).each do |image| %>
+              <li class="relative">
+                <div class="flex flex-col">
+                  <div class="group block w-full h-40 rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-indigo-500 overflow-hidden">
+                    <%= image_tag image.variant(:thumb), class: "object-cover h-full w-full group-hover:opacity-75" %>
+                  </div>
+                  <p alertclass="body-sm-text pt-2">
+                    Uploaded on <%= show_date_time(image.created_at) %>
+                  </p>
+                </div>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    <% end %>
+  </div>
 </div>

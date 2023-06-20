@@ -1,66 +1,69 @@
-<div class="mt-2">
+<div class="grid grid-cols-1 sm:grid-cols-2">
+  <div>
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Car:
+      </label>
+      <p class="body-lg-text ml-2 inline-block">
+        <% if reservation.car.present? %>
+          <%= link_to show_car(reservation), car_path(reservation.car), class: "link_to" %>
+        <% else %>
+          No car selected
+        <% end %>
+      </p>
+    </div>
 
-  <div class="py-2">
-    <label class="body-lg-bold-text">
-      Car:
-    </label>
-    <p class="body-lg-text ml-2 inline-block">
-      <%= reservation.car.car_number %>
-    </p>
-  </div>
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Site:
+      </label>
+      <p class="body-lg-text ml-2 inline-block">
+        <%= reservation.site.title %>
+      </p>
+    </div>
 
-  <div class="py-2">
-    <label class="body-lg-bold-text">
-      Site:
-    </label>
-    <p class="body-lg-text ml-2 inline-block">
-      <%= reservation.site.title %>
-    </p>
-  </div>
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Start time:
+      </label>
+      <p class="body-lg-text ml-2 inline-block">
+        <%= show_date_time(reservation.start_time) %>
+      </p>
+    </div>
 
-  <div class="py-2">
-    <label class="body-lg-bold-text">
-      Start time:
-    </label>
-    <p class="body-lg-text ml-2 inline-block">
-      <%= reservation.start_time %>
-    </p>
-  </div>
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        End time:
+      </label>
+      <p class="body-lg-text ml-2 inline-block">
+        <%= show_date_time(reservation.end_time) %>
+      </p>
+    </div>
 
-  <div class="py-2">
-    <label class="body-lg-bold-text">
-      End time:
-    </label>
-    <p class="body-lg-text ml-2 inline-block">
-      <%= reservation.end_time %>
-    </p>
-  </div>
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Driver:
+      </label>
+      <p class="body-lg-text ml-2 inline-block">
+        <%= show_driver(reservation) %>
+      </p>
+    </div>
 
-  <div class="py-2">
-    <label class="body-lg-bold-text">
-      Driver:
-    </label>
-    <p class="body-lg-text ml-2 inline-block">
-      <%= reservation.driver.display_name %>
-    </p>
-  </div>
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Driver phone:
+      </label>
+      <p class="body-lg-text ml-2 inline-block">
+        <%= reservation.driver_phone %>
+      </p>
+    </div>
 
-  <div class="py-2">
-    <label class="body-lg-bold-text">
-      Driver phone:
-    </label>
-    <p class="body-lg-text ml-2 inline-block">
-      <%= reservation.driver_phone %>
-    </p>
-  </div>
-
-  <% if reservation.backup_driver.present? %>
     <div class="py-2">
       <label class="body-lg-bold-text">
         Backup Driver:
       </label>
       <p class="body-lg-text ml-2 inline-block">
-        <%= reservation.backup_driver.display_name %>
+        <%= show_backup_driver(reservation) %>
       </p>
     </div>
 
@@ -72,15 +75,29 @@
         <%= reservation.backup_driver_phone %>
       </p>
     </div>
-  <% end %>
 
-  <div class="py-2">
-    <label class="body-lg-bold-text">
-      Number of people on trip:
-    </label>
-    <p class="body-lg-text ml-2 inline-block">
-      <%= reservation.number_of_people_on_trip %>
-    </p>
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Number of people on trip:
+      </label>
+      <p class="body-lg-text ml-2 inline-block">
+        <%= reservation.number_of_people_on_trip %>
+      </p>
+    </div>
+  </div>
+  <div>
+    <% if @passengers.present? %>
+      <label class="body-lg-bold-text">
+        Passengers:
+      </label>
+      <ul>
+        <% @passengers.each do |passenger| %>
+          <p class="body-lg-text ml-2">
+            <%= passenger.display_name %>
+          </p>
+        <% end %>
+      </ul>
+    <% end %>
   </div>
 
 </div>
