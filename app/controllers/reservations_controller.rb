@@ -66,7 +66,7 @@ class ReservationsController < ApplicationController
     @car_id = @reservation.car_id
     @start_time = @reservation.start_time.to_s
     @end_time = @reservation.end_time.to_s
-    # @number_of_people_on_trip = @reservation.number_of_people_on_trip
+    @number_of_people_on_trip = @reservation.number_of_people_on_trip
     @cars = Car.available.where(unit_id: @unit_id).where("number_of_seats >= ?", @number_of_people_on_trip).order(:car_number)
     # @cars = list_of_available_cars(@unit_id, @day_start, @number_of_people_on_trip, @start_time, @end_time)
   end
@@ -121,8 +121,8 @@ class ReservationsController < ApplicationController
       @reservation.car_id = params[:car_id]
       @car_id = params[:car_id]
     end
-    @reservation.start_time = (params[:start_time]).to_datetime
-    @reservation.end_time = (params[:end_time]).to_datetime
+    # @reservation.start_time = (params[:start_time]).to_datetime
+    # @reservation.end_time = (params[:end_time]).to_datetime
     @reservation.number_of_people_on_trip = params[:number_of_people_on_trip]
     @reservation.reserved_by = current_user.id
     authorize @reservation
@@ -139,8 +139,8 @@ class ReservationsController < ApplicationController
       @day_start = params[:day_start].to_date
       @unit_id = params[:unit_id]
       @car_id = params[:car_id]
-      @start_time = params[:start_time]
-      @end_time = params[:end_time]
+      @start_time = params[:reservation][:start_time]
+      @end_time = params[:reservation][:end_time]
       @cars = list_of_available_cars(@unit_id, @day_start, @number_of_people_on_trip, @start_time, @end_time)
       render :new, status: :unprocessable_entity
     end
@@ -182,9 +182,9 @@ class ReservationsController < ApplicationController
     end
     @reservation.attributes = reservation_params
     @reservation.car_id = params[:car_id]
-    @reservation.start_time = (params[:start_time]).to_datetime
-    @reservation.end_time = (params[:end_time]).to_datetime
-    @reservation.number_of_people_on_trip = params[:number_of_people_on_trip]
+    # @reservation.start_time = (params[:start_time]).to_datetime
+    # @reservation.end_time = (params[:end_time]).to_datetime
+    # @reservation.number_of_people_on_trip = params[:number_of_people_on_trip]
     respond_to do |format|
       if @reservation.update(reservation_params)
         format.html { redirect_to reservation_url(@reservation), notice: "Reservation was successfully updated." }
