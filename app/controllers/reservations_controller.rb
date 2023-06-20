@@ -59,14 +59,14 @@ class ReservationsController < ApplicationController
 
   # GET /reservations/1/edit
   def edit
-    @sites = @reservation.program.sites
+    # @sites = @reservation.program.sites
     @day_start = @reservation.start_time.to_date
     @unit_id = @reservation.program.unit.id
     @term_id = @reservation.program.term.id
     @car_id = @reservation.car_id
     @start_time = @reservation.start_time.to_s
     @end_time = @reservation.end_time.to_s
-    @number_of_people_on_trip = @reservation.number_of_people_on_trip
+    # @number_of_people_on_trip = @reservation.number_of_people_on_trip
     @cars = Car.available.where(unit_id: @unit_id).where("number_of_seats >= ?", @number_of_people_on_trip).order(:car_number)
     # @cars = list_of_available_cars(@unit_id, @day_start, @number_of_people_on_trip, @start_time, @end_time)
   end
