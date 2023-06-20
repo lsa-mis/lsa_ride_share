@@ -130,8 +130,13 @@ module ApplicationHelper
     end
   end
 
-  def show_reservation_in_week_calendar(reservation)
+  def show_reserved_by_in_week_calendar(reservation)
     User.find(reservation.reserved_by).display_name
+  end
+
+  def show_reservation(reservation)
+    reservation.program.title + " &#10; " + reservation.site.title + " &#10; " +
+    show_date_time(reservation.start_time) + "&#10;" +  show_date_time(reservation.end_time)
   end
 
   def show_backup_driver(reservation)
