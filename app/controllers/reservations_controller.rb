@@ -12,7 +12,7 @@ class ReservationsController < ApplicationController
 
   def week_calendar
     unit_id = 3
-    @cars = Car.where(unit_id: unit_id)
+    @cars = Car.where(unit_id: unit_id).order(:car_number)
     @date_range = Date.today.beginning_of_week..Date.today.end_of_week
     @dates = @date_range.to_a
     @reservations = Reservation.all
