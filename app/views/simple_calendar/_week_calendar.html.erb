@@ -44,20 +44,32 @@
               <% day_times_with_15_min_steps.each do |step| %>
                 <% step_range = step..step + 15.minutes %>
                 <% if car_day_reserv.count > 1 && car_day_reserv.map { |res| res.start_time..res.end_time }.all? { |r| r.cover?(step_range)} %>
-                  <td class="bg-red-900 border-r border-gray-900"></td>
+                  <td class="td-week bg-red-900 border-r border-gray-900">
+                    <% if car_day_reserv.find_by(start_time: step).present? %>
+                      <div class="td-week">
+                        <a title="something">
+                          <%= show_reservation_in_week_calendar(car_day_reserv.find_by(start_time: step)) %>
+                        </a>
+                      </div>
+                    <% end %>
+                  </td>
                 <% elsif car_day_reserv.map { |res| res.start_time..res.end_time }.any? { |r| r.cover?(step_range)} %>
                   <td class="bg-red-500 border-r border-gray-900">
                     <% if car_day_reserv.find_by(start_time: step).present? %>
-                      <%= car_day_reserv.find_by(start_time: step).car_id %>
+                      <div class="td-week">
+                        <a title="something">
+                         <%= show_reservation_in_week_calendar(car_day_reserv.find_by(start_time: step)) %>
+                        </a>
+                      </div>
                     <% end %>
-                  </td>
-                <% else %>
-                  <td class="border hover:bg-green-500">
-                    <%= link_to '.', new_reservation_path(:start_date => day) , class: "text-gray-500 w-0" %>
                   </td>
                 <% end %>
                 </td>
               <% end %>
+            <% else %>
+              <td class="border hover:bg-green-500">
+                <%= link_to '.', new_reservation_path(:start_date => day) , class: "text-gray-500 w-0" %>
+              </td>
             <% end %>
           </tr>
         <% end %>

@@ -130,6 +130,10 @@ module ApplicationHelper
     end
   end
 
+  def show_reservation_in_week_calendar(reservation)
+    User.find(reservation.reserved_by).display_name
+  end
+
   def show_backup_driver(reservation)
     if reservation.backup_driver.present?
       reservation.backup_driver.display_name
