@@ -46,7 +46,11 @@
                 <% if car_day_reserv.count > 1 && car_day_reserv.map { |res| res.start_time..res.end_time }.all? { |r| r.cover?(step_range)} %>
                   <td class="bg-red-900 border-r border-gray-900"></td>
                 <% elsif car_day_reserv.map { |res| res.start_time..res.end_time }.any? { |r| r.cover?(step_range)} %>
-                  <td class="bg-red-500 border-r border-gray-900"></td>
+                  <td class="bg-red-500 border-r border-gray-900">
+                    <% if car_day_reserv.find_by(start_time: step).present? %>
+                      <%= car_day_reserv.find_by(start_time: step).car_id %>
+                    <% end %>
+                  </td>
                 <% else %>
                   <td class="border hover:bg-green-500">
                     <%= link_to '.', new_reservation_path(:start_date => day) , class: "text-gray-500 w-0" %>
