@@ -13,7 +13,7 @@
   </div>
   <div class="grid md:grid-cols-4 gap-4">
     <div class="col-span-3">
-      <p class="body-sm-text">
+      <p class="body-sm-text mx-2">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut 
         labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco 
         laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in 
@@ -25,21 +25,23 @@
           <%= link_to "Reserve Car", new_reservation_path(:student_id => @student.id), class: "secondary_blue_button" if @student.can_reserve_car? %>
         <% end %>
       </div>
-      <% if @program.present? %>
-        <h2 class="m-4"><%= @program.display_name_with_title_and_unit %></h2>
-      <% end %>
-      <div>
-        <% if @reservations_future.present? %>
-          <%= render 'student_reservations_future' %>
+      <div class="my-2">
+        <% if @program.present? %>
+          <h2 class="m-4"><%= @program.display_name_with_title_and_unit %></h2>
         <% end %>
-      </div>
-      <div>
-        <% if @reservations_past.present? %>
-          <%= render 'student_reservations_past' %>
-        <% end %>
+        <div>
+          <% if @reservations_future.present? %>
+            <%= render 'student_reservations_future' %>
+          <% end %>
+        </div>
+        <div>
+          <% if @reservations_past.present? %>
+            <%= render 'student_reservations_past' %>
+          <% end %>
+        </div>
       </div>
     </div>
-    <div class="card_area">
+    <div class="order-first md:order-last card_area">
       <%= render 'status_card' %>
     <div>
   <div>
