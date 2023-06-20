@@ -184,11 +184,17 @@ class VehicleReport < ApplicationRecord
   end
 
   def all_images?
-    unless self.reservation.program.pictures_required_start && self.reservation.program.pictures_required_end
-      return true
-    end
     images_validated_start = false
     images_validated_end = false
+    unless self.reservation.program.pictures_required_start
+      images_validated_start = true
+    end
+    unless self.reservation.program.pictures_required_end
+      images_validated_end = true
+    end
+    if images_validated_start && images_validated_end
+      return true
+    end
     if self.reservation.program.pictures_required_start
       if check_all_start_images?
         images_validated_start = true
