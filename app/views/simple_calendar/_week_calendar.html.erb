@@ -40,35 +40,35 @@
             <% day_end = DateTime.new(day.year, day.month, day.day, 17, 0, 0, 'EDT') %>
             <% day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) } %>
             <% car_day_reserv = car.reservations.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day) %>
-            <% if car_day_reserv.present? %>
+            
               <% day_times_with_15_min_steps.each do |step| %>
                 <% step_range = step..step + 15.minutes %>
-                <% if car_day_reserv.count > 1 && car_day_reserv.map { |res| res.start_time..res.end_time }.all? { |r| r.cover?(step_range)} %>
-                  <td class="td-week bg-red-900 border-r border-gray-900">
-                    <% if car_day_reserv.find_by(start_time: step).present? %>
-                      <div class="td-week" title="<%= show_reservation(car_day_reserv.find_by(start_time: step)) %>">
-                        <a title="something">
+                <% if car_day_reserv.present? %>
+                  <% if car_day_reserv.count > 1 && car_day_reserv.map { |res| res.start_time..res.end_time }.all? { |r| r.cover?(step_range)} %>
+                    <td class="td-week bg-red-900 border-r border-gray-900">
+                      <% if car_day_reserv.find_by(start_time: step).present? %>
+                        <div class="td-week" title="<%= show_reservation(car_day_reserv.find_by(start_time: step)) %>">
+                          <a title="something">
+                            <%= show_reserved_by_in_week_calendar(car_day_reserv.find_by(start_time: step)) %>
+                          </a>
+                        </div>
+                      <% end %>
+                    </td>
+                  <% elsif car_day_reserv.map { |res| res.start_time..res.end_time }.any? { |r| r.cover?(step_range)} %>
+                    <td class="td-week bg-red-500 border-r border-gray-900">
+                      <% if car_day_reserv.find_by(start_time: step).present? %>
+                        <div title="<%= show_reservation(car_day_reserv.find_by(start_time: step)) %>">
                           <%= show_reserved_by_in_week_calendar(car_day_reserv.find_by(start_time: step)) %>
-                        </a>
-                      </div>
-                    <% end %>
-                  </td>
-                <% elsif car_day_reserv.map { |res| res.start_time..res.end_time }.any? { |r| r.cover?(step_range)} %>
-                  <td class="td-week bg-red-500 border-r border-gray-900">
-                    <% if car_day_reserv.find_by(start_time: step).present? %>
-                      <div title="<%= show_reservation(car_day_reserv.find_by(start_time: step)) %>">
-                         <%= show_reserved_by_in_week_calendar(car_day_reserv.find_by(start_time: step)) %>
-                      </div>
-                    <% end %>
+                        </div>
+                      <% end %>
+                    </td>
+                  <% end %>
+                <% else %>
+                  <td class="border hover:bg-green-500">
+                    <%= link_to '.', new_reservation_path(:unit_id => @unit_id, :start_date => day) , class: "text-gray-500 w-0" %>
                   </td>
                 <% end %>
-                </td>
               <% end %>
-            <% else %>
-              <td class="border hover:bg-green-500">
-                <%= link_to '.', new_reservation_path(:start_date => day) , class: "text-gray-500 w-0" %>
-              </td>
-            <% end %>
           </tr>
         <% end %>
       <% end %>
