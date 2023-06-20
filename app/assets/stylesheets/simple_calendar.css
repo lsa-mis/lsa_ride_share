@@ -133,7 +133,8 @@
 .simple-calendar .td-week {
   overflow: visible;
   white-space: nowrap;
-  font-size: 10px;
+  font-size: 12px;
+  font-weight: 500;
 }
 
 #popup {

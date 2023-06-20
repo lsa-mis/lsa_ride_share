@@ -135,8 +135,8 @@ module ApplicationHelper
   end
 
   def show_reservation(reservation)
-    reservation.program.title + " &#10; " + reservation.site.title + " &#10; " +
-    show_date_time(reservation.start_time) + "&#10;" +  show_date_time(reservation.end_time)
+    reservation.program.title + "\n" + reservation.site.title + "\n" +
+    show_date_time(reservation.start_time) + "\n" +  show_date_time(reservation.end_time)
   end
 
   def show_backup_driver(reservation)
