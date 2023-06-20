@@ -168,6 +168,15 @@ module ApplicationHelper
     return car_available
   end
 
+  def available_ranges_edit(car, day, unit_id, reservation)
+    # time renges when the car is available on the day including time for reservation that student is editing
+    # example: ["04:30PM - 05:00PM", "08:00AM - 11:00AM", "11:00AM - 04:30PM - current"]
+    car_available = available_ranges(car, day, unit_id)
+    r = reservation.start_time..reservation.end_time
+    car_available << show_time_range(r, true)
+    return car_available
+  end
+
   def show_time_begin_end(day, unit_id)
     t_begin = UnitPreference.find_by(name: "reservation_time_begin", unit_id: unit_id).value
     t_begin = Time.parse(t_begin).strftime("%H").to_i
@@ -178,8 +187,12 @@ module ApplicationHelper
     return [day_begin, day_end]
   end
 
-  def show_time_range(day_range)
-    "#{day_range.begin.strftime("%I:%M%p")} - #{day_range.end.strftime("%I:%M%p")}"
+  def show_time_range(day_range, current = false)
+    if current
+      "#{day_range.begin.strftime("%I:%M%p")} - #{day_range.end.strftime("%I:%M%p")} - current"
+    else
+      "#{day_range.begin.strftime("%I:%M%p")} - #{day_range.end.strftime("%I:%M%p")}"
+    end
   end
 
   def show_time(time)
