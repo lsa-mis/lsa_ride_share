@@ -6,6 +6,10 @@ class ReservationPolicy < ApplicationPolicy
     user_in_access_group?
   end
 
+  def day_reservations?
+    user_in_access_group?
+  end
+
   def show?
     user_in_access_group? || is_reservation_student?
   end
