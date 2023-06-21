@@ -1,4 +1,4 @@
-<%= form_with model: reservation,
+<%= form_with model: @reservation,
     data: { controller: "editreservation", editreservation_target: "form", action: "submit->editreservation#submitForm" } do |form| %>
   <% if reservation.errors.any? %>
     <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
@@ -28,14 +28,27 @@
       <%= @reservation.program.display_name_with_title %>
     </p>
   </div>
+
+  <div class="py-2">
+    <label class="body-lg-bold-text">
+      Site:
+    </label>
+    <p class="body-lg-text ml-2 inline-block">
+      <%= @reservation.site.title %>
+    </p>
+  </div>
+
+  <div class="py-2">
+  <label class="body-lg-bold-text">
+    Number of People on Trip:
+  </label>
+  <p class="body-lg-text ml-2 inline-block">
+    <%= @number_of_people_on_trip %>
+  </p>
+</div>
   <input type="hidden" id="unit_id" name="unit_id" value=<%= @unit_id %> data-editreservation-target="unit">
 
-  <div>
-    <%= form.label :site_id, 'Site *', class: "fancy_label" %>
-    <%= form.collection_select :site_id, @sites, :id, :title, { include_blank: "Select Site ..."}, { selected: @site_id, class: "input_text_field" } %>
-  </div>
   
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
     <div>
         <%= form.label :day_start, "Choose a Start Date", class: "fancy_label" %>
         <%= text_field_tag :day_start, @day_start,
@@ -47,12 +60,7 @@
           class: "input_text_field"
         %>
     </div>
-
-    <div>
-      <%= form.label :number_of_people_on_trip, 'Number of People on Trip *', class: "fancy_label" %>
-      <%= select_tag :number_of_people_on_trip, options_for_select(@number_of_seats, @number_of_people_on_trip), class: "input_text_field",
-        "data-editreservation-target": "number", "data-action": "change->editreservation#availableCars" %>
-    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
     <div class="py-2">
       <label class="body-lg-bold-text">
         Srart Time:
@@ -77,15 +85,16 @@
     </div>
 
     <div>
-      <%= label_tag :start_time, 'Start Time *', class: "fancy_label" %>
-      <%= select_tag "start_time", options_for_select(all_day_available_time(@day_start, @unit_id)[:begin], @start_time), class: "input_text_field",
-      "data-editreservation-target": "start_time", "data-action": "change->editreservation#availableCars" %>
+      <label for="start_time" class="fancy_label">Start Time *</label>
+      <%= form.select "start_time", options_for_select(all_day_available_time(@day_start, @unit_id)[:begin], selected: @start_time), {include_blank: false}, {class: "input_text_field", 
+      "data-editreservation-target": "start_time"} %>
+
     </div>
 
     <div>
-      <%= label_tag :end_time, 'End Time *', class: "fancy_label" %>
-      <%= select_tag "end_time", options_for_select(all_day_available_time(@day_start, @unit_id)[:end], @end_time), class: "input_text_field",
-      "data-editreservation-target": "end_time", "data-action": "change->editreservation#availableCars" %>
+      <label for="end_time" class="fancy_label">Start Time *</label>
+      <%= form.select "end_time", options_for_select(all_day_available_time(@day_start, @unit_id)[:end], selected: @end_time), {include_blank: false}, {class: "input_text_field", 
+      "data-editreservation-target": "end_time"} %>
     </div>
     <div class="error_text" id="time_field"></div>
   </div>
@@ -99,7 +108,13 @@
     </p>
   </div>
 
-  <%= render 'cars_dropdown' %>
+  <div class="mb-4">
+      <%= label_tag 'Car *', nil, class: "fancy_label" %>
+      <%= select_tag "car_id", options_from_collection_for_select(@cars, :id, :car_number, selected: @car_id), include_blank: "Select Car ...", class: "input_text_field",
+      "data-editreservation-target": "car" %>
+    </div>
+  
+    <div class="error_text mb-2" id="car_field"></div>
 
   <div class="inline">
     <%= form.submit class: "primary_button" %>
