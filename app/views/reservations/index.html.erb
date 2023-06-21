@@ -23,15 +23,12 @@
 
       <div class="flex flex-col justify-between">
         <% reservations.each do |reservation| %>
-          <div>
+          <div class="body-sm-text">
             <%= link_to reservation.display_name, reservation_path(reservation.id), class: "link_to" %>
             <p>
-              From:
-              <%= show_date_time(reservation.start_time) %>
-            </p>
-            <p>
-              To:
-              <%= show_date_time(reservation.end_time) %>
+              <%= show_time(reservation.start_time) %>
+              -
+              <%= show_time(reservation.end_time) %>
             </p>
           </div>
         <% end %>
@@ -49,7 +46,4 @@
     <% end %>
   <% end %>
 
-  <div id="reservations" class="min-w-full mt-2">
-    <%= render 'listing' %>
-  </div>
 </div>
