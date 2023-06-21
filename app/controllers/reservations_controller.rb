@@ -8,7 +8,6 @@ class ReservationsController < ApplicationController
 
   # GET /reservations or /reservations.json
   def index
-    session[:return_to] = request.referer
     if current_user.unit_ids.count == 1
       @unit_id = current_user.unit_ids[0]
       @reservations = Reservation.where(program: Program.where(unit_id: @unit_id))
@@ -34,6 +33,7 @@ class ReservationsController < ApplicationController
 
   # GET /reservations/new
   def new
+    session[:return_to] = request.referer
     @reservation = Reservation.new
     authorize @reservation
     if is_student?(current_user)
