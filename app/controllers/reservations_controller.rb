@@ -48,7 +48,6 @@ class ReservationsController < ApplicationController
       @min_date =  DateTime.now
     else
       redirect_back_or_default("You must select a unit first.", reservations_url)
-      # redirect_to reservations_path, alert: "You must select a unit first."
       return
     end
     if params[:day_start].present?
@@ -63,9 +62,7 @@ class ReservationsController < ApplicationController
     if is_admin?(current_user)
       @sites = []
     end
-    # @reservation = Reservation.new
     @reservation.start_time = @day_start
-    # authorize @reservation
   end
 
   # GET /reservations/1/edit
@@ -154,6 +151,7 @@ class ReservationsController < ApplicationController
   def update
     if params[:reservation][:approved].present?
       if @reservation.update(reservation_params)
+        ReservationMailer.with(reservation: @reservation).car_reservation_approved.deliver_now unless @reservation.approved == false
         redirect_to reservation_path(@reservation), notice: "Reservation was updated"
         return
       else
