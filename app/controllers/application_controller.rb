@@ -53,8 +53,9 @@ class ApplicationController < ActionController::Base
   
   def redirect_back_or_default(notice = '', default = root_url)
     flash[:notice] = notice
-    redirect_to(session[:return_to], anchor: "top" || default)
+    url = session[:return_to]
     session[:return_to] = nil
+    redirect_to(url, anchor: "top" || default)
   end
 
   def get_manager_name(uniqname, program)
