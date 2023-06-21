@@ -13,22 +13,21 @@
 
   <table class="table-fixed">
     <thead class="border border-l-0 border-r-0 border-gray-um60">
-      
-      <tr class="mi_tbody_tr border-b border-gray-900">
-        <td colspan="2"></td>
-        <% 8.upto(17).each do |hour| %>
-          <th colspan="4" class="header_th border border-gray-900">
-            <%= Time.parse("#{hour}:00").strftime("%l %P") %>
-          </th>
-        <% end %>
-      </tr>
+
     </thead>
     <tbody>
+    <tr class="mi_tbody_tr border-b border-gray-900">
+        <td colspan="2"></td>
       <% date_range.slice(0, 7).each do |day| %>
         <tr class="mi_tbody_tr border">
           <th scope="row" colspan="2" class="header_th border">
             <%= t('date.abbr_day_names')[day.wday] %> <%= day.to_formatted_s(:short) %>
           </th>
+          <% 8.upto(17).each do |hour| %>
+            <th colspan="4" class="header_th border border-gray-900">
+              <%= Time.parse("#{hour}:00").strftime("%l %P") %>
+            </th>
+          <% end %>
         </tr>
         <% @cars.each do |car| %>
           <tr class="mi_tbody_tr border">
@@ -40,25 +39,26 @@
             <% day_end = DateTime.new(day.year, day.month, day.day, 17, 0, 0, 'EDT') %>
             <% day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) } %>
             <% car_day_reserv = car.reservations.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day) %>
-            
             <% day_times_with_15_min_steps.each do |step| %>
               <% step_range = step..step + 15.minutes %>
               <% if car_day_reserv.present? %>
-                <% if car_day_reserv.count > 1 && car_day_reserv.map { |res| res.start_time..res.end_time }.all? { |r| r.cover?(step_range)} %>
-                  <td class="td-week bg-red-900 border-r border-gray-900">
-                    <% if car_day_reserv.find_by(start_time: step).present? %>
-                      <div class="td-week" title="<%= show_reservation(car_day_reserv.find_by(start_time: step)) %>">
-                        <%= link_to show_reserved_by_in_week_calendar(car_day_reserv.find_by(start_time: step)), reservation_path(car_day_reserv.find_by(start_time: step)), class: 'link_to' %>
+                <% if car_day_reserv.map { |res| res.start_time..res.end_time }.any? { |r| r.cover?(step_range)} %>
+                  <% list = car_day_reserv.where(start_time: step) %>
+                  <% if list.present? %>
+                    <td class="td-week bg-red-600 border-r border-gray-900">
+                    <% list.each do |one_reserv| %>
+                      <div title="<%= show_reservation(car_day_reserv.find_by(start_time: step)) %>" class="body-sm-text">
+                        <%= link_to show_reserved_by_in_week_calendar(one_reserv), reservation_path(one_reserv), class: 'link_to' %>
                       </div>
+                      <br>
                     <% end %>
-                  </td>
-                <% elsif car_day_reserv.map { |res| res.start_time..res.end_time }.any? { |r| r.cover?(step_range)} %>
-                  <td class="td-week bg-red-500 border-r border-gray-900">
-                    <% if car_day_reserv.find_by(start_time: step).present? %>
-                      <div title="<%= show_reservation(car_day_reserv.find_by(start_time: step)) %>">
-                        <%= link_to show_reserved_by_in_week_calendar(car_day_reserv.find_by(start_time: step)), reservation_path(car_day_reserv.find_by(start_time: step)), class: 'link_to' %>
-                      </div>
-                    <% end %>
+                    </td>
+                  <% else %>
+                  <td class="td-week bg-red-500 border-r border-gray-900"></td>
+                  <% end %>
+                <% else %>
+                  <td class="border hover:bg-green-500">
+                    <%= link_to '.', new_reservation_path(:unit_id => @unit_id, :start_date => day) , class: "text-gray-500 w-0" %>
                   </td>
                 <% end %>
               <% else %>
