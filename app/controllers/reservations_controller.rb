@@ -125,8 +125,8 @@ class ReservationsController < ApplicationController
       @reservation.car_id = params[:car_id]
       @car_id = params[:car_id]
     end
-    @reservation.start_time = (params[:start_time]).to_datetime
-    @reservation.end_time = (params[:end_time]).to_datetime
+    @reservation.start_time = (params[:start_time]).to_datetime - 15.minute
+    @reservation.end_time = (params[:end_time]).to_datetime + 15.minute
     @reservation.number_of_people_on_trip = params[:number_of_people_on_trip]
     @reservation.reserved_by = current_user.id
     authorize @reservation

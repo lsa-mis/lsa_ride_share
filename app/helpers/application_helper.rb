@@ -30,6 +30,16 @@ module ApplicationHelper
     field.strftime("%I:%M%p") unless field.blank?
   end
 
+  def show_reservation_end_time(field)
+    time = field - 15.minute
+    time.strftime("%m/%d/%Y %I:%M%p") unless field.blank?
+  end
+
+  def show_reservation_start_time(field)
+    time = field + 15.minute
+    time.strftime("%m/%d/%Y %I:%M%p") unless field.blank?
+  end
+
   def show_user_name_by_id(id)
     User.find(id).display_name_email
   end
@@ -193,9 +203,9 @@ module ApplicationHelper
 
   def show_time_range(day_range, current = false)
     if current
-      "#{day_range.begin.strftime("%I:%M%p")} - #{day_range.end.strftime("%I:%M%p")} - current"
+      "#{(day_range.begin + 15.minute).strftime("%I:%M%p")} - #{(day_range.end - 15.minute).strftime("%I:%M%p")} - current"
     else
-      "#{day_range.begin.strftime("%I:%M%p")} - #{day_range.end.strftime("%I:%M%p")}"
+      "#{(day_range.begin + 15.minute).strftime("%I:%M%p")} - #{(day_range.end - 15.minute).strftime("%I:%M%p")}"
     end
   end
 
