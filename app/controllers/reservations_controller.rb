@@ -39,6 +39,12 @@ class ReservationsController < ApplicationController
     authorize @reservations
   end
 
+  def day_reservations
+    @day = params[:date].to_date
+    @day_reservations = Reservation.where("start_time BETWEEN ? AND ?", @day.beginning_of_day, @day.end_of_day).order(:start_time)
+    authorize @day_reservations
+  end
+
   # GET /reservations/1 or /reservations/1.json
   def show
     @passengers = @reservation.passengers
@@ -46,6 +52,9 @@ class ReservationsController < ApplicationController
 
   # GET /reservations/new
   def new
+    session[:return_to] = request.referer
+    @reservation = Reservation.new
+    authorize @reservation
     if is_student?(current_user)
       @program = Student.find(params[:student_id]).program
       @unit_id = @program.unit_id
@@ -57,7 +66,9 @@ class ReservationsController < ApplicationController
       @unit_id = params[:unit_id]
       @min_date =  DateTime.now
     else
-      redirect_to reservations_path, notice: "You must select a unit first."
+      redirect_back_or_default("You must select a unit first.", reservations_url)
+      # redirect_to reservations_path, alert: "You must select a unit first."
+      return
     end
     if params[:day_start].present?
       @day_start = params[:day_start].to_date
@@ -71,14 +82,13 @@ class ReservationsController < ApplicationController
     if is_admin?(current_user)
       @sites = []
     end
-    @reservation = Reservation.new
+    # @reservation = Reservation.new
     @reservation.start_time = @day_start
-    authorize @reservation
+    # authorize @reservation
   end
 
   # GET /reservations/1/edit
   def edit
-    @sites = @reservation.program.sites
     @day_start = @reservation.start_time.to_date
     @unit_id = @reservation.program.unit.id
     @term_id = @reservation.program.term.id
@@ -87,7 +97,6 @@ class ReservationsController < ApplicationController
     @end_time = @reservation.end_time.to_s
     @number_of_people_on_trip = @reservation.number_of_people_on_trip
     @cars = Car.available.where(unit_id: @unit_id).where("number_of_seats >= ?", @number_of_people_on_trip).order(:car_number)
-    # @cars = list_of_available_cars(@unit_id, @day_start, @number_of_people_on_trip, @start_time, @end_time)
   end
 
   def get_available_cars
@@ -99,8 +108,6 @@ class ReservationsController < ApplicationController
     end
     if params[:number].present?
       @cars = @cars.where("number_of_seats >= ?", params[:number]).order(:car_number)
-      Rails.logger.debug "******************************** params[:number]: #params[:number]"
-      Rails.logger.debug "******************************** cars: #{@cars}"
     end
     if params[:start_time].present?
       @start_time = params[:start_time]
@@ -108,15 +115,12 @@ class ReservationsController < ApplicationController
     if params[:end_time].present?
       @end_time = params[:end_time]
     end
-    Rails.logger.debug "******************************** start_time: #{@start_time}"
-    Rails.logger.debug "******************************** end_time: #{@end_time}"
     if ((@end_time.to_datetime - @start_time.to_datetime) * 24 * 60).to_i > 30
       @reserv_begin = @start_time.to_datetime
       @reserv_end = @end_time.to_datetime
       range = @reserv_begin..@reserv_end
       @cars = available_cars(@cars, range)
     end
-      Rails.logger.debug "******************************** final cars: #{@cars}"
     authorize Reservation
   end
 
@@ -201,9 +205,6 @@ class ReservationsController < ApplicationController
     end
     @reservation.attributes = reservation_params
     @reservation.car_id = params[:car_id]
-    @reservation.start_time = (params[:start_time]).to_datetime
-    @reservation.end_time = (params[:end_time]).to_datetime
-    @reservation.number_of_people_on_trip = params[:number_of_people_on_trip]
     respond_to do |format|
       if @reservation.update(reservation_params)
         format.html { redirect_to reservation_url(@reservation), notice: "Reservation was successfully updated." }
@@ -256,7 +257,7 @@ class ReservationsController < ApplicationController
     end
 
     def set_terms_and_units
-      @terms = Term.sorted
+      @terms = Term.current_and_future
       @units = Unit.where(id: current_user.unit_ids).order(:name)
     end
 

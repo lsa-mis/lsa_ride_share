@@ -52,6 +52,7 @@ class VehicleReport < ApplicationRecord
   has_rich_text :admin_comment
   has_many :notes, as: :noteable
   before_save :set_student_status
+  before_save :set_admin_status
 
   def image_damages=(attachables)
     attachables = Array(attachables).compact_blank
@@ -174,12 +175,26 @@ class VehicleReport < ApplicationRecord
     self.attributes.except("id", "created_at", "updated_at", "updated_by", "created_by", "status", "note", "student_status", "approved").all? {|k, v| v.present?} ? true : false
   end
 
-  def all_images?
-    unless self.reservation.program.pictures_required_start && self.reservation.program.pictures_required_end
-      return true
+  def set_admin_status
+    if self.approved
+      self.status = "Approved"
+    else
+      self.status = "Pending"
     end
+  end
+
+  def all_images?
     images_validated_start = false
     images_validated_end = false
+    unless self.reservation.program.pictures_required_start
+      images_validated_start = true
+    end
+    unless self.reservation.program.pictures_required_end
+      images_validated_end = true
+    end
+    if images_validated_start && images_validated_end
+      return true
+    end
     if self.reservation.program.pictures_required_start
       if check_all_start_images?
         images_validated_start = true

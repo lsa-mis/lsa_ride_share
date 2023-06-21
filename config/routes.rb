@@ -33,7 +33,8 @@ Rails.application.routes.draw do
   get '/reservations/add_passengers/:id', to: 'reservations#add_passengers', as: :add_passengers
   get '/reservations/add_drivers/:id', to: 'reservations#add_drivers', as: :add_drivers
   delete 'reservations/:id/:student_id', to: 'reservations#remove_passenger', as: :remove_passenger
-
+  get '/reservations/day_reservations/:date', to: 'reservations#day_reservations', as: :day_reservations
+  
   resources :cars do
     resources :notes, module: :cars
   end
