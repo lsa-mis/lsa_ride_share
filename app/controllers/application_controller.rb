@@ -53,7 +53,7 @@ class ApplicationController < ActionController::Base
   
   def redirect_back_or_default(notice = '', default = root_url)
     flash[:notice] = notice
-    redirect_to(session[:return_to] || default)
+    redirect_to(session[:return_to], anchor: "top" || default)
     session[:return_to] = nil
   end
 

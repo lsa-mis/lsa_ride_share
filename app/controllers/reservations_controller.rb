@@ -8,6 +8,7 @@ class ReservationsController < ApplicationController
 
   # GET /reservations or /reservations.json
   def index
+    session[:return_to] = request.referer
     if current_user.unit_ids.count == 1
       @unit_id = current_user.unit_ids[0]
       @reservations = Reservation.where(program: Program.where(unit_id: @unit_id))
@@ -20,6 +21,12 @@ class ReservationsController < ApplicationController
     authorize @reservations
   end
 
+  def day_reservations
+    @day = params[:date].to_date
+    @day_reservations = Reservation.where("start_time BETWEEN ? AND ?", @day.beginning_of_day, @day.end_of_day).order(:start_time)
+    authorize @day_reservations
+  end
+
   # GET /reservations/1 or /reservations/1.json
   def show
     @passengers = @reservation.passengers
@@ -27,6 +34,8 @@ class ReservationsController < ApplicationController
 
   # GET /reservations/new
   def new
+    @reservation = Reservation.new
+    authorize @reservation
     if is_student?(current_user)
       @program = Student.find(params[:student_id]).program
       @unit_id = @program.unit_id
@@ -38,7 +47,9 @@ class ReservationsController < ApplicationController
       @unit_id = params[:unit_id]
       @min_date =  DateTime.now
     else
-      redirect_to reservations_path, notice: "You must select a unit first."
+      redirect_back_or_default("You must select a unit first.", reservations_url)
+      # redirect_to reservations_path, alert: "You must select a unit first."
+      return
     end
     if params[:day_start].present?
       @day_start = params[:day_start].to_date
@@ -52,9 +63,9 @@ class ReservationsController < ApplicationController
     if is_admin?(current_user)
       @sites = []
     end
-    @reservation = Reservation.new
+    # @reservation = Reservation.new
     @reservation.start_time = @day_start
-    authorize @reservation
+    # authorize @reservation
   end
 
   # GET /reservations/1/edit
