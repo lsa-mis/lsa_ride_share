@@ -3,7 +3,7 @@
   <%= render "edit_form", reservation: @reservation %>
   <div>
     <%= turbo_frame_tag "available_cars" do %>
-      <%= render "available_cars", locals: { date: @day_start } %>
+      <%= render "available_cars_edit" %>
     <% end %>
   </div>
 </div>
