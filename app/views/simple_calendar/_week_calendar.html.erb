@@ -43,18 +43,21 @@
               <% step_range = step..step + 15.minutes %>
               <% if car_day_reserv.present? %>
                 <% if car_day_reserv.map { |res| res.start_time..res.end_time }.any? { |r| r.cover?(step_range)} %>
-                  <% list = car_day_reserv.where(start_time: step) %>
-                  <% if list.present? %>
-                    <td class="td-week bg-red-600 border-r border-gray-900">
-                    <% list.each do |one_reserv| %>
+                  <% list_start = car_day_reserv.where(start_time: step) %>
+                  <% list_end = car_day_reserv.where(end_time: step + 15.minute) %>
+                  <% if list_start.present? %>
+                    <td class="td-week bg-yellow-600 border-r border-gray-900">
+                    <% list_start.each do |one_reserv| %>
                       <div title="<%= show_reservation(car_day_reserv.find_by(start_time: step)) %>" class="body-sm-text">
                         <%= link_to show_reserved_by_in_week_calendar(one_reserv), reservation_path(one_reserv), class: 'link_to' %>
                       </div>
                       <br>
                     <% end %>
                     </td>
+                  <% elsif list_end.present? %>
+                    <td class="td-week bg-yellow-600 border-r border-gray-900"></td>
                   <% else %>
-                  <td class="td-week bg-red-500 border-r border-gray-900"></td>
+                    <td class="td-week bg-red-500 border-r border-gray-900"></td>
                   <% end %>
                 <% else %>
                   <td class="border hover:bg-green-500">
@@ -63,7 +66,7 @@
                 <% end %>
               <% else %>
                 <td class="border hover:bg-green-500">
-                  <%= link_to '.', new_reservation_path(:unit_id => @unit_id, :start_date => day) , class: "text-gray-500 w-0" %>
+                  <%= link_to '.', new_reservation_path(:unit_id => @unit_id, :start_date => day, :car_id => car.id) , class: "text-gray-500 w-0" %>
                 </td>
               <% end %>
             <% end %>
