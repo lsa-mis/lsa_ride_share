@@ -9,7 +9,7 @@
     <p>
      Reservation Summary:
       <ul>
-        <li>DATE: <%= "#{@reservation.start_time} - #{@reservation.end_time}" %></li>
+        <li>DATE: <%= "#{@start_time} - #{@end_time}" %></li>
         <li>VEHICLE #: <%= link_to @reservation.car.car_number, car_url(@reservation.car) %></li>
         
         <li>SITE: <%= link_to @reservation.site.title, site_url(@reservation.site) %> </li>
@@ -20,7 +20,7 @@
       PASSENGERS:
       <ul>
         <% @passengers.each do |p| %>
-          <li> <%= p %> </li>
+          <li> <%= p.name %> </li>
         <% end %>
       </ul>
       Thank you
