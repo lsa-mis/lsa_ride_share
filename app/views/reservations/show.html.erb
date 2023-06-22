@@ -7,21 +7,23 @@
       <h2 class="mb-2">
         <%= @reservation.program.display_name_with_title %>
       </h2>
-      <%= form_with model: @reservation, html: { class: "sm:flex sm:items-center" },
-        data: { controller: "approve",
-                approve_target: "form"
-              } do |f| %>
-        <div class="sm:col-span-4">
-          <ol class="switches">
-            <li>
-              <%= f.check_box :approved, "data-action": "change->approve#toggleApprove"  %>
-              <%= f.label :approved do %>
-                <span class="label-text">Approved</span>
-                <span></span>
-              <% end %>
-            </li>
-          </ol>
-        </div>
+      <% if is_admin?(current_user) %>
+        <%= form_with model: @reservation, html: { class: "sm:flex sm:items-center" },
+          data: { controller: "approve",
+                  approve_target: "form"
+                } do |f| %>
+          <div class="sm:col-span-4">
+            <ol class="switches">
+              <li>
+                <%= f.check_box :approved, "data-action": "change->approve#toggleApprove"  %>
+                <%= f.label :approved do %>
+                  <span class="label-text">Approved</span>
+                  <span></span>
+                <% end %>
+              </li>
+            </ol>
+          </div>
+        <% end %>
       <% end %>
     </div>
     <div class="lg:grid lg:justify-items-end py-2">

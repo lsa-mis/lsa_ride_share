@@ -5,7 +5,9 @@
   </head>
   <body>
     <p>
-     New transportation reservation for (<%= "#{@start_time} - #{@end_time}" %>) has been submitted.
+      Your transportation reservation for (<%= "#{@start_time} - #{@end_time}" %>) has been received and will be reviewed within 2 business days. 
+      You will receive a confirmation email when approved. If it can not be approved as is, we modify the request so that you have transportation, where possible. If that 
+      is not possible, your request will be cancelled. Either way, you will receive an email indicating this.
     </p>
 
     <p> Reservation for:  <%= link_to "#{@reservation.display_name}", reservation_url(@reservation) %> </p>
@@ -17,7 +19,6 @@
         
         <li>SITE: <%= link_to @reservation.site.title, site_url(@reservation.site) %> </li>
         <li>PROGRAM: <%= link_to @reservation.program.title, program_url(@reservation.program) %></li>
-        <li>DRIVER: <%= @driver_name %> </li>
         <li>BACKUP DRIVER: <%= @backup_driver_name %> </li>
         </ul>
       PASSENGERS:
