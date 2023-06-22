@@ -150,7 +150,7 @@ module ApplicationHelper
 
   def show_reservation(reservation)
     reservation.program.title + "\n" + reservation.site.title + "\n" +
-    show_date_time(reservation.start_time) + "\n" +  show_date_time(reservation.end_time)
+    show_date_time(reservation.start_time + 15.minute) + "\n" +  show_date_time(reservation.end_time - 15.minute)
   end
 
   def show_backup_driver(reservation)
