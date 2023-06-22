@@ -17,11 +17,13 @@ class ReservationMailer < ApplicationMailer
 
   def set_reservation
     @reservation = params[:reservation]
+    @start_time = show_date_time(@reservation.start_time)
+    @end_time = show_date_time(@reservation.end_time) 
   end
 
   def set_backup_driver_name
     if @reservation.backup_driver.present?
-      @backup_driver_name = User.find(@reservation.backup_driver).display_name
+      @backup_driver_name = show_backup_driver(@reservation)
     else
       @backup_driver_name = "Not Selected"
     end
