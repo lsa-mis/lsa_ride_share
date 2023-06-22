@@ -4,15 +4,10 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-    <p
-      Your transportation reservation for (<%= "#{@start_time} - #{@end_time}" %>) has been received and will be reviewed within 2 business days. 
-      You will receive a confirmation email when approved. If it can not be approved as is, we modify the request so that you have transportation, where possible. If that 
-      is not possible, your request will be cancelled. Either way, you will receive an email indicating this.
-    </p>
-
-    <p> Reservation for:  <%= link_to "#{@reservation.display_name}", reservation_url(@reservation) %> </p>
+  <h1>Your transportation reservation has been approved. </h1>
+    <h2> Reservation for:  <%= link_to "#{@reservation.display_name}", reservation_url(@reservation) %> </h2>
     <p>
-      Reservation Summary:
+     Reservation Summary:
       <ul>
         <li>DATE: <%= "#{@start_time} - #{@end_time}" %></li>
         <li>VEHICLE #: <%= link_to @reservation.car.car_number, car_url(@reservation.car) %></li>
@@ -21,14 +16,14 @@
         <li>PROGRAM: <%= link_to @reservation.program.title, program_url(@reservation.program) %></li>
         
         <li>BACKUP DRIVER: <%= @backup_driver_name %> </li>
-        </ul>
+      </ul>
       PASSENGERS:
       <ul>
         <% @passengers.each do |p| %>
-          <li> <%= p %> </li>
+          <li> <%= p.name %> </li>
         <% end %>
       </ul>
-      You can email psych.transportation@umich.edu or call the office at: 734-764-2580.
+      Thank you
     </p>
     <p>
       <%= link_to "LSA Ride Share", all_root_url %>
