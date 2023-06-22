@@ -22,6 +22,14 @@ Devise.setup do |config|
     entity_id = Rails.application.credentials.staging_entity_id
   end
 
+  if Rails.env.psych_pilot?
+    idp_login_url = Rails.application.credentials.psych_pilot_idp_sso_target_url
+    idp_logout_url = Rails.application.credentials.psych_pilot_idp_slo_target_url
+    idp_fingerprint = Rails.application.credentials.psych_pilot_idp_cert_fingerprint
+    consumer_service_url = Rails.application.credentials.psych_pilot_assertion_consumer_service_url
+    entity_id = Rails.application.credentials.psych_pilot_entity_id
+  end
+
   config.omniauth :saml,
     :assertion_consumer_service_url     => consumer_service_url,
     :issuer                             => entity_id,
