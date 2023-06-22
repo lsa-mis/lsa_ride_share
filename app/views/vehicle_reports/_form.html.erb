@@ -199,7 +199,10 @@
       <% end %>
 
       <div class="my-5">
-        <%= form.label :image_damages, "Damage (upload multiple images)", class: "fancy_label"   %>
+        <p class="body-sm-text">
+          To upload multiple images select multiple files at once, you can't click Choose Files button several times
+        </p>
+        <%= form.label :image_damages, "Damage (upload multiple images)", class: "fancy_label" %>
         <%= form.file_field :image_damages, multiple: true, class: "input_text_field" %>
       </div>
 
