@@ -186,6 +186,10 @@ class ReservationsController < ApplicationController
     end
     @reservation.attributes = reservation_params
     @reservation.car_id = params[:car_id]
+    # @reservation.start_time -= 15.minute
+    # @reservation.end_time += 15.minute
+    # how to update ?
+
     respond_to do |format|
       if @reservation.update(reservation_params)
         format.html { redirect_to reservation_url(@reservation), notice: "Reservation was successfully updated." }
