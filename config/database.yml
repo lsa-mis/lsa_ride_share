@@ -86,9 +86,9 @@ staging:
   username: lsa_ride_share
   password: <%= ENV["LSA_RIDE_SHARE_DATABASE_PASSWORD"] %>
 
-psych-pilot:
+psych_pilot:
   <<: *default
-  database: lsa_ride_share_psych-pilot
+  database: lsa_ride_share_psych_pilot
   username: lsa_ride_share
   password: <%= ENV["LSA_RIDE_SHARE_DATABASE_PASSWORD"] %>
 
