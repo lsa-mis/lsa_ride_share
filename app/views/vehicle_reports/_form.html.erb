@@ -68,8 +68,13 @@
       </div>
 
       <div class="my-5">
-        <%= form.label :parking_spot, class: "fancy_label"  %>
-        <%= form.text_field :parking_spot, placeholder: "Parking Spot", class: "input_text_field" %>
+        <%= form.label :parking_spot, 'Parking Spot (depart)', class: "fancy_label"  %>
+        <%= form.text_field :parking_spot, placeholder: "Parking Spot (depart)", class: "input_text_field" %>
+      </div>
+
+            <div class="my-5">
+        <%= form.label :parking_spot_return, 'Parking Spot (return)', class: "fancy_label"  %>
+        <%= form.text_field :parking_spot_return, placeholder: "Parking Spot (return)", class: "input_text_field" %>
       </div>
 
     </div>

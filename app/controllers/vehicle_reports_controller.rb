@@ -92,8 +92,8 @@ class VehicleReportsController < ApplicationController
         if @vehicle_report.gas_end.present?
           car.update(gas: @vehicle_report.gas_end)
         end
-        if @vehicle_report.parking_spot.present?
-          car.update(parking_spot: @vehicle_report.parking_spot, last_used: DateTime.now, last_driver_id: @reservation.driver_id)
+        if @vehicle_report.parking_spot_return.present?
+          car.update(parking_spot: @vehicle_report.parking_spot_return, last_used: DateTime.now, last_driver_id: @reservation.driver_id)
         end
         format.html { redirect_to vehicle_report_url(@vehicle_report), notice: "Vehicle report was successfully updated." }
         format.json { render :show, status: :ok, location: @vehicle_report }
@@ -118,7 +118,7 @@ class VehicleReportsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def vehicle_report_params
       params.require(:vehicle_report).permit(:reservation_id, :mileage_start, :mileage_end, 
-                    :gas_start, :gas_end, :parking_spot, :image_front_start, :image_driver_start, 
+                    :gas_start, :gas_end, :parking_spot, :parking_spot_return, :image_front_start, :image_driver_start, 
                     :image_passenger_start, :image_back_start, :image_front_end, :image_driver_end, 
                     :image_passenger_end, :image_back_end, :created_by, :updated_by, :status, :comment,
                     :admin_comment, :approved, image_damages: [] )
