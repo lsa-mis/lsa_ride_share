@@ -1,0 +1,15 @@
+Reservation for:  <%= link_to "#{@reservation.display_name}", reservation_url(@reservation) %>
+================================================================================================
+DATE: <%= "#{@start_time} - #{@end_time}" %></li>
+VEHICLE #: <%= link_to @reservation.car.car_number, car_url(@reservation.car) %></li>
+SITE: <%= link_to @reservation.site.title, site_url(@reservation.site) %> </li>
+PROGRAM: <%= link_to @reservation.program.title, program_url(@reservation.program) %></li>
+BACKUP DRIVER: <%= @backup_driver_name %>
+PASSENGERS:
+<% @passengers.each do |p| %>
+  <%= p %>
+<% end %>
+
+Thank you
+
+<%= link_to "LSA Ride Share", all_root_url %>

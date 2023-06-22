@@ -128,6 +128,7 @@ class ReservationsController < ApplicationController
     @reservation.reserved_by = current_user.id
     authorize @reservation
     if @reservation.save
+      ReservationMailer.with(reservation: @reservation).car_reservation_confirmation.deliver_now
       ReservationMailer.with(reservation: @reservation).car_reservation_created.deliver_now
       @students = @reservation.program.students 
       redirect_to add_drivers_path(@reservation), notice: "Reservation was successfully created. Please add drivers."
