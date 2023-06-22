@@ -1,22 +1,26 @@
 <div class="mx-auto w-full">
-  <h1 class="mb-4">Vehicle Report: <%= @vehicle_report.id %></h1>
   <div class="grid grid-cols-1 lg:grid-cols-2 items-center">
-    <%= form_with model: @vehicle_report, html: { class: "sm:flex sm:items-center" },
-      data: { controller: "approve",
-              approve_target: "form"
-            } do |f| %>
-      <div class="sm:col-span-4">
-        <ol class="switches">
-          <li>
-            <%= f.check_box :approved, "data-action": "change->approve#toggleApprove"  %>
-            <%= f.label :approved do %>
-              <span class="label-text">Approved</span>
-              <span></span>
-            <% end %>
-          </li>
-        </ol>
-      </div>
-    <% end %>
+    <div>
+      <h1 class="mb-4">Vehicle Report: <%= @vehicle_report.id %></h1>
+      <% if is_admin?(current_user) %>
+        <%= form_with model: @vehicle_report, html: { class: "sm:flex sm:items-center" },
+          data: { controller: "approve",
+                  approve_target: "form"
+                } do |f| %>
+          <div class="sm:col-span-4">
+            <ol class="switches">
+              <li>
+                <%= f.check_box :approved, "data-action": "change->approve#toggleApprove"  %>
+                <%= f.label :approved do %>
+                  <span class="label-text">Approved</span>
+                  <span></span>
+                <% end %>
+              </li>
+            </ol>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
     <div class="lg:grid lg:justify-items-end">
       <%= link_to 'Edit Vehicle report', edit_vehicle_report_path(@vehicle_report), class: "primary_button" %>
     </div>
