@@ -30,13 +30,13 @@ module ApplicationHelper
     field.strftime("%I:%M%p") unless field.blank?
   end
 
-  def show_reservation_end_time(field)
-    time = field - 15.minute
+  def show_reservation_start_time(field)
+    time = field + 15.minute
     time.strftime("%m/%d/%Y %I:%M%p") unless field.blank?
   end
 
-  def show_reservation_start_time(field)
-    time = field + 15.minute
+  def show_reservation_end_time(field)
+    time = field - 15.minute
     time.strftime("%m/%d/%Y %I:%M%p") unless field.blank?
   end
 
