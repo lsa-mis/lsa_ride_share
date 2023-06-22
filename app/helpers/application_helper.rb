@@ -38,6 +38,10 @@ module ApplicationHelper
     return "Updated on " + resource.updated_at.strftime('%m/%d/%Y') + " by " + show_user_name_by_id(resource.updated_by)
   end
 
+  def email_address(student)
+    student.uniqname + "@umich.edu"
+  end
+
   def number_of_students(program)
     if program.number_of_students.present? && program.number_of_students > 0
       program.number_of_students
