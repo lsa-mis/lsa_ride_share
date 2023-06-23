@@ -16,6 +16,12 @@
       </p>
     </div>
 
+    <% if vehicle_report.gas_end <= 50 %>
+      <div class="error_text" data-vehiclereport-target="gas_error">
+        <span>Gas should be at least 50%. Please refuel.</span>
+      </div>
+    <% end %>
+
     <div class="py-2">
       <label class="body-lg-bold-text">
         Mileage start:
