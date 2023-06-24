@@ -39,7 +39,7 @@ class ReservationMailer < ApplicationMailer
     recipients = []
     admin_email = reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
     recipients << admin_email
-    recipients << email_address(reservation.driver)
+    recipients << email_address(reservation.driver) if reservation.driver.present?
     recipients << email_address(reservation.backup_driver) if reservation.backup_driver.present?
     recipients << emails if emails.present?
     @recipients = recipients.join(", ")
