@@ -30,9 +30,9 @@
           <div class="body-sm-text">
             <%= link_to reservation.display_name, reservation_path(reservation.id), class: "link_to" %>
             <p>
-              <%= show_time(reservation.start_time) %>
+              <%= show_time(reservation.start_time + 15.minute) %>
               -
-              <%= show_time(reservation.end_time) %>
+              <%= show_time(reservation.end_time - 15.minute) %>
             </p>
           </div>
         <% end %>
