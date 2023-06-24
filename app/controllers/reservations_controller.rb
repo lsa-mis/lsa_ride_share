@@ -48,7 +48,6 @@ class ReservationsController < ApplicationController
       @min_date =  DateTime.now
     else
       redirect_back_or_default("You must select a unit first.", reservations_url)
-      # redirect_to reservations_path, alert: "You must select a unit first."
       return
     end
     if params[:day_start].present?
@@ -186,6 +185,10 @@ class ReservationsController < ApplicationController
     end
     @reservation.attributes = reservation_params
     @reservation.car_id = params[:car_id]
+    # @reservation.start_time -= 15.minute
+    # @reservation.end_time += 15.minute
+    # how to update ?
+
     respond_to do |format|
       if @reservation.update(reservation_params)
         format.html { redirect_to reservation_url(@reservation), notice: "Reservation was successfully updated." }
