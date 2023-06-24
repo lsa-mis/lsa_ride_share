@@ -22,12 +22,37 @@ class ReservationMailer < ApplicationMailer
     mail(to: @recipients, subject: "Reservation approved for program: #{@reservation.program.display_name}" )
   end
 
+  def car_reservation_cancel(reservation, passengers, emails)
+    @passengers = passengers
+    @start_time = show_date_time(reservation.start_time)
+    @end_time = show_date_time(reservation.end_time)
+    if reservation.driver.present?
+      @driver_name = show_driver(reservation)
+    else
+      @driver_name = "Not Selected"
+    end
+    if reservation.backup_driver.present?
+      @backup_driver_name = show_backup_driver(reservation)
+    else
+      @backup_driver_name = "Not Selected"
+    end
+    recipients = []
+    admin_email = reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
+    recipients << admin_email
+    recipients << email_address(reservation.driver) if reservation.driver.present?
+    recipients << email_address(reservation.backup_driver) if reservation.backup_driver.present?
+    recipients << emails if emails.present?
+    @recipients = recipients.join(", ")
+    @reservation = reservation
+    mail(to: @recipients, subject: "Reservation canceled for program: #{@reservation.program.display_name}" )
+  end
+
   private 
 
   def set_reservation
     @reservation = params[:reservation]
     @start_time = show_date_time(@reservation.start_time)
-    @end_time = show_date_time(@reservation.end_time) 
+    @end_time = show_date_time(@reservation.end_time)
   end
 
   def set_driver_name
