@@ -62,9 +62,7 @@ class ReservationsController < ApplicationController
     if is_admin?(current_user)
       @sites = []
     end
-    # @reservation = Reservation.new
     @reservation.start_time = @day_start
-    # authorize @reservation
   end
 
   # GET /reservations/1/edit
@@ -130,6 +128,7 @@ class ReservationsController < ApplicationController
     @reservation.reserved_by = current_user.id
     authorize @reservation
     if @reservation.save
+      ReservationMailer.with(reservation: @reservation).car_reservation_confirmation.deliver_now
       ReservationMailer.with(reservation: @reservation).car_reservation_created.deliver_now
       @students = @reservation.program.students 
       redirect_to add_drivers_path(@reservation), notice: "Reservation was successfully created. Please add drivers."
@@ -153,6 +152,7 @@ class ReservationsController < ApplicationController
   def update
     if params[:reservation][:approved].present?
       if @reservation.update(reservation_params)
+        ReservationMailer.with(reservation: @reservation).car_reservation_approved.deliver_now unless @reservation.approved == false
         redirect_to reservation_path(@reservation), notice: "Reservation was updated"
         return
       else
@@ -225,11 +225,19 @@ class ReservationsController < ApplicationController
 
   # DELETE /reservations/1 or /reservations/1.json
   def destroy
-    @reservation.destroy
-
     respond_to do |format|
-      format.html { redirect_to reservations_url, notice: "Reservation was successfully destroyed." }
-      format.json { head :no_content }
+      if @reservation.destroy
+        if is_admin?(current_user)
+          format.html { redirect_to reservations_url, notice: "Reservation was canceled." }
+          format.json { head :no_content }
+        elsif is_student?(current_user)
+          format.html { redirect_to welcome_pages_student_url, notice: "Reservation was canceled." }
+          format.json { head :no_content }
+        end
+      else
+        format.html { render :show, status: :unprocessable_entity }
+        format.json { render json: @reservation.errors, status: :unprocessable_entity }
+      end
     end
   end
 
