@@ -21,12 +21,24 @@ class ReservationsController < ApplicationController
   end
 
   def week_calendar
-    @unit_id = 3
+    session[:return_to] = request.referer
+    if current_user.unit_ids.count == 1
+      @unit_id = current_user.unit_ids[0]
+      @reservations = Reservation.where(program: Program.where(unit_id: @unit_id))
+    elsif params[:unit_id].present?
+      @unit_id = params[:unit_id]
+      @reservations = Reservation.where(program: Program.where(unit_id: @unit_id))
+    else
+      authorize Reservation
+      redirect_back_or_default("You must select a unit first.", reservations_url)
+      return
+    end
+    @hour_begin = UnitPreference.find_by(name: "reservation_time_begin", unit_id: @unit_id).value.split(":").first.to_i
+    @hour_end = UnitPreference.find_by(name: "reservation_time_end", unit_id: @unit_id).value.split(":").first.to_i + 12
+    authorize @reservations
     @cars = Car.where(unit_id: @unit_id).order(:car_number)
     @date_range = Date.today.beginning_of_week..Date.today.end_of_week
     @dates = @date_range.to_a
-    @reservations = Reservation.all
-    authorize Reservation
   end
 
   def cars_reservations

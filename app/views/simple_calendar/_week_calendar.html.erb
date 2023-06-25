@@ -2,9 +2,9 @@
   <div class="calendar-heading">
     <%= link_to t('simple_calendar.previous', default: 'Previous'), calendar.url_for_previous_view %>
     <% if calendar.number_of_weeks == 1 %>
-      <span class="calendar-title"><%= t('simple_calendar.week', default: 'Week') %> <%= calendar.week_number %> - <%= date_range.first.to_formatted_s(:short) %> to <%= date_range.last.to_formatted_s(:short) %> </span>
+      <span class="calendar-title"><%= t('simple_calendar.week', default: 'Week') %> <%= date_range.first.strftime('%B %d') %> to <%= date_range.last.strftime('%B %d %Y') %> </span>
     <% else %>
-      <span class="calendar-title"><%= t('simple_calendar.week', default: 'Week') %> <%= calendar.week_number %> - <%= date_range.first.wday %></span>
+      <span class="calendar-title"><%= t('simple_calendar.week', default: 'Week') %> <%= date_range.first.wday %></span>
     <% end %>
     <%= link_to t('simple_calendar.next', default: 'Next'), calendar.url_for_next_view %>
 
@@ -23,7 +23,7 @@
           <th scope="row" colspan="2" class="header_th border">
             <%= t('date.abbr_day_names')[day.wday] %> <%= day.to_formatted_s(:short) %>
           </th>
-          <% 8.upto(17).each do |hour| %>
+          <% @hour_begin.upto(@hour_end).each do |hour| %>
             <th colspan="4" class="header_th border border-gray-900">
               <%= Time.parse("#{hour}:00").strftime("%l %P") %>
             </th>
@@ -35,8 +35,12 @@
             <th border>
               Car <%= car.car_number %>
             </th>
-            <% day_begin = DateTime.new(day.year, day.month, day.day, 8, 0, 0, 'EDT') %>
-            <% day_end = DateTime.new(day.year, day.month, day.day, 17, 0, 0, 'EDT') %>
+            <td></td>
+            <td></td>
+            <td></td>
+            <% times = show_time_begin_end(day, @unit_id) %>
+            <% day_begin  = times[0] - 15.minute %>
+            <% day_end  = times[1] %>
             <% day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) } %>
             <% car_day_reserv = car.reservations.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day) %>
             <% day_times_with_15_min_steps.each do |step| %>
@@ -48,7 +52,7 @@
                   <% if list_start.present? %>
                     <td class="td-week bg-yellow-600 border-r border-gray-900">
                     <% list_start.each do |one_reserv| %>
-                      <div title="<%= show_reservation(car_day_reserv.find_by(start_time: step)) %>" class="body-sm-text">
+                      <div title="<%= show_reservation(car_day_reserv.find_by(start_time: step)) %>" class="body-sm-bold-text">
                         <%= link_to show_reserved_by_in_week_calendar(one_reserv), reservation_path(one_reserv), class: 'link_to' %>
                       </div>
                       <br>
@@ -57,7 +61,7 @@
                   <% elsif list_end.present? %>
                     <td class="td-week bg-yellow-600 border-r border-gray-900"></td>
                   <% else %>
-                    <td class="td-week bg-red-500 border-r border-gray-900"></td>
+                    <td class="td-week bg-red-600 border-r border-gray-900"></td>
                   <% end %>
                 <% else %>
                   <td class="border hover:bg-green-500">
