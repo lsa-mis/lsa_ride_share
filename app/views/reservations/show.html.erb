@@ -2,8 +2,13 @@
   <div class="grid md:grid-cols-4 gap-4">
     <div class="col-span-3">
       <h1>
-        <%= @reservation.program.unit.name %> reservation
+        <%= @reservation.program.unit.name %> Reservation
       </h1>
+      <% if is_student?(current_user) %>
+        <p class="body-md-text mt-2 text-blue-750">
+          If you need to edit the reservation, please cancel it and create a new one.
+        </p>
+      <% end %>
       <h2 class="mb-4">
         <%= @reservation.program.display_name_with_title %>
       </h2>
@@ -30,9 +35,11 @@
     <div>
       <div class="lg:flex lg:flex-col place-items-end whitespace-nowrap">
         <% if (is_admin?(current_user) || allow_student_to_edit_reservation?(@reservation)) && future_reservation?(@reservation) %>
-          <div class="my-2">
-            <%= link_to 'Edit Reservation', edit_reservation_path(@reservation), class: "primary_button" if policy(@reservation).edit? %>
-          </div>
+          <% if is_admin?(current_user) %>
+            <div class="my-2">
+              <%= link_to 'Edit Reservation', edit_reservation_path(@reservation), class: "primary_button" if policy(@reservation).edit? %>
+            </div>
+          <% end %>
           <div>
             <%= link_to 'Edit Drivers and Passengers', add_drivers_path(@reservation), class: "primary_button" if policy(@reservation).edit? %>
           </div>
