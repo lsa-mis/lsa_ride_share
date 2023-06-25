@@ -20,6 +20,27 @@ class ReservationsController < ApplicationController
     authorize @reservations
   end
 
+  def week_calendar
+    session[:return_to] = request.referer
+    if current_user.unit_ids.count == 1
+      @unit_id = current_user.unit_ids[0]
+      @reservations = Reservation.where(program: Program.where(unit_id: @unit_id))
+    elsif params[:unit_id].present?
+      @unit_id = params[:unit_id]
+      @reservations = Reservation.where(program: Program.where(unit_id: @unit_id))
+    else
+      authorize Reservation
+      redirect_back_or_default("You must select a unit first.", reservations_url)
+      return
+    end
+    @hour_begin = UnitPreference.find_by(name: "reservation_time_begin", unit_id: @unit_id).value.split(":").first.to_i - 1
+    @hour_end = UnitPreference.find_by(name: "reservation_time_end", unit_id: @unit_id).value.split(":").first.to_i + 12
+    authorize @reservations
+    @cars = Car.where(unit_id: @unit_id).order(:car_number)
+    @date_range = Date.today.beginning_of_week..Date.today.end_of_week
+    @dates = @date_range.to_a
+  end
+
   def day_reservations
     @day = params[:date].to_date
     @day_reservations = Reservation.where("start_time BETWEEN ? AND ?", @day.beginning_of_day, @day.end_of_day).order(:start_time)
@@ -58,7 +79,12 @@ class ReservationsController < ApplicationController
     if params[:term_id].present?
       @term_id = params[:term_id]
     end
-    @students = []
+    if params[:car_id].present?
+      @car_id = params[:car_id]
+    end
+    if params[:start_time].present?
+      @start_time = params[:start_time]
+    end
     if is_admin?(current_user)
       @sites = []
     end

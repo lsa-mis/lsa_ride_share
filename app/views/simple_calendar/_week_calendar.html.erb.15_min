@@ -1,0 +1,66 @@
+<div class="simple-calendar">
+  <div class="calendar-heading">
+    <%= link_to t('simple_calendar.previous', default: 'Previous'), calendar.url_for_previous_view %>
+    <% if calendar.number_of_weeks == 1 %>
+      <span class="calendar-title"><%= t('simple_calendar.week', default: 'Week') %> <%= calendar.week_number %> - <%= date_range.first.to_formatted_s(:short) %> to <%= date_range.last.to_formatted_s(:short) %> </span>
+    <% else %>
+      <span class="calendar-title"><%= t('simple_calendar.week', default: 'Week') %> <%= calendar.week_number %> - <%= date_range.first.wday %></span>
+    <% end %>
+    <%= link_to t('simple_calendar.next', default: 'Next'), calendar.url_for_next_view %>
+
+    <%= link_to 'Today', week_calendar_path, class: "secondary_yellow_button" %>
+  </div>
+
+  <table class="table-fixed">
+    <thead class="border border-l-0 border-r-0 border-gray-um60">
+      
+      <tr class="mi_tbody_tr border-b border-gray-900">
+        <td colspan="2"></td>
+        <% 8.upto(17).each do |hour| %>
+          <th colspan="4" class="header_th border border-gray-900">
+            <%= Time.parse("#{hour}:00").strftime("%l %P") %>
+          </th>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% date_range.slice(0, 7).each do |day| %>
+        <tr class="mi_tbody_tr border">
+          <th scope="row" colspan="2" class="header_th border">
+            <%= t('date.abbr_day_names')[day.wday] %> <%= day.to_formatted_s(:short) %>
+          </th>
+        </tr>
+        <% day_begin = DateTime.new(day.year, day.month, day.day, 8, 0, 0, 'EDT') %>
+        <% day_end = DateTime.new(day.year, day.month, day.day, 17, 0, 0, 'EDT') %>
+        <% day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) } %>
+
+        <% @cars.each do |car| %>
+          <% car_day_reserv = car.reservations.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day) %>
+
+          <tr class="mi_tbody_tr border">
+            <td></td>
+            <th border>
+              Car <%= car.car_number %>
+            </th>
+            <% (1..4).each do |i| %>
+              <% day_times_with_15_min_steps.each do |step| %>
+                <% step_range = step..step + 15.minutes %>
+                <% if car_day_reserv.present? %>
+                  <% car_day_reserv.each do |reserv| %>
+                    <% if (reserv.start_time..reserv.end_time).cover?(step_range) %>
+                      <td class="bg-red-500 border-r border-gray-900"></td>
+                    <% else %>
+                      <td class="border hover:bg-green-500 border-r border-gray-900">.</td>
+                    <% end %>
+                  <% end %>
+                <% else %>
+                  <td class="border hover:bg-green-500 border-r border-gray-900"><%= step %></td>
+                <% end %>
+              <% end %>
+            <% end %>
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+</div>
