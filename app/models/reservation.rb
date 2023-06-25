@@ -34,6 +34,8 @@ class Reservation < ApplicationRecord
   
   has_rich_text :note
 
+  validate :check_number_of_people_on_trip, on: :update
+
   scope :with_passengers, -> { Reservation.includes(:passengers) }
 
   def reservation_date
@@ -52,6 +54,14 @@ class Reservation < ApplicationRecord
 
   def added_people
     self.passengers.count + (self.driver.present? ? 1 : 0).to_i + (self.backup_driver.present? ? 1 : 0).to_i  
+  end
+
+  def check_number_of_people_on_trip
+    if self.number_of_people_on_trip_changed?
+      if self.number_of_people_on_trip_change[0] > self.number_of_people_on_trip_change[1] && self.number_of_people_on_trip_change[1] < self.added_people
+        errors.add(:number_of_people_on_trip, ": remove passengers before updating the number")
+      end
+    end
   end
 
   def car_reservation_cancel

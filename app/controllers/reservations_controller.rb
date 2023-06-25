@@ -100,7 +100,7 @@ class ReservationsController < ApplicationController
     @start_time = (@reservation.start_time + 15.minute).to_s
     @end_time = (@reservation.end_time - 15.minute).to_s
     @number_of_people_on_trip = @reservation.number_of_people_on_trip
-    @cars = Car.available.where(unit_id: @unit_id).where("number_of_seats >= ?", @number_of_people_on_trip).order(:car_number)
+    @cars = Car.available.where(unit_id: @unit_id).order(:car_number)
   end
 
   def get_available_cars
@@ -220,7 +220,15 @@ class ReservationsController < ApplicationController
         format.html { redirect_to reservation_url(@reservation), notice: "Reservation was successfully updated." }
         format.json { render :show, status: :ok, location: @reservation }
       else
-        @programs = Program.where(unit_id: current_user.unit)
+        @programs = Program.where(unit_id: current_user.unit_ids)
+        @number_of_seats = 1..Car.available.maximum(:number_of_seats)
+        @number_of_people_on_trip = Reservation.find(params[:id]).number_of_people_on_trip
+        @day_start = params[:day_start].to_date
+        @unit_id = params[:reservation][:unit_id]
+        @cars = Car.available.where(unit_id: @unit_id).order(:car_number)
+        @car_id = @reservation.car_id
+        @start_time = params[:start_time]
+        @end_time = params[:end_time]
         @students = Student.all
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @reservation.errors, status: :unprocessable_entity }
