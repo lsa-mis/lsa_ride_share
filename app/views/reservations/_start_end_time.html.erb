@@ -15,7 +15,7 @@
         <p class="body-sm-text text-red-600 mb-2">
           If no cars or time are available please
         </p>
-        <%= button_to "", { :onclick => "history.go(0)" } do %>
+        <%= button_to "", { :method => :get, :onclick => "history.go(0)" } do %>
           <span class="secondary_blue_button">Reset the form</span>
         <% end %>
       <% end %>
