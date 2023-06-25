@@ -20,8 +20,6 @@ terms = Term.create!([
   {code: "2510", name: "Fall 2024", classes_begin_date: DateTime.new(2024, 8, 26), classes_end_date: DateTime.new(2024, 12, 9)}
 ])
 
-test_car = Car.create!(car_number: "1234-Test Car", number_of_seats: 4, unit_id: test_unit.id)
-
 term_test = Term.find_by(name: "Spring 2023")
 
 # Create a User record
@@ -37,17 +35,13 @@ user_test = User.create!(email: "user_test@umich.edu", password: "password", uid
 # ])
 
 Unit.create!([
-  {name: "Psychology", ldap_group: "psych.transportation" },
-  {name: "Residential College", ldap_group: "rc-rideshare-admins-test" },
   {name: "Test Unit", ldap_group: "test-unit-rideshare-admins"}
 ])
 
 test_unit = Unit.find_by(name: "Test Unit")
 
-test_car = Car.create!(car_number: "1234-Test Car", number_of_seats: 4, unit_id: test_unit.id)
-
 # create car
-test_car = Car.create!(car_number: "1234-Test Car", make: "Toyota", model: "Corolla", color: string, number_of_seats: integer, mileage: float, gas: float, parking_spot: string, last_used: datetime, last_checked: datetime, last_driver_id: integer, updated_by: integer, created_at: datetime, updated_at: datetime, status: integer, unit_id: integer)
+test_car = Car.create!(car_number: "1234-Test Car", make: "Toyota", model: "Corolla", color: "yellow", number_of_seats: 4, mileage: 101.30, gas: 80, parking_spot: "301 Liberty", updated_by: user_test.id, status: "available", unit_id: test_unit.id)
 
 UnitPreference.create!([
   { name: "contact_phone", description: "A phone that students can call with questions about cars reservations", on_off: nil, unit_id: test_unit.id, value: "808 453-3245", pref_type: "string" },
@@ -57,9 +51,11 @@ UnitPreference.create!([
   { name: "notification_email", description: "The email address that system notification emails are sent to", on_off: nil, unit_id: test_unit.id, value: nil, pref_type: "string"}
 ])
 
+# create a manager
+test_manager = Manager.create!(uniqname: "manager_test", first_name: "Test Manager", last_name: "LSA")
 
 # create a program
-p1 = Program.create!(title: "Test Program", subject: "Test Subject", catalog_number: "101", class_section: "001", number_of_students: 10, number_of_students_using_ride_share: 10, pictures_required_start: true, pictures_required_end: true, non_uofm_passengers: false, instructor_id: 1, updated_by: 1, mvr_link: "https://www.google.com", canvas_link: "https://www.google.com", canvas_course_id: 101, term_id: term_test.id, add_managers: true, not_course: false, unit_id: test_unit.id)
+p1 = Program.create!(title: "Test Program", subject: "Test Subject", catalog_number: "101", class_section: "001", number_of_students: 10, number_of_students_using_ride_share: 10, pictures_required_start: true, pictures_required_end: true, non_uofm_passengers: false, instructor_id: test_manager.id, updated_by: 1, mvr_link: "https://www.google.com", canvas_link: "https://www.google.com", canvas_course_id: 101, term_id: term_test.id, add_managers: true, not_course: false, unit_id: test_unit.id)
 
 # create a site
 Site.create!([
@@ -72,8 +68,9 @@ site_test = Site.find_by(title: "Test Site")
 ProgramsSite.create!(program_id: p1.id, site_id: site_test.id)
 
 # Create a student
-s1 = Student.create!(uniqname: "test_student", last_name: "Test", first_name: "Student", class_training_date: DateTime.now, canvas_course_complete_date: DateTime.now, mvr_status: "pass", program_id: p1.id)
+s1 = Student.create!(uniqname: "test_student", last_name: "Test", first_name: "Student", class_training_date: DateTime.now, canvas_course_complete_date: DateTime.now, mvr_status: "Approved until 2023-08-10", program_id: p1.id)
+s2 = Student.create!(uniqname: "test_student1", last_name: "Test1", first_name: "Student1", class_training_date: DateTime.now, canvas_course_complete_date: DateTime.now, mvr_status: "Approved until 2023-08-10", program_id: p1.id)
+s3 = Student.create!(uniqname: "test_student2", last_name: "Test2", first_name: "Student2", class_training_date: DateTime.now, canvas_course_complete_date: DateTime.now, mvr_status: "Approved until 2023-08-10", program_id: p1.id)
 
 # to create a reservation 
 reservation_test = Reservation.create!(status: "reserved", program_id: p1.id, site_id: site_test.id, start_time: DateTime.now, end_time: DateTime.now + 3.hour, driver_id: s1.id, driver_phone: "123-456-7890", number_of_people_on_trip: 1, car_id: test_car, updated_by: user_test.id, reserved_by: user_test.id)
-

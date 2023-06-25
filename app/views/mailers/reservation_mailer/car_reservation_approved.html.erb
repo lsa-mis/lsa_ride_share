@@ -4,21 +4,26 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
+  <h1>Your transportation reservation has been approved. </h1>
+    <h2> Reservation for:  <%= link_to "#{@reservation.display_name}", reservation_url(@reservation) %> </h2>
     <p>
-     New transportation reservation for (<%= "#{@start_time} - #{@end_time}" %>) has been submitted.
-    </p>
-
-    <p> Reservation for:  <%= link_to "#{@reservation.display_name}", reservation_url(@reservation) %> </p>
-    <p>
-      Reservation Summary:
+     Reservation Summary:
       <ul>
         <li>DATE: <%= "#{@start_time} - #{@end_time}" %></li>
         <li>VEHICLE #: <%= link_to @reservation.car.car_number, car_url(@reservation.car) %></li>
         
         <li>SITE: <%= link_to @reservation.site.title, site_url(@reservation.site) %> </li>
         <li>PROGRAM: <%= link_to @reservation.program.title, program_url(@reservation.program) %></li>
-
-      You can email psych.transportation@umich.edu or call the office at: 734-764-2580.
+        <li>DRIVER: <%= @driver_name %> </li>
+        <li>BACKUP DRIVER: <%= @backup_driver_name %> </li>
+      </ul>
+      PASSENGERS:
+      <ul>
+        <% @passengers.each do |p| %>
+          <li> <%= p %> </li>
+        <% end %>
+      </ul>
+      Thank you
     </p>
     <p>
       <%= link_to "LSA Ride Share", all_root_url %>

@@ -67,7 +67,6 @@ class ReservationsController < ApplicationController
       @min_date =  DateTime.now
     else
       redirect_back_or_default("You must select a unit first.", reservations_url)
-      # redirect_to reservations_path, alert: "You must select a unit first."
       return
     end
     if params[:day_start].present?
@@ -82,9 +81,7 @@ class ReservationsController < ApplicationController
     if is_admin?(current_user)
       @sites = []
     end
-    # @reservation = Reservation.new
     @reservation.start_time = @day_start
-    # authorize @reservation
   end
 
   # GET /reservations/1/edit
@@ -93,8 +90,8 @@ class ReservationsController < ApplicationController
     @unit_id = @reservation.program.unit.id
     @term_id = @reservation.program.term.id
     @car_id = @reservation.car_id
-    @start_time = @reservation.start_time.to_s
-    @end_time = @reservation.end_time.to_s
+    @start_time = (@reservation.start_time + 15.minute).to_s
+    @end_time = (@reservation.end_time - 15.minute).to_s
     @number_of_people_on_trip = @reservation.number_of_people_on_trip
     @cars = Car.available.where(unit_id: @unit_id).where("number_of_seats >= ?", @number_of_people_on_trip).order(:car_number)
   end
@@ -150,6 +147,7 @@ class ReservationsController < ApplicationController
     @reservation.reserved_by = current_user.id
     authorize @reservation
     if @reservation.save
+      ReservationMailer.with(reservation: @reservation).car_reservation_confirmation.deliver_now
       ReservationMailer.with(reservation: @reservation).car_reservation_created.deliver_now
       @students = @reservation.program.students 
       redirect_to add_drivers_path(@reservation), notice: "Reservation was successfully created. Please add drivers."
@@ -173,6 +171,7 @@ class ReservationsController < ApplicationController
   def update
     if params[:reservation][:approved].present?
       if @reservation.update(reservation_params)
+        ReservationMailer.with(reservation: @reservation).car_reservation_approved.deliver_now unless @reservation.approved == false
         redirect_to reservation_path(@reservation), notice: "Reservation was updated"
         return
       else
@@ -205,9 +204,8 @@ class ReservationsController < ApplicationController
     end
     @reservation.attributes = reservation_params
     @reservation.car_id = params[:car_id]
-    # @reservation.start_time -= 15.minute
-    # @reservation.end_time += 15.minute
-    # how to update ?
+    @reservation.start_time = params[:start_time].to_datetime - 15.minute
+    @reservation.end_time = params[:end_time].to_datetime + 15.minute
 
     respond_to do |format|
       if @reservation.update(reservation_params)
@@ -245,11 +243,19 @@ class ReservationsController < ApplicationController
 
   # DELETE /reservations/1 or /reservations/1.json
   def destroy
-    @reservation.destroy
-
     respond_to do |format|
-      format.html { redirect_to reservations_url, notice: "Reservation was successfully destroyed." }
-      format.json { head :no_content }
+      if @reservation.destroy
+        if is_admin?(current_user)
+          format.html { redirect_to reservations_url, notice: "Reservation was canceled." }
+          format.json { head :no_content }
+        elsif is_student?(current_user)
+          format.html { redirect_to welcome_pages_student_url, notice: "Reservation was canceled." }
+          format.json { head :no_content }
+        end
+      else
+        format.html { render :show, status: :unprocessable_entity }
+        format.json { render json: @reservation.errors, status: :unprocessable_entity }
+      end
     end
   end
 
