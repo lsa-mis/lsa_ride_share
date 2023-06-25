@@ -39,8 +39,8 @@
             <td></td>
             <td></td>
             <% times = show_time_begin_end(day, @unit_id) %>
-            <% day_begin  = times[0] - 15.minute %>
-            <% day_end  = times[1] %>
+            <% day_begin = times[0] - 15.minute %>
+            <% day_end = times[1] %>
             <% day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) } %>
             <% car_day_reserv = car.reservations.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day) %>
             <% day_times_with_15_min_steps.each do |step| %>
@@ -65,12 +65,12 @@
                   <% end %>
                 <% else %>
                   <td class="border hover:bg-green-500">
-                    <%= link_to '.', new_reservation_path(:unit_id => @unit_id, :start_date => day) , class: "text-gray-500 w-0" %>
+                    <%= link_to '.', new_reservation_path(:unit_id => @unit_id, :day_start => day, :car_id => car.id, :start_time => step) , class: "text-gray-500 w-0" %>
                   </td>
                 <% end %>
               <% else %>
                 <td class="border hover:bg-green-500">
-                  <%= link_to '.', new_reservation_path(:unit_id => @unit_id, :start_date => day, :car_id => car.id) , class: "text-gray-500 w-0" %>
+                  <%= link_to '.', new_reservation_path(:unit_id => @unit_id, :day_start => day, :car_id => car.id, :start_time => step) , class: "text-gray-500 w-0" %>
                 </td>
               <% end %>
             <% end %>

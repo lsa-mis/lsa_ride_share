@@ -33,7 +33,7 @@ class ReservationsController < ApplicationController
       redirect_back_or_default("You must select a unit first.", reservations_url)
       return
     end
-    @hour_begin = UnitPreference.find_by(name: "reservation_time_begin", unit_id: @unit_id).value.split(":").first.to_i
+    @hour_begin = UnitPreference.find_by(name: "reservation_time_begin", unit_id: @unit_id).value.split(":").first.to_i - 1
     @hour_end = UnitPreference.find_by(name: "reservation_time_end", unit_id: @unit_id).value.split(":").first.to_i + 12
     authorize @reservations
     @cars = Car.where(unit_id: @unit_id).order(:car_number)
@@ -79,7 +79,13 @@ class ReservationsController < ApplicationController
     if params[:term_id].present?
       @term_id = params[:term_id]
     end
-    @students = []
+    if params[:car_id].present?
+      @car_id = params[:car_id]
+    end
+    if params[:start_time].present?
+      @start_time = params[:start_time]
+    end
+    # @students = []
     if is_admin?(current_user)
       @sites = []
     end
