@@ -75,6 +75,14 @@
     </p>
   </div>
 
+  <div>
+   <% if @car_id.present? %>
+    <p class="body-sm-bold-text mt-4 mb-2">
+      Car <%= Car.find(@car_id).car_number %> was selected
+    </p>
+   <% end %>
+  </div>
+
   <%= render 'cars_dropdown' %>
 
   <div class="inline">
