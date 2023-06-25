@@ -85,7 +85,6 @@ class ReservationsController < ApplicationController
     if params[:start_time].present?
       @start_time = params[:start_time]
     end
-    # @students = []
     if is_admin?(current_user)
       @sites = []
     end
