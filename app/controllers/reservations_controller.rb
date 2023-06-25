@@ -213,6 +213,7 @@ class ReservationsController < ApplicationController
     @reservation.car_id = params[:car_id]
     @reservation.start_time = params[:start_time].to_datetime - 15.minute
     @reservation.end_time = params[:end_time].to_datetime + 15.minute
+    @reservation.number_of_people_on_trip = params[:number_of_people_on_trip]
 
     respond_to do |format|
       if @reservation.update(reservation_params)
