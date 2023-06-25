@@ -41,16 +41,6 @@ class ReservationsController < ApplicationController
     @dates = @date_range.to_a
   end
 
-  def cars_reservations
-    unit_id = 3
-    # fail
-    @cars = Car.where(unit_id: unit_id)
-    @date_range = Date.today.beginning_of_week..Date.today.end_of_week
-    @dates = @date_range.to_a
-    @reservations = Reservation.all
-    authorize @reservations
-  end
-
   def day_reservations
     @day = params[:date].to_date
     @day_reservations = Reservation.where("start_time BETWEEN ? AND ?", @day.beginning_of_day, @day.end_of_day).order(:start_time)
