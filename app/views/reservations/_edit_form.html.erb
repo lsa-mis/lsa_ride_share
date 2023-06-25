@@ -47,7 +47,7 @@
   </p>
 </div>
   <input type="hidden" id="reservation_unit_id" name="reservation[unit_id]" value=<%= @unit_id %> data-editreservation-target="unit">
-
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
     <div>
         <%= form.label :day_start, "Choose a Start Date", class: "fancy_label" %>
         <%= text_field_tag :day_start, @day_start,
@@ -59,7 +59,11 @@
           class: "input_text_field"
         %>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+    <div>
+      <%= form.label :number_of_people_on_trip, 'Number of People on Trip *', class: "fancy_label" %>
+      <%= select_tag :number_of_people_on_trip, options_for_select(@number_of_seats, @number_of_people_on_trip), class: "input_text_field",
+        "data-reservation-target": "number", "data-action": "change->reservation#availableCars" %>
+    </div>
     <div class="py-2">
       <label class="body-lg-bold-text">
         Start Time:
