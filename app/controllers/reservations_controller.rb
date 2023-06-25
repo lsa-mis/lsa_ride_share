@@ -71,8 +71,8 @@ class ReservationsController < ApplicationController
     @unit_id = @reservation.program.unit.id
     @term_id = @reservation.program.term.id
     @car_id = @reservation.car_id
-    @start_time = @reservation.start_time.to_s
-    @end_time = @reservation.end_time.to_s
+    @start_time = (@reservation.start_time + 15.minute).to_s
+    @end_time = (@reservation.end_time - 15.minute).to_s
     @number_of_people_on_trip = @reservation.number_of_people_on_trip
     @cars = Car.available.where(unit_id: @unit_id).where("number_of_seats >= ?", @number_of_people_on_trip).order(:car_number)
   end
@@ -185,9 +185,8 @@ class ReservationsController < ApplicationController
     end
     @reservation.attributes = reservation_params
     @reservation.car_id = params[:car_id]
-    # @reservation.start_time -= 15.minute
-    # @reservation.end_time += 15.minute
-    # how to update ?
+    @reservation.start_time = params[:start_time].to_datetime - 15.minute
+    @reservation.end_time = params[:end_time].to_datetime + 15.minute
 
     respond_to do |format|
       if @reservation.update(reservation_params)
