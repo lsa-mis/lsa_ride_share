@@ -10,10 +10,6 @@ class ReservationPolicy < ApplicationPolicy
     user_in_access_group?
   end
 
-  def cars_reservations?
-    index?
-  end
-
   def day_reservations?
     user_in_access_group?
   end

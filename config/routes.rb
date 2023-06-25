@@ -24,7 +24,6 @@ Rails.application.routes.draw do
   end
   # get '/vehicle_reports/:reports_ids', to: 'vehicle_reports#index', as: 'vehicle_reports'
 
-  get '/reservations/cars_reservations', to: 'reservations#cars_reservations', as: 'cars_reservations'
   get '/reservations/week_calendar/', to: 'reservations#week_calendar', as: 'week_calendar'
   resources :reservations do
     resources :vehicle_reports, module: :reservations
