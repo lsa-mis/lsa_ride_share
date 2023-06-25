@@ -137,14 +137,14 @@
   font-weight: 500;
 }
 
-#popup {
-  height: 50px;
-  width: 200px;
-  text-align: center;
-  vertical-align:middle;
-  background-color: cornflowerblue;
-  color: white;
-  display: none;
-  padding-top: 8px;
+[title]:hover:after{
+  content: attr(title);
+  background:yellow;
+  padding: 5px;
+  border-radius:5px;
+  border:1px solid;
   position: absolute;
+  display: block;
+  white-space: pre-line;
+  z-index: 99 !important;
 }
