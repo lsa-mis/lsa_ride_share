@@ -66,6 +66,7 @@ class VehicleReport < ApplicationRecord
   validates_presence_of :reservation_id, :mileage_start, :gas_start
   validate :acceptable_documents
   validate :check_mileage_end
+  validate :check_mileage_start
   validates :reservation_id, uniqueness: true
 
   scope :data, ->(reports_ids) { reports_ids.present? ? where(id: reports_ids.split(",").map(&:to_i)) : all }
@@ -161,6 +162,12 @@ class VehicleReport < ApplicationRecord
   def check_mileage_end
     if self.mileage_end.present? && self.mileage_end < self.mileage_start
        errors.add("Mileage end must be bigger than mileage start - current value: ", mileage_end.to_s)
+    end
+  end
+
+  def check_mileage_start
+    if self.mileage_start.present? && self.mileage_start < 0
+       errors.add("Mileage start be a valid value - current value: ", mileage_start.to_s)
     end
   end
 
