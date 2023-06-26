@@ -125,6 +125,22 @@ module StudentApi
     return result
   end
 
+  def update_my_canvas_status(student)
+    scope = "canvasreadonly"
+    token = get_auth_token(scope)
+    if token['success']
+      result = canvas_readonly(student.program.canvas_course_id, token['access_token'])
+    end
+    if result['success']
+      students_with_good_score = result['data']
+      uniqnames = students_with_good_score.keys
+      if uniqnames.include?(student.uniqname)
+        return students_with_good_score[student.uniqname]
+      end
+    end
+    return false
+  end
+
   def get_auth_token(scope)
     returned_data = {'success' => false, "error" => "", 'access_token' => nil}
     url = URI("https://gw.api.it.umich.edu/um/oauth2/token")

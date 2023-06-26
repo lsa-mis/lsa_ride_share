@@ -1,5 +1,6 @@
 class WelcomePagesController < ApplicationController
   before_action :auth_user
+  include StudentApi
 
   def student
     @students = Student.where(uniqname: current_user.uniqname, program: Program.current_term)
@@ -14,6 +15,7 @@ class WelcomePagesController < ApplicationController
       @program = @student.program
     end
     if @student.present?
+      update_student_status(@student)
       @reservations_past = @student.reservations_past.sort_by(&:start_time).reverse
       @reservations_future = @student.reservations_future.sort_by(&:start_time)
       unit_ids = [@program.unit_id]
@@ -22,5 +24,23 @@ class WelcomePagesController < ApplicationController
     end
     @contact_data = UnitPreference.select(:unit_id, :name, :value).where(unit_id: unit_ids).where("name = 'unit_office' OR name = 'contact_phone'").group_by(&:unit_id).to_a
     authorize :welcome_page
+  end
+
+  def update_student_status(student)
+    if student.mvr_status.present?
+      unless student.mvr_status.include?("Approved")
+        status = mvr_status(student.uniqname)
+        student.update(mvr_status: status)
+      end
+    else 
+      status = mvr_status(student.uniqname)
+        student.update(mvr_status: status)
+    end
+    unless student.canvas_course_complete_date.present?
+      canvas_date = update_my_canvas_status(student)
+      if canvas_date 
+        student.update(canvas_course_complete_date: canvas_date)
+      end
+    end
   end
 end
