@@ -168,7 +168,7 @@ module ApplicationHelper
       day_ranges.each do |range|
         if space_begin == range.begin
           space_begin = range.end
-        elsif space_begin < range.begin && range.begin - space_begin < 30
+        elsif space_begin < range.begin && (range.begin - space_begin)/1.minute > 30
           r = space_begin..range.begin
           car_available << show_time_range(r)
           space_begin = range.end
