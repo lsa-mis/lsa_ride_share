@@ -4,8 +4,8 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-  <h1>Your transportation reservation has been approved. </h1>
-    <h2> Reservation for:  <%= link_to "#{@reservation.display_name}", reservation_url(@reservation) %> </h2>
+  <h3>Your transportation reservation has been approved. </h3>
+    <h4> Reservation for:  <%= link_to "#{@reservation.display_name}", reservation_url(@reservation) %> </h4>
     <p>
      Reservation Summary:
       <ul>
@@ -23,7 +23,9 @@
           <li> <%= p %> </li>
         <% end %>
       </ul>
-      Thank you
+    </p>
+    <p>
+      You can email psych.transportation@umich.edu or call the office at: 734-764-2580.
     </p>
     <p>
       To view/modify/cancel reservations, click here

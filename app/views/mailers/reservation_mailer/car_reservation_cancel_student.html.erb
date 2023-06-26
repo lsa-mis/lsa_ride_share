@@ -4,7 +4,7 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-  <h1>Your transportation reservation has been canceled. </h1>
+  <h3>Your transportation reservation has been canceled. </h3>
     <p>
      Reservation Summary:
       <ul>
@@ -22,10 +22,13 @@
           <li> <%= p %> </li>
         <% end %>
       </ul>
-      Thank you
     </p>
     <p>
-      <%= link_to "LSA Ride Share", all_root_url %>
+      You can email psych.transportation@umich.edu or call the office at: 734-764-2580.
+    </p>
+    <p>
+      To view/modify/cancel reservations, click here
+      <%= link_to "LSA Ride Share", welcome_pages_student_url %>
     </p>
   </body>
 </html>
