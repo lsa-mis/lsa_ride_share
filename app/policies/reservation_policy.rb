@@ -6,6 +6,10 @@ class ReservationPolicy < ApplicationPolicy
     user_in_access_group?
   end
 
+  def week_calendar?
+    user_in_access_group?
+  end
+
   def day_reservations?
     user_in_access_group?
   end
@@ -44,6 +48,10 @@ class ReservationPolicy < ApplicationPolicy
 
   def remove_passenger?
     update?
+  end
+
+  def destroy?
+    user_in_access_group? || is_reservation_driver?
   end
 
   def is_reservation_student?

@@ -1,10 +1,15 @@
 <div class="mx-auto w-full">
-  <div class="grid grid-cols-1 lg:grid-cols-2">
-    <div>
+  <div class="grid md:grid-cols-4 gap-4">
+    <div class="col-span-3">
       <h1>
-        <%= @reservation.program.unit.name %> reservation
+        <%= @reservation.program.unit.name %> Reservation
       </h1>
-      <h2 class="mb-2">
+      <% if is_student?(current_user) %>
+        <p class="body-md-text mt-2 text-blue-750">
+          If you need to edit the reservation, please cancel it and create a new one.
+        </p>
+      <% end %>
+      <h2 class="mb-4">
         <%= @reservation.program.display_name_with_title %>
       </h2>
       <% if is_admin?(current_user) %>
@@ -25,23 +30,37 @@
           </div>
         <% end %>
       <% end %>
+      <%= render @reservation %>
     </div>
-    <div class="lg:grid lg:justify-items-end py-2">
-      <% if (is_admin?(current_user) || allow_student_to_edit_reservation?(@reservation)) && future_reservation?(@reservation) %>
-        <%= link_to 'Edit Reservation', edit_reservation_path(@reservation), class: "primary_button" if policy(@reservation).edit? %>
-        <%= link_to 'Edit Drivers and Passengers', add_drivers_path(@reservation), class: "primary_button" if policy(@reservation).edit? %>
-      <% else %>
-      <div></div>
-      <div></div>
-      <% end %>
-      <% if @reservation.vehicle_report.present? %>
-        <%= link_to 'Vehicle Report', vehicle_report_path(@reservation.vehicle_report), class: "secondary_blue_button" %>
-      <% else %>
-        <%= link_to 'New Vehicle Report', new_reservation_vehicle_report_path(@reservation), class: "secondary_blue_button" %>
-      <% end %>
+    <div>
+      <div class="lg:flex lg:flex-col place-items-end whitespace-nowrap">
+        <% if (is_admin?(current_user) || allow_student_to_edit_reservation?(@reservation)) && future_reservation?(@reservation) %>
+          <% if is_admin?(current_user) %>
+            <div class="my-2">
+              <%= link_to 'Edit Reservation', edit_reservation_path(@reservation), class: "primary_button" if policy(@reservation).edit? %>
+            </div>
+          <% end %>
+          <div>
+            <%= link_to 'Edit Drivers and Passengers', add_drivers_path(@reservation), class: "primary_button" if policy(@reservation).edit? %>
+          </div>
+          <div class="my-2">
+            <%= link_to reservation_path(@reservation), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete} do %>
+              <span class="secondary_blue_button my-2">
+                <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
+                Cancel Reservation
+              </span>
+            <% end %>
+          </div>
+        <% end %>
+        <div>
+          <% if @reservation.vehicle_report.present? %>
+          
+            <%= link_to 'Vehicle Report', vehicle_report_path(@reservation.vehicle_report), class: "secondary_blue_button" %>
+          <% else %>
+            <%= link_to 'New Vehicle Report', new_reservation_vehicle_report_path(@reservation), class: "secondary_blue_button" %>
+          <% end %>
+        </div>
+      </div>
     </div>
   </div>
-  <div>
-    <%= render @reservation %>
-  <div>
 </div>

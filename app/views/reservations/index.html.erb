@@ -3,6 +3,7 @@
   <div class="pb-4">
     <h1 class="mb-2">Reservations</h1>
   </div>
+  
   <%= form_with url: reservations_path, method: :get, class: "", data: { autosubmit_target: "form", turbo_frame: "unit-calendar" } do |form| %>
     <% if current_user.unit_ids.count > 1 %>
       <div class="my-2">
@@ -15,6 +16,9 @@
       <input type="hidden" id="unit_id" name="unit_id" value=<%= @unit_id %>>
     <% end %>
   <% end %>
+  <div class="mb-2">
+    <%= link_to 'Week calendar', week_calendar_path(:unit_id => @unit_id), class: "secondary_blue_button" %>
+  </div>
 
   <%= turbo_frame_tag 'unit-calendar' do %>
     <%= month_calendar(events: @reservations) do |date, reservations| %>
@@ -30,9 +34,9 @@
           <div class="body-sm-text">
             <%= link_to reservation.display_name, reservation_path(reservation.id), class: "link_to" %>
             <p>
-              <%= show_time(reservation.start_time) %>
+              <%= show_time(reservation.start_time + 15.minute) %>
               -
-              <%= show_time(reservation.end_time) %>
+              <%= show_time(reservation.end_time - 15.minute) %>
             </p>
           </div>
         <% end %>

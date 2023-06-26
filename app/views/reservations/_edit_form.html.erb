@@ -46,9 +46,8 @@
     <%= @number_of_people_on_trip %>
   </p>
 </div>
-  <input type="hidden" id="unit_id" name="unit_id" value=<%= @unit_id %> data-editreservation-target="unit">
-
-  
+  <input type="hidden" id="reservation_unit_id" name="reservation[unit_id]" value=<%= @unit_id %> data-editreservation-target="unit">
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
     <div>
         <%= form.label :day_start, "Choose a Start Date", class: "fancy_label" %>
         <%= text_field_tag :day_start, @day_start,
@@ -60,13 +59,17 @@
           class: "input_text_field"
         %>
     </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+    <div>
+      <%= form.label :number_of_people_on_trip, 'Number of People on Trip *', class: "fancy_label" %>
+      <%= select_tag :number_of_people_on_trip, options_for_select(@number_of_seats, @number_of_people_on_trip), class: "input_text_field",
+        "data-reservation-target": "number", "data-action": "change->reservation#availableCars" %>
+    </div>
     <div class="py-2">
       <label class="body-lg-bold-text">
-        Srart Time:
+        Start Time:
       </label>
       <p class="body-lg-text ml-2 inline-block">
-        <%= show_date_time(reservation.start_time) %>
+        <%= show_date_time(reservation.start_time + 15.minute) %>
       </p>
     </div>
     <div class="py-2">
@@ -74,7 +77,7 @@
         End Time:
       </label>
       <p class="body-lg-text ml-2 inline-block">
-        <%= show_date_time(reservation.end_time)%>
+        <%= show_date_time(reservation.end_time - 15.minute)%>
       </p>
     </div>
 
@@ -85,17 +88,17 @@
     </div>
 
     <div>
-      <label for="start_time" class="fancy_label">Start Time *</label>
-      <%= form.select "start_time", options_for_select(all_day_available_time(@day_start, @unit_id)[:begin], selected: @start_time), {include_blank: false}, {class: "input_text_field", 
-      "data-editreservation-target": "start_time"} %>
-
+      <%= label_tag :start_time, 'Start Time *', class: "fancy_label" %>
+      <%= select_tag "start_time", options_for_select(all_day_available_time(@day_start, @unit_id)[:begin], @start_time), class: "input_text_field",
+      "data-reservation-target": "start_time" %>
     </div>
 
     <div>
-      <label for="end_time" class="fancy_label">Start Time *</label>
-      <%= form.select "end_time", options_for_select(all_day_available_time(@day_start, @unit_id)[:end], selected: @end_time), {include_blank: false}, {class: "input_text_field", 
-      "data-editreservation-target": "end_time"} %>
+      <%= label_tag :end_time, 'End Time *', class: "fancy_label" %>
+      <%= select_tag "end_time", options_for_select(all_day_available_time(@day_start, @unit_id)[:end], @end_time), class: "input_text_field",
+      "data-reservation-target": "end_time" %>
     </div>
+
     <div class="error_text" id="time_field"></div>
   </div>
 
@@ -104,7 +107,7 @@
       Car:
     </label>
     <p class="body-lg-text ml-2 inline-block">
-      <%= @reservation.car.car_number %>
+      <%= show_car(@reservation) %>
     </p>
   </div>
 

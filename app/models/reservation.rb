@@ -30,8 +30,11 @@ class Reservation < ApplicationRecord
   has_many :reservation_passengers
   has_many :passengers, through: :reservation_passengers, source: :student
   has_one :vehicle_report
+  before_destroy :car_reservation_cancel
   
   has_rich_text :note
+
+  validate :check_number_of_people_on_trip, on: :update
 
   scope :with_passengers, -> { Reservation.includes(:passengers) }
 
@@ -51,6 +54,32 @@ class Reservation < ApplicationRecord
 
   def added_people
     self.passengers.count + (self.driver.present? ? 1 : 0).to_i + (self.backup_driver.present? ? 1 : 0).to_i  
+  end
+
+  def check_number_of_people_on_trip
+    if self.number_of_people_on_trip_changed?
+      if self.number_of_people_on_trip_change[0] > self.number_of_people_on_trip_change[1] && self.number_of_people_on_trip_change[1] < self.added_people
+        errors.add(:number_of_people_on_trip, ": remove passengers before updating the number")
+      end
+    end
+  end
+
+  def car_reservation_cancel
+    students = self.passengers
+    passengers= []
+    emails = []
+    if students.present?
+      students.each do |s|
+        passengers << s.name
+        emails << s.uniqname + "@umich.edu"
+      end
+    else
+      passengers = ["No passengers"]
+    end
+    if self.passengers.present?
+      self.passengers.delete_all
+    end
+    ReservationMailer.car_reservation_cancel(self, passengers, emails).deliver_now
   end
 
 end

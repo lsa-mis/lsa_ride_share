@@ -138,6 +138,15 @@ module ApplicationHelper
     end
   end
 
+  def show_reserved_by_in_week_calendar(reservation)
+    User.find(reservation.reserved_by).display_name
+  end
+
+  def show_reservation(reservation)
+    reservation.program.title + "\n" + reservation.site.title + "\n" +
+    show_date_time(reservation.start_time + 15.minute) + "\n" +  show_date_time(reservation.end_time - 15.minute)
+  end
+
   def show_backup_driver(reservation)
     if reservation.backup_driver.present?
       reservation.backup_driver.display_name
@@ -149,8 +158,8 @@ module ApplicationHelper
   def available_ranges(car, day, unit_id)
     # time renges when the car is available on the day
     times = show_time_begin_end(day, unit_id)
-    day_begin  = times[0]
-    day_end  = times[1]
+    day_begin  = times[0] - 15.minute
+    day_end  = times[1] + 15.minute
     car_available = []
     space_begin = day_begin
     car_day_reserv = car.reservations.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day).order(:start_time)
@@ -159,9 +168,11 @@ module ApplicationHelper
       day_ranges.each do |range|
         if space_begin == range.begin
           space_begin = range.end
-        elsif space_begin < range.begin
+        elsif space_begin < range.begin && range.begin - space_begin < 30
           r = space_begin..range.begin
           car_available << show_time_range(r)
+          space_begin = range.end
+        else
           space_begin = range.end
         end
       end
@@ -197,9 +208,9 @@ module ApplicationHelper
 
   def show_time_range(day_range, current = false)
     if current
-      "#{day_range.begin.strftime("%I:%M%p")} - #{day_range.end.strftime("%I:%M%p")} - current"
+      "#{(day_range.begin + 15.minute).strftime("%I:%M%p")} - #{(day_range.end - 15.minute).strftime("%I:%M%p")} - current"
     else
-      "#{day_range.begin.strftime("%I:%M%p")} - #{day_range.end.strftime("%I:%M%p")}"
+      "#{(day_range.begin + 15.minute).strftime("%I:%M%p")} - #{(day_range.end - 15.minute).strftime("%I:%M%p")}"
     end
   end
 
@@ -211,7 +222,8 @@ module ApplicationHelper
     day = range.begin.to_date
     day_reservations = car.reservations.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day).order(:start_time)
     return true unless day_reservations.present?
-    car_ranges = day_reservations.map { |res| (res.start_time + 1.minute)..(res.end_time - 1.minute) }
+    # to add 15 minutes to nother reservation. Time slot between two reservations should be 30 minutes
+    car_ranges = day_reservations.map { |res| (res.start_time - 14.minute)..(res.end_time + 14.minute) }
     if car_ranges.any? { |r| r.overlaps?(range)}
       return false
     else
@@ -222,8 +234,8 @@ module ApplicationHelper
   def all_day_available_time(day, unit_id)
     # all day time renges for unit
     times = show_time_begin_end(day, unit_id)
-    day_begin  = times[0]
-    day_end  = times[1]
+    day_begin  = times[0] - 15.minute
+    day_end  = times[1] + 15.minute
     day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) }
     available_times_begin = day_times_with_15_min_steps.map { |t| [show_time(t), t.to_s] }
     available_times_begin.pop
@@ -241,8 +253,7 @@ module ApplicationHelper
     day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) }
     available_times_begin = []
     available_times_end = []
-    # available_times_begin << ["Select time ...", "0"]
-    # available_times_end << ["Select time ...", "0"]
+
     day_reservations = Reservation.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day).order(:start_time)
     if day_reservations.present?
       day_times_with_15_min_steps.each do |step|

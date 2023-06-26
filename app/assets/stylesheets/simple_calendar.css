@@ -80,6 +80,7 @@
 .simple-calendar .calendar-heading {
   color: blue;
   font-size: 16px;
+  margin: 10px;
 }
 
 .simple-calendar table {
@@ -127,4 +128,23 @@
 .simple-calendar .tr-week {
   border-collapse: collapse;
   height: 250px;
+}
+
+.simple-calendar .td-week {
+  overflow: visible;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+[title]:hover:after{
+  content: attr(title);
+  background:yellow;
+  padding: 5px;
+  border-radius:5px;
+  border:1px solid;
+  position: absolute;
+  display: block;
+  white-space: pre-line;
+  z-index: 99 !important;
 }

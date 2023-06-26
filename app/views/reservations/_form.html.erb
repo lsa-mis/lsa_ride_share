@@ -60,7 +60,6 @@
           class: "input_text_field"
         %>
     </div>
-
     <div>
       <%= form.label :number_of_people_on_trip, 'Number of People on Trip *', class: "fancy_label" %>
       <%= select_tag :number_of_people_on_trip, options_for_select(@number_of_seats, @number_of_people_on_trip), class: "input_text_field",
@@ -74,6 +73,14 @@
     <p class="body-sm-text mt-4 mb-2">
       Select a car and click Create Reservation. You can add passengers after submitting the reservation.
     </p>
+  </div>
+
+  <div>
+   <% if @car_id.present? %>
+    <p class="body-sm-bold-text mt-4 mb-2">
+      Car <%= Car.find(@car_id).car_number %> was selected
+    </p>
+   <% end %>
   </div>
 
   <%= render 'cars_dropdown' %>
