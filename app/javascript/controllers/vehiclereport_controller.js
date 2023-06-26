@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ['form', 'gas_error', 'gas_start', 'gas_end',
-          'mileage_error', 'mileage_start', 'mileage_end', 'gas_error_lowfuel']
+          'mileage_error', 'mileage_start', 'mileage_end']
   connect() {
     console.log("connect - vehicle report")
   }
@@ -35,15 +35,6 @@ export default class extends Controller {
         this.mileage_errorTarget.classList.remove("fields--display")
         this.mileage_errorTarget.classList.add("fields--hide")
       }
-    }
-
-    if (gas_end <= 50 && gas_end != 0) {
-      this.gas_error_lowfuelTarget.classList.add("fields--display")
-      this.gas_error_lowfuelTarget.classList.remove("fields--hide")
-      submitForm = false
-    } else {
-      this.gas_error_lowfuelTarget.classList.remove("fields--display")
-      this.gas_errorT_lowfuelarget.classList.add("fields--hide")
     }
 
     if(submitForm == false) {

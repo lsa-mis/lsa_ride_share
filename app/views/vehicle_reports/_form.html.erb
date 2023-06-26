@@ -49,27 +49,24 @@
           Trip Mileage Total: <%= calculate_mileage(@vehicle_report) %>
       </div>
 
-      <div class="error_text fields--hide" data-vehiclereport-target="gas_error">
-        <span>Gas value should be 0 to 100. Please enter a valid value for gas.</span>
-      </div>
-
       <div class="my-5">
         <%= form.label :gas_start, 'Percent of Fuel Remaining (Departure)', class: "fancy_label"  %>
-        <%= form.number_field :gas_start, required: true, class: "input_text_field", "data-vehiclereport-target": "gas_start"  %>
+        <%= form.select(:gas_start, options_for_select(gas_percent, @vehicle_report.gas_start), { include_blank: "Select Gas..." }, { class: "input_text_field" }) %>
       </div>
-
-      <div class="error_text fields--hide" data-vehiclereport-target="gas_error_lowfuel">
-        <span>Car must be refueled - fuel remaining should be over 50%</span>
-      </div>   
 
       <div class="my-5">
         <%= form.label :gas_end, 'Percent of Fuel Remaining (Return)', class: "fancy_label"  %>
-        <%= form.number_field :gas_end, class: "input_text_field", "data-vehiclereport-target": "gas_end"  %>
+        <%= form.select(:gas_end, options_for_select(gas_percent, @vehicle_report.gas_end), { include_blank: "Select Gas..." }, { class: "input_text_field" }) %>
       </div>
 
       <div class="my-5">
-        <%= form.label :parking_spot, class: "fancy_label"  %>
-        <%= form.text_field :parking_spot, placeholder: "Parking Spot", class: "input_text_field" %>
+        <%= form.label :parking_spot, 'Parking Spot (depart)', class: "fancy_label"  %>
+        <%= form.text_field :parking_spot, placeholder: "Parking Spot (depart)", class: "input_text_field" %>
+      </div>
+
+            <div class="my-5">
+        <%= form.label :parking_spot_return, 'Parking Spot (return)', class: "fancy_label"  %>
+        <%= form.text_field :parking_spot_return, placeholder: "Parking Spot (return)", class: "input_text_field" %>
       </div>
 
     </div>

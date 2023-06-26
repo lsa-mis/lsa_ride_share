@@ -10,7 +10,8 @@
           <th class="header_th">Mileage end</th>
           <th class="header_th">Gas % (depart)</th>
           <th class="header_th">Gas % (return)</th>
-          <th class="header_th">Parking spot</th>
+          <th class="header_th">Parking spot (depart)</th>
+          <th class="header_th">Parking spot (return)</th>
           <th class="header_th">Last updated</th>
           <th class="header_th">Admin Status</th>
           <th class="header_th">Student Status</th>
@@ -42,6 +43,9 @@
             </td>
             <td class="mi_tbody_td">
               <%= vehicle_report.parking_spot %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= vehicle_report.parking_spot_return %>
             </td>
             <td class="mi_tbody_td">
               <% if vehicle_report.updated_at.present? %>
