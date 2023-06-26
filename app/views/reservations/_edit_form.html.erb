@@ -55,14 +55,13 @@
           controller: "flatpickr",
           flatpickr_date_format: "Y-m-d",
           flatpickr_min_date: @min_date
-          }, "data-editreservation-target": "day_start", "data-action": "change->editreservation#availableCars",
+          }, "data-editreservation-target": "day_start", "data-action": "change->editreservation#changeDay",
           class: "input_text_field"
         %>
     </div>
     <div>
       <%= form.label :number_of_people_on_trip, 'Number of People on Trip *', class: "fancy_label" %>
-      <%= select_tag :number_of_people_on_trip, options_for_select(@number_of_seats, @number_of_people_on_trip), class: "input_text_field",
-        "data-reservation-target": "number", "data-action": "change->reservation#availableCars" %>
+      <%= select_tag :number_of_people_on_trip, options_for_select(@number_of_seats, @number_of_people_on_trip), class: "input_text_field" %>
     </div>
     <div class="py-2">
       <label class="body-lg-bold-text">
@@ -86,21 +85,9 @@
         Select new start and end time if you want to change it
       </p>
     </div>
-
-    <div>
-      <%= label_tag :start_time, 'Start Time *', class: "fancy_label" %>
-      <%= select_tag "start_time", options_for_select(all_day_available_time(@day_start, @unit_id)[:begin], @start_time), class: "input_text_field",
-      "data-reservation-target": "start_time" %>
-    </div>
-
-    <div>
-      <%= label_tag :end_time, 'End Time *', class: "fancy_label" %>
-      <%= select_tag "end_time", options_for_select(all_day_available_time(@day_start, @unit_id)[:end], @end_time), class: "input_text_field",
-      "data-reservation-target": "end_time" %>
-    </div>
-
-    <div class="error_text" id="time_field"></div>
   </div>
+
+  <%= render 'start_end_time_edit' %>
 
   <div class="py-2">
     <label class="body-lg-bold-text">
