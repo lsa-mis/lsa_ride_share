@@ -135,10 +135,67 @@
         </p>
       </div>
     <% end %>
-
   </div>
   
   <div>
+
+  <% if @vehicle_report.image_front_start.attached? %>
+    <div class="sm:col-span-3">
+      Front of car (start): <%= link_to @vehicle_report.image_front_start.filename, url_for(@vehicle_report.image_front_start), target: "_blank" %>
+      <%= image_tag @vehicle_report.image_front_start.variant(:thumb),  alt: 'Front of car (start)', class: "object-cover group-hover:opacity-75" %>
+    </div>
+  <% end %>
+
+  <% if @vehicle_report.image_driver_start.attached? %>
+    <div class="sm:col-span-3">
+       Driver side of car (start): <%= link_to @vehicle_report.image_driver_start.filename, url_for(@vehicle_report.image_driver_start), target: "_blank" %>
+      <%= image_tag @vehicle_report.image_driver_start.variant(:thumb),  alt: 'Driver side of car (start)', class: "object-cover group-hover:opacity-75" %>
+    </div>
+  <% end %>
+
+  <% if @vehicle_report.image_passenger_start.attached? %>
+    <div class="sm:col-span-3">
+      Passenger side of car (start): <%= link_to @vehicle_report.image_passenger_start.filename, url_for(@vehicle_report.image_passenger_start), target: "_blank" %>
+      <%= image_tag @vehicle_report.image_passenger_start.variant(:thumb),  alt: 'Passenger side of car (start)', class: "object-cover group-hover:opacity-75" %>
+    </div>
+  <% end %>
+
+  <% if @vehicle_report.image_back_start.attached? %>
+    <div class="sm:col-span-3">
+      Back of car (start): <%= link_to @vehicle_report.image_back_start.filename, url_for(@vehicle_report.image_back_start), target: "_blank" %>
+      <%= image_tag @vehicle_report.image_back_start.variant(:thumb),  alt: 'Back of car (start)', class: "object-cover group-hover:opacity-75" %>
+    </div>
+  <% end %>
+
+  <% if @vehicle_report.image_front_end.attached? %>
+    <div class="sm:col-span-3">
+      Front of car (end): <%= link_to @vehicle_report.image_front_end.filename, url_for(@vehicle_report.image_front_end), target: "_blank" %>
+      <%= image_tag @vehicle_report.image_front_end.variant(:thumb),  alt: 'Front of car (end)', class: "object-cover group-hover:opacity-75" %>
+    </div>
+  <% end %>
+
+  <% if @vehicle_report.image_driver_end.attached? %>
+    <div class="sm:col-span-3">
+      Driver side of car (end): <%= link_to @vehicle_report.image_driver_end.filename, url_for(@vehicle_report.image_driver_end), target: "_blank" %>
+      <%= image_tag @vehicle_report.image_driver_end.variant(:thumb),  alt: 'Driver side of car (end)', class: "object-cover group-hover:opacity-75" %>
+    </div>
+  <% end %>
+
+  <% if @vehicle_report.image_passenger_end.attached? %>
+    <div class="sm:col-span-3">
+      Passenger side of car (end): <%= link_to @vehicle_report.image_passenger_end.filename, url_for(@vehicle_report.image_passenger_end), target: "_blank" %>
+      <%= image_tag @vehicle_report.image_passenger_end.variant(:thumb),  alt: 'Passenger side of car (end)', class: "object-cover group-hover:opacity-75" %>
+    </div>
+  <% end %>
+
+  <% if @vehicle_report.image_back_end.attached? %>
+    <div class="sm:col-span-3">
+      Back of car (end): <%= link_to @vehicle_report.image_back_end.filename, url_for(@vehicle_report.image_back_end), target: "_blank" %>
+      <%= image_tag @vehicle_report.image_back_end.variant(:thumb),  alt: 'Back of car (end)', class: "object-cover group-hover:opacity-75" %>
+    </div>
+  <% end %>
+
+
     <% if @vehicle_report.image_damages.attached? %>
       <div class="">
         <p class="body-md-bold-text m-4">Images (damage):</p>
