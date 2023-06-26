@@ -9,6 +9,15 @@ export default class extends Controller {
     console.log("connect - edit reservation")
   }
 
+  changeDay(){
+    let unit_id = this.unitTarget.value
+    let day_start = this.day_startTarget.value
+
+    get(`/reservations/edit_change_day/${unit_id}/${day_start}`, {
+      responseKind: "turbo-stream"
+    })
+  }
+
   submitForm(event) {
     let car = this.carTarget.value
 

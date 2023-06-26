@@ -174,6 +174,17 @@ class ReservationsController < ApplicationController
     end
   end
 
+  def edit_change_day
+    if params[:unit_id].present?
+      @unit_id = params[:unit_id]
+    end
+    if params[:day_start].present?
+      @day_start = params[:day_start].to_date
+    end
+    @cars = Car.available.where(unit_id: @unit_id).order(:car_number)
+    authorize Reservation
+  end
+
   # PATCH/PUT /reservations/1 or /reservations/1.json
   def update
     if params[:reservation][:approved].present?
