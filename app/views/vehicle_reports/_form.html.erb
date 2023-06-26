@@ -51,18 +51,12 @@
 
       <div class="my-5">
         <%= form.label :gas_start, 'Percent of Fuel Remaining (Departure)', class: "fancy_label"  %>
-        <% #form.number_field :gas_start, required: true, class: "input_text_field", "data-vehiclereport-target": "gas_start"  %>
-        <%= form.select :gas_start, [ '1/8','1/4', '3/8', '1/2', '5/8', '3/4', '7/8', '1' ], include_blank: "Select Gas...", class: "input_text_field", "data-vehiclereport-target": "gas_start" %>
+        <%= form.select(:gas_start, options_for_select(gas_percent, @vehicle_report.gas_start), { include_blank: "Select Gas..." }, { class: "input_text_field" }) %>
       </div>
-
-      <div class="error_text fields--hide" data-vehiclereport-target="gas_error_lowfuel">
-        <span>Car must be refueled - fuel remaining should be over 50%</span>
-      </div>   
 
       <div class="my-5">
         <%= form.label :gas_end, 'Percent of Fuel Remaining (Return)', class: "fancy_label"  %>
-        <% #form.number_field :gas_end, class: "input_text_field", "data-vehiclereport-target": "gas_end"  %>
-         <%= form.select :gas_end, [ '1/8','1/4', '3/8', '1/2', '5/8', '3/4', '7/8', '1' ], include_blank: "Select Gas...", class: "input_text_field", "data-vehiclereport-target": "gas_end" %>
+        <%= form.select(:gas_end, options_for_select(gas_percent, @vehicle_report.gas_end), { include_blank: "Select Gas..." }, { class: "input_text_field" }) %>
       </div>
 
       <div class="my-5">

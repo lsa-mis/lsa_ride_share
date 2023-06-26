@@ -37,15 +37,6 @@ export default class extends Controller {
       }
     }
 
-    /*if (gas_end <= 50 && gas_end != 0) {
-      this.gas_error_lowfuelTarget.classList.add("fields--display")
-      this.gas_error_lowfuelTarget.classList.remove("fields--hide")
-      submitForm = false
-    } else {
-      this.gas_error_lowfuelTarget.classList.remove("fields--display")
-      this.gas_errorT_lowfuelarget.classList.add("fields--hide")
-    }*/
-
     if(submitForm == false) {
       event.preventDefault()
     }
