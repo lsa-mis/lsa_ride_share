@@ -122,6 +122,13 @@
   </div>
   
   <div>
+
+  <% if @vehicle_report.image_front_start.attached? %>
+    <div class="sm:col-span-3">
+      <%= image_tag @vehicle_report.image_front_start.variant(:thumb),  alt: 'Driver side of car (start)', class: "object-cover group-hover:opacity-75" %>
+    </div>
+  <% end %>
+
     <% if @vehicle_report.image_damages.attached? %>
       <div class="">
         <p class="body-md-bold-text m-4">Images (damage):</p>
