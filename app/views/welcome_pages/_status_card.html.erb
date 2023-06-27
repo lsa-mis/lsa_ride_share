@@ -83,30 +83,10 @@
     </div>
 
     <div class="py-2">
-      <% if @student.class_training_date.present? %>
-        <i class="fa-solid fa-check"></i>
-        <label class="body-sm-semibold-text ml-2">
-          Class Training Status:
-        </label>
-        <p class="body-sm-text ml-2">
-          Completed on <%= show_date(@student.canvas_course_complete_date) %>
-        </p>
-      <% else %>
-        <i class="fa-regular fa-square"></i>
-        <label class="body-sm-semibold-text ml-2">
-          Class Training Status:
-        </label>
-        <p class="body-sm-text ml-2">
-         Not completed
-        </p>
-      <% end %>
-    </div>
-
-    <div class="py-2">
       <% if @student.meeting_with_admin_date.present? %>
         <i class="fa-solid fa-check"></i>
         <label class="body-sm-semibold-text ml-2">
-          Class Training Status:
+          Meeting with Admin:
         </label>
         <p class="body-sm-text ml-2">
           Completed on <%= show_date(@student.meeting_with_admin_date) %>
@@ -114,7 +94,7 @@
       <% else %>
         <i class="fa-regular fa-square"></i>
         <label class="body-sm-semibold-text ml-2">
-          Class Training Status:
+          Meeting with Admin:
         </label>
         <p class="body-sm-text ml-2">
          Not completed

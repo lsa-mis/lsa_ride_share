@@ -35,10 +35,10 @@
               <% end %>
             </td>
             <td class="mi_tbody_td">
-              <%= show_date_time(reservation.start_time) %>
+              <%= show_date_time(reservation.start_time + 15.minute) %>
             </td>
             <td class="mi_tbody_td">
-              <%= show_date_time(reservation.end_time) %>
+              <%= show_date_time(reservation.end_time - 15.minute) %>
             </td>
             <td class="mi_tbody_td">
               <%= reservation.site.title %>
