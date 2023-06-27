@@ -199,6 +199,10 @@ from https://tailwindcss.com/docs/adding-custom-styles
     @apply px-1 ml-2 shadow-sm font-medium rounded text-blue-900 bg-yellow-550 hover:bg-yellow-500 flex-1 hover:underline;
   }
 
+  .uniqname_text {
+    @apply leading-tight text-sm font-medium text-white
+  }
+
   .edit_button {
     @apply my-2 px-2 py-1 rounded-md shadow-sm bg-blue-umblue text-sm text-gray-100 text-center hover:underline;
   }
