@@ -66,22 +66,22 @@ class Reservation < ApplicationRecord
 
   def car_reservation_cancel
     students = self.passengers
-    passengers= []
-    emails = []
+    cancel_passengers = []
+    cancel_emails = []
     if students.present?
       students.each do |s|
-        passengers << s.name
-        emails << s.uniqname + "@umich.edu"
+        cancel_passengers << s.name
+        cancel_emails << s.uniqname + "@umich.edu"
       end
     else
-      passengers = ["No passengers"]
+      cancel_passengers = ["No passengers"]
     end
     if self.passengers.present?
       self.passengers.delete_all
     end
-    ReservationMailer.car_reservation_cancel_admin(self, passengers, emails).deliver_now
+    ReservationMailer.car_reservation_cancel_admin(self, cancel_passengers, cancel_emails).deliver_now
     if self.driver_id.present?
-      ReservationMailer.car_reservation_cancel_student(self, passengers, emails).deliver_now
+      ReservationMailer.car_reservation_cancel_student(self, cancel_passengers, cancel_emails).deliver_now
     end
   end
 
