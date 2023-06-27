@@ -167,7 +167,7 @@ class VehicleReport < ApplicationRecord
 
   def check_mileage_start
     if self.mileage_start.present? && self.mileage_start < 0
-       errors.add("Mileage start be a valid value - current value: ", mileage_start.to_s)
+       errors.add("Mileage start must be a valid value - current value: ", mileage_start.to_s)
     end
   end
 
