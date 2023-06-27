@@ -23,7 +23,6 @@ class ReservationMailer < ApplicationMailer
   end
 
   def car_reservation_cancel_admin(reservation, passengers, emails)
-    @contact_phone = reservation.program.unit.unit_preferences.find_by(name: "contact_phone").value.presence || ""
     @passengers = passengers
     @start_time = show_date_time(reservation.start_time)
     @end_time = show_date_time(reservation.end_time)
