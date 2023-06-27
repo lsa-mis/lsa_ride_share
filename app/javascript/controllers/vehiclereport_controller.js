@@ -36,7 +36,7 @@ export default class extends Controller {
         this.mileage_errorTarget.classList.add("fields--hide")
       }
     }
-
+   
     if(submitForm == false) {
       event.preventDefault()
     }

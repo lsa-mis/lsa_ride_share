@@ -39,7 +39,7 @@
       <div class="error_text fields--hide" data-vehiclereport-target="mileage_error">
         <span>End mileage should be higher than start mileage. Please enter a valid value.</span>
       </div>
-
+      
       <div class="my-5">
         <%= form.label :mileage_end, class: "fancy_label" %>
         <%= form.number_field :mileage_end, class: "input_text_field", placeholder: "000.00", "data-vehiclereport-target": "mileage_end"  %>
@@ -51,12 +51,12 @@
 
       <div class="my-5">
         <%= form.label :gas_start, 'Percent of Fuel Remaining (Departure)', class: "fancy_label"  %>
-        <%= form.select(:gas_start, options_for_select(gas_percent, @vehicle_report.gas_start), { include_blank: "Select Gas..." }, { class: "input_text_field" }) %>
+        <%= form.select(:gas_start, options_for_select(gas_percent, @vehicle_report.gas_start), { include_blank: "Select Gas..." }, { class: "input_text_field", "data-vehiclereport-target": "gas_start" }) %>
       </div>
 
       <div class="my-5">
         <%= form.label :gas_end, 'Percent of Fuel Remaining (Return)', class: "fancy_label"  %>
-        <%= form.select(:gas_end, options_for_select(gas_percent, @vehicle_report.gas_end), { include_blank: "Select Gas..." }, { class: "input_text_field" }) %>
+        <%= form.select(:gas_end, options_for_select(gas_percent, @vehicle_report.gas_end), { include_blank: "Select Gas..." }, { class: "input_text_field", "data-vehiclereport-target": "gas_end" }) %>
       </div>
 
       <div class="my-5">
