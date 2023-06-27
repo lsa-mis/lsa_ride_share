@@ -328,6 +328,13 @@ module ApplicationHelper
     return day
   end
 
+  def contact_phone(reservation)
+    reservation.program.unit.unit_preferences.find_by(name: "contact_phone").value.presence || ""
+  end 
+  def unit_email(reservation)
+    reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
+  end
+
   def us_states
     [
       ['Alabama', 'AL'],

@@ -4,9 +4,10 @@
       <h1>
         <%= @reservation.program.unit.name %> Reservation
       </h1>
-      <% if is_student?(current_user) %>
+      <% if is_student?(current_user) && allow_student_to_edit_reservation?(@reservation) %>
         <p class="body-md-text mt-2 text-blue-750">
-          If you need to edit the reservation, please cancel it and create a new one.
+          If you need to edit the reservation, please cancel it and create a new one, 
+          or you can email <%= unit_email(@reservation) %> or call the office at: <%= contact_phone(@reservation) %>
         </p>
       <% end %>
       <h2 class="mb-4">
