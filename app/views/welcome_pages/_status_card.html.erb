@@ -86,7 +86,7 @@
       <% if @student.meeting_with_admin_date.present? %>
         <i class="fa-solid fa-check"></i>
         <label class="body-sm-semibold-text ml-2">
-          Meeting with Admin:
+          In Person Orientation:
         </label>
         <p class="body-sm-text ml-2">
           Completed on <%= show_date(@student.meeting_with_admin_date) %>
@@ -94,7 +94,7 @@
       <% else %>
         <i class="fa-regular fa-square"></i>
         <label class="body-sm-semibold-text ml-2">
-          Meeting with Admin:
+          In Person Orientation:
         </label>
         <p class="body-sm-text ml-2">
          Not completed
