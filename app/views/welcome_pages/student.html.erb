@@ -14,11 +14,19 @@
   <div class="grid md:grid-cols-4 gap-4">
     <div class="col-span-3">
       <p class="body-sm-text mx-2">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut 
-        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco 
-        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in 
-        voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat 
-        non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        The Department of Psychology provides vehicles for individuals and groups to use for getting to and from their site placements for specific Experiential Learning Courses: 
+        Psych 211, 306, & 325. To be eligible, sites must not be accessible by walking, MBus, or AATA bus. 
+        Drivers will complete the Transportation Canvas Course that covers all the details for registering as a driver for your psychology course. 
+        There are 4 modules and a quiz. Completing these modules & quiz will prepare you to use and reserve a vehicle to get to your site. 
+        Once you’ve submitted your Motor Vehicle Report request and it’s been approved, as well as completed the Transportation Canvas Course and 
+        In Person Transportation Orientation, you will be approved to reserve vehicles. 
+      </p>
+      <% if @program.present? && @student.canvas_course_complete_date.nil? %>
+        <p class="body-sm-text mx-2 mt-4">
+          If you have not yet completed these steps, please click the link below to begin the Canvas Course.
+          Take <%= link_to 'Course', @student.program.canvas_link, :target => "_blank", class: "link_to" %>
+        </p>
+      <% end %>
       </p>
       <div class="my-8">
         <% if @student.present? %>
