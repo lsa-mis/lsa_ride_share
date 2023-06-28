@@ -318,7 +318,11 @@ module ApplicationHelper
     else
       mileage_trip_total = "N/A"
     end
-      return mileage_trip_total
+      return (mileage_trip_total).round(2)
+  end
+
+  def show_decimal(number)
+    (number).round(2)
   end
 
   def default_reservation_for_students
