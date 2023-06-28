@@ -5,13 +5,13 @@
       <% if @students.count > 1 %>
         <div class="">
           <label for="student_id" class="fancy_label">Select a Program</label>
-          <%= form.select "student_id", options_for_select(@students_data, selected: params[:student_id]), {include_blank: "All Programs"}, {class: "filter_select w-1/2",
+          <%= form.select "student_id", options_for_select(@students_data, selected: params[:student_id]), {include_blank: "All Programs"}, {class: "filter_select w-full",
             :"data-action" => "change->autosubmit#search"} %>
         </div>
       <% end %>
     <% end %>
   </div>
-  <div class="grid md:grid-cols-4 gap-4">
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
     <div class="col-span-3">
       <p class="body-sm-text mx-2">
         The Department of Psychology provides vehicles for individuals and groups to use for getting to and from their site placements for specific Experiential Learning Courses:
