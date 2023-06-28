@@ -37,7 +37,7 @@
         Mileage start:
       </label>
       <p class="body-lg-text inline-block">
-        <%= show_decimal(vehicle_report.mileage_start) %>
+        <%= vehicle_report.mileage_start %>
       </p>
     </div>
 
@@ -46,7 +46,16 @@
         Mileage end:
       </label>
       <p class="body-lg-text inline-block">
-        <%= show_decimal(vehicle_report.mileage_end) %>
+        <%= vehicle_report.mileage_end %>
+      </p>
+    </div>
+
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Trip mileage total:
+      </label>
+      <p class="body-lg-text inline-block">
+        <%= calculate_mileage(vehicle_report) %>
       </p>
     </div>
 
@@ -59,23 +68,12 @@
       </p>
     </div>
 
-    <% if vehicle_report.gas_end.present? %>
-      <div class="py-2">
-        <label class="body-lg-bold-text">
-          Gas % (return):
-        </label>
-        <p class="body-lg-text inline-block">
-          <%= vehicle_report.gas_end %>
-        </p>
-      </div>
-    <% end%>
-      
     <div class="py-2">
       <label class="body-lg-bold-text">
-        Trip mileage total:
+        Gas % (return):
       </label>
       <p class="body-lg-text inline-block">
-        <%= calculate_mileage(vehicle_report) %>
+        <%= vehicle_report.gas_end %>
       </p>
     </div>
 
@@ -115,21 +113,9 @@
       </p>
     </div>
 
-    <div class="py-2">
-      <label class="body-lg-bold-text">
-        Updated by:
-      </label>
-      <p class="body-lg-text inline-block">
-          <%= User.find(vehicle_report.updated_by).display_name %>
-      </p>
-    </div>
-
-    <div class="py-2">
-      <label class="body-lg-bold-text">
-        Last Updated:
-      </label>
-      <p class="body-lg-text inline-block">
-          <%= vehicle_report.updated_at %>
+    <div>
+      <p class="body-sm-text m-2">
+        <%= updated_on_and_by(vehicle_report) %>
       </p>
     </div>
 
