@@ -315,14 +315,11 @@ module ApplicationHelper
   def calculate_mileage(vehicle_report)
     if vehicle_report.mileage_end.present?
       mileage_trip_total = vehicle_report.mileage_end - vehicle_report.mileage_start
+      mileage_trip_total = (mileage_trip_total).round(2)
     else
       mileage_trip_total = "N/A"
     end
-      return (mileage_trip_total).round(2)
-  end
-
-  def show_decimal(number)
-    (number).round(2)
+      return mileage_trip_total
   end
 
   def default_reservation_for_students
