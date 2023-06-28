@@ -42,6 +42,7 @@ class VehicleReportsController < ApplicationController
   # GET /vehicle_reports/new
   def new
     @vehicle_report = VehicleReport.new
+    @vehicle_report.parking_spot = @reservation.car.parking_spot
     authorize @vehicle_report
     @pictures_start_required = false
     if @reservation.program.pictures_required_start
