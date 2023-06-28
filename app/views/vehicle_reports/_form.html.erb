@@ -64,15 +64,21 @@
         <%= form.text_field :parking_spot, placeholder: "Parking Spot (depart)", class: "input_text_field" %>
       </div>
 
-            <div class="my-5">
+      <div class="my-5">
         <%= form.label :parking_spot_return, 'Parking Spot (return)', class: "fancy_label"  %>
         <%= form.text_field :parking_spot_return, placeholder: "Parking Spot (return)", class: "input_text_field" %>
       </div>
-
     </div>
 
     <div class="mb-4 body-lg-bold-text">
       <p>Images (jpg, png)</p>
+      <% if @reservation.program.pictures_required_start && !@reservation.program.pictures_required_end %>
+        <div class="mb-4">All start images must be uploaded in order to complete form.</div>
+      <% elsif !@reservation.program.pictures_required_start && @reservation.program.pictures_required_end %>
+        <div class="mb-4">All end images must be uploaded in order to complete form.</div>
+      <% elsif @reservation.program.pictures_required_start && @reservation.program.pictures_required_end %>
+        <div class="mb-4">All start and end images must be uploaded in order to complete form.</div>
+      <% end %>
       <% if @reservation.program.pictures_required_start %>
         <div class="">
           <% if @vehicle_report.image_front_start.attached? %>
