@@ -12,6 +12,8 @@ export default class extends Controller {
     var gas_end = this.gas_endTarget.value
     var mileage_start = this.mileage_startTarget.value
     var mileage_end = this.mileage_endTarget.value
+
+    var mileage_error_place = document.getElementById('mileage_show_error')
   
     gas_start = Number(gas_start)
     gas_end = Number(gas_end)
@@ -36,6 +38,14 @@ export default class extends Controller {
         this.mileage_errorTarget.classList.add("fields--hide")
       }
     }
+
+    if (mileage_start < 0) {
+      mileage_error_place.innerHTML = "Mileage needs to be a postive value. Please enter a valid value."
+      submitForm = false
+    } else {
+      mileage_error_place.innerHTML = ''
+    }
+    
    
     if(submitForm == false) {
       event.preventDefault()
