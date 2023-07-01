@@ -33,7 +33,7 @@
     <div>
       <div class="my-5">
           <%= form.label :mileage_start, 'Mileage Start *', class: "fancy_label"  %>
-          <%= form.number_field :mileage_start, required: true, placeholder: "000.00", class: "input_text_field", "data-vehiclereport-target": "mileage_start"  %>
+          <%= form.number_field :mileage_start, step: 0.01, required: true, placeholder: "000.00", class: "input_text_field", "data-vehiclereport-target": "mileage_start"  %>
       </div>
 
       <div class="error_text fields--hide" data-vehiclereport-target="mileage_error">
@@ -42,7 +42,7 @@
       
       <div class="my-5">
         <%= form.label :mileage_end, class: "fancy_label" %>
-        <%= form.number_field :mileage_end, class: "input_text_field", placeholder: "000.00", "data-vehiclereport-target": "mileage_end"  %>
+        <%= form.number_field :mileage_end, step: 0.01, class: "input_text_field", placeholder: "000.00", "data-vehiclereport-target": "mileage_end"  %>
       </div>
 
       <div class="my-5">
