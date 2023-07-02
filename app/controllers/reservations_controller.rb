@@ -1,6 +1,6 @@
 class ReservationsController < ApplicationController
   before_action :auth_user
-  before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger ]
+  before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger finish_reservation]
   before_action :set_terms_and_units
   before_action :set_programs
   before_action :set_cars, only: %i[ new get_available_cars ]
@@ -154,8 +154,8 @@ class ReservationsController < ApplicationController
     @reservation.reserved_by = current_user.id
     authorize @reservation
     if @reservation.save
-      ReservationMailer.with(reservation: @reservation).car_reservation_confirmation.deliver_now
-      ReservationMailer.with(reservation: @reservation).car_reservation_created.deliver_now
+      # ReservationMailer.with(reservation: @reservation).car_reservation_confirmation.deliver_now
+      # ReservationMailer.with(reservation: @reservation).car_reservation_created.deliver_now
       @students = @reservation.program.students 
       redirect_to add_drivers_path(@reservation), notice: "Reservation was successfully created. Please add drivers."
     else
@@ -266,6 +266,12 @@ class ReservationsController < ApplicationController
   def remove_passenger
     @reservation.passengers.delete(Student.find(params[:student_id]))
     add_passengers
+  end
+
+  def finish_reservation
+    ReservationMailer.with(reservation: @reservation).car_reservation_confirmation.deliver_now
+    ReservationMailer.with(reservation: @reservation).car_reservation_created.deliver_now
+    redirect_to reservation_path(@reservation)
   end
 
   # DELETE /reservations/1 or /reservations/1.json

@@ -54,6 +54,10 @@ class ReservationPolicy < ApplicationPolicy
     update?
   end
 
+  def finish_reservation?
+    update?
+  end
+
   def destroy?
     user_in_access_group? || is_reservation_driver?
   end
