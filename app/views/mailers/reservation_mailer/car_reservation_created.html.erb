@@ -17,6 +17,14 @@
         
         <li>SITE: <%= link_to @reservation.site.title, site_url(@reservation.site) %> </li>
         <li>PROGRAM: <%= link_to @reservation.program.title, program_url(@reservation.program) %></li>
+        <li>DRIVER: <%= @driver_name %> </li>
+        <li>BACKUP DRIVER: <%= @backup_driver_name %> </li>
+      </ul>
+      PASSENGERS:
+      <ul>
+        <% @passengers.each do |p| %>
+          <li> <%= p %> </li>
+        <% end %>
       </ul>
     </p>
     <p>
