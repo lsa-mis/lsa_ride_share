@@ -60,10 +60,10 @@
 
     <div class="py-2">
       <label class="body-lg-bold-text">
-        Gas:
+        Gas %:
       </label>
       <p class="body-lg-text inline-block">
-        <%= car.gas %>
+        <%= show_percentage(car.gas) %>
       </p>
     </div>
 
@@ -93,15 +93,6 @@
       </label>
       <p class="body-lg-text inline-block">
         <%= show_date(car.last_used) %>
-      </p>
-    </div>
-
-    <div class="py-2">
-      <label class="body-lg-bold-text">
-        Last Checked:
-      </label>
-      <p class="body-lg-text inline-block">
-        <%= show_date_time(car.last_checked) %>
       </p>
     </div>
 

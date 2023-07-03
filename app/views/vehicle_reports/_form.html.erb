@@ -50,7 +50,7 @@
       </div>
 
       <div class="my-5">
-        <%= form.label :gas_start, 'Percent of Fuel Remaining (Departure)', class: "fancy_label"  %>
+        <%= form.label :gas_start, 'Percent of Fuel Remaining (Departure) *', class: "fancy_label"  %>
         <%= form.select(:gas_start, options_for_select(gas_percent, @vehicle_report.gas_start), { include_blank: "Select Gas..." }, { class: "input_text_field", "data-vehiclereport-target": "gas_start" }) %>
       </div>
 
