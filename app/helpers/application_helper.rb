@@ -322,6 +322,14 @@ module ApplicationHelper
       return mileage_trip_total
   end
 
+  def show_percentage(value)
+    if value.present?
+      value.to_s + "%"
+    else
+      ""
+    end
+  end
+
   def default_reservation_for_students
     day = DateTime.now + 72.hours
     return day + 48.hours if day.saturday?
