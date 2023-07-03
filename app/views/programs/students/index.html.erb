@@ -3,8 +3,8 @@
     <div>
       <h1>Student List</h1>
     </div>
-    <div class="flex flex-row justify-between gap-2">
-      <div>
+    <div class="lg:flex flex-row justify-between gap-2 whitespace-nowrap">
+      <div class="my-2">
         <% if policy(Student).update_student_list? %>
           <% if @student_program.not_course %>
             <%= link_to 'Update Student List', add_students_path(@student_program), class: "secondary_blue_button" %>
@@ -13,10 +13,10 @@
           <% end %>
         <% end %>
       </div>
-      <div>
+      <div class="my-2">
         <%= link_to 'Update MVR Status', update_mvr_status_path(@student_program), class: "secondary_blue_button" %>
       </div>
-      <div>
+      <div class="my-2">
         <%= link_to 'Update Canvas Status', canvas_results_path(@student_program), class: "secondary_blue_button" %>
       </div>
     </div>
