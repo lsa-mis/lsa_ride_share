@@ -16,11 +16,13 @@ export default class extends Controller {
 
     var mileage_error_place = document.getElementById('mileage_show_error')
     var gas_error_place = document.getElementById('gas_error')
+    var error_scroll_place = document.getElementById('error_scroll_place')
   
     var submitForm = true
 
     if(gas_start == null || gas_start == "") {
       gas_error_place.innerHTML = "Gas (departure) must be selected."
+      error_scroll_place.scrollIntoView()
       submitForm = false
     }
     else {
@@ -29,10 +31,12 @@ export default class extends Controller {
 
     if (mileage_start < 0 || mileage_end < 0) {
       mileage_error_place.innerHTML = "Mileage needs to be a postive value. Please enter a valid value."
+      error_scroll_place.scrollIntoView()
       submitForm = false
     }
     else if(mileage_end < mileage_start) {
       mileage_error_place.innerHTML = "End mileage should be higher than start mileage. Please enter a valid value."
+      error_scroll_place.scrollIntoView()
       submitForm = false
     } else {
       mileage_error_place.innerHTML = ''
