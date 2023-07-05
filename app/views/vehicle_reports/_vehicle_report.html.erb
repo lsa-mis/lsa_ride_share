@@ -64,7 +64,7 @@
         Gas % (departure):
       </label>
       <p class="body-lg-text inline-block">
-        <%= vehicle_report.gas_start %>
+        <%= show_percentage(vehicle_report.gas_start) %>
       </p>
     </div>
 
@@ -73,7 +73,7 @@
         Gas % (return):
       </label>
       <p class="body-lg-text inline-block">
-        <%= vehicle_report.gas_end %>
+        <%= show_percentage(vehicle_report.gas_end) %>
       </p>
     </div>
 
