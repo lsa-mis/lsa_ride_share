@@ -35,7 +35,8 @@ Rails.application.routes.draw do
   delete 'reservations/:id/:student_id', to: 'reservations#remove_passenger', as: :remove_passenger
   get '/reservations/day_reservations/:date', to: 'reservations#day_reservations', as: :day_reservations
   get '/reservations/:id/finish_reservation', to: 'reservations#finish_reservation', as: :finish_reservation
-  
+  get '/reservations/:id/update_passengers', to: 'reservations#update_passengers', as: :update_passengers
+
   resources :cars do
     resources :notes, module: :cars
   end
