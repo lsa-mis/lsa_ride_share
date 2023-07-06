@@ -42,7 +42,7 @@
             </div>
           <% end %>
           <div>
-            <%= link_to 'Edit Drivers and Passengers', add_drivers_path(:id => @reservation, :edit => true), class: "primary_button" if policy(@reservation).edit? %>
+            <%= link_to 'Edit Drivers and Passengers', add_drivers_path(@reservation, :edit => true), class: "primary_button" if policy(@reservation).edit? %>
           </div>
           <div class="my-2">
             <%= link_to reservation_path(@reservation), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete} do %>
