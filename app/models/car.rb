@@ -32,6 +32,7 @@ class Car < ApplicationRecord
   validates_presence_of :car_number, :make, :model, :color, :number_of_seats, :mileage, :gas, :parking_spot, :status, :updated_by
   validate :acceptable_image
   validates_numericality_of :gas, greater_than: 0, less_than_or_equal_to: 100, message: 'must be between 0 & 100'
+  validates_numericality_of :mileage, greater_than: 0, message: 'must be positive'
   
   enum :status, [:available, :unavailable], prefix: true, scopes: true
 
