@@ -21,7 +21,7 @@ export default class extends Controller {
     var submitForm = true
 
     if(gas_start == null || gas_start == "") {
-      gas_error_place.innerHTML = "Gas (departure) must be selected."
+      gas_error_place.innerHTML = "Fuel (departure) must be selected."
       error_scroll_place.scrollIntoView()
       submitForm = false
     }
