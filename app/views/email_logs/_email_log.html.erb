@@ -1,0 +1,34 @@
+<%= turbo_frame_tag 'email_log' do %>
+    <h3 class="my-4">Sent Emails Log</h3>
+    <div class="min-w-full">
+      <table class="mi_table">
+        <thead class="border border-l-0 border-r-0 border-gray-um60">
+          <tr>
+            <th class="header_th">Email Type</th>
+            <th class="header_th">Sent At</th>
+            <th class="header_th">Sent By</th>
+            <th class="header_th">Sent To</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% email_log_entries.each do |log_entry| %>
+            <tr class="mi_tbody_tr">
+              <td class="mi_tbody_td">
+                <%= log_entry.email_type %>
+              </td>
+              <td class="mi_tbody_td">
+                <%= show_date_time(log_entry.sent_at) %>
+              </td>
+              <td class="mi_tbody_td">
+                <%= show_user_name_by_id(log_entry.sent_by) %>
+              </td>
+              <td class="mi_tbody_td">
+                <%= log_entry.sent_to %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+  
