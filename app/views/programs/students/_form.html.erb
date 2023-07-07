@@ -16,6 +16,7 @@
         <%= form.text_field :uniqname, required: true, class: "input_text_field" %>
       </div>
       <%= form.hidden_field :program_id, value: @student_program.id %>
+      <%= form.hidden_field :registered, value: false %>
       <div>
         <%= form.submit 'Add Student', class: "secondary_blue_button" %>
       </div>
