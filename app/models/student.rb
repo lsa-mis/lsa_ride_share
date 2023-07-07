@@ -14,6 +14,7 @@
 #  updated_at                  :datetime         not null
 #  mvr_status                  :string
 #  program_id                  :bigint
+#  registered                  :boolean          default(TRUE)
 #
 class Student < ApplicationRecord
   belongs_to :program
@@ -22,6 +23,8 @@ class Student < ApplicationRecord
   has_many :notes, as: :noteable
 
   validates :uniqname, uniqueness: { scope: :program, message: "is already in the program list" }
+
+  scope :registered, -> { where(registered: true) }
 
   def driver_past
     Reservation.where('driver_id = ? AND start_time <= ?', self, DateTime.now)

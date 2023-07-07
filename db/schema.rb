@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_22_125313) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_07_031632) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -229,6 +229,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_22_125313) do
     t.string "mvr_status"
     t.bigint "program_id"
     t.date "meeting_with_admin_date"
+    t.boolean "registered", default: true
     t.index ["program_id"], name: "index_students_on_program_id"
   end
 
