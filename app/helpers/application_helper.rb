@@ -38,6 +38,10 @@ module ApplicationHelper
     return "Updated on " + resource.updated_at.strftime('%m/%d/%Y') + " by " + show_user_name_by_id(resource.updated_by)
   end
 
+  def reserved_on_and_by(resource)
+    return "Reserved on " + resource.created_at.strftime('%m/%d/%Y') + " by " + show_user_name_by_id(resource.reserved_by)
+  end
+
   def email_address(student)
     student.uniqname + "@umich.edu"
   end
