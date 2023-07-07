@@ -9,7 +9,7 @@ class Programs::StudentsController < ApplicationController
     unless @student_program.not_course
       update_students(@student_program)
     end
-    @students = @student_program.students.order(:last_name)
+    @students = @student_program.students.order(registered: :desc).order(:last_name)
     authorize @students
   end
 
@@ -21,7 +21,7 @@ class Programs::StudentsController < ApplicationController
 
   def add_students
     @student = Student.new
-    @students = @student_program.students.order(:last_name)
+    @students = @student_program.students.order(registered: :desc).order(:last_name)
     authorize Student
   end
 
@@ -171,7 +171,7 @@ class Programs::StudentsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def student_params
-      params.require(:student).permit(:uniqname, :program_id, :last_name, :first_name, :mvr_expiration_date, :class_training_date, :canvas_course_complete_date, :meeting_with_admin_date)
+      params.require(:student).permit(:uniqname, :program_id, :registered, :last_name, :first_name, :mvr_expiration_date, :class_training_date, :canvas_course_complete_date, :meeting_with_admin_date)
     end
 
 end
