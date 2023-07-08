@@ -98,6 +98,16 @@
         <% end %>
       </ul>
     <% end %>
+    <div class="mt-2">
+      <% if @reservation.program.non_uofm_passengers && @reservation.non_uofm_passengers.present? %>
+        <label class="body-lg-bold-text">
+          Non UofM Passengers:
+        </label>
+        <p class="body-lg-text ml-2">
+          <%= @reservation.non_uofm_passengers %>
+        </p>
+      <% end %>
+    </div>
   </div>
 
 </div>
