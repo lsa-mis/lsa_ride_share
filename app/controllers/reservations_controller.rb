@@ -1,6 +1,6 @@
 class ReservationsController < ApplicationController
   before_action :auth_user
-  before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger ]
+  before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger add_non_uofm_passengers ]
   before_action :set_terms_and_units
   before_action :set_programs
   before_action :set_cars, only: %i[ new get_available_cars ]
@@ -215,11 +215,7 @@ class ReservationsController < ApplicationController
       redirect_to add_passengers_path(@reservation)
       return
     end
-    if params[:reservation][:non_uofm_passengers].present?
-      @reservation.update(non_uofm_passengers: params[:reservation][:non_uofm_passengers])
-      redirect_to add_passengers_path(@reservation)
-      return
-    end
+
     @reservation.attributes = reservation_params
     @reservation.car_id = params[:car_id]
     @reservation.start_time = params[:start_time].to_datetime - 15.minute
@@ -261,6 +257,11 @@ class ReservationsController < ApplicationController
     @students = @reservation.program.students - @passengers
     @students.delete(@reservation.driver)
     @students.delete(@reservation.backup_driver)
+  end
+
+  def add_non_uofm_passengers
+    @reservation.update(reservation_params)
+    redirect_to add_passengers_path(@reservation)
   end
 
   def remove_passenger
@@ -313,6 +314,6 @@ class ReservationsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def reservation_params
       params.require(:reservation).permit(:status, :start_time, :end_time, :recurring, :driver_id, :driver_phone, :backup_driver_id, :backup_driver_phone, 
-      :number_of_people_on_trip, :program_id, :site_id, :car_id, :reserved_by, :approved)
+      :number_of_people_on_trip, :program_id, :site_id, :car_id, :reserved_by, :approved, :non_uofm_passengers, :number_of_non_uofm_passengers)
     end
 end
