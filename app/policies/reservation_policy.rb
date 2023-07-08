@@ -50,6 +50,10 @@ class ReservationPolicy < ApplicationPolicy
     update?
   end
 
+  def add_non_uofm_passengers?
+    update?
+  end
+
   def remove_passenger?
     update?
   end
