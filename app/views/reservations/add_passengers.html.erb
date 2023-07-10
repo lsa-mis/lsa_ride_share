@@ -60,6 +60,10 @@
   </div>
 
   <div class="mt-4">
-    <%= link_to "Finish Creating Reservation", reservation_path(@reservation), class: "primary_button" %>
+    <% if params["edit"] == "true" %>
+      <%= link_to "Update Passengers", update_passengers_path(@reservation), class: "primary_button" %>
+    <% else %>
+      <%= link_to "Finish Creating Reservation", finish_reservation_path(@reservation), class: "primary_button" %>
+    <% end %>
   </div>
 </div>
