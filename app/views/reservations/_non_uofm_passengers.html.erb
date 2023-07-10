@@ -3,9 +3,9 @@
   The program allows to add non UofM passengers to the trip. Add or edit names and the number of people.
 </p>
   <%= form_with(model: @reservation, url: add_non_uofm_passengers_path,
-    data: { controller: "passengers",
+    data: { controller: "nonuofmpassengers",
           target: "form",
-          action: "submit->passengers#submitForm"
+          action: "submit->nonuofmpassengers#submitForm"
           }) do |form| %>
     <% if @reservation.errors.any? %>
       <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
@@ -22,17 +22,17 @@
       <%= render "number_of_added_people_on_trip" %>
     <% end %>
 
-    <input type="hidden" id="number_of_people_on_trip" name="number_of_people_on_trip" value=<%= @reservation.number_of_people_on_trip %> data-passengers-target="number_of_people_on_trip">
-    <input type="hidden" id="current_number_of_non_uofm_passengers" name="current_number_of_non_uofm_passengers" value=<%= @reservation.number_of_non_uofm_passengers %> data-passengers-target="current_number_of_non_uofm_passengers">
+    <input type="hidden" id="number_of_people_on_trip" name="number_of_people_on_trip" value=<%= @reservation.number_of_people_on_trip %> data-nonuofmpassengers-target="number_of_people_on_trip">
+    <input type="hidden" id="current_number_of_non_uofm_passengers" name="current_number_of_non_uofm_passengers" value=<%= @reservation.number_of_non_uofm_passengers %> data-nonuofmpassengers-target="current_number_of_non_uofm_passengers">
 
 
     <div class="my-5">
       <%= form.label :non_uofm_passengers, "Non UofM Passengers", class: "fancy_label" %>
-      <%= form.text_field :non_uofm_passengers, class: "input_text_field", "data-passengers-target": "non_uofm_passengers"  %>
+      <%= form.text_field :non_uofm_passengers, class: "input_text_field", "data-nonuofmpassengers-target": "non_uofm_passengers"  %>
     </div>
     <div class="my-5">
       <%= form.label :number_of_non_uofm_passengers, "Number of Non UofM Passengers", class: "fancy_label" %>
-      <%= form.number_field :number_of_non_uofm_passengers, value: (form.object.number_of_non_uofm_passengers || 0), class: "input_text_field", "data-passengers-target": "number_of_non_uofm_passengers" %>
+      <%= form.number_field :number_of_non_uofm_passengers, value: (form.object.number_of_non_uofm_passengers || 0), class: "input_text_field", "data-nonuofmpassengers-target": "number_of_non_uofm_passengers" %>
     </div>
     <div class="error_text mb-2" id="error_place"></div>
 
