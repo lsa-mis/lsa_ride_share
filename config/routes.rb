@@ -30,7 +30,7 @@ Rails.application.routes.draw do
   end
   get '/reservations/get_available_cars/:unit_id/:day_start/:number/:start_time/:end_time', to: 'reservations#get_available_cars'
   get '/reservations/edit_change_day/:unit_id/:day_start', to: 'reservations#edit_change_day'
-  patch '/reservations/add_non_uofm_passengers/:id', to: 'reservations#add_non_uofm_passengers', as: :add_non_uofm_passengers
+  patch '/reservations/add_non_uofm_passengers/:reservation_id', to: 'reservations#add_non_uofm_passengers', as: :add_non_uofm_passengers
   get '/reservations/add_passengers/:reservation_id', to: 'reservations/passengers#add_passengers', as: :add_passengers
   get '/reservations/add_passenger/:reservation_id', to: 'reservations/passengers#add_passenger', as: :add_passenger
 

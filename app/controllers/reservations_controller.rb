@@ -1,6 +1,6 @@
 class ReservationsController < ApplicationController
   before_action :auth_user
-  before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger finish_reservation update_passengers add_non_uofm_passengers]
+  before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger finish_reservation update_passengers ]
   before_action :set_terms_and_units
   before_action :set_programs
   before_action :set_cars, only: %i[ new get_available_cars ]
@@ -256,8 +256,10 @@ class ReservationsController < ApplicationController
   end
 
   def add_non_uofm_passengers
+    @reservation = Reservation.find(params[:reservation_id])
+    authorize @reservation
     @reservation.update(reservation_params)
-    redirect_to add_passengers_path(@reservation)
+    redirect_to add_passengers_path(@reservation, :edit => params[:edit])
   end
 
   def update_passengers

@@ -19,7 +19,7 @@
     <% end %>
 
     <%= turbo_frame_tag "number_of_added_people_on_trip" do %>
-      <%= render "number_of_added_people_on_trip" %>
+      <%= render "reservations/number_of_added_people_on_trip" %>
     <% end %>
 
     <input type="hidden" id="number_of_people_on_trip" name="number_of_people_on_trip" value=<%= @reservation.number_of_people_on_trip %> data-nonuofmpassengers-target="number_of_people_on_trip">
@@ -35,6 +35,7 @@
       <%= form.number_field :number_of_non_uofm_passengers, value: (form.object.number_of_non_uofm_passengers || 0), class: "input_text_field", "data-nonuofmpassengers-target": "number_of_non_uofm_passengers" %>
     </div>
     <div class="error_text mb-2" id="error_place"></div>
+    <input type="hidden" id="edit" name="edit" value=<%= params[:edit] %>>
 
     <div>
     <% if @reservation.number_of_non_uofm_passengers == 0 %>
