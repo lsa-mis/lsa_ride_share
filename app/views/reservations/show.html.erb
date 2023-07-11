@@ -33,7 +33,9 @@
         <div class="error_text" id="approve_error"></div>
       <% end %>
       <%= render @reservation %>
-      <%= render 'email_logs/email_log', email_log_entries: @email_log_entries %>
+      <% if is_admin?(current_user) %>
+        <%= render 'email_logs/email_log', email_log_entries: @email_log_entries %>
+      <% end %>
     </div>
     <div class="order-first md:order-last">
       <div class="lg:flex lg:flex-col place-items-end whitespace-nowrap">
