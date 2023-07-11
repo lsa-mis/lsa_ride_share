@@ -3,26 +3,37 @@ class ReservationMailer < ApplicationMailer
   before_action :set_driver_name, only: [:car_reservation_created, :car_reservation_approved, :car_reservation_confirmation]
   before_action :set_passengers, only: [:car_reservation_created, :car_reservation_approved, :car_reservation_confirmation]
 
-  def car_reservation_created
+  def car_reservation_created(user)
     @recipient = @reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
     mail(to: @recipient, subject: "New reservation for program: #{@reservation.program.display_name}" )
+    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "car_reservation_created",
+      sent_to: @recipient, sent_by: user.id, sent_at: DateTime.now)
   end
 
-  def car_reservation_confirmation
-    @recipient = User.find(@reservation.reserved_by).principal_name.presence
-    mail(to: @recipient, subject: "Reservation confirmation for program: #{@reservation.program.display_name}" )
+  def car_reservation_confirmation(user)
+    recipients = []
+    recipients << User.find(@reservation.reserved_by).principal_name.presence
+    recipients << email_address(@reservation.driver)
+    recipients << email_address(@reservation.backup_driver) if @reservation.backup_driver.present?
+    recipients << @passengers_emails if @passengers_emails.present?
+    @recipients = recipients.join(", ")
+    mail(to: @recipients, subject: "Reservation confirmation for program: #{@reservation.program.display_name}" )
+    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "car_reservation_confirmation",
+      sent_to: @recipient, sent_by: user.id, sent_at: DateTime.now)
   end
 
-  def car_reservation_approved
+  def car_reservation_approved(user)
     recipients = []
     recipients << email_address(@reservation.driver)
     recipients << email_address(@reservation.backup_driver) if @reservation.backup_driver.present?
     recipients << @passengers_emails if @passengers_emails.present?
     @recipients = recipients.join(", ")
     mail(to: @recipients, subject: "Reservation approved for program: #{@reservation.program.display_name}" )
+    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "car_reservation_approved",
+      sent_to: @recipients, sent_by: user.id, sent_at: DateTime.now)
   end
 
-  def car_reservation_cancel_admin(cancel_reservation, cancel_passengers, cancel_emails)
+  def car_reservation_cancel_admin(cancel_reservation, cancel_passengers, cancel_emails, user)
     @passengers = cancel_passengers
     @start_time = show_date_time(cancel_reservation.start_time)
     @end_time = show_date_time(cancel_reservation.end_time)
@@ -39,9 +50,11 @@ class ReservationMailer < ApplicationMailer
     @admin_email = cancel_reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
     @reservation = cancel_reservation
     mail(to: @admin_email, subject: "Reservation canceled for program: #{@reservation.program.display_name}" )
+    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "car_reservation_cancel_admin",
+      sent_to: @admin_email, sent_by: user, sent_at: DateTime.now)
   end
 
-  def car_reservation_cancel_student(cancel_reservation, cancel_passengers, cancel_emails)
+  def car_reservation_cancel_student(cancel_reservation, cancel_passengers, cancel_emails, user)
     @contact_phone = cancel_reservation.program.unit.unit_preferences.find_by(name: "contact_phone").value.presence || ""
     @unit_email = cancel_reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
     @passengers = cancel_passengers
@@ -64,6 +77,8 @@ class ReservationMailer < ApplicationMailer
     @recipients = recipients.join(", ")
     @reservation = cancel_reservation
     mail(to: @recipients, subject: "Reservation canceled for program: #{@reservation.program.display_name}" )
+    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "car_reservation_cancel_student",
+      sent_to: @recipients, sent_by: user, sent_at: DateTime.now)
   end
 
   private 

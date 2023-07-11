@@ -46,7 +46,7 @@ class ReservationPolicy < ApplicationPolicy
     user_in_access_group? || is_reserved_by?
   end
 
-  def add_passengers?
+  def finish_reservation?
     update?
   end
 
@@ -54,7 +54,7 @@ class ReservationPolicy < ApplicationPolicy
     update?
   end
 
-  def remove_passenger?
+  def update_passengers?
     update?
   end
 

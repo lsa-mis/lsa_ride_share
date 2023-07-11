@@ -30,8 +30,12 @@
             </ol>
           </div>
         <% end %>
+        <div class="error_text" id="approve_error"></div>
       <% end %>
       <%= render @reservation %>
+      <% if is_admin?(current_user) %>
+        <%= render 'email_logs/email_log', email_log_entries: @email_log_entries %>
+      <% end %>
     </div>
     <div class="order-first md:order-last">
       <div class="lg:flex lg:flex-col place-items-end whitespace-nowrap">
@@ -42,7 +46,7 @@
             </div>
           <% end %>
           <div>
-            <%= link_to 'Edit Drivers and Passengers', add_drivers_path(@reservation), class: "primary_button" if policy(@reservation).edit? %>
+            <%= link_to 'Edit Drivers and Passengers', add_drivers_path(@reservation, :edit => true), class: "primary_button" if policy(@reservation).edit? %>
           </div>
           <div class="my-2">
             <%= link_to reservation_path(@reservation), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete} do %>

@@ -86,9 +86,9 @@ class Reservation < ApplicationRecord
     if self.passengers.present?
       self.passengers.delete_all
     end
-    ReservationMailer.car_reservation_cancel_admin(self, cancel_passengers, cancel_emails).deliver_now
+    ReservationMailer.car_reservation_cancel_admin(self, cancel_passengers, cancel_emails, self.reserved_by).deliver_now
     if self.driver_id.present?
-      ReservationMailer.car_reservation_cancel_student(self, cancel_passengers, cancel_emails).deliver_now
+      ReservationMailer.car_reservation_cancel_student(self, cancel_passengers, cancel_emails, self.reserved_by).deliver_now
     end
   end
 
