@@ -83,6 +83,9 @@ class Reservation < ApplicationRecord
     else
       cancel_passengers = ["No passengers"]
     end
+    if self.program.non_uofm_passengers && self.non_uofm_passengers.present?
+      cancel_passengers << "Non UofM Passengers: " + self.non_uofm_passengers
+    end
     if self.passengers.present?
       self.passengers.delete_all
     end
