@@ -50,6 +50,7 @@ class ReservationsController < ApplicationController
   # GET /reservations/1 or /reservations/1.json
   def show
     @passengers = @reservation.passengers
+    @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id)
   end
 
   # GET /reservations/new
@@ -154,6 +155,8 @@ class ReservationsController < ApplicationController
     @reservation.reserved_by = current_user.id
     authorize @reservation
     if @reservation.save
+      ReservationMailer.with(reservation: @reservation).car_reservation_confirmation(current_user).deliver_now
+      ReservationMailer.with(reservation: @reservation).car_reservation_created(current_user).deliver_now
       @students = @reservation.program.students 
       redirect_to add_drivers_path(@reservation), notice: "Reservation was successfully created. Please add drivers."
     else
@@ -187,7 +190,7 @@ class ReservationsController < ApplicationController
   def update
     if params[:reservation][:approved].present?
       if @reservation.update(reservation_params)
-        ReservationMailer.with(reservation: @reservation).car_reservation_approved.deliver_now unless @reservation.approved == false
+        ReservationMailer.with(reservation: @reservation).car_reservation_approved(current_user).deliver_now unless @reservation.approved == false
         redirect_to reservation_path(@reservation), notice: "Reservation was updated"
         return
       else
