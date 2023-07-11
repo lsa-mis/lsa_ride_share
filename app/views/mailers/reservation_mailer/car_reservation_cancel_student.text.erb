@@ -7,11 +7,12 @@ SITE: <%= link_to @reservation.site.title, site_url(@reservation.site) %>
 PROGRAM: <%= link_to @reservation.program.title, program_url(@reservation.program) %>
 DRIVER: <%= @driver_name %>
 BACKUP DRIVER: <%= @backup_driver_name %>
-PASSENGERS:
+Passengers:
 <% @passengers.each do |p| %>
   <%= p %>
 <% end %>
 
-Thank you
+You can email <%= @unit_email %> or call the office at: <%= @contact_phone %>.
 
-<%= link_to "LSA Ride Share", all_root_url %>
+To view/modify/cancel reservations, click here
+<%= link_to "LSA Ride Share", welcome_pages_student_url %>
