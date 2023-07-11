@@ -207,12 +207,6 @@ class ReservationsController < ApplicationController
         return
       end
     end
-    if params[:reservation][:student_id].present?
-      @reservation.passengers << Student.find(params[:reservation][:student_id])
-      @students = @reservation.program.students - @reservation.passengers
-      redirect_to add_passengers_path(@reservation)
-      return
-    end
     if params[:reservation][:non_uofm_passengers].present?
       @reservation.update(non_uofm_passengers: params[:reservation][:non_uofm_passengers])
       redirect_to add_passengers_path(@reservation)
@@ -252,18 +246,6 @@ class ReservationsController < ApplicationController
       driver = Student.find_by(program_id: @reservation.program_id, uniqname: current_user.uniqname)
       @reservation.update(driver_id: driver.id)
     end
-  end
-
-  def add_passengers
-    @passengers = @reservation.passengers
-    @students = @reservation.program.students - @passengers
-    @students.delete(@reservation.driver)
-    @students.delete(@reservation.backup_driver)
-  end
-
-  def remove_passenger
-    @reservation.passengers.delete(Student.find(params[:student_id]))
-    add_passengers
   end
 
   def finish_reservation
