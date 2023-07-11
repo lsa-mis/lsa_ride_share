@@ -1,14 +1,15 @@
 <%= turbo_frame_tag 'new_passenger' do %>
-  <%= form_with model: [@reservation], 
-    data: { controller: "autosubmit", autosubmit_target: "form" } do |form| %>
+  <%= form_with url: add_passenger_path, method: :get, class: "",
+    data: { controller: "passengers", passengers_target: "form" } do |form| %>
     <% @students.each do |student| %>
       <div>
         <%= label_tag("student_id_#{student.id}", nil, class: "hidden") %>
         <%= check_box_tag "reservation[student_id]", student.id, nil, class: "check_box",
           disabled: @reservation.added_people == @reservation.number_of_people_on_trip,
-          :"data-action" => "change->autosubmit#search" %>
+          :"data-action" => "change->passengers#search" %>
         <span class="check_box_text"><%= student.display_name %></span>
       </div>
     <% end %>
+    <input type="hidden" id="reservation_edit" name="reservation[edit]" value=<%= params[:edit] %>>
   <% end %>
 <% end %>
