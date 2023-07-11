@@ -13,7 +13,9 @@ export default class extends Controller {
     var driver_phone = this.driver_phoneTarget.value
     var number = this.number_of_people_on_tripTarget.value - this.number_of_passengersTarget.value  - 1
     var driver_error_place = document.getElementById('driver_error')
+    driver_error_place.innerHTML = ''
     var backup_driver_error_place = document.getElementById('backup_driver_error')
+    backup_driver_error_place.innerHTML = ''
     var regex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im
     var submitForm = true
 
@@ -71,9 +73,7 @@ export default class extends Controller {
           backup_driver_error_place.innerHTML += "<br>Drivers' phones should be different"
           submitForm = false
         }
-        if (regex.test(backup_driver_phone)) {
-          backup_driver_error_place.innerHTML = ''
-        } else {
+        if (!regex.test(backup_driver_phone)) {
           backup_driver_error_place.innerHTML += "<br>Backup driver's phone number format is incorrect"
           submitForm = false
         }

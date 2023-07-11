@@ -155,8 +155,6 @@ class ReservationsController < ApplicationController
     @reservation.reserved_by = current_user.id
     authorize @reservation
     if @reservation.save
-      ReservationMailer.with(reservation: @reservation).car_reservation_confirmation(current_user).deliver_now
-      ReservationMailer.with(reservation: @reservation).car_reservation_created(current_user).deliver_now
       @students = @reservation.program.students 
       redirect_to add_drivers_path(@reservation), notice: "Reservation was successfully created. Please add drivers."
     else
@@ -210,12 +208,6 @@ class ReservationsController < ApplicationController
         return
       end
     end
-    if params[:reservation][:student_id].present?
-      @reservation.passengers << Student.find(params[:reservation][:student_id])
-      @students = @reservation.program.students - @reservation.passengers
-      redirect_to add_passengers_path(@reservation)
-      return
-    end
     if params[:reservation][:non_uofm_passengers].present?
       @reservation.update(non_uofm_passengers: params[:reservation][:non_uofm_passengers])
       redirect_to add_passengers_path(@reservation)
@@ -257,21 +249,9 @@ class ReservationsController < ApplicationController
     end
   end
 
-  def add_passengers
-    @passengers = @reservation.passengers
-    @students = @reservation.program.students - @passengers
-    @students.delete(@reservation.driver)
-    @students.delete(@reservation.backup_driver)
-  end
-
-  def remove_passenger
-    @reservation.passengers.delete(Student.find(params[:student_id]))
-    add_passengers
-  end
-
   def finish_reservation
-    ReservationMailer.with(reservation: @reservation).car_reservation_confirmation.deliver_now
-    ReservationMailer.with(reservation: @reservation).car_reservation_created.deliver_now
+    ReservationMailer.with(reservation: @reservation).car_reservation_confirmation(current_user).deliver_now
+    ReservationMailer.with(reservation: @reservation).car_reservation_created(current_user).deliver_now
     redirect_to reservation_path(@reservation)
   end
 

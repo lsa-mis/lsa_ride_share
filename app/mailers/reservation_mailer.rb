@@ -11,8 +11,13 @@ class ReservationMailer < ApplicationMailer
   end
 
   def car_reservation_confirmation(user)
-    @recipient = User.find(@reservation.reserved_by).principal_name.presence
-    mail(to: @recipient, subject: "Reservation confirmation for program: #{@reservation.program.display_name}" )
+    recipients = []
+    recipients << User.find(@reservation.reserved_by).principal_name.presence
+    recipients << email_address(@reservation.driver)
+    recipients << email_address(@reservation.backup_driver) if @reservation.backup_driver.present?
+    recipients << @passengers_emails if @passengers_emails.present?
+    @recipients = recipients.join(", ")
+    mail(to: @recipients, subject: "Reservation confirmation for program: #{@reservation.program.display_name}" )
     EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "car_reservation_confirmation",
       sent_to: @recipient, sent_by: user.id, sent_at: DateTime.now)
   end
