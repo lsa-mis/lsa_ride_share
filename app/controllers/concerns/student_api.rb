@@ -62,7 +62,7 @@ module StudentApi
     if result['success']
       if result['data']['Classes']['Class']['ClassSections']['ClassSection']['ClassStudents'].present?
         data = result['data']['Classes']['Class']['ClassSections']['ClassSection']['ClassStudents']['ClassStudent']
-        students_in_db = @student_program.students.pluck(:uniqname)
+        students_in_db = @student_program.students.registered.pluck(:uniqname)
         data.each do |student_info|
           uniqname = student_info['Uniqname']
           if students_in_db.include?(uniqname)
