@@ -1,6 +1,6 @@
 class ReservationsController < ApplicationController
   before_action :auth_user
-  before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger ]
+  before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger finish_reservation update_passengers]
   before_action :set_terms_and_units
   before_action :set_programs
   before_action :set_cars, only: %i[ new get_available_cars ]
@@ -50,6 +50,7 @@ class ReservationsController < ApplicationController
   # GET /reservations/1 or /reservations/1.json
   def show
     @passengers = @reservation.passengers
+    @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id)
   end
 
   # GET /reservations/new
@@ -154,8 +155,8 @@ class ReservationsController < ApplicationController
     @reservation.reserved_by = current_user.id
     authorize @reservation
     if @reservation.save
-      ReservationMailer.with(reservation: @reservation).car_reservation_confirmation.deliver_now
-      ReservationMailer.with(reservation: @reservation).car_reservation_created.deliver_now
+      ReservationMailer.with(reservation: @reservation).car_reservation_confirmation(current_user).deliver_now
+      ReservationMailer.with(reservation: @reservation).car_reservation_created(current_user).deliver_now
       @students = @reservation.program.students 
       redirect_to add_drivers_path(@reservation), notice: "Reservation was successfully created. Please add drivers."
     else
@@ -189,7 +190,7 @@ class ReservationsController < ApplicationController
   def update
     if params[:reservation][:approved].present?
       if @reservation.update(reservation_params)
-        ReservationMailer.with(reservation: @reservation).car_reservation_approved.deliver_now unless @reservation.approved == false
+        ReservationMailer.with(reservation: @reservation).car_reservation_approved(current_user).deliver_now unless @reservation.approved == false
         redirect_to reservation_path(@reservation), notice: "Reservation was updated"
         return
       else
@@ -200,7 +201,7 @@ class ReservationsController < ApplicationController
     end
     if params[:reservation][:driver_id].present?
       if @reservation.update(reservation_params)
-        redirect_to add_passengers_path(@reservation)
+        redirect_to add_passengers_path(@reservation, :edit => params[:edit])
         return
       else
         flash.now[:alert] = "error"
@@ -266,6 +267,16 @@ class ReservationsController < ApplicationController
   def remove_passenger
     @reservation.passengers.delete(Student.find(params[:student_id]))
     add_passengers
+  end
+
+  def finish_reservation
+    ReservationMailer.with(reservation: @reservation).car_reservation_confirmation.deliver_now
+    ReservationMailer.with(reservation: @reservation).car_reservation_created.deliver_now
+    redirect_to reservation_path(@reservation)
+  end
+
+  def update_passengers
+    redirect_to reservation_path(@reservation), notice: "Passengers list was updated"
   end
 
   # DELETE /reservations/1 or /reservations/1.json
