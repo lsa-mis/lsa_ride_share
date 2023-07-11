@@ -67,7 +67,11 @@
     <input type="hidden" id="edit" name="edit" value=<%= params[:edit] %>>
 
     <div class="inline">
-      <%= form.submit "Save and Add Passengers", class: "primary_button" %>
+      <% if params["edit"] == "true" %>
+        <%= form.submit "Update and Edit Passengers", class: "primary_button" %>
+      <% else %>
+        <%= form.submit "Save and Add Passengers", class: "primary_button" %>
+      <% end %>
     </div>
 
     <% if is_admin?(current_user) %>
