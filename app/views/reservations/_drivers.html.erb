@@ -75,7 +75,7 @@
     </div>
 
     <% if is_admin?(current_user) %>
-      <%= link_to "Add Drivers Later", reservation_path(@reservation), class: "primary_button" %>
+      <%= link_to "Add Drivers Later", reservation_path(@reservation), class: "primary_button" unless params["edit"] == "true" %>
     <% end %>
 
 <% end %>
