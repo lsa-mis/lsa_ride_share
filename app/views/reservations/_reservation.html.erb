@@ -4,7 +4,7 @@
       <label class="body-lg-bold-text">
         Car:
       </label>
-      <p class="body-lg-text ml-2 inline-block">
+      <p id="car" class="body-lg-text ml-2 inline-block">
         <% if reservation.car.present? %>
           <%= link_to show_car(reservation), car_path(reservation.car), class: "link_to" %>
         <% else %>
@@ -44,7 +44,7 @@
       <label class="body-lg-bold-text">
         Driver:
       </label>
-      <p class="body-lg-text ml-2 inline-block">
+      <p id="driver" class="body-lg-text ml-2 inline-block">
         <%= show_driver(reservation) %>
       </p>
     </div>

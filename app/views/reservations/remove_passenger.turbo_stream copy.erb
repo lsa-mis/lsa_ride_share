@@ -1,9 +1,0 @@
-<%= render_flash_stream %>
-
-<%= turbo_stream.update "new_passenger" do %>
-  <%= render "students" %>
-<% end %>
-
-<%= turbo_stream.update "passenger_list" do %>
-  <%= render "passenger_list", locals: { reservation: @reservation} %>
-<% end %>
