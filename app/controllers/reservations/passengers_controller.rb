@@ -26,5 +26,4 @@ class Reservations::PassengersController < ApplicationController
   def set_reservation
     @reservation = Reservation.find(params[:reservation_id])
   end
-
 end
