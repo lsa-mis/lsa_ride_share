@@ -13,8 +13,9 @@ class  Reservation::StudentPolicy < ApplicationPolicy
   end
 
   def is_reservation_driver?
-    student = Student.find_by(program_id: @record.program, uniqname: @user.uniqname)
-    @record.driver == student
+    @reservation = Reservation.find(params[:reservation_id])
+    student = Student.find_by(program_id: @reservation.program, uniqname: @user.uniqname)
+    @reservation.driver == student
   end
-  
-  end
+
+end
