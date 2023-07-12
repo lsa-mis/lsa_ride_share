@@ -23,7 +23,7 @@
             Passenger
           </td>
           <td>
-            <%= link_to 'Remove', remove_passenger_path(@reservation, passenger), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete }, class: "link_to" %>
+            <%= link_to 'Remove', remove_passenger_path(@reservation, passenger, :edit => params[:edit]), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete }, class: "link_to" %>
           </td>
         </tr>
       <% end %>
