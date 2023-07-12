@@ -13,14 +13,14 @@ class Reservations::PassengersController < ApplicationController
     authorize([@reservation, Student])
     if params[:reservation][:student_id].present?
       @reservation.passengers << Student.find(params[:reservation][:student_id])
-      redirect_to add_passengers_path(@reservation, :edit => params[:reservation][:edit])
+      add_passengers
     end
   end
 
   def remove_passenger
     authorize([@reservation, Student])
     @reservation.passengers.delete(Student.find(params[:student_id]))
-    redirect_to add_passengers_path(@reservation, :edit => params[:edit])
+    add_passengers
   end
 
   private

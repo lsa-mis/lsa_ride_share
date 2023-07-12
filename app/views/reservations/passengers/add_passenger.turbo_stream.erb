@@ -1,7 +1,7 @@
 <%= render_flash_stream %>
 
 <%= turbo_stream.update "new_passenger" do %>
-  <%= render "students" %>
+  <%= render "students", edit: params[:reservation][:edit] %>
 <% end %>
 
 <%= turbo_stream.update "passenger_list" do %>
