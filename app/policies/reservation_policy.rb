@@ -26,6 +26,10 @@ class ReservationPolicy < ApplicationPolicy
     create?
   end
 
+  def new_long?
+    create?
+  end
+
   def update?
     user_in_access_group? || is_reservation_driver?
   end

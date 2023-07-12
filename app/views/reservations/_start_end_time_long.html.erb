@@ -1,0 +1,25 @@
+<%= turbo_frame_tag "start_end_time" do %>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full">
+    <div>
+      <%= label_tag :start_time, 'Start Time *', class: "fancy_label" %>
+      <%= select_tag "start_time", options_for_select(available_time(@day_start, @cars, @unit_id)[:begin], @start_time), class: "input_text_field",
+      "data-longreservation-target": "start_time", "data-action": "change->longreservation#availableCars" %>
+    </div>
+    <div>
+      <%= label_tag :end_time, 'End Time *', class: "fancy_label" %>
+      <%= select_tag "end_time", options_for_select(available_time(@day_end, @cars, @unit_id)[:end], @end_time), class: "input_text_field",
+      "data-longreservation-target": "end_time", "data-action": "change->longreservation#availableCars" %>
+    </div>
+    <div>
+      <% if available_time(@day_start, @cars, @unit_id)[:begin].count == 0 %>
+        <p class="body-sm-text text-red-600 mb-2">
+          If no cars or time are available please
+        </p>
+        <%= button_to "", { :method => :get, :onclick => "history.go(0)" } do %>
+          <span class="secondary_blue_button">Reset the form</span>
+        <% end %>
+      <% end %>
+      </div>
+    <div class="error_text" id="time_field"></div>
+  </div>
+<% end %>

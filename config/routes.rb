@@ -24,11 +24,13 @@ Rails.application.routes.draw do
   end
   # get '/vehicle_reports/:reports_ids', to: 'vehicle_reports#index', as: 'vehicle_reports'
 
+  get '/reservations/new_long', to: 'reservations#new_long', as: :new_long_reservation
   get '/reservations/week_calendar/', to: 'reservations#week_calendar', as: 'week_calendar'
   resources :reservations do
     resources :vehicle_reports, module: :reservations
   end
   get '/reservations/get_available_cars/:unit_id/:day_start/:number/:start_time/:end_time', to: 'reservations#get_available_cars'
+  get '/reservations/get_available_cars_long/:unit_id/:day_start/:day_end/:number/:start_time/:end_time', to: 'reservations#get_available_cars_long'
   get '/reservations/edit_change_day/:unit_id/:day_start', to: 'reservations#edit_change_day'
   get '/reservations/add_passengers/:reservation_id', to: 'reservations/passengers#add_passengers', as: :add_passengers
   get '/reservations/add_passenger/:reservation_id', to: 'reservations/passengers#add_passenger', as: :add_passenger

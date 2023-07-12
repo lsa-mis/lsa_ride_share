@@ -200,6 +200,16 @@ module ApplicationHelper
     return car_available
   end
 
+  # def show_time_begin_end(day_start, day_end, unit_id)
+  #   t_begin = UnitPreference.find_by(name: "reservation_time_begin", unit_id: unit_id).value
+  #   t_begin = Time.parse(t_begin).strftime("%H").to_i
+  #   t_end = UnitPreference.find_by(name: "reservation_time_end", unit_id: unit_id).value
+  #   t_end = Time.parse(t_end).strftime("%H").to_i
+  #   day_begin = DateTime.new(day_start.year, day_start.month, day_start.day, t_begin, 0, 0, 'EDT')
+  #   day_end = DateTime.new(day_end.year, day_end.month, day_end.day, t_end, 0, 0, 'EDT')
+  #   return [day_begin, day_end]
+  # end
+
   def show_time_begin_end(day, unit_id)
     t_begin = UnitPreference.find_by(name: "reservation_time_begin", unit_id: unit_id).value
     t_begin = Time.parse(t_begin).strftime("%H").to_i
