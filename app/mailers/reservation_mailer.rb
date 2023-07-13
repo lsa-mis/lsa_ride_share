@@ -19,7 +19,7 @@ class ReservationMailer < ApplicationMailer
     @recipients = recipients.join(", ")
     mail(to: @recipients, subject: "Reservation confirmation for program: #{@reservation.program.display_name}" )
     EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "car_reservation_confirmation",
-      sent_to: @recipient, sent_by: user.id, sent_at: DateTime.now)
+      sent_to: @recipients, sent_by: user.id, sent_at: DateTime.now)
   end
 
   def car_reservation_approved(user)
