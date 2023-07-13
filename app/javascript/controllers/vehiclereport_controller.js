@@ -34,7 +34,7 @@ export default class extends Controller {
       error_scroll_place.scrollIntoView()
       submitForm = false
     }
-    else if(mileage_end < mileage_start) {
+    else if(mileage_end < mileage_start && mileage_end > 0) {
       mileage_error_place.innerHTML = "End mileage should be higher than start mileage. Please enter a valid value."
       error_scroll_place.scrollIntoView()
       submitForm = false
