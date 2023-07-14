@@ -6,6 +6,7 @@
           <th class="header_th">Item</th>
           <th class="header_th">Reservation Dates</th>
           <th class="header_th">Car number</th>
+          <th class="header_th">Driver</th>
           <th class="header_th">Mileage start</th>
           <th class="header_th">Mileage end</th>
           <th class="header_th">Fuel % (depart)</th>
@@ -29,6 +30,9 @@
             </td>
             <td class="mi_tbody_td">
               <%= show_car(vehicle_report.reservation) %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= show_driver(vehicle_report.reservation) %>
             </td>
             <td class="mi_tbody_td">
               <%= vehicle_report.mileage_start %>
