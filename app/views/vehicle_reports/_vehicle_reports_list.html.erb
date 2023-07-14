@@ -12,6 +12,7 @@
           <th class="header_th">Fuel % (return)</th>
           <th class="header_th">Parking spot (depart)</th>
           <th class="header_th">Parking spot (return)</th>
+          <th class="header_th">Damage</th>
           <th class="header_th">Last updated</th>
           <th class="header_th">Admin Status</th>
           <th class="header_th">Student Status</th>
@@ -46,6 +47,11 @@
             </td>
             <td class="mi_tbody_td">
               <%= vehicle_report.parking_spot_return %>
+            </td>
+            <td class="mi_tbody_td">
+            <% if vehicle_report.image_damages.attached? %>
+                <i class="fa-solid fa-check"></i>
+              <% end %>
             </td>
             <td class="mi_tbody_td">
               <% if vehicle_report.updated_at.present? %>
