@@ -1,10 +1,10 @@
 # == Schema Information
 #
-# Table name: contacts
+# Table name: email_logs
 #
 #  id               :bigint           not null, primary key
 #  sent_from_model  :string
-#  record_id        :string
+#  record_id        :integer
 #  email_type       :string
 #  sent_to          :string
 #  sent_by          :bigint
