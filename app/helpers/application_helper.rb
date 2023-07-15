@@ -193,35 +193,29 @@ module ApplicationHelper
 
   def available_ranges_long(car, day_start, day_end, unit_id)
     # time renges when the car is available from day_start to day_end
-    # times = show_time_begin_end(day, unit_id)
-    # day_begin  = times[0] - 15.minute
-    # day_end  = times[1] + 15.minute
-    # car_available = []
-    # space_begin = day_begin
-    # car_day_reserv = car.reservations.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day).order(:start_time)
-    # if car_day_reserv.present?
-    #   day_ranges = car_day_reserv.map { |res| res.start_time..res.end_time }
-    #   day_ranges.each do |range|
-    #     if space_begin == range.begin
-    #       space_begin = range.end
-    #     elsif space_begin < range.begin && (range.begin - space_begin)/1.minute > 30
-    #       r = space_begin..range.begin
-    #       car_available << show_time_range(r)
-    #       space_begin = range.end
-    #     else
-    #       space_begin = range.end
-    #     end
-    #   end
-    #   if space_begin < day_end
-    #     r = space_begin..day_end
-    #     car_available << show_time_range(r)
-    #   end
-    # else
-    #   r = day_begin..day_end
-    #   car_available << show_time_range(r)
-    # end
-    # return car_available
-    ["1:2"]
+    day_start_beginning = unit_begining_of_day(@day_start, @unit_id) - 15.minute
+    day_start_finish = unit_end_of_day(@day_start, @unit_id) + 15.minute
+
+    day_end_begining = unit_begining_of_day(@day_end, @unit_id) - 15.minute
+    day_end_finish = unit_end_of_day(@day_end, @unit_id) + 15.minute
+    day_start_reservation = car.reservations.where(start_time: day_start_beginning..day_start_finish).order(end_time: :desc).first
+    day_end_reservation = car.reservations.where(start_time: day_end_begining..day_end_finish).order(:start_time).first
+
+    car_available = []
+    if day_start_reservation.present?
+      range_start = day_start_reservation.end_time
+    else
+      range_start = day_start_beginning
+    end
+
+    if day_end_reservation.present?
+      range_end = day_end_reservation.start_time
+    else
+      range_end = day_end_finish
+    end
+
+    car_available << show_time_range_long(range_start..range_end)
+    return car_available
   end
 
   def available_ranges_edit(car, day, unit_id, reservation)
@@ -272,6 +266,14 @@ module ApplicationHelper
       "#{(day_range.begin + 15.minute).strftime("%I:%M%p")} - #{(day_range.end - 15.minute).strftime("%I:%M%p")} - current"
     else
       "#{(day_range.begin + 15.minute).strftime("%I:%M%p")} - #{(day_range.end - 15.minute).strftime("%I:%M%p")}"
+    end
+  end
+
+  def show_time_range_long(day_range, current = false)
+    if current
+      "#{(day_range.begin + 15.minute).strftime("%I:%M%p")}(#{(day_range.begin).strftime("%b %d")}) - #{(day_range.end - 15.minute).strftime("%I:%M%p")}(#{(day_range.end).strftime("%b %d")}) - current"
+    else
+      "#{(day_range.begin + 15.minute).strftime("%I:%M%p")}(#{(day_range.begin).strftime("%b %d")}) - #{(day_range.end - 15.minute).strftime("%I:%M%p")}(#{(day_range.end).strftime("%b %d")})"
     end
   end
 
