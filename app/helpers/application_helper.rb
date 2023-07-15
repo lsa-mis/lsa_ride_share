@@ -297,18 +297,15 @@ module ApplicationHelper
   def all_day_available_time(day, unit_id)
     # all day time renges for unit
     times = show_time_begin_end(day, unit_id)
-    day_begin  = times[0] - 15.minute
-    day_end  = times[1] + 15.minute
+    day_begin  = times[0]
+    day_end  = times[1]
     day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) }
     available_times_begin = day_times_with_15_min_steps.map { |t| [show_time(t), t.to_s] }
     available_times_begin.pop
     available_times_end = day_times_with_15_min_steps.map { |t| [show_time(t), t.to_s] }
     available_times_end.shift
-    Rails.logger.debug "****************************** day #{day}"
-    Rails.logger.debug "****************************** day_times_with_15_min_steps #{day_times_with_15_min_steps[0]}"
 
     available_times = {:begin=>available_times_begin, :end=>available_times_end}
-    Rails.logger.debug "****************************** available_times #{available_times[:end]}"
     return available_times
   end
 
@@ -352,6 +349,21 @@ module ApplicationHelper
     end
     return available
   end
+
+  # def is_car_available?(car, range)
+  #   Rails.logger.debug "************************* car #{car.id}"
+  #   Rails.logger.debug "************************* range #{range}"
+  #   car_reservations = car.reservations.where("(? BETWEEN start_time AND end_time) OR (? BETWEEN start_time AND end_time) 
+  #       OR (start_time > ? AND end_time < ?)", range.begin, range.end, range.begin, range.end)
+  #   return true unless car_reservations.present?
+
+  #   car_ranges = car_reservations.map { |res| (res.start_time - 14.minute)..(res.end_time + 14.minute) }
+  #     if car_ranges.any? { |r| r.overlaps?(range)}
+  #       return false
+  #     else 
+  #       return true
+  #     end
+  # end
 
   def allow_student_to_edit_reservation?(reservation)
     return false unless is_student?(current_user)
