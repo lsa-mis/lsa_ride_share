@@ -42,6 +42,10 @@ class ReservationPolicy < ApplicationPolicy
     create?
   end
 
+  def get_available_cars_long?
+    create?
+  end
+
   def edit_change_day?
     create?
   end

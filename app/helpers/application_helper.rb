@@ -191,6 +191,39 @@ module ApplicationHelper
     return car_available
   end
 
+  def available_ranges_long(car, day_start, day_end, unit_id)
+    # time renges when the car is available from day_start to day_end
+    # times = show_time_begin_end(day, unit_id)
+    # day_begin  = times[0] - 15.minute
+    # day_end  = times[1] + 15.minute
+    # car_available = []
+    # space_begin = day_begin
+    # car_day_reserv = car.reservations.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day).order(:start_time)
+    # if car_day_reserv.present?
+    #   day_ranges = car_day_reserv.map { |res| res.start_time..res.end_time }
+    #   day_ranges.each do |range|
+    #     if space_begin == range.begin
+    #       space_begin = range.end
+    #     elsif space_begin < range.begin && (range.begin - space_begin)/1.minute > 30
+    #       r = space_begin..range.begin
+    #       car_available << show_time_range(r)
+    #       space_begin = range.end
+    #     else
+    #       space_begin = range.end
+    #     end
+    #   end
+    #   if space_begin < day_end
+    #     r = space_begin..day_end
+    #     car_available << show_time_range(r)
+    #   end
+    # else
+    #   r = day_begin..day_end
+    #   car_available << show_time_range(r)
+    # end
+    # return car_available
+    ["1:2"]
+  end
+
   def available_ranges_edit(car, day, unit_id, reservation)
     # time renges when the car is available on the day including time for reservation that student is editing
     # example: ["04:30PM - 05:00PM", "08:00AM - 11:00AM", "11:00AM - 04:30PM - current"]
@@ -209,6 +242,20 @@ module ApplicationHelper
   #   day_end = DateTime.new(day_end.year, day_end.month, day_end.day, t_end, 0, 0, 'EDT')
   #   return [day_begin, day_end]
   # end
+
+  def unit_begining_of_day(day, unit_id)
+    t_begin = UnitPreference.find_by(name: "reservation_time_begin", unit_id: unit_id).value
+    t_begin = Time.parse(t_begin).strftime("%H").to_i
+    day_begin = DateTime.new(day.year, day.month, day.day, t_begin, 0, 0, 'EDT')
+    return day_begin
+  end
+
+  def unit_end_of_day(day, unit_id)
+    t_end = UnitPreference.find_by(name: "reservation_time_end", unit_id: unit_id).value
+    t_end = Time.parse(t_end).strftime("%H").to_i
+    day_end = DateTime.new(day.year, day.month, day.day, t_end, 0, 0, 'EDT')
+    return day_end
+  end
 
   def show_time_begin_end(day, unit_id)
     t_begin = UnitPreference.find_by(name: "reservation_time_begin", unit_id: unit_id).value
@@ -255,7 +302,11 @@ module ApplicationHelper
     available_times_begin.pop
     available_times_end = day_times_with_15_min_steps.map { |t| [show_time(t), t.to_s] }
     available_times_end.shift
+    Rails.logger.debug "****************************** day #{day}"
+    Rails.logger.debug "****************************** day_times_with_15_min_steps #{day_times_with_15_min_steps[0]}"
+
     available_times = {:begin=>available_times_begin, :end=>available_times_end}
+    Rails.logger.debug "****************************** available_times #{available_times[:end]}"
     return available_times
   end
 
