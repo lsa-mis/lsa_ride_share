@@ -8,7 +8,9 @@
         <% if reservation.car.present? %>
           <%= link_to show_car(reservation), car_path(reservation.car), class: "link_to" %>
         <% else %>
-          No car selected
+          <span class="status-false">
+            No car selected
+          </span>
         <% end %>
       </p>
     </div>
