@@ -11,22 +11,12 @@
       "data-reservation-target": "end_time", "data-action": "change->reservation#availableCars" %>
     </div>
     <div>
-    time available?
-    <%= @no_time_available %>
-      <% if @no_time_available %>
-        <p class="body-sm-text text-red-600 mb-2">
-          No cars are available for your search. Please
+        <p class="body-sm-text mb-2">
+          If no time or cars are available for your search please check to
         </p>
-        <%= button_to "", { :method => :get, :onclick => "history.go(0)" } do %>
-          <span class="secondary_blue_button">Reset the form</span>
-        <% end %>
-          <p class="body-sm-text text-red-600 mb-2">
-            or
-          </p>
-          <%= label_tag("no_car", nil, class: "hidden") %>
-          <%= check_box_tag "no_car", 1, nil, class: "check_box", "data-reservation-target": "no_car" %>
-          <span class="check_box_text">Create a reservation without a car</span>
-      <% end %>
+        <%= label_tag("no_car", nil, class: "hidden") %>
+        <%= check_box_tag "no_car", 1, nil, class: "check_box", "data-reservation-target": "no_car" %>
+        <span class="check_box_text">Create a reservation without a car</span>
       </div>
     <div class="error_text" id="time_field"></div>
   </div>
