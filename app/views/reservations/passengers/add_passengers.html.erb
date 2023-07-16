@@ -4,16 +4,23 @@
     <%= @reservation.program.unit.name %>
     <%= @reservation.program.display_name_with_title %>
   </h2>
-  <h3>
-    List of Students
-  </h3>
-  <div class="m-2">
-    <%= render "students" %>
+  <div class="flex">
+    <div class="m-2">
+      <h3>
+        List of Students
+      </h3>
+      <%= render "students" %>
+      <hp>
+        List of Passengers - Number of People Allowed on the Trip - <%= @reservation.number_of_people_on_trip %>
+      </p>
+    </div>
+    <div>
+      <% if @reservation.program.non_uofm_passengers %>
+        <%= render 'non_uofm_passengers' %>
+      <% end %>
+    </div>
   </div>
-  <h3>
-    List of Passengers - Number of People Allowed on the Trip - <%= @reservation.number_of_people_on_trip %>
-  </h3>
-
+  
   <div class="m-2">
     <%= turbo_frame_tag "passenger_list" do %>
       <% if @reservation.added_people == @reservation.number_of_people_on_trip %>
@@ -28,10 +35,6 @@
       <%= render "passenger_list", locals: { reservation: @reservation} %>
     <% end %>
   </div>
-
-    <% if @reservation.program.non_uofm_passengers %>
-      <%= render 'non_uofm_passengers' %>
-    <% end %>
 
   <div class="mt-4">
     <% if params["edit"] == "true" %>
