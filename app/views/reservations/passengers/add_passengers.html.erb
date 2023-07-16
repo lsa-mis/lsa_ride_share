@@ -37,6 +37,11 @@
   <div class="mt-4">
     <% if params["edit"] == "true" %>
       <%= link_to "Update Passengers", update_passengers_path(@reservation), class: "primary_button" %>
+      <%= link_to reservation_path(@reservation) do %>
+        <span class="tertiary_button">Cancel
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </span>
+      <% end %>
     <% else %>
       <%= link_to "Finish Creating Reservation", finish_reservation_path(@reservation), class: "primary_button" %>
     <% end %>
