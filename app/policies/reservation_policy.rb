@@ -46,6 +46,10 @@ class ReservationPolicy < ApplicationPolicy
     user_in_access_group? || is_reserved_by?
   end
 
+  def add_non_uofm_passengers?
+    user_in_access_group? || is_reserved_by?
+  end
+
   def finish_reservation?
     update?
   end

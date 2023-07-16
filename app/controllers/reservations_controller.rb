@@ -208,11 +208,7 @@ class ReservationsController < ApplicationController
         return
       end
     end
-    if params[:reservation][:non_uofm_passengers].present?
-      @reservation.update(non_uofm_passengers: params[:reservation][:non_uofm_passengers])
-      redirect_to add_passengers_path(@reservation)
-      return
-    end
+
     @reservation.attributes = reservation_params
     @reservation.car_id = params[:car_id]
     @reservation.start_time = params[:start_time].to_datetime - 15.minute
@@ -240,6 +236,21 @@ class ReservationsController < ApplicationController
     end
   end
 
+  def add_non_uofm_passengers
+    @reservation = Reservation.find(params[:reservation_id])
+    authorize @reservation
+    params[:reservation][:non_uofm_passengers].present?
+    respond_to do |format|
+      if @reservation.update(reservation_params)
+        @passengers = @reservation.passengers
+        @students = @reservation.program.students - @passengers
+        @students.delete(@reservation.driver)
+        @students.delete(@reservation.backup_driver)
+        format.turbo_stream { render :add_non_uofm_passenger }
+      end
+    end
+  end
+
   def add_drivers
     @drivers = @reservation.program.students.eligible_drivers
     @passengers = @reservation.passengers
@@ -253,13 +264,6 @@ class ReservationsController < ApplicationController
     ReservationMailer.with(reservation: @reservation).car_reservation_confirmation(current_user).deliver_now
     ReservationMailer.with(reservation: @reservation).car_reservation_created(current_user).deliver_now
     redirect_to reservation_path(@reservation)
-  end
-
-  def add_non_uofm_passengers
-    @reservation = Reservation.find(params[:reservation_id])
-    authorize @reservation
-    @reservation.update(reservation_params)
-    redirect_to add_passengers_path(@reservation, :edit => params[:edit])
   end
 
   def update_passengers
