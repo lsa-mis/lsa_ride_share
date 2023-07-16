@@ -3,7 +3,7 @@ import { get } from "@rails/request.js"
 
 export default class extends Controller {
   static targets = ['form', 'term', 'unit', 'program', 'site', 'required_fields',
-    'day_start', 'number', 'start_time', 'end_time', 'selected_time_error', 'car', 'car_field']
+    'day_start', 'number', 'start_time', 'end_time', 'selected_time_error', 'car', 'car_field', 'no_car']
 
   connect() {
     console.log("connect - reservation")
@@ -128,7 +128,7 @@ export default class extends Controller {
     let program = this.programTarget.value
     let site = this.siteTarget.value
     let car = this.carTarget.value
-
+    let no_car = this.no_carTarget.value
     let start_time = this.start_timeTarget.value
     let end_time = this.end_timeTarget.value
     let start_time_format = new Date(start_time)
@@ -144,7 +144,7 @@ export default class extends Controller {
       required_fields_error.innerHTML = "Please select required data"
       car_field_error.innerHTML = ''
       submitForm = false
-    } else if (car == "") {
+    } else if (car == "" && !no_car) {
       car_field_error.innerHTML = "Please select a car"
       required_fields_error.innerHTML = ''
       submitForm = false
