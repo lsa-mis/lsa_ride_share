@@ -21,6 +21,7 @@ class ReservationsController < ApplicationController
   end
 
   def week_calendar
+    @no_car = false
     session[:return_to] = request.referer
     if current_user.unit_ids.count == 1
       @unit_id = current_user.unit_ids[0]
@@ -37,6 +38,9 @@ class ReservationsController < ApplicationController
     @hour_end = UnitPreference.find_by(name: "reservation_time_end", unit_id: @unit_id).value.split(":").first.to_i + 12
     authorize @reservations
     @cars = Car.available.where(unit_id: @unit_id).order(:car_number)
+    # if @reservations.where(car_id: nil).present?
+    #   @no_car = true
+    # end
     @date_range = Date.today.beginning_of_week..Date.today.end_of_week
     @dates = @date_range.to_a
   end
