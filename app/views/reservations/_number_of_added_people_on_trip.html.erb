@@ -1,8 +1,17 @@
 <div>
   <p class="body-sm-text">
-    Please consider the number of people already added to the trip:
+    The number of people already added to the trip:
     <span id="added_people">
       <%= @reservation.added_people %>
     </span>
   </p> 
+  <% if @reservation.added_people == @reservation.number_of_people_on_trip %>
+        <p class="my-5 body-sm-text">
+          No space for more passengers in the car.
+        </p>
+      <% elsif @reservation.added_people > @reservation.number_of_people_on_trip %>
+        <p class="my-5 error_text">
+          Too many people added to the trip - remove some of the passengers.
+        </p>
+      <% end %>
 </div>

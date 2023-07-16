@@ -1,7 +1,7 @@
 <%= turbo_frame_tag 'non_uofm_passengers' do %>
 <div class="m-2 card_area">
 <p class="mt-4 body-sm-text">
-  The program allows to add non UofM passengers to the trip. Add or edit names and the number of people.
+  The program allows passengers that are not part of the UM community.
 </p>
   <%= form_with(model: @reservation, url: add_non_uofm_passengers_path,
     data: { controller: "nonuofmpassengers",
@@ -19,21 +19,21 @@
       </div>
     <% end %>
 
-    <%= turbo_frame_tag "number_of_added_people_on_trip" do %>
-      <%= render "reservations/number_of_added_people_on_trip" %>
-    <% end %>
+
 
     <input type="hidden" id="number_of_people_on_trip" name="number_of_people_on_trip" value=<%= @reservation.number_of_people_on_trip %> data-nonuofmpassengers-target="number_of_people_on_trip">
     <input type="hidden" id="current_number_of_non_uofm_passengers" name="current_number_of_non_uofm_passengers" value=<%= @reservation.number_of_non_uofm_passengers %> data-nonuofmpassengers-target="current_number_of_non_uofm_passengers">
 
     <div>
       <%= form.label :number_of_non_uofm_passengers, "Number of Non UofM Passengers", class: "fancy_label" %>
-      <%= form.select(:number_of_non_uofm_passengers, options_for_select(1..(@reservation.number_of_people_on_trip - @reservation.added_people + @reservation.number_of_non_uofm_passengers), @reservation.number_of_non_uofm_passengers), { include_blank: "Select ..." }, { class: "input_text_field" }) %>
+      <%= form.select(:number_of_non_uofm_passengers, options_for_select(1..(@reservation.number_of_people_on_trip - @reservation.added_people + @reservation.number_of_non_uofm_passengers), @reservation.number_of_non_uofm_passengers), { include_blank: "Choose Number" }, { class: "input_text_field" }) %>
     </div>
-
-    <div class="my-5">
+    <p class="mt-4 body-sm-text">
+      Add names of all passengers.
+    </p>
+    <div class="">
       <%= form.label :non_uofm_passengers, "Non UofM Passengers", class: "fancy_label" %>
-      <%= form.text_field :non_uofm_passengers, class: "input_text_field", "data-nonuofmpassengers-target": "non_uofm_passengers"  %>
+      <%= form.text_field :non_uofm_passengers, placeholder: "Names", class: "input_text_field", "data-nonuofmpassengers-target": "non_uofm_passengers"  %>
     </div>
 
     <div class="error_text mb-2" id="error_place"></div>

@@ -4,15 +4,18 @@
     <%= @reservation.program.unit.name %>
     <%= @reservation.program.display_name_with_title %>
   </h2>
-  <div class="flex">
+  <div class="md:flex gap-4">
     <div class="m-2">
+      <p class="body-sm-text">
+        Maximum number of people allowed - <%= @reservation.number_of_people_on_trip %>
+      </p>
       <h3>
         List of Students
       </h3>
-      <%= render "students" %>
-      <hp>
-        List of Passengers - Number of People Allowed on the Trip - <%= @reservation.number_of_people_on_trip %>
+      <p class="body-sm-text mb-2">
+        Choose passengers from the list below
       </p>
+      <%= render "students" %>
     </div>
     <div>
       <% if @reservation.program.non_uofm_passengers %>
@@ -20,18 +23,13 @@
       <% end %>
     </div>
   </div>
+
+  <%= turbo_frame_tag "number_of_added_people_on_trip" do %>
+    <%= render "reservations/number_of_added_people_on_trip" %>
+  <% end %>
   
   <div class="m-2">
     <%= turbo_frame_tag "passenger_list" do %>
-      <% if @reservation.added_people == @reservation.number_of_people_on_trip %>
-        <p class="my-5 body-sm-text">
-          No space for more passengers in the car - please click Finish Creating Reservation button
-        </p>
-      <% elsif @reservation.added_people > @reservation.number_of_people_on_trip %>
-        <p class="my-5 error_text">
-          Too many people added to the trip - remove some of the passengers
-        </p>
-      <% end %>
       <%= render "passenger_list", locals: { reservation: @reservation} %>
     <% end %>
   </div>
