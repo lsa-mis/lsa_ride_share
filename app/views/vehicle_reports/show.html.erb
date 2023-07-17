@@ -4,13 +4,13 @@
       <h1 class="mb-4">Vehicle Report: <%= @vehicle_report.id %></h1>
       <% if is_admin?(current_user) %>
         <%= form_with model: @vehicle_report, html: { class: "sm:flex sm:items-center" },
-          data: { controller: "approve",
-                  approve_target: "form"
+          data: { controller: "autosubmit",
+                  autosubmit_target: "form"
                 } do |f| %>
           <div class="sm:col-span-4">
             <ol class="switches">
               <li>
-                <%= f.check_box :approved, "data-action": "change->approve#toggleApprove"  %>
+                <%= f.check_box :approved, "data-action": "change->autosubmit#search" %>
                 <%= f.label :approved do %>
                   <span class="label-text">Approved</span>
                   <span></span>
