@@ -243,7 +243,7 @@ class ReservationsController < ApplicationController
     respond_to do |format|
       if @reservation.update(reservation_params)
         @passengers = @reservation.passengers
-        @students = @reservation.program.students - @passengers
+        @students = @reservation.program.students.order(:last_name) - @passengers
         @students.delete(@reservation.driver)
         @students.delete(@reservation.backup_driver)
         format.turbo_stream { render :add_non_uofm_passenger }
