@@ -53,8 +53,10 @@
               <%= vehicle_report.parking_spot_return %>
             </td>
             <td class="mi_tbody_td">
-            <% if vehicle_report.image_damages.attached? %>
-                <i class="fa-solid fa-check"></i>
+              <% if vehicle_report.image_damages.attached? %>
+                <%= link_to vehicle_report_path(vehicle_report), class: "link_to" do %>
+                  <i class="fa-solid fa-check"></i>
+                <% end %>
               <% end %>
             </td>
             <td class="mi_tbody_td">
