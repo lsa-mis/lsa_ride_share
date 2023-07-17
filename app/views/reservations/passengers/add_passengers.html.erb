@@ -4,11 +4,24 @@
     <%= @reservation.program.unit.name %>
     <%= @reservation.program.display_name_with_title %>
   </h2>
-  <div class="md:flex gap-4">
+
+  <h3 class="m-2">
+    People on the trip
+  </h3>
+  <div class="m-2">
+    <p class="body-sm-text">
+      Maximum number of people allowed - <%= @reservation.number_of_people_on_trip %>
+    </p>
+    <%= turbo_frame_tag "number_of_added_people_on_trip" do %>
+      <%= render "reservations/number_of_added_people_on_trip" %>
+    <% end %>
+    <%= turbo_frame_tag "passenger_list" do %>
+      <%= render "passenger_list", locals: { reservation: @reservation} %>
+    <% end %>
+  </div>
+
+  <div class="md:flex gap-8 mt-2">
     <div class="m-2">
-      <p class="body-sm-text">
-        Maximum number of people allowed - <%= @reservation.number_of_people_on_trip %>
-      </p>
       <h3>
         List of Students
       </h3>
@@ -24,24 +37,9 @@
     </div>
   </div>
 
-  <%= turbo_frame_tag "number_of_added_people_on_trip" do %>
-    <%= render "reservations/number_of_added_people_on_trip" %>
-  <% end %>
-  
-  <div class="m-2">
-    <%= turbo_frame_tag "passenger_list" do %>
-      <%= render "passenger_list", locals: { reservation: @reservation} %>
-    <% end %>
-  </div>
-
   <div class="mt-4">
     <% if params["edit"] == "true" %>
-      <%= link_to "Update Passengers", update_passengers_path(@reservation), class: "primary_button" %>
-      <%= link_to reservation_path(@reservation) do %>
-        <span class="tertiary_button">Cancel
-          <i class="fa fa-times" aria-hidden="true"></i>
-        </span>
-      <% end %>
+      <%= link_to "Go Back to Reservation Page", update_passengers_path(@reservation), class: "primary_button" %>
     <% else %>
       <%= link_to "Finish Creating Reservation", finish_reservation_path(@reservation), class: "primary_button" %>
     <% end %>
