@@ -260,19 +260,24 @@ class ReservationsController < ApplicationController
 
   # DELETE /reservations/1 or /reservations/1.json
   def destroy
-    respond_to do |format|
-      if @reservation.destroy
-        if is_admin?(current_user)
-          format.html { redirect_to reservations_url, notice: "Reservation was canceled." }
-          format.json { head :no_content }
-        elsif is_student?(current_user)
-          format.html { redirect_to welcome_pages_student_url, notice: "Reservation was canceled." }
-          format.json { head :no_content }
+    unless @reservation.approved
+      respond_to do |format|
+        if @reservation.destroy
+          if is_admin?(current_user)
+            format.html { redirect_to reservations_url, notice: "Reservation was canceled." }
+            format.json { head :no_content }
+          elsif is_student?(current_user)
+            format.html { redirect_to welcome_pages_student_url, notice: "Reservation was canceled." }
+            format.json { head :no_content }
+          end
+        else
+          format.html { render :show, status: :unprocessable_entity }
+          format.json { render json: @reservation.errors, status: :unprocessable_entity }
         end
-      else
-        format.html { render :show, status: :unprocessable_entity }
-        format.json { render json: @reservation.errors, status: :unprocessable_entity }
       end
+    else
+      flash.now[:alert] = 'The reservation is approved. To cancel, please contact your administrator'
+      render turbo_stream: turbo_stream.update("flash", partial: "layouts/notification")
     end
   end
 
