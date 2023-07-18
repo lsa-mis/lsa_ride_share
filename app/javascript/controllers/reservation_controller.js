@@ -3,7 +3,8 @@ import { get } from "@rails/request.js"
 
 export default class extends Controller {
   static targets = ['form', 'term', 'unit', 'program', 'site', 'required_fields',
-    'day_start', 'number', 'start_time', 'end_time', 'selected_time_error', 'car', 'car_field', 'no_car']
+    'day_start', 'number', 'start_time', 'end_time', 'selected_time_error',
+    'car_selection', 'car', 'car_field', 'no_car']
 
   connect() {
     console.log("connect - reservation")
@@ -91,7 +92,7 @@ export default class extends Controller {
     }
   }
 
-  availableCars(){
+  availableCars() {
     let unit_id = this.unitTarget.value
     let day_start = this.day_startTarget.value
     let number = this.numberTarget.value
@@ -105,6 +106,8 @@ export default class extends Controller {
     let required_fields_error = document.getElementById('required_fields')
     let car_field_error = document.getElementById('car_field')
 
+    var no_car = document.getElementById("no_car")
+
     if (diff_time > 0 && diff_time < 31) {
       time_field_error.innerHTML = 'End time is too close to start time'
       required_fields_error.innerHTML = ''
@@ -117,9 +120,40 @@ export default class extends Controller {
       time_field_error.innerHTML = ''
     }
 
-    get(`/reservations/get_available_cars/${unit_id}/${day_start}/${number}/${start_time}/${end_time}`, {
-      responseKind: "turbo-stream"
-    })
+    if (this.elementExist(no_car)) {
+      if (!no_car.checked) {
+        get(`/reservations/get_available_cars/${unit_id}/${day_start}/${number}/${start_time}/${end_time}`, {
+          responseKind: "turbo-stream"
+        })
+      }
+    } else {
+      get(`/reservations/get_available_cars/${unit_id}/${day_start}/${number}/${start_time}/${end_time}`, {
+        responseKind: "turbo-stream"
+      })
+    }
+  }
+
+  elementExist(element) {
+    // const element_check = document.getElementById(element)
+    if (element) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  hideCarSelection() {
+    var hide = document.getElementById("no_car").checked
+    console.log(hide)
+    if (hide) {
+      this.carTarget.value = ""
+      this.car_selectionTarget.classList.add("fields--hide")
+      this.car_selectionTarget.classList.remove("fields--display")
+    }
+    else {
+      this.car_selectionTarget.classList.add("fields--display")
+      this.car_selectionTarget.classList.remove("fields--hide")
+    }
 
   }
 
