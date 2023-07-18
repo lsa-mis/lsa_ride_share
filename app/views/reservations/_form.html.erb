@@ -67,23 +67,24 @@
     </div>
   </div>
 
-  <%= render 'start_end_time' %>
+  <div class="mb-4">
+    <%= render 'start_end_time' %>
+  </div>
 
-  <div>
+  <div data-reservation-target="car_selection" class="fields--display">
     <p class="body-sm-text mt-4 mb-2">
-      Select a car and click Create Reservation. You can add passengers after submitting the reservation.
+      Select a car and click Create Reservation.
     </p>
-  </div>
+    <div>
+      <% if @car_id.present? %>
+        <p class="body-sm-bold-text mt-4 mb-2">
+          Car <%= Car.find(@car_id).car_number %> was selected
+        </p>
+      <% end %>
+    </div>
 
-  <div>
-   <% if @car_id.present? %>
-    <p class="body-sm-bold-text mt-4 mb-2">
-      Car <%= Car.find(@car_id).car_number %> was selected
-    </p>
-   <% end %>
+    <%= render 'cars_dropdown' %>
   </div>
-
-  <%= render 'cars_dropdown' %>
 
   <div class="inline">
     <%= form.submit class: "primary_button" %>
