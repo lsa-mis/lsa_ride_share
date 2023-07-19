@@ -4,6 +4,16 @@
           action: "submit->driver#submitForm"
         } do |form| %>
 
+  <% if @reservation.errors.any? %>
+    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
+      <h2><%= pluralize(@reservation.errors.count, "error") %> prohibited this reservation from being saved:</h2>
+      <ul>
+        <% @reservation.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
   <p class="body-sm-text">
     Number of People on the Trip - <%= @reservation.number_of_people_on_trip %>
   </p>

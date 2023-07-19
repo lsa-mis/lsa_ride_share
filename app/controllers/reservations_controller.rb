@@ -191,9 +191,8 @@ class ReservationsController < ApplicationController
         redirect_to reservation_path(@reservation), notice: "Reservation was updated"
         return
       else
-        flash.now[:alert] = "error"
-        format.turbo_stream { render :show, status: :unprocessable_entity }
-        return
+        flash.now[:alert] = 'Error approving the reservation'
+        render turbo_stream: turbo_stream.update("flash", partial: "layouts/notification")
       end
     end
     if params[:reservation][:driver_id].present?
@@ -201,9 +200,8 @@ class ReservationsController < ApplicationController
         redirect_to add_passengers_path(@reservation, :edit => params[:edit])
         return
       else
-        flash.now[:alert] = "error"
         @drivers = @reservation.program.students.eligible_drivers
-        format.turbo_stream { render :add_drivers, status: :unprocessable_entity }
+        render :add_drivers, status: :unprocessable_entity
         return
       end
     end
