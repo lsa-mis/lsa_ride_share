@@ -134,7 +134,6 @@ export default class extends Controller {
   }
 
   elementExist(element) {
-    // const element_check = document.getElementById(element)
     if (element) {
       return true
     } else {
