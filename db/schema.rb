@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_07_213502) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_17_125330) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -300,8 +300,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_07_213502) do
     t.bigint "reservation_id", null: false
     t.float "mileage_start"
     t.float "mileage_end"
-    t.integer "gas_start"
-    t.integer "gas_end"
+    t.decimal "gas_start"
+    t.decimal "gas_end"
     t.string "parking_spot"
     t.integer "created_by"
     t.integer "updated_by"

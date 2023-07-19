@@ -142,6 +142,10 @@ module ApplicationHelper
     end
   end
 
+  def show_reservation_date(reservation)
+    show_date_time(reservation.start_time) + " - " +  show_date_time(reservation.end_time)
+  end
+  
   def show_reserved_by_in_week_calendar(reservation)
     User.find(reservation.reserved_by).display_name
   end
@@ -293,7 +297,9 @@ module ApplicationHelper
   def allow_student_to_edit_reservation?(reservation)
     return false unless is_student?(current_user)
     return false unless Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program).present?
-    if ((reservation.start_time - DateTime.now)/3600).round > 72 
+    student = Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program)
+    return false if student.passenger_future.include?(reservation)
+    if ((reservation.start_time - DateTime.now)/3600).round > 72
       return true
     else
       return false
@@ -407,14 +413,14 @@ module ApplicationHelper
   
   def gas_percent
     [
-      ['1/8', '12'],
-      ['1/4', '25'],
-      ['3/8', '37'],
-      ['1/2', '50'],
-      ['5/8', '63'],
-      ['3/4', '75'],
-      ['7/8', '88'],
-      ['1', '100']
+      ['12.5', '12.5'],
+      ['25.0', '25.0'],
+      ['37.5', '37.5'],
+      ['50.0', '50.0'],
+      ['62.5', '62.5'],
+      ['75.0', '75.0'],
+      ['87.5', '87.5'],
+      ['100', '100.0']
     ]
   end
 

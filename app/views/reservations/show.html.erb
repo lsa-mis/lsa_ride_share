@@ -39,27 +39,44 @@
     </div>
     <div class="order-first md:order-last">
       <div class="lg:flex lg:flex-col place-items-end whitespace-nowrap">
-        <% if (is_admin?(current_user) || allow_student_to_edit_reservation?(@reservation)) && future_reservation?(@reservation) %>
-          <% if is_admin?(current_user) %>
+        <% if (is_admin?(current_user)) %>
+          <% if future_reservation?(@reservation) %>
             <div class="my-2">
               <%= link_to 'Edit Reservation', edit_reservation_path(@reservation), class: "primary_button" if policy(@reservation).edit? %>
             </div>
+            <div class="my-2">
+              <%= link_to 'Edit Drivers and Passengers', add_drivers_path(@reservation, :edit => true), class: "primary_button" if policy(@reservation).edit? %>
+            </div>
           <% end %>
-          <div>
-            <%= link_to 'Edit Drivers and Passengers', add_drivers_path(@reservation, :edit => true), class: "primary_button" if policy(@reservation).edit? %>
-          </div>
-          <div class="my-2">
-            <%= link_to reservation_path(@reservation), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete} do %>
-              <span class="secondary_blue_button my-2">
-                <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
-                Cancel Reservation
-              </span>
+          <% unless @reservation.approved %>
+            <div class="my-2">
+              <%= link_to reservation_path(@reservation), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete} do %>
+                <span class="secondary_blue_button my-2">
+                  <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
+                  Cancel Reservation
+                </span>
+              <% end %>
+            </div>
+          <% end %>
+        <% else %>
+          <% if allow_student_to_edit_reservation?(@reservation) && future_reservation?(@reservation) %>
+            <div class="my-2">
+              <%= link_to 'Edit Drivers and Passengers', add_drivers_path(@reservation, :edit => true), class: "primary_button" if policy(@reservation).edit? %>
+            </div>
+            <% unless @reservation.approved %>
+              <div class="my-2">
+                <%= link_to reservation_path(@reservation), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete} do %>
+                  <span class="secondary_blue_button my-2">
+                    <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
+                    Cancel Reservation
+                  </span>
+                <% end %>
+              </div>
             <% end %>
-          </div>
+          <% end %>
         <% end %>
-        <div>
+        <div class="my-2">
           <% if @reservation.vehicle_report.present? %>
-          
             <%= link_to 'Vehicle Report', vehicle_report_path(@reservation.vehicle_report), class: "secondary_blue_button" %>
           <% else %>
             <%= link_to 'New Vehicle Report', new_reservation_vehicle_report_path(@reservation), class: "secondary_blue_button" %>

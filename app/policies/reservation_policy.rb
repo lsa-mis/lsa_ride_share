@@ -73,7 +73,7 @@ class ReservationPolicy < ApplicationPolicy
 
   def is_reservation_driver?
     student = Student.find_by(program_id: @record.program, uniqname: @user.uniqname)
-    @record.driver == student
+    @record.driver == student || @record.backup_driver == student
   end
 
   def is_reserved_by?
