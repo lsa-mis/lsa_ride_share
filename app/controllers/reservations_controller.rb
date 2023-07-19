@@ -143,6 +143,19 @@ class ReservationsController < ApplicationController
       return cars
   end
 
+  def no_car_all_times
+    if params[:unit_id].present?
+      @unit_id = params[:unit_id]
+    end
+    if params[:day_start].present?
+      @day_start = params[:day_start].to_date
+    end
+    @start_time = nil
+    @end_time = nil
+    @cars = []
+    authorize Reservation
+  end
+
   # POST /reservations or /reservations.json
   def create
     @reservation = Reservation.new(reservation_params)
