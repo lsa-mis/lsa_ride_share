@@ -5,7 +5,7 @@
       <div>
         <%= label_tag("student_id_#{student.id}", nil, class: "hidden") %>
         <%= check_box_tag "reservation[student_id]", student.id, nil, class: "check_box",
-          disabled: @reservation.added_people >= @reservation.number_of_people_on_trip,
+          disabled: @reservation.added_people == @reservation.number_of_people_on_trip,
           :"data-action" => "change->autosubmit#search" %>
         <span class="check_box_text"><%= student.display_name %></span>
       </div>
