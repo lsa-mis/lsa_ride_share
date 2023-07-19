@@ -17,12 +17,18 @@
         <li>DRIVER: <%= @driver_name %> </li>
         <li>BACKUP DRIVER: <%= @backup_driver_name %> </li>
       </ul>
-      PASSENGERS:
+      Passengers:
       <ul>
         <% @passengers.each do |p| %>
           <li> <%= p %> </li>
         <% end %>
       </ul>
+      <% if @non_uofm_passengers.present? %>
+        Non UofM Passengers: 
+        <ul><li>
+          <%= @non_uofm_passengers %>
+        </li></ul>
+      <% end %>
     </p>
     <p>
       You can email <%= @unit_email %> or call the office at: <%= @contact_phone %>.

@@ -95,7 +95,7 @@
   <div>
     <% if @passengers.present? %>
       <label class="body-lg-bold-text">
-        Passengers:
+        Passengers (<%= @reservation.passengers.count %>):
       </label>
       <ul>
         <% @passengers.each do |passenger| %>
@@ -105,6 +105,16 @@
         <% end %>
       </ul>
     <% end %>
+    <div class="mt-2">
+      <% if @reservation.program.non_uofm_passengers && @reservation.non_uofm_passengers.present? %>
+        <label class="body-lg-bold-text">
+          Non UofM Passengers (<%= @reservation.number_of_non_uofm_passengers %>):
+        </label>
+        <p class="body-lg-text ml-2">
+          <%= @reservation.non_uofm_passengers %>
+        </p>
+      <% end %>
+    </div>
   </div>
 
 </div>

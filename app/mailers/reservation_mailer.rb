@@ -115,6 +115,9 @@ class ReservationMailer < ApplicationMailer
     else
       @passengers = ["No passengers"]
     end
+    if @reservation.program.non_uofm_passengers && @reservation.non_uofm_passengers.present? 
+      @non_uofm_passengers = @reservation.non_uofm_passengers
+    end
   end
 
 end

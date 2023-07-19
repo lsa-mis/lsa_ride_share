@@ -7,3 +7,9 @@
 <%= turbo_stream.update "passenger_list" do %>
   <%= render "passenger_list", locals: { reservation: @reservation} %>
 <% end %>
+
+<% if @reservation.program.non_uofm_passengers %>
+  <%= turbo_stream.update "non_uofm_passengers" do %>
+    <%= render 'non_uofm_passengers' %>
+  <% end %>
+<% end %>

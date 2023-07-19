@@ -207,6 +207,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_17_125330) do
     t.datetime "updated_at", null: false
     t.integer "reserved_by"
     t.boolean "approved", default: false
+    t.string "non_uofm_passengers"
+    t.integer "number_of_non_uofm_passengers", default: 0
     t.index ["backup_driver_id"], name: "index_reservations_on_backup_driver_id"
     t.index ["car_id"], name: "index_reservations_on_car_id"
     t.index ["driver_id"], name: "index_reservations_on_driver_id"

@@ -3,7 +3,7 @@ class Reservations::PassengersController < ApplicationController
 
   def add_passengers
     @passengers = @reservation.passengers
-    @students = @reservation.program.students - @passengers
+    @students = @reservation.program.students.order(:last_name) - @passengers
     @students.delete(@reservation.driver)
     @students.delete(@reservation.backup_driver)
     authorize([@reservation, @passengers]) 

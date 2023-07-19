@@ -1,6 +1,6 @@
 class ReservationsController < ApplicationController
   before_action :auth_user
-  before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger finish_reservation update_passengers]
+  before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger finish_reservation update_passengers ]
   before_action :set_terms_and_units
   before_action :set_programs
   before_action :set_cars, only: %i[ new get_available_cars ]
@@ -207,11 +207,7 @@ class ReservationsController < ApplicationController
         return
       end
     end
-    if params[:reservation][:non_uofm_passengers].present?
-      @reservation.update(non_uofm_passengers: params[:reservation][:non_uofm_passengers])
-      redirect_to add_passengers_path(@reservation)
-      return
-    end
+
     @reservation.attributes = reservation_params
     @reservation.car_id = params[:car_id]
     @reservation.start_time = params[:start_time].to_datetime - 15.minute
@@ -235,6 +231,21 @@ class ReservationsController < ApplicationController
         @students = Student.all
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @reservation.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def add_non_uofm_passengers
+    @reservation = Reservation.find(params[:reservation_id])
+    authorize @reservation
+    params[:reservation][:non_uofm_passengers].present?
+    respond_to do |format|
+      if @reservation.update(reservation_params)
+        @passengers = @reservation.passengers
+        @students = @reservation.program.students.order(:last_name) - @passengers
+        @students.delete(@reservation.driver)
+        @students.delete(@reservation.backup_driver)
+        format.turbo_stream { render :add_non_uofm_passenger }
       end
     end
   end
@@ -308,6 +319,6 @@ class ReservationsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def reservation_params
       params.require(:reservation).permit(:status, :start_time, :end_time, :recurring, :driver_id, :driver_phone, :backup_driver_id, :backup_driver_phone, 
-      :number_of_people_on_trip, :program_id, :site_id, :car_id, :reserved_by, :approved)
+      :number_of_people_on_trip, :program_id, :site_id, :car_id, :reserved_by, :approved, :non_uofm_passengers, :number_of_non_uofm_passengers)
     end
 end
