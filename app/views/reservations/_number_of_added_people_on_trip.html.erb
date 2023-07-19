@@ -1,13 +1,13 @@
 <div>
-  <p class="body-sm-text">
+  <p class="body-sm-text mb-2">
     The number of people added to the trip -
     <span id="added_people">
       <%= @reservation.added_people %>
     </span>
   </p> 
   <% if @reservation.added_people == @reservation.number_of_people_on_trip %>
-    <p class="my-5 body-sm-text">
-      No space for more passengers in the car.
+    <p class="my-2 body-sm-text">
+      Reservation is full.  To edit the list, remove a passenger.
     </p>
   <% end %>
 </div>
