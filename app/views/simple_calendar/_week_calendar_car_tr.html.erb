@@ -1,0 +1,53 @@
+<tr class="mi_tbody_tr border">
+  <td></td>
+  <th border>
+    Car <%= car.car_number %>
+  </th>
+  <td></td>
+  <td></td>
+  <td></td>
+  <% times = show_time_begin_end(day, @unit_id) %>
+  <% day_begin = times[0] - 15.minute %>
+  <% day_end = times[1] %>
+  <% day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) } %>
+  <% car_day_reserv = car.reservations.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day) %>
+  <% day_times_with_15_min_steps.each do |step| %>
+    <% step_range = step..step + 15.minutes %>
+    <% if car_day_reserv.present? %>
+      <% if car_day_reserv.map { |res| res.start_time..res.end_time }.any? { |r| r.cover?(step_range)} %>
+        <% list_start = car_day_reserv.where(start_time: step) %>
+        <% list_end = car_day_reserv.where(end_time: step + 15.minute) %>
+        <% if list_start.present? %>
+          <td class="td-week bg-yellow-600 border-r border-gray-900">
+          <% list_start.each do |one_reserv| %>
+            <div title="<%= show_reservation(car_day_reserv.find_by(start_time: step)) %>" class="body-sm-bold-text">
+              <%= link_to show_reserved_by_in_week_calendar(one_reserv), reservation_path(one_reserv), class: 'link_to' %>
+            </div>
+            <br>
+          <% end %>
+          </td>
+        <% elsif list_end.present? %>
+          <td class="td-week bg-yellow-600 border-r border-gray-900"></td>
+        <% else %>
+          <td class="td-week bg-red-600 border-r border-gray-900"></td>
+        <% end %>
+      <% else %>
+        <% if step.to_datetime > DateTime.now %>
+          <td class="border hover:bg-green-500">
+            <%= link_to '.', new_reservation_path(:unit_id => @unit_id, :day_start => day, :car_id => car.id, :start_time => step) , class: "text-gray-500 w-0" %>
+          </td>
+        <% else %>
+          <td></td>
+        <% end %>
+      <% end %>
+    <% else %>
+      <% if step.to_datetime > DateTime.now %>
+        <td class="border hover:bg-green-500">
+          <%= link_to '.', new_reservation_path(:unit_id => @unit_id, :day_start => day, :car_id => car.id, :start_time => step) , class: "text-gray-500 w-0" %>
+        </td>
+      <% else %>
+        <td></td>
+      <% end %>
+    <% end %>
+  <% end %>
+</tr>

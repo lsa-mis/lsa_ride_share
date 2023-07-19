@@ -52,7 +52,7 @@ class Reservation < ApplicationRecord
     if self.car_id.present?
       "car - #{self.car.car_number}"
     else
-      "reservation ID - #{self.id}"
+      "No Car"
     end
   end
 

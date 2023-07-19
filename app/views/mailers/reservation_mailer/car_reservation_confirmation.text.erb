@@ -4,10 +4,14 @@ is not possible, your request will be cancelled. Either way, you will receive an
 
 Reservation for:  <%= link_to "#{@reservation.display_name}", reservation_url(@reservation) %>
 ================================================================================================
-DATE: <%= "#{@start_time} - #{@end_time}" %></li>
-VEHICLE #: <%= link_to @reservation.car.car_number, car_url(@reservation.car) %></li>
-SITE: <%= link_to @reservation.site.title, site_url(@reservation.site) %> </li>
-PROGRAM: <%= link_to @reservation.program.title, program_url(@reservation.program) %></li>
+DATE: <%= "#{@start_time} - #{@end_time}" %>
+<% if @reservation.car.present? %>
+  VEHICLE #: <%= link_to @reservation.car.car_number, car_url(@reservation.car) %>
+<% else %>
+  VEHICLE #: No car selected
+<% end %>
+SITE: <%= link_to @reservation.site.title, site_url(@reservation.site) %>
+PROGRAM: <%= link_to @reservation.program.title, program_url(@reservation.program) %>
 BACKUP DRIVER: <%= @backup_driver_name %>
 Passengers:
 <% @passengers.each do |p| %>

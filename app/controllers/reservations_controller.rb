@@ -21,6 +21,7 @@ class ReservationsController < ApplicationController
   end
 
   def week_calendar
+    @no_car = false
     session[:return_to] = request.referer
     if current_user.unit_ids.count == 1
       @unit_id = current_user.unit_ids[0]
@@ -139,6 +140,19 @@ class ReservationsController < ApplicationController
     end
       cars = available_cars(cars, range)
       return cars
+  end
+
+  def no_car_all_times
+    if params[:unit_id].present?
+      @unit_id = params[:unit_id]
+    end
+    if params[:day_start].present?
+      @day_start = params[:day_start].to_date
+    end
+    @start_time = nil
+    @end_time = nil
+    @cars = []
+    authorize Reservation
   end
 
   # POST /reservations or /reservations.json

@@ -29,6 +29,7 @@ Rails.application.routes.draw do
     resources :vehicle_reports, module: :reservations
   end
   get '/reservations/get_available_cars/:unit_id/:day_start/:number/:start_time/:end_time', to: 'reservations#get_available_cars'
+  get '/reservations/no_car_all_times/:unit_id/:day_start', to: 'reservations#no_car_all_times'
   get '/reservations/edit_change_day/:unit_id/:day_start', to: 'reservations#edit_change_day'
   patch '/reservations/add_non_uofm_passengers/:reservation_id', to: 'reservations#add_non_uofm_passengers', as: :add_non_uofm_passengers
   get '/reservations/add_passengers/:reservation_id', to: 'reservations/passengers#add_passengers', as: :add_passengers

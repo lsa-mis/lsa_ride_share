@@ -38,6 +38,10 @@ class ReservationPolicy < ApplicationPolicy
     create?
   end
 
+  def no_car_all_times?
+    create?
+  end
+
   def edit_change_day?
     create?
   end

@@ -32,7 +32,16 @@
       <div class="flex flex-col justify-between">
         <% reservations.each do |reservation| %>
           <div class="body-sm-text">
-            <%= link_to reservation.display_name, reservation_path(reservation.id), class: "link_to" %>
+            <% if reservation.car_id.present? %>
+              <%= link_to reservation.display_name, reservation_path(reservation.id), class: "link_to" %>
+            <% else %>
+              <%= link_to reservation_path(reservation.id), class: "link_to" do %>
+                <span>
+                  <%= reservation.display_name %>
+                  <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
+                </span>
+              <% end %>
+            <% end %>
             <p>
               <%= show_time(reservation.start_time + 15.minute) %>
               -

@@ -242,8 +242,8 @@ module ApplicationHelper
   def all_day_available_time(day, unit_id)
     # all day time renges for unit
     times = show_time_begin_end(day, unit_id)
-    day_begin  = times[0] - 15.minute
-    day_end  = times[1] + 15.minute
+    day_begin  = times[0]
+    day_end  = times[1]
     day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) }
     available_times_begin = day_times_with_15_min_steps.map { |t| [show_time(t), t.to_s] }
     available_times_begin.pop
@@ -254,6 +254,9 @@ module ApplicationHelper
   end
 
   def available_time(day, cars, unit_id)
+    unless cars.present?
+      return all_day_available_time(day, unit_id)
+    end
     # array of time with 15 minutes step available to reserve cars
     times = show_time_begin_end(day, unit_id)
     day_begin  = times[0]
@@ -280,8 +283,12 @@ module ApplicationHelper
       available_times_end = day_times_with_15_min_steps.map { |t| [show_time(t), t.to_s] }
       available_times_end.shift
     end
-    available_times = {:begin=>available_times_begin, :end=>available_times_end}
-    return available_times
+    unless available_times_begin.present? || available_times_end.present?
+      return all_day_available_time(day, unit_id)
+    else
+      available_times = {:begin=>available_times_begin, :end=>available_times_end}
+      return available_times
+    end
   end
 
   def available_cars(cars, range)

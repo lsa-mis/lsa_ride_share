@@ -1,6 +1,9 @@
 <div class="lg:flex justify-between">
   <h1>New Reservation</h1>
 </div>
+<p class="body-sm-text mt-2">
+   You can add passengers after submitting the reservation.
+</p>
 <%= render 'form', reservation: @reservation %>
 <div>
   <%= turbo_frame_tag "available_cars" do %>
