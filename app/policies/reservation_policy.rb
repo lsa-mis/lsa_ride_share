@@ -58,6 +58,10 @@ class ReservationPolicy < ApplicationPolicy
     update?
   end
 
+  def send_reservation_edited_email?
+    user_in_access_group?
+  end
+
   def add_non_uofm_passengers?
     update?
   end
