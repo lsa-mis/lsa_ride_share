@@ -47,6 +47,9 @@
             <div class="my-2">
               <%= link_to 'Edit Drivers and Passengers', add_drivers_path(@reservation, :edit => true), class: "primary_button" if policy(@reservation).edit? %>
             </div>
+            <div>
+            <%= link_to 'Reservation Updated - Send Email', send_reservation_edited_email_path(@reservation), class: "secondary_blue_button" if policy(@reservation).edit? %>
+          </div>
           <% end %>
           <% unless @reservation.approved %>
             <div class="my-2">
