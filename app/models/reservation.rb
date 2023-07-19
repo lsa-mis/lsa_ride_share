@@ -38,6 +38,7 @@ class Reservation < ApplicationRecord
   has_rich_text :note
 
   validate :check_number_of_people_on_trip, on: :update
+  validate :check_drivers, on: :update
 
   scope :with_passengers, -> { Reservation.includes(:passengers) }
 
@@ -98,6 +99,15 @@ class Reservation < ApplicationRecord
   def check_number_of_non_uofm_passengers
     unless self.number_of_non_uofm_passengers.present?
       self.number_of_non_uofm_passengers = 0
+    end
+  end
+
+  def check_drivers
+    if self.passengers.include?(self.driver)
+      errors.add(:base, "remove this driver from the passenger list first.")
+    end
+    if self.passengers.include?(self.backup_driver)
+      errors.add(:base, "remove this backup driver from the passengers list first.")
     end
   end
 
