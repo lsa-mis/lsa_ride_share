@@ -58,7 +58,7 @@ class ReservationPolicy < ApplicationPolicy
     update?
   end
 
-  def send_reservation_edited_email?
+  def send_reservation_updated_email?
     user_in_access_group?
   end
 
