@@ -4,13 +4,13 @@
       <h1 class="mb-4">Vehicle Report: <%= @vehicle_report.id %></h1>
       <% if is_admin?(current_user) %>
         <%= form_with model: @vehicle_report, html: { class: "sm:flex sm:items-center" },
-          data: { controller: "approve",
-                  approve_target: "form"
+          data: { controller: "autosubmit",
+                  autosubmit_target: "form"
                 } do |f| %>
           <div class="sm:col-span-4">
             <ol class="switches">
               <li>
-                <%= f.check_box :approved, "data-action": "change->approve#toggleApprove"  %>
+                <%= f.check_box :approved, "data-action": "change->autosubmit#search" %>
                 <%= f.label :approved do %>
                   <span class="label-text">Approved</span>
                   <span></span>
@@ -22,7 +22,19 @@
       <% end %>
     </div>
     <div class="lg:grid lg:justify-items-end">
-      <%= link_to 'Edit Vehicle Report', edit_vehicle_report_path(@vehicle_report), class: "primary_button" unless @vehicle_report.approved %>
+      <% unless @vehicle_report.approved %>
+        <div>
+          <%= link_to 'Edit Vehicle Report', edit_vehicle_report_path(@vehicle_report), class: "primary_button" %>
+        </div>
+        <div class="my-2">
+          <%= link_to vehicle_report_path(@vehicle_report), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete} do %>
+            <span class="secondary_blue_button my-2">
+              <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
+              Cancel Vehicle Report
+            </span>
+          <% end %>
+        </div>
+      <% end %>
     </div>
   </div>
   <div class="grid grid-cols-1 lg:grid-cols-2">

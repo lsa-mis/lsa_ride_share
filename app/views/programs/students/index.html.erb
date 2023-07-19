@@ -9,7 +9,7 @@
           <% if @student_program.not_course %>
             <%= link_to 'Add Students', add_students_path(@student_program), class: "secondary_blue_button" %>
           <% else %>
-            <%= link_to 'Update Student List', update_student_list_path(@student_program), class: "secondary_blue_button" %>
+            <%= link_to 'Refresh Student List', update_student_list_path(@student_program), class: "secondary_blue_button" %>
             <%= link_to 'Add Students', add_students_path(@student_program), class: "secondary_blue_button" %>
           <% end %>
         <% end %>

@@ -142,6 +142,10 @@ module ApplicationHelper
     end
   end
 
+  def show_reservation_date(reservation)
+    show_date_time(reservation.start_time) + " - " +  show_date_time(reservation.end_time)
+  end
+  
   def show_reserved_by_in_week_calendar(reservation)
     User.find(reservation.reserved_by).display_name
   end
@@ -408,11 +412,11 @@ module ApplicationHelper
   def gas_percent
     [
       ['12.5', '12.5'],
-      ['25', '25.0'],
+      ['25.0', '25.0'],
       ['37.5', '37.5'],
-      ['50', '50.0'],
+      ['50.0', '50.0'],
       ['62.5', '62.5'],
-      ['75', '75.0'],
+      ['75.0', '75.0'],
       ['87.5', '87.5'],
       ['100', '100.0']
     ]

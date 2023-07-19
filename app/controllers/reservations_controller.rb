@@ -55,7 +55,6 @@ class ReservationsController < ApplicationController
 
   # GET /reservations/new
   def new
-    session[:return_to] = request.referer
     @reservation = Reservation.new
     authorize @reservation
     if is_student?(current_user)
@@ -69,8 +68,8 @@ class ReservationsController < ApplicationController
       @unit_id = params[:unit_id]
       @min_date =  DateTime.now
     else
-      redirect_back_or_default("You must select a unit first.", reservations_url)
-      return
+      flash.now[:alert] = 'You must select a unit first.'
+      render turbo_stream: turbo_stream.update("flash", partial: "layouts/notification")
     end
     if params[:day_start].present?
       @day_start = params[:day_start].to_date
@@ -261,19 +260,24 @@ class ReservationsController < ApplicationController
 
   # DELETE /reservations/1 or /reservations/1.json
   def destroy
-    respond_to do |format|
-      if @reservation.destroy
-        if is_admin?(current_user)
-          format.html { redirect_to reservations_url, notice: "Reservation was canceled." }
-          format.json { head :no_content }
-        elsif is_student?(current_user)
-          format.html { redirect_to welcome_pages_student_url, notice: "Reservation was canceled." }
-          format.json { head :no_content }
+    unless @reservation.approved
+      respond_to do |format|
+        if @reservation.destroy
+          if is_admin?(current_user)
+            format.html { redirect_to reservations_url, notice: "Reservation was canceled." }
+            format.json { head :no_content }
+          elsif is_student?(current_user)
+            format.html { redirect_to welcome_pages_student_url, notice: "Reservation was canceled." }
+            format.json { head :no_content }
+          end
+        else
+          format.html { render :show, status: :unprocessable_entity }
+          format.json { render json: @reservation.errors, status: :unprocessable_entity }
         end
-      else
-        format.html { render :show, status: :unprocessable_entity }
-        format.json { render json: @reservation.errors, status: :unprocessable_entity }
       end
+    else
+      flash.now[:alert] = 'The reservation is approved. To cancel, please contact your administrator'
+      render turbo_stream: turbo_stream.update("flash", partial: "layouts/notification")
     end
   end
 
