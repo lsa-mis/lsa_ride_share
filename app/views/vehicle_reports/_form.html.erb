@@ -118,6 +118,11 @@
               <%= link_to url_for(@vehicle_report.image_driver_start), target: "_blank" do %>
                 <%= image_tag @vehicle_report.image_driver_start.variant(:thumb),  alt: 'Driver side of car (start)', class: "object-cover group-hover:opacity-75" %>
               <% end %>
+              <%= link_to delete_file_path(image_driver_start), data: { turbo_method: :get, turbo_confirm: 'Are you sure?' } do %>
+                <span class="tertiary_button">Remove
+                  <i class="fa fa-times" aria-hidden="true"></i>
+                </span>
+              <% end %>
             </div>
           <% end %>
         </div>
@@ -132,6 +137,11 @@
             <div class="sm:col-span-3">
               <%= link_to url_for(@vehicle_report.image_passenger_start), target: "_blank" do %>
                 <%= image_tag @vehicle_report.image_passenger_start.variant(:thumb),  alt: 'Passenger side of car (start)', class: "object-cover group-hover:opacity-75" %>
+              <% end %>
+              <%= link_to delete_file_path(@vehicle_report.image_passenger_start), data: { turbo_method: :get, turbo_confirm: 'Are you sure?' } do %>
+                <span class="tertiary_button">Remove
+                  <i class="fa fa-times" aria-hidden="true"></i>
+                </span>
               <% end %>
             </div>
           <% end %>
@@ -148,6 +158,11 @@
             <div class="sm:col-span-3">
               <%= link_to url_for(@vehicle_report.image_back_start), target: "_blank" do %>
                 <%= image_tag @vehicle_report.image_back_start.variant(:thumb),  alt: 'Back of car (start)', class: "object-cover group-hover:opacity-75" %>
+              <% end %>
+              <%= link_to delete_file_path(@vehicle_report.image_back_start), data: { turbo_method: :get, turbo_confirm: 'Are you sure?' } do %>
+                <span class="tertiary_button">Remove
+                  <i class="fa fa-times" aria-hidden="true"></i>
+                </span>
               <% end %>
             </div>
           <% end %>
@@ -167,6 +182,11 @@
               <%= link_to url_for(@vehicle_report.image_front_end), target: "_blank" do %>
                 <%= image_tag @vehicle_report.image_front_end.variant(:thumb), alt: 'Front of car (end)', class: "object-cover group-hover:opacity-75" %>
               <% end %>
+              <%= link_to delete_file_path(@vehicle_report.image_front_end), data: { turbo_method: :get, turbo_confirm: 'Are you sure?' } do %>
+                <span class="tertiary_button">Remove
+                  <i class="fa fa-times" aria-hidden="true"></i>
+                </span>
+              <% end %>
             </div>
           <% end %>
         </div>
@@ -181,6 +201,11 @@
             <div class="sm:col-span-3">
               <%= link_to url_for(@vehicle_report.image_driver_end), target: "_blank" do %>
                 <%= image_tag @vehicle_report.image_driver_end.variant(:thumb),  alt: 'Driver side of car (end)', class: "object-cover group-hover:opacity-75" %>
+              <% end %>
+              <%= link_to delete_file_path(@vehicle_report.image_driver_end), data: { turbo_method: :get, turbo_confirm: 'Are you sure?' } do %>
+                <span class="tertiary_button">Remove
+                  <i class="fa fa-times" aria-hidden="true"></i>
+                </span>
               <% end %>
             </div>
           <% end %>
@@ -197,6 +222,11 @@
               <%= link_to url_for(@vehicle_report.image_passenger_end), target: "_blank" do %>
                 <%= image_tag @vehicle_report.image_passenger_end.variant(:thumb),  alt: 'Passenger side of car (end)', class: "object-cover group-hover:opacity-75" %>
               <% end %>
+              <%= link_to delete_file_path(@vehicle_report.image_passenger_end), data: { turbo_method: :get, turbo_confirm: 'Are you sure?' } do %>
+                <span class="tertiary_button">Remove
+                  <i class="fa fa-times" aria-hidden="true"></i>
+                </span>
+              <% end %>
             </div>
           <% end %>
         </div>
@@ -211,6 +241,11 @@
             <div class="sm:col-span-3">
               <%= link_to url_for(@vehicle_report.image_back_end), target: "_blank" do %>
                 <%= image_tag @vehicle_report.image_back_end.variant(:thumb),  alt: 'Back of car (end)', class: "object-cover group-hover:opacity-75" %>
+              <% end %>
+              <%= link_to delete_file_path(@vehicle_report.image_back_end), data: { turbo_method: :get, turbo_confirm: 'Are you sure?' } do %>
+                <span class="tertiary_button">Remove
+                  <i class="fa fa-times" aria-hidden="true"></i>
+                </span>
               <% end %>
             </div>
           <% end %>
