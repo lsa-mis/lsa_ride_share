@@ -1,13 +1,12 @@
 <div class="mx-auto w-full">
-  <div class="flex justify-between items-center mb-4">
+  <div class="lg:flex justify-between items-center mb-4">
     <div>
       <h1>Add Passengers</h1>
       <h2>
-        <%= @reservation.program.unit.name %>
         <%= @reservation.program.display_name_with_title %>
       </h2>
     </div>
-    <div class="mt-4">
+    <div class="mt-4 whitespace-nowrap">
       <% if params["edit"] == "true" %>
         <%= link_to "Go Back to Reservation Page", update_passengers_path(@reservation), class: "primary_button" %>
       <% else %>
