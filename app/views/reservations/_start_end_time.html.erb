@@ -10,13 +10,6 @@
       <%= select_tag "end_time", options_for_select(available_time(@day_start, @cars, @unit_id)[:end], @end_time), class: "input_text_field",
       "data-reservation-target": "end_time", "data-action": "change->reservation#availableCars" %>
     </div>
-    <div>
-      <% if UnitPreference.find_by(unit_id: @unit_id, name: "no_car_reservations").on_off %>
-        <%= label_tag("no_car", nil, class: "hidden") %>
-        <%= check_box_tag "no_car", 1, nil, class: "check_box", "data-reservation-target": "no_car", "data-action": "reservation#hideCarSelection" %>
-        <span class="check_box_text">Create a reservation without a car - if no time or cars are available.</span>
-      <% end %>
-    </div>
     <div class="error_text" id="time_field"></div>
   </div>
 <% end %>
