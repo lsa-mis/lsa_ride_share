@@ -1,6 +1,6 @@
 class ReservationsController < ApplicationController
   before_action :auth_user
-  before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger finish_reservation update_passengers ]
+  before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger finish_reservation update_passengers send_reservation_updated_email ]
   before_action :set_terms_and_units
   before_action :set_programs
   before_action :set_cars, only: %i[ new get_available_cars ]
@@ -245,6 +245,14 @@ class ReservationsController < ApplicationController
         format.json { render json: @reservation.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  def send_reservation_updated_email
+    authorize @reservation
+    ReservationMailer.with(reservation: @reservation).car_reservation_updated(current_user).deliver_now
+    @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id)
+    flash.now[:notice] = 'Email was sent'
+    render :show
   end
 
   def add_non_uofm_passengers

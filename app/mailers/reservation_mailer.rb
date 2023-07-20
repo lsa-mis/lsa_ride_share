@@ -1,7 +1,7 @@
 class ReservationMailer < ApplicationMailer
-  before_action :set_reservation, only: [:car_reservation_created, :car_reservation_approved, :car_reservation_confirmation]
-  before_action :set_driver_name, only: [:car_reservation_created, :car_reservation_approved, :car_reservation_confirmation]
-  before_action :set_passengers, only: [:car_reservation_created, :car_reservation_approved, :car_reservation_confirmation]
+  before_action :set_reservation, only: [:car_reservation_created, :car_reservation_approved, :car_reservation_confirmation, :car_reservation_updated]
+  before_action :set_driver_name, only: [:car_reservation_created, :car_reservation_approved, :car_reservation_confirmation, :car_reservation_updated]
+  before_action :set_passengers, only: [:car_reservation_created, :car_reservation_approved, :car_reservation_confirmation, :car_reservation_updated]
 
   def car_reservation_created(user)
     @recipient = @reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
@@ -13,7 +13,7 @@ class ReservationMailer < ApplicationMailer
   def car_reservation_confirmation(user)
     recipients = []
     recipients << User.find(@reservation.reserved_by).principal_name.presence
-    recipients << email_address(@reservation.driver)
+    recipients << email_address(@reservation.driver) if @reservation.driver.present?
     recipients << email_address(@reservation.backup_driver) if @reservation.backup_driver.present?
     recipients << @passengers_emails if @passengers_emails.present?
     @recipients = recipients.join(", ")
@@ -24,7 +24,7 @@ class ReservationMailer < ApplicationMailer
 
   def car_reservation_approved(user)
     recipients = []
-    recipients << email_address(@reservation.driver)
+    recipients << email_address(@reservation.driver) if @reservation.driver.present?
     recipients << email_address(@reservation.backup_driver) if @reservation.backup_driver.present?
     recipients << @passengers_emails if @passengers_emails.present?
     @recipients = recipients.join(", ")
@@ -79,6 +79,18 @@ class ReservationMailer < ApplicationMailer
     mail(to: @recipients, subject: "Reservation canceled for program: #{@reservation.program.display_name}" )
     EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "car_reservation_cancel_student",
       sent_to: @recipients, sent_by: user, sent_at: DateTime.now)
+  end
+
+  def car_reservation_updated(user)
+    recipients = []
+    recipients << User.find(@reservation.reserved_by).principal_name.presence
+    recipients << email_address(@reservation.driver) if @reservation.driver.present?
+    recipients << email_address(@reservation.backup_driver) if @reservation.backup_driver.present?
+    recipients << @passengers_emails if @passengers_emails.present?
+    @recipients = recipients.join(", ")
+    mail(to: @recipients, subject: "Reservation updated for program: #{@reservation.program.display_name}" )
+    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "car_reservation_updated",
+      sent_to: @recipients, sent_by: user.id, sent_at: DateTime.now)
   end
 
   private 
