@@ -183,7 +183,7 @@ export default class extends Controller {
     let submitForm = true
 
     if(term == "" || program == "" || site == "") {
-      required_fields_error.innerHTML = "Please select required data"
+      required_fields_error.innerHTML = "Please complete required fields ( * )"
       car_field_error.innerHTML = ''
       submitForm = false
     } else if (car == "" && !no_car) {
