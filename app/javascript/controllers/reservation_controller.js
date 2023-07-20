@@ -3,7 +3,8 @@ import { get } from "@rails/request.js"
 
 export default class extends Controller {
   static targets = ['form', 'term', 'unit', 'program', 'site', 'required_fields',
-    'day_start', 'number', 'start_time', 'end_time', 'selected_time_error', 'car', 'car_field']
+    'day_start', 'number', 'start_time', 'end_time', 'selected_time_error',
+    'car_selection', 'car', 'car_field', 'no_car']
 
   connect() {
     console.log("connect - reservation")
@@ -91,7 +92,7 @@ export default class extends Controller {
     }
   }
 
-  availableCars(){
+  availableCars() {
     let unit_id = this.unitTarget.value
     let day_start = this.day_startTarget.value
     let number = this.numberTarget.value
@@ -105,6 +106,8 @@ export default class extends Controller {
     let required_fields_error = document.getElementById('required_fields')
     let car_field_error = document.getElementById('car_field')
 
+    var no_car = document.getElementById("no_car")
+
     if (diff_time > 0 && diff_time < 31) {
       time_field_error.innerHTML = 'End time is too close to start time'
       required_fields_error.innerHTML = ''
@@ -117,9 +120,45 @@ export default class extends Controller {
       time_field_error.innerHTML = ''
     }
 
-    get(`/reservations/get_available_cars/${unit_id}/${day_start}/${number}/${start_time}/${end_time}`, {
-      responseKind: "turbo-stream"
-    })
+    if (this.elementExist(no_car)) {
+      if (!no_car.checked) {
+        get(`/reservations/get_available_cars/${unit_id}/${day_start}/${number}/${start_time}/${end_time}`, {
+          responseKind: "turbo-stream"
+        })
+      }
+    } else {
+      get(`/reservations/get_available_cars/${unit_id}/${day_start}/${number}/${start_time}/${end_time}`, {
+        responseKind: "turbo-stream"
+      })
+    }
+  }
+
+  elementExist(element) {
+    if (element) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  hideCarSelection() {
+    let unit_id = this.unitTarget.value
+    let day_start = this.day_startTarget.value
+    var hide = document.getElementById("no_car").checked
+    console.log(hide)
+    if (hide) {
+      this.carTarget.value = ""
+      this.car_selectionTarget.classList.add("fields--hide")
+      this.car_selectionTarget.classList.remove("fields--display")
+
+      get(`/reservations/no_car_all_times/${unit_id}/${day_start}`, {
+        responseKind: "turbo-stream"
+      })
+    }
+    else {
+      this.car_selectionTarget.classList.add("fields--display")
+      this.car_selectionTarget.classList.remove("fields--hide")
+    }
 
   }
 
@@ -129,7 +168,7 @@ export default class extends Controller {
     let program = this.programTarget.value
     let site = this.siteTarget.value
     let car = this.carTarget.value
-
+    let no_car = this.no_carTarget.value
     let start_time = this.start_timeTarget.value
     let end_time = this.end_timeTarget.value
     let start_time_format = new Date(start_time)
@@ -146,7 +185,7 @@ export default class extends Controller {
       required_fields_error.scrollIntoView()
       car_field_error.innerHTML = ''
       submitForm = false
-    } else if (car == "") {
+    } else if (car == "" && !no_car) {
       car_field_error.innerHTML = "Please select a car"
       required_fields_error.innerHTML = ''
       submitForm = false

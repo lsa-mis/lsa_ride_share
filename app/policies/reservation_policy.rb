@@ -46,6 +46,10 @@ class ReservationPolicy < ApplicationPolicy
     create?
   end
 
+  def no_car_all_times?
+    create?
+  end
+
   def edit_change_day?
     create?
   end
@@ -54,7 +58,19 @@ class ReservationPolicy < ApplicationPolicy
     user_in_access_group? || is_reserved_by?
   end
 
+  def add_non_uofm_passengers?
+    user_in_access_group? || is_reserved_by?
+  end
+
   def finish_reservation?
+    update?
+  end
+
+  def send_reservation_updated_email?
+    user_in_access_group?
+  end
+
+  def add_non_uofm_passengers?
     update?
   end
 
@@ -73,7 +89,7 @@ class ReservationPolicy < ApplicationPolicy
 
   def is_reservation_driver?
     student = Student.find_by(program_id: @record.program, uniqname: @user.uniqname)
-    @record.driver == student
+    @record.driver == student || @record.backup_driver == student
   end
 
   def is_reserved_by?

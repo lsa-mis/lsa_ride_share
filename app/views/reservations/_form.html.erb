@@ -67,23 +67,24 @@
     </div>
   </div>
 
-  <%= render 'start_end_time' %>
+  <div class="mb-2">
+    <%= render 'start_end_time' %>
+  </div>
 
-  <div>
+  <div class="mb-4">
+    <% if UnitPreference.find_by(unit_id: @unit_id, name: "no_car_reservations").on_off %>
+      <%= label_tag("no_car", nil, class: "hidden") %>
+      <%= check_box_tag "no_car", 1, nil, class: "check_box", "data-reservation-target": "no_car", "data-action": "reservation#hideCarSelection" %>
+      <span class="check_box_text">Create a reservation without a car - if no time or cars are available.</span>
+    <% end %>
+  </div>
+
+  <div data-reservation-target="car_selection" class="fields--display">
     <p class="body-sm-text mt-4 mb-2">
-      Select a car and click Create Reservation. You can add passengers after submitting the reservation.
+      Select a car and click Create Reservation.
     </p>
+    <%= render 'cars_dropdown' %>
   </div>
-
-  <div>
-   <% if @car_id.present? %>
-    <p class="body-sm-bold-text mt-4 mb-2">
-      Car <%= Car.find(@car_id).car_number %> was selected
-    </p>
-   <% end %>
-  </div>
-
-  <%= render 'cars_dropdown' %>
 
   <div class="inline">
     <%= form.submit class: "primary_button" %>

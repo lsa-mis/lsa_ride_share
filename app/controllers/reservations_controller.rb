@@ -1,6 +1,6 @@
 class ReservationsController < ApplicationController
   before_action :auth_user
-  before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger finish_reservation update_passengers]
+  before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger finish_reservation update_passengers send_reservation_updated_email ]
   before_action :set_terms_and_units
   before_action :set_programs
   before_action :set_cars, only: %i[ new new_long get_available_cars get_available_cars_long ]
@@ -21,6 +21,7 @@ class ReservationsController < ApplicationController
   end
 
   def week_calendar
+    @no_car = false
     session[:return_to] = request.referer
     if current_user.unit_ids.count == 1
       @unit_id = current_user.unit_ids[0]
@@ -55,7 +56,6 @@ class ReservationsController < ApplicationController
 
   # GET /reservations/new
   def new
-    session[:return_to] = request.referer
     @reservation = Reservation.new
     authorize @reservation
     if is_student?(current_user)
@@ -69,8 +69,8 @@ class ReservationsController < ApplicationController
       @unit_id = params[:unit_id]
       @min_date =  DateTime.now
     else
-      redirect_back_or_default("You must select a unit first.", reservations_url)
-      return
+      flash.now[:alert] = 'You must select a unit first.'
+      render turbo_stream: turbo_stream.update("flash", partial: "layouts/notification")
     end
     if params[:day_start].present?
       @day_start = params[:day_start].to_date
@@ -243,6 +243,19 @@ class ReservationsController < ApplicationController
       return cars
   end
 
+  def no_car_all_times
+    if params[:unit_id].present?
+      @unit_id = params[:unit_id]
+    end
+    if params[:day_start].present?
+      @day_start = params[:day_start].to_date
+    end
+    @start_time = nil
+    @end_time = nil
+    @cars = []
+    authorize Reservation
+  end
+
   # POST /reservations or /reservations.json
   def create
     @reservation = Reservation.new(reservation_params)
@@ -293,9 +306,8 @@ class ReservationsController < ApplicationController
         redirect_to reservation_path(@reservation), notice: "Reservation was updated"
         return
       else
-        flash.now[:alert] = "error"
-        format.turbo_stream { render :show, status: :unprocessable_entity }
-        return
+        flash.now[:alert] = 'Error approving the reservation'
+        render turbo_stream: turbo_stream.update("flash", partial: "layouts/notification")
       end
     end
     if params[:reservation][:driver_id].present?
@@ -303,17 +315,12 @@ class ReservationsController < ApplicationController
         redirect_to add_passengers_path(@reservation, :edit => params[:edit])
         return
       else
-        flash.now[:alert] = "error"
         @drivers = @reservation.program.students.eligible_drivers
-        format.turbo_stream { render :add_drivers, status: :unprocessable_entity }
+        render :add_drivers, status: :unprocessable_entity
         return
       end
     end
-    if params[:reservation][:non_uofm_passengers].present?
-      @reservation.update(non_uofm_passengers: params[:reservation][:non_uofm_passengers])
-      redirect_to add_passengers_path(@reservation)
-      return
-    end
+
     @reservation.attributes = reservation_params
     @reservation.car_id = params[:car_id]
     @reservation.start_time = params[:start_time].to_datetime - 15.minute
@@ -341,6 +348,29 @@ class ReservationsController < ApplicationController
     end
   end
 
+  def send_reservation_updated_email
+    authorize @reservation
+    ReservationMailer.with(reservation: @reservation).car_reservation_updated(current_user).deliver_now
+    @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id)
+    flash.now[:notice] = 'Email was sent'
+    render :show
+  end
+
+  def add_non_uofm_passengers
+    @reservation = Reservation.find(params[:reservation_id])
+    authorize @reservation
+    params[:reservation][:non_uofm_passengers].present?
+    respond_to do |format|
+      if @reservation.update(reservation_params)
+        @passengers = @reservation.passengers
+        @students = @reservation.program.students.order(:last_name) - @passengers
+        @students.delete(@reservation.driver)
+        @students.delete(@reservation.backup_driver)
+        format.turbo_stream { render :add_non_uofm_passenger }
+      end
+    end
+  end
+
   def add_drivers
     @drivers = @reservation.program.students.eligible_drivers
     @passengers = @reservation.passengers
@@ -362,19 +392,24 @@ class ReservationsController < ApplicationController
 
   # DELETE /reservations/1 or /reservations/1.json
   def destroy
-    respond_to do |format|
-      if @reservation.destroy
-        if is_admin?(current_user)
-          format.html { redirect_to reservations_url, notice: "Reservation was canceled." }
-          format.json { head :no_content }
-        elsif is_student?(current_user)
-          format.html { redirect_to welcome_pages_student_url, notice: "Reservation was canceled." }
-          format.json { head :no_content }
+    unless @reservation.approved
+      respond_to do |format|
+        if @reservation.destroy
+          if is_admin?(current_user)
+            format.html { redirect_to reservations_url, notice: "Reservation was canceled." }
+            format.json { head :no_content }
+          elsif is_student?(current_user)
+            format.html { redirect_to welcome_pages_student_url, notice: "Reservation was canceled." }
+            format.json { head :no_content }
+          end
+        else
+          format.html { render :show, status: :unprocessable_entity }
+          format.json { render json: @reservation.errors, status: :unprocessable_entity }
         end
-      else
-        format.html { render :show, status: :unprocessable_entity }
-        format.json { render json: @reservation.errors, status: :unprocessable_entity }
       end
+    else
+      flash.now[:alert] = 'The reservation is approved. To cancel, please contact your administrator'
+      render turbo_stream: turbo_stream.update("flash", partial: "layouts/notification")
     end
   end
 
@@ -405,6 +440,6 @@ class ReservationsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def reservation_params
       params.require(:reservation).permit(:status, :start_time, :end_time, :recurring, :driver_id, :driver_phone, :backup_driver_id, :backup_driver_phone, 
-      :number_of_people_on_trip, :program_id, :site_id, :car_id, :reserved_by, :approved)
+      :number_of_people_on_trip, :program_id, :site_id, :car_id, :reserved_by, :approved, :non_uofm_passengers, :number_of_non_uofm_passengers)
     end
 end

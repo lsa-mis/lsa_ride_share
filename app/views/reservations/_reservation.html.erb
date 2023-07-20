@@ -1,5 +1,12 @@
 <div class="grid grid-cols-1 sm:grid-cols-2">
   <div>
+    <div class="">
+      <% if is_student?(current_user) && @reservation.approved %>
+        <p class="body-md-text status-true">
+          The reservation is approved by admins
+        </p>
+      <% end %>
+    </div>
     <div class="py-2">
       <label class="body-lg-bold-text">
         Car:
@@ -8,7 +15,9 @@
         <% if reservation.car.present? %>
           <%= link_to show_car(reservation), car_path(reservation.car), class: "link_to" %>
         <% else %>
-          No car selected
+          <span class="status-false">
+            No car selected
+          </span>
         <% end %>
       </p>
     </div>
@@ -88,7 +97,7 @@
   <div>
     <% if @passengers.present? %>
       <label class="body-lg-bold-text">
-        Passengers:
+        Passengers (<%= @reservation.passengers.count %>):
       </label>
       <ul>
         <% @passengers.each do |passenger| %>
@@ -98,6 +107,16 @@
         <% end %>
       </ul>
     <% end %>
+    <div class="mt-2">
+      <% if @reservation.program.non_uofm_passengers && @reservation.non_uofm_passengers.present? %>
+        <label class="body-lg-bold-text">
+          Non UofM Passengers (<%= @reservation.number_of_non_uofm_passengers %>):
+        </label>
+        <p class="body-lg-text ml-2">
+          <%= @reservation.non_uofm_passengers %>
+        </p>
+      <% end %>
+    </div>
   </div>
 
 </div>

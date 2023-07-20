@@ -105,6 +105,28 @@ class VehicleReportsController < ApplicationController
     end
   end
 
+  def destroy
+    unless @vehicle_report.approved
+      respond_to do |format|
+        if @vehicle_report.destroy
+          if is_admin?(current_user)
+            format.html { redirect_to vehicle_reports_url, notice: "Vehicle report was canceled." }
+            format.json { head :no_content }
+          elsif is_student?(current_user)
+            format.html { redirect_to welcome_pages_student_url, notice: "Vehicle report was canceled." }
+            format.json { head :no_content }
+          end
+        else
+          format.html { render :show, status: :unprocessable_entity }
+          format.json { render json: @vehicle_report.errors, status: :unprocessable_entity }
+        end
+      end
+    else
+      flash.now[:alert] = 'The vehicle report is approved. To cancel, please contact your administrator'
+      render turbo_stream: turbo_stream.update("flash", partial: "layouts/notification")
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_vehicle_report
