@@ -28,7 +28,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .available {
-    @apply text-green-700
+    @apply text-green-umgreen
   }
 
   h1 {
@@ -271,7 +271,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .notice {
-    @apply text-green-500 text-sm font-normal font-montserrat;
+    @apply text-green-umgreen text-sm font-normal font-montserrat;
   }
 
   .fields--hide {
