@@ -51,7 +51,7 @@ class ReservationsController < ApplicationController
   # GET /reservations/1 or /reservations/1.json
   def show
     @passengers = @reservation.passengers
-    @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id)
+    @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id).order(created_at: :desc)
   end
 
   # GET /reservations/new
@@ -250,7 +250,7 @@ class ReservationsController < ApplicationController
   def send_reservation_updated_email
     authorize @reservation
     ReservationMailer.with(reservation: @reservation).car_reservation_updated(current_user).deliver_now
-    @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id)
+    @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id).order(created_at: :desc)
     flash.now[:notice] = 'Email was sent'
     render :show
   end
