@@ -3,7 +3,7 @@ import { get } from "@rails/request.js"
 
 export default class extends Controller {
   static targets = ['unit',
-    'day_start', 'day_end', 'number', 'start_time', 'end_time', 'selected_time_error', 'car', 'car_field']
+    'day_start', 'day_end', 'number', 'start_time', 'end_time', 'selected_time_error', 'car', 'car_selection', 'car_field']
 
   connect() {
     console.log("connect - long reservation")
@@ -37,6 +37,23 @@ export default class extends Controller {
     get(`/reservations/get_available_cars_long/${unit_id}/${day_start}/${day_end}/${number}/`, {
       responseKind: "turbo-stream"
     })
+
+  }
+
+  hideCarSelection() {
+    let unit_id = this.unitTarget.value
+    let day_start = this.day_startTarget.value
+    var hide = document.getElementById("no_car").checked
+    console.log(hide)
+    if (hide) {
+      this.carTarget.value = ""
+      this.car_selectionTarget.classList.add("fields--hide")
+      this.car_selectionTarget.classList.remove("fields--display")
+    }
+    else {
+      this.car_selectionTarget.classList.add("fields--display")
+      this.car_selectionTarget.classList.remove("fields--hide")
+    }
 
   }
 
