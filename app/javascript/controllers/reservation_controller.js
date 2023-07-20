@@ -145,7 +145,6 @@ export default class extends Controller {
     let unit_id = this.unitTarget.value
     let day_start = this.day_startTarget.value
     var hide = document.getElementById("no_car").checked
-    console.log(hide)
     if (hide) {
       this.carTarget.value = ""
       this.car_selectionTarget.classList.add("fields--hide")
@@ -168,7 +167,11 @@ export default class extends Controller {
     let program = this.programTarget.value
     let site = this.siteTarget.value
     let car = this.carTarget.value
-    let no_car = this.no_carTarget.value
+    let no_car_element = document.getElementById("no_car")
+    let no_car = 0
+    if (this.elementExist(no_car_element)) {
+      no_car = no_car_element.checked
+    }
     let start_time = this.start_timeTarget.value
     let end_time = this.end_timeTarget.value
     let start_time_format = new Date(start_time)
