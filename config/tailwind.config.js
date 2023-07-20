@@ -57,6 +57,7 @@ module.exports = {
         700: '#c53030',
         800: '#9b2c2c',
         900: '#742a2a',
+        umred: '#B51E0A',
       },
       orange: {
         100: '#fffaf0',

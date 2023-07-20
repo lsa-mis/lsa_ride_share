@@ -5,7 +5,7 @@
         } do |form| %>
 
   <% if vehicle_report.errors.any? %>
-    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
+    <div id="error_explanation" class="text-red-umred px-3 py-2 font-medium rounded-lg mt-3">
       <h2><%= pluralize(vehicle_report.errors.count, "error") %> prohibited this vehicle_report from being saved: </h2>
       <ul>
         <% vehicle_report.errors.each do |error| %>

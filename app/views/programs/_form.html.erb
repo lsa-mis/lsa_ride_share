@@ -4,7 +4,7 @@
           action: "submit->program#submitForm"
         }) do |form| %>
   <% if program.errors.any? %>
-    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
+    <div id="error_explanation" class="text-red-umred px-3 py-2 font-medium rounded-lg mt-3">
       <h2><%= pluralize(program.errors.count, "error") %> prohibited this program from being saved:</h2>
       <ul>
         <% program.errors.each do |error| %>
