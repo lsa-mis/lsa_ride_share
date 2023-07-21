@@ -10,8 +10,9 @@
   <% day_begin = times[0] - 15.minute %>
   <% day_end = times[1] %>
   <% day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) } %>
-  <% car_day_reserv = car.reservations.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day) %>
-  <% day_times_with_15_min_steps.each do |step| %>
+  <% car_day_reserv = car.reservations.where("(start_time BETWEEN ? AND ?) OR (start_time < ? AND end_time > ?)",
+    day.beginning_of_day, day.end_of_day, day.beginning_of_day, day.beginning_of_day) %>
+    <% day_times_with_15_min_steps.each do |step| %>
     <% step_range = step..step + 15.minutes %>
     <% if car_day_reserv.present? %>
       <% if car_day_reserv.map { |res| res.start_time..res.end_time }.any? { |r| r.cover?(step_range)} %>
