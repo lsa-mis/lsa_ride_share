@@ -33,12 +33,6 @@ class VehicleReportsController < ApplicationController
   def show
   end
 
-  def delete_file_attachment
-    @delete_file = ActiveStorage::Attachment.find(params[:id])
-    @delete_file.purge
-    redirect_back(fallback_location: request.referer)
-  end
-
   # GET /vehicle_reports/new
   def new
     @vehicle_report = VehicleReport.new
@@ -105,6 +99,14 @@ class VehicleReportsController < ApplicationController
     end
   end
 
+  def delete_image
+    @delete_file = ActiveStorage::Attachment.find(params[:image_id])
+    @delete_file.purge
+    @vehicle_report = VehicleReport.find(params[:id])
+    authorize @vehicle_report
+    redirect_back(fallback_location: request.referer)
+  end
+  
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_vehicle_report

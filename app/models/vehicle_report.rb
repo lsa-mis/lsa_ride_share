@@ -22,31 +22,31 @@ class VehicleReport < ApplicationRecord
   belongs_to :reservation
 
   has_one_attached :image_front_start do |attachable|
-    attachable.variant :thumb, resize_to_limit: [250, 250]
+    attachable.variant :thumb, resize_to_limit: [150, 150]
    end
   has_one_attached :image_driver_start do |attachable|
-    attachable.variant :thumb, resize_to_limit: [250, 250]
+    attachable.variant :thumb, resize_to_limit: [150, 150]
    end
   has_one_attached :image_passenger_start do |attachable|
-    attachable.variant :thumb, resize_to_limit: [250, 250]
+    attachable.variant :thumb, resize_to_limit: [150, 150]
    end
   has_one_attached :image_back_start do |attachable|
-    attachable.variant :thumb, resize_to_limit: [250, 250]
+    attachable.variant :thumb, resize_to_limit: [150, 150]
    end
   has_one_attached :image_front_end do |attachable|
-    attachable.variant :thumb, resize_to_limit: [250, 250]
+    attachable.variant :thumb, resize_to_limit: [150, 150]
    end
   has_one_attached :image_driver_end do |attachable|
-    attachable.variant :thumb, resize_to_limit: [250, 250]
+    attachable.variant :thumb, resize_to_limit: [150, 150]
    end
   has_one_attached :image_passenger_end do |attachable|
-    attachable.variant :thumb, resize_to_limit: [250, 250]
+    attachable.variant :thumb, resize_to_limit: [150, 150]
    end
   has_one_attached :image_back_end do |attachable|
-    attachable.variant :thumb, resize_to_limit: [250, 250]
+    attachable.variant :thumb, resize_to_limit: [150, 150]
    end
   has_many_attached :image_damages do |attachable|
-   attachable.variant :thumb, resize_to_limit: [250, 250]
+   attachable.variant :thumb, resize_to_limit: [150, 150]
   end
 
   has_rich_text :comment

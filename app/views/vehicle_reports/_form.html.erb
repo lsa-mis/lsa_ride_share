@@ -98,7 +98,7 @@
               <%= link_to url_for(@vehicle_report.image_front_start), target: "_blank" do %>
                 <%= image_tag @vehicle_report.image_front_start.variant(:thumb), alt: 'Front of car (start)', class: "object-cover group-hover:opacity-75" %>
               <% end %>
-              <%= link_to delete_file_path(@vehicle_report.image_front_start), data: { turbo_method: :get, turbo_confirm: 'Are you sure?' } do %>
+              <%= link_to delete_image_path(@vehicle_report, @vehicle_report.image_front_start.id), data: { turbo_method: :get, turbo_confirm: 'Are you sure?' } do %>
                 <span class="tertiary_button">Remove
                   <i class="fa fa-times" aria-hidden="true"></i>
                 </span>
@@ -118,7 +118,7 @@
               <%= link_to url_for(@vehicle_report.image_driver_start), target: "_blank" do %>
                 <%= image_tag @vehicle_report.image_driver_start.variant(:thumb),  alt: 'Driver side of car (start)', class: "object-cover group-hover:opacity-75" %>
               <% end %>
-              <%= link_to delete_file_path(image_driver_start), data: { turbo_method: :get, turbo_confirm: 'Are you sure?' } do %>
+              <%= link_to delete_file_path(@vehicle_report.image_driver_start), data: { turbo_method: :get, turbo_confirm: 'Are you sure?' } do %>
                 <span class="tertiary_button">Remove
                   <i class="fa fa-times" aria-hidden="true"></i>
                 </span>

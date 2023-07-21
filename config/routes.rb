@@ -81,6 +81,8 @@ Rails.application.routes.draw do
 
   get 'application/delete_file_attachment/:id', to: 'application#delete_file_attachment', as: :delete_file
 
+  get 'vehicle_reports/delete_image/:id/:image_id', to: 'vehicle_reports#delete_image', as: :delete_image
+
   resources :sites do
     resources :notes, module: :sites
     resources :contacts, module: :sites

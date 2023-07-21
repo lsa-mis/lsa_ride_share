@@ -26,6 +26,10 @@ class VehicleReportPolicy < ApplicationPolicy
     update?
   end
 
+  def delete_image?
+    update?
+  end
+
   def can_student_create_report?
     reservation = Reservation.find(params[:reservation_id])
     student = Student.find_by(program_id: reservation.program, uniqname: @user.uniqname)
