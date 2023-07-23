@@ -107,7 +107,7 @@ class VehicleReportsController < ApplicationController
 
   def upload_image
     if @vehicle_report.update(vehicle_report_params)
-      render turbo_stream: turbo_stream.update("#{params[:vehicle_report].keys[0]}", partial: "image_name", locals: { image_name: params[:vehicle_report].keys[0], image_field_name: params[:vehicle_report].keys[0] })
+      render turbo_stream: turbo_stream.update("#{params[:vehicle_report].keys[0]}", partial: "image_name", locals: { image_name: @vehicle_report.send(params[:vehicle_report].keys[0].to_sym), image_field_name: params[:vehicle_report].keys[0] })
     else
       render turbo_stream: turbo_stream.update("image_errors_#{params[:vehicle_report].keys[0]}", partial: "image_errors", locals: { image_field_name: params[:vehicle_report].keys[0] })
     end
@@ -119,7 +119,7 @@ class VehicleReportsController < ApplicationController
     @vehicle_report = VehicleReport.find(params[:id])
     authorize @vehicle_report
     # render :params[:image_field_name].to_sym
-    render turbo_stream: turbo_stream.update(params[:image_field_name], partial: 'image_name', locals: { image_name: @vehicle_report.image_front_start, image_field_name: params[:image_field_name] })
+    render turbo_stream: turbo_stream.update(params[:image_field_name], partial: 'image_name', locals: { image_name: @vehicle_report.send(params[:image_field_name].to_sym), image_field_name: params[:image_field_name] })
   end
 
   def destroy
