@@ -22,31 +22,31 @@ class VehicleReport < ApplicationRecord
   belongs_to :reservation
 
   has_one_attached :image_front_start do |attachable|
-    attachable.variant :thumb, resize_to_limit: [250, 250]
+    attachable.variant :thumb, resize_to_limit: [100, 100]
    end
   has_one_attached :image_driver_start do |attachable|
-    attachable.variant :thumb, resize_to_limit: [250, 250]
+    attachable.variant :thumb, resize_to_limit: [100, 100]
    end
   has_one_attached :image_passenger_start do |attachable|
-    attachable.variant :thumb, resize_to_limit: [250, 250]
+    attachable.variant :thumb, resize_to_limit: [100, 100]
    end
   has_one_attached :image_back_start do |attachable|
-    attachable.variant :thumb, resize_to_limit: [250, 250]
+    attachable.variant :thumb, resize_to_limit: [100, 100]
    end
   has_one_attached :image_front_end do |attachable|
-    attachable.variant :thumb, resize_to_limit: [250, 250]
+    attachable.variant :thumb, resize_to_limit: [100, 100]
    end
   has_one_attached :image_driver_end do |attachable|
-    attachable.variant :thumb, resize_to_limit: [250, 250]
+    attachable.variant :thumb, resize_to_limit: [100, 100]
    end
   has_one_attached :image_passenger_end do |attachable|
-    attachable.variant :thumb, resize_to_limit: [250, 250]
+    attachable.variant :thumb, resize_to_limit: [100, 100]
    end
   has_one_attached :image_back_end do |attachable|
-    attachable.variant :thumb, resize_to_limit: [250, 250]
+    attachable.variant :thumb, resize_to_limit: [100, 100]
    end
   has_many_attached :image_damages do |attachable|
-   attachable.variant :thumb, resize_to_limit: [250, 250]
+   attachable.variant :thumb, resize_to_limit: [150, 150]
   end
 
   has_rich_text :comment
@@ -64,9 +64,9 @@ class VehicleReport < ApplicationRecord
   end
 
   validates_presence_of :reservation_id, :mileage_start, :gas_start
-  validate :acceptable_documents
-  validate :check_mileage_end
-  validate :check_mileage_start
+  validate :acceptable_images
+  # validate :check_mileage_end
+  # validate :check_mileage_start
   validates :reservation_id, uniqueness: true
 
   scope :data, ->(reports_ids) { reports_ids.present? ? where(id: reports_ids.split(",").map(&:to_i)) : all }
@@ -87,87 +87,82 @@ class VehicleReport < ApplicationRecord
     self.reservation.driver
   end
 
-  def acceptable_documents
+  def acceptable_images
     acceptable_types = [
-      "application/pdf", "text/plain", "image/jpg", 
-      "image/jpeg", "image/png", 
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      "image/jpg", 
+      "image/jpeg", "image/png"
     ]
-    image_front_start do
-      unless doc.byte_size <= 20.megabyte
-        errors.add(:documents, "is too big")
+
+    if image_front_start.attached?
+      unless image_front_start.byte_size <= 20.megabyte
+        errors.add(:image_front_start, "is too big")
       end
       unless acceptable_types.include?(image_front_start.content_type)
-        errors.add(:documents, "must be an acceptable file type (pdf,txt,jpg,png,doc)")
+        errors.add(:image_front_start, "must be an acceptable file type (pdf,txt,jpg,png,doc)")
       end
     end
-    image_passenger_start do
-      unless doc.byte_size <= 20.megabyte
-        errors.add(:documents, "is too big")
+  
+    if image_driver_start.attached?
+      unless image_driver_start.byte_size <= 20.megabyte
+        errors.add(:image_driver_start, "is too big")
+      end
+      unless acceptable_types.include?(image_driver_start.content_type)
+        errors.add(:image_driver_start, "must be an acceptable file type (pdf,txt,jpg,png,doc)")
+      end
+    end
+
+    if image_passenger_start.attached?
+      unless image_passenger_start.byte_size <= 20.megabyte
+        errors.add(:image_passenger_start, "is too big")
       end
       unless acceptable_types.include?(image_passenger_start.content_type)
-        errors.add(:documents, "must be an acceptable file type (pdf,txt,jpg,png,doc)")
+        errors.add(:image_passenger_start, "must be an acceptable file type (pdf,txt,jpg,png,doc)")
       end
     end
-    image_back_start do
-      unless doc.byte_size <= 20.megabyte
-        errors.add(:documents, "is too big")
+
+    if image_back_start.attached?
+      unless image_back_start.byte_size <= 20.megabyte
+        errors.add(:image_back_start, "is too big")
       end
       unless acceptable_types.include?(image_back_start.content_type)
-        errors.add(:documents, "must be an acceptable file type (pdf,txt,jpg,png,doc)")
+        errors.add(:image_back_start, "must be an acceptable file type (pdf,txt,jpg,png,doc)")
       end
     end
-    image_back_start do
-      unless doc.byte_size <= 20.megabyte
-        errors.add(:documents, "is too big")
-      end
-      unless acceptable_types.include?(image_back_start.content_type)
-        errors.add(:documents, "must be an acceptable file type (pdf,txt,jpg,png,doc)")
-      end
-    end
-    image_front_end do
-      unless doc.byte_size <= 20.megabyte
-        errors.add(:documents, "is too big")
+
+    if image_front_end.attached?
+      unless image_front_end.byte_size <= 20.megabyte
+        errors.add(:image_front_end, "is too big")
       end
       unless acceptable_types.include?(image_front_end.content_type)
-        errors.add(:documents, "must be an acceptable file type (pdf,txt,jpg,png,doc)")
+        errors.add(:image_front_end, "must be an acceptable file type (pdf,txt,jpg,png,doc)")
       end
     end
-    image_driver_end do
-      unless doc.byte_size <= 20.megabyte
-        errors.add(:documents, "is too big")
-      end
+
+    if image_driver_end.attached?
+      unless image_driver_end.byte_size <= 20.megabyte
+        errors.add(:image_driver_end, "is too big")
+        end
       unless acceptable_types.include?(image_driver_end.content_type)
-        errors.add(:documents, "must be an acceptable file type (pdf,txt,jpg,png,doc)")
+        errors.add(:image_driver_end, "must be an acceptable file type (pdf,txt,jpg,png,doc)")
       end
     end
-    image_passenger_end do
-      unless doc.byte_size <= 20.megabyte
-        errors.add(:documents, "is too big")
+
+    if image_passenger_end.attached?
+      unless image_passenger_end.byte_size <= 20.megabyte
+        errors.add(:image_passenger_end, "is too big")
       end
       unless acceptable_types.include?(image_passenger_end.content_type)
-        errors.add(:documents, "must be an acceptable file type (pdf,txt,jpg,png,doc)")
+        errors.add(:image_passenger_end, "must be an acceptable file type (pdf,txt,jpg,png,doc)")
       end
     end
-    image_back_end do
-      unless doc.byte_size <= 20.megabyte
-        errors.add(:documents, "is too big")
+
+    if image_back_end.attached?
+      unless image_back_end.byte_size <= 20.megabyte
+        errors.add(:image_back_end, "is too big")
       end
       unless acceptable_types.include?(image_back_end.content_type)
-        errors.add(:documents, "must be an acceptable file type (pdf,txt,jpg,png,doc)")
+        errors.add(:image_back_end, "must be an acceptable file type (pdf,txt,jpg,png,doc)")
       end
-    end
-  end
-
-  def check_mileage_end
-    if self.mileage_end.present? && self.mileage_end < self.mileage_start
-       errors.add("Mileage end must be bigger than mileage start - current value: ", mileage_end.to_s)
-    end
-  end
-
-  def check_mileage_start
-    if self.mileage_start.present? && self.mileage_start < 0
-       errors.add("Mileage start must be a valid value - current value: ", mileage_start.to_s)
     end
   end
 

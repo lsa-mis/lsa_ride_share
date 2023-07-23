@@ -1,0 +1,45 @@
+<%= turbo_frame_tag "#{image_field_name}" do %>
+  <p class="body-sm-bold-text">
+  <%= image_field_name.titleize %>
+  </>
+  <div class="md:grid grid-cols-3">
+    <div>
+      <% if image_name.id.present? %>
+        <%= link_to url_for(image_name), target: "_blank" do %>
+          <%= image_tag image_name.variant(:thumb), alt: '#{image_field_name.titleize}', class: "object-cover group-hover:opacity-75" %>
+        <% end %>
+        <%= link_to delete_image_path(@vehicle_report, image_name.id, image_field_name), data: { turbo_method: :get, turbo_confirm: 'Are you sure?' } do %>
+          <span class="tertiary_button">Remove
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </span>
+        <% end %>
+      <% end %>
+    </div>
+    <div>
+      <% if image_name.id.present? %>
+        <span class="body-sm-text">Update image:</span>
+      <% else %>
+        <span class="body-sm-text">Upload image:</span>
+      <% end %>
+      <%= form_with(model: @vehicle_report, url: upload_image_path, method: :post, html: { class: "sm:flex sm:items-center" }) do |form| %>
+      <%#= form_with model: @vehicle_report, html: { class: "sm:flex sm:items-center" } do |form| %>
+        <% if @vehicle_report.errors.any? %>
+          <div id="error_explanation" class="text-red-umred px-3 py-2 font-medium rounded-lg mt-3">
+            <h2><%= pluralize(@vehicle_report.errors.count, "error") %> prohibited this vehicle_report from being saved: </h2>
+            <ul>
+              <% @vehicle_report.errors.each do |error| %>
+                <li><%= error.full_message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+        <div class="my-2">
+          <%= form.label image_field_name.to_sym, image_field_name.titleize, class: "hidden"  %>
+          <%= form.file_field image_field_name.to_sym, class: "body-sm-text" %>
+        </div>
+        <%= form.submit 'Save', class: "secondary_blue_button" %>
+      <% end %>
+    </div>
+  </div>
+  <%= render 'image_errors', image_field_name: image_field_name %>
+<% end %>
