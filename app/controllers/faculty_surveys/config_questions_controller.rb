@@ -60,6 +60,10 @@ class FacultySurveys::ConfigQuestionsController < ApplicationController
       program_id = new_survey.create_program_from_survey(current_user)
       if program_id
         @faculty_survey.update(program_id: program_id)
+        # send email to the admin that the proram was created
+        FacultyMailer.with(faculty_survey: @faculty_survey).faculty_survey_program_created(current_user).deliver_now
+        # send confirmation email to faculty that the survey was submitted
+        FacultyMailer.with(faculty_survey: @faculty_survey).faculty_survey_confirmation(current_user).deliver_now
       else
         redirect_to faculty_index_path, alert: "Error creating program form the survey. Please report an issue."
         return
