@@ -1,0 +1,9 @@
+Ride Share program: Please fill out the following survey.
+
+Dear <%= "#{@faculty_survey.first_name}" "#{@faculty_survey.first_name}" %>
+
+Please fill out the following form <%= link_to "#{@faculty_survey.title}", survey_url(@faculty_survey) %>
+
+After submitting the survey please ad d sites to the program that would be created from the survey.
+
+You can email <%= @unit_email %> or call the office at: <%= @contact_phone %>.

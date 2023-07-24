@@ -1,6 +1,6 @@
 class FacultySurveysController < ApplicationController
   before_action :auth_user
-  before_action :set_faculty_survey, only: %i[ show edit update destroy ]
+  before_action :set_faculty_survey, only: %i[ show edit update destroy send_faculty_survey_email]
   before_action :set_units, only: %i[ index new create edit update ]
   before_action :set_terms, only: %i[ new create edit update ]
   include ConfigQuestionsHelper
@@ -75,6 +75,12 @@ class FacultySurveysController < ApplicationController
     else
       render :edit, status: :unprocessable_entity
     end
+  end
+
+  def send_faculty_survey_email
+    FacultyMailer.with(faculty_survey: @faculty_survey).send_faculty_survey_email(current_user).deliver_now
+    flash.now[:notice] = 'Email was sent'
+    render turbo_stream: turbo_stream.update("flash", partial: "layouts/notification")
   end
 
   # DELETE /faculty_surveys/1 or /faculty_surveys/1.json
