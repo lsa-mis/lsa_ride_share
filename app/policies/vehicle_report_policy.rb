@@ -30,6 +30,10 @@ class VehicleReportPolicy < ApplicationPolicy
     update?
   end
 
+  def upload_damage_images?
+    update?
+  end
+
   def delete_image?
     update?
   end

@@ -132,47 +132,35 @@
   </div>
   
   <div>
-
-  <%= render 'image_name', image_name: @vehicle_report.image_front_start, image_field_name: 'image_front_start' %>
-  <%= render 'image_name', image_name: @vehicle_report.image_driver_start, image_field_name: 'image_driver_start' %>
-  <%= render 'image_name', image_name: @vehicle_report.image_passenger_start, image_field_name: 'image_passenger_start' %>
-  <%= render 'image_name', image_name: @vehicle_report.image_back_start, image_field_name: 'image_back_start' %>
-
-  <%= render 'image_name', image_name: @vehicle_report.image_front_end, image_field_name: 'image_front_end' %>
-  <%= render 'image_name', image_name: @vehicle_report.image_driver_end, image_field_name: 'image_driver_end' %>
-  <%= render 'image_name', image_name: @vehicle_report.image_passenger_end, image_field_name: 'image_passenger_end' %>
-  <%= render 'image_name', image_name: @vehicle_report.image_back_end, image_field_name: 'image_back_end' %>
-  
-
-
-  <% if @vehicle_report.image_back_end.attached? %>
-    <div class="sm:col-span-3">
-      Back of car (end): <%= link_to @vehicle_report.image_back_end.filename, url_for(@vehicle_report.image_back_end), target: "_blank" %>
-      <%= image_tag @vehicle_report.image_back_end.variant(:thumb),  alt: 'Back of car (end)', class: "object-cover group-hover:opacity-75" %>
+    <p class="body-md-bold-text">
+      Images (jpg, png)
+    </p>
+    <div class="m-2">
+      <p class="body-sm-text">
+        <% if @reservation.program.pictures_required_start && !@reservation.program.pictures_required_end %>
+          All start images must be uploaded in order to complete form.  
+        <% elsif !@reservation.program.pictures_required_start && @reservation.program.pictures_required_end %>
+          All end images must be uploaded in order to complete form.
+        <% elsif @reservation.program.pictures_required_start && @reservation.program.pictures_required_end %>
+          All start and end images must be uploaded in order to complete form.
+        <% end %>
+      </p>
     </div>
-  <% end %>
 
-
-    <% if @vehicle_report.image_damages.attached? %>
-      <div class="">
-        <p class="body-md-bold-text m-4">Images (damage):</p>
-        <div>
-          <ul class="list-none grid grid-cols-2 gap-x-4 gap-y-8 px-4 mb-2">
-            <% @vehicle_report.image_damages.order(created_at: :desc).each do |image| %>
-              <li class="relative">
-                <div class="flex flex-col">
-                  <div class="">
-                    <%= image_tag image.variant(:thumb), class: "object-cover group-hover:opacity-75" %>
-                  </div>
-                  <p class="body-sm-text pt-2">
-                    Uploaded on <%= show_date_time(image.created_at) %>
-                  </p>
-                </div>
-              </li>
-            <% end %>
-          </ul>
-        </div>
-      </div>
+    <% if @reservation.program.pictures_required_start %>
+      <%= render 'image_name', image_name: @vehicle_report.image_front_start, image_field_name: 'image_front_start' %>
+      <%= render 'image_name', image_name: @vehicle_report.image_driver_start, image_field_name: 'image_driver_start' %>
+      <%= render 'image_name', image_name: @vehicle_report.image_passenger_start, image_field_name: 'image_passenger_start' %>
+      <%= render 'image_name', image_name: @vehicle_report.image_back_start, image_field_name: 'image_back_start' %>
     <% end %>
+    <% if @reservation.program.pictures_required_end %>
+      <%= render 'image_name', image_name: @vehicle_report.image_front_end, image_field_name: 'image_front_end' %>
+      <%= render 'image_name', image_name: @vehicle_report.image_driver_end, image_field_name: 'image_driver_end' %>
+      <%= render 'image_name', image_name: @vehicle_report.image_passenger_end, image_field_name: 'image_passenger_end' %>
+      <%= render 'image_name', image_name: @vehicle_report.image_back_end, image_field_name: 'image_back_end' %>
+    <% end %>
+
+    <%= render 'images_damage' %>
+    
   </div>
 </div>

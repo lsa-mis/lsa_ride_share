@@ -98,7 +98,7 @@ class VehicleReport < ApplicationRecord
         errors.add(:image_front_start, "is too big")
       end
       unless acceptable_types.include?(image_front_start.content_type)
-        errors.add(:image_front_start, "must be an acceptable file type (pdf,txt,jpg,png,doc)")
+        errors.add(:image_front_start, "must be an acceptable file type (jpg,png)")
       end
     end
   
@@ -107,7 +107,7 @@ class VehicleReport < ApplicationRecord
         errors.add(:image_driver_start, "is too big")
       end
       unless acceptable_types.include?(image_driver_start.content_type)
-        errors.add(:image_driver_start, "must be an acceptable file type (pdf,txt,jpg,png,doc)")
+        errors.add(:image_driver_start, "must be an acceptable file type (jpg,png)")
       end
     end
 
@@ -116,7 +116,7 @@ class VehicleReport < ApplicationRecord
         errors.add(:image_passenger_start, "is too big")
       end
       unless acceptable_types.include?(image_passenger_start.content_type)
-        errors.add(:image_passenger_start, "must be an acceptable file type (pdf,txt,jpg,png,doc)")
+        errors.add(:image_passenger_start, "must be an acceptable file type (jpg,png)")
       end
     end
 
@@ -125,7 +125,7 @@ class VehicleReport < ApplicationRecord
         errors.add(:image_back_start, "is too big")
       end
       unless acceptable_types.include?(image_back_start.content_type)
-        errors.add(:image_back_start, "must be an acceptable file type (pdf,txt,jpg,png,doc)")
+        errors.add(:image_back_start, "must be an acceptable file type (jpg,png)")
       end
     end
 
@@ -134,7 +134,7 @@ class VehicleReport < ApplicationRecord
         errors.add(:image_front_end, "is too big")
       end
       unless acceptable_types.include?(image_front_end.content_type)
-        errors.add(:image_front_end, "must be an acceptable file type (pdf,txt,jpg,png,doc)")
+        errors.add(:image_front_end, "must be an acceptable file type (jpg,png)")
       end
     end
 
@@ -143,7 +143,7 @@ class VehicleReport < ApplicationRecord
         errors.add(:image_driver_end, "is too big")
         end
       unless acceptable_types.include?(image_driver_end.content_type)
-        errors.add(:image_driver_end, "must be an acceptable file type (pdf,txt,jpg,png,doc)")
+        errors.add(:image_driver_end, "must be an acceptable file type (jpg,png)")
       end
     end
 
@@ -152,7 +152,7 @@ class VehicleReport < ApplicationRecord
         errors.add(:image_passenger_end, "is too big")
       end
       unless acceptable_types.include?(image_passenger_end.content_type)
-        errors.add(:image_passenger_end, "must be an acceptable file type (pdf,txt,jpg,png,doc)")
+        errors.add(:image_passenger_end, "must be an acceptable file type (jpg,png)")
       end
     end
 
@@ -161,7 +161,17 @@ class VehicleReport < ApplicationRecord
         errors.add(:image_back_end, "is too big")
       end
       unless acceptable_types.include?(image_back_end.content_type)
-        errors.add(:image_back_end, "must be an acceptable file type (pdf,txt,jpg,png,doc)")
+        errors.add(:image_back_end, "must be an acceptable file type (jpg,png)")
+      end
+    end
+
+    image_damages.each do |image|
+      unless image.byte_size <= 20.megabyte
+        errors.add(:image_damages, "is too big")
+      end
+
+      unless acceptable_types.include?(image.content_type)
+        errors.add(:image_damages, "must be an acceptable file type (jpg,png)")
       end
     end
   end

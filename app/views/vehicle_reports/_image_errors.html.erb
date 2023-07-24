@@ -1,7 +1,9 @@
 <%= turbo_frame_tag "image_errors_#{image_field_name}" do %>
-  <% if @vehicle_report.errors.present? %>
-    <span class="error_text">
-      <%= @vehicle_report.errors.full_messages %>
-    </span>
+  <% if @vehicle_report.errors.any? %>
+    <ul class="error_text">
+      <% @vehicle_report.errors.each do |error| %>
+        <li><%= error.full_message %></li>
+      <% end %>
+    </ul>
   <% end %>
 <% end %>
