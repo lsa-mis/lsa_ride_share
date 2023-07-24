@@ -5,6 +5,7 @@ class FacultySurveys::ConfigQuestionsController < ApplicationController
 
   def index
     @config_questions = @faculty_survey.config_questions.order(:id)
+    @email_log_entries = EmailLog.where(sent_from_model: "FacultySurvey", record_id: @faculty_survey.id).order(created_at: :desc)
     authorize @config_questions
   end
 
