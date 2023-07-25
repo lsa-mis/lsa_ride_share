@@ -26,10 +26,13 @@
       not complete
     <% end %>
   </h3>
+  <p class="body-sm-text m-2">
+    Upload images (if you have to) after submitting the form.
+  </p>
   <div>
 
   <%= form.hidden_field :reservation_id, value: @reservation.id %>
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+  <div>
     <div>
       <div id="error_scroll_place">
       </div>
@@ -76,9 +79,6 @@
 
     </div>
 
-    <div class="mb-4 body-lg-bold-text">
-      <p>Images (jpg, png)</p>
-    </div>
   </div>
 
   <div class="my-5">
