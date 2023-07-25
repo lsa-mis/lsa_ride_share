@@ -1,0 +1,102 @@
+<div class="m-2">
+  <h3 class="mb-2">Contact Us</h3>
+
+  <% @contact_data.each do |id, data| %>
+    <div class="body-md-bold-text">
+      <%= Unit.find(id).name %>
+    </div>
+    <% data.each do |contact| %>
+      <div>
+        <% if contact['name'] == 'contact_phone' && contact['value'].present? %>
+          <i class="fa-solid fa-phone"></i>
+          <span class="ml-2 body-sm-semibold-text"><%= contact['value'] %></span>
+        <% end %>
+        <% if contact['name'] == 'unit_office' && contact['value'].present? %>
+        <i class="fa-solid fa-location-dot"></i>
+          <span class="ml-4 body-sm-semibold-text"><%= contact['value'] %></span>
+        <% end %>
+      </div>
+    <% end %>
+    <hr>
+  <% end %>
+
+  <% @contact_data.each do |id, data| %>
+    <div class="body-md-bold-text">
+      <%= Unit.find(id).name %>
+    </div>
+    <% data.each do |contact| %>
+      <div>
+        <% if contact['name'] == 'contact_phone' && contact['value'].present? %>
+          <i class="fa-solid fa-phone"></i>
+          <span class="ml-2 body-sm-semibold-text"><%= contact['value'] %></span>
+        <% end %>
+        <% if contact['name'] == 'unit_office' && contact['value'].present? %>
+        <i class="fa-solid fa-location-dot"></i>
+          <span class="ml-4 body-sm-semibold-text"><%= contact['value'] %></span>
+        <% end %>
+      </div>
+    <% end %>
+    <hr>
+  <% end %>
+
+  <h3>Reservation Checklist</h3>
+  <div class="py-2">
+    <% if @manager.mvr_status.present? %>
+      <i class="fa-solid fa-check"></i>
+      <label class="body-sm-semibold-text ml-2">
+          MVR Status:
+      </label>
+      <p class="body-sm-text ml-2">
+        <%= @manager.mvr_status %>
+      </p>
+    <% else %>
+      <i class="fa-regular fa-square"></i>
+      <label class="body-sm-semibold-text ml-2">
+          MVR Status:
+      </label>
+      <p class="body-sm-text ml-2">
+        Get your <%= link_to 'license approved', 'https://ltp.fo.umich.edu/mvr/index.php', class: "link_to" %> 
+      </p>
+    <% end %>
+  </div>
+
+  <div class="py-2">
+    <% if @manager.canvas_course_complete_date.present? %>
+      <i class="fa-solid fa-check"></i>
+      <label class="body-sm-semibold-text ml-2">
+        Canvas Course Completion Date:
+      </label>
+      <p class="body-sm-text ml-2">
+        <%= show_date(@manager.canvas_course_complete_date) %>
+      </p>
+    <% else %>
+      <i class="fa-regular fa-square"></i>
+      <label class="body-sm-semibold-text ml-2">
+        Canvas Course Completion Date:
+      </label>
+      <p class="body-sm-text ml-2">
+        Take <%= link_to 'Canvas Course', @manager.program.canvas_link, :target => "_blank", class: "link_to" %>
+      </p>
+    <% end %>
+  </div>
+
+  <div class="py-2">
+    <% if @manager.meeting_with_admin_date.present? %>
+      <i class="fa-solid fa-check"></i>
+      <label class="body-sm-semibold-text ml-2">
+        In Person Orientation:
+      </label>
+      <p class="body-sm-text ml-2">
+        Completed on <%= show_date(@manager.meeting_with_admin_date) %>
+      </p>
+    <% else %>
+      <i class="fa-regular fa-square"></i>
+      <label class="body-sm-semibold-text ml-2">
+        In Person Orientation:
+      </label>
+      <p class="body-sm-text ml-2">
+        Not completed
+      </p>
+    <% end %>
+  </div>
+</div>

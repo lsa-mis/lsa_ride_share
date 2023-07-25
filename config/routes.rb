@@ -101,6 +101,7 @@ Rails.application.routes.draw do
   resources :notes
 
   get 'welcome_pages/student'
+  get 'welcome_pages/manager'
   
   get 'static_pages/home'
 

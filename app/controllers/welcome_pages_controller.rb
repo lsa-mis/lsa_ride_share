@@ -43,4 +43,13 @@ class WelcomePagesController < ApplicationController
       end
     end
   end
+
+  def manager
+    @manager = Manager.find_by(uniqname: current_user.uniqname)
+    unit_ids = @manager.programs.pluck(:unit_id).uniq
+    @programs = @manager.programs
+    @contact_data = UnitPreference.select(:unit_id, :name, :value).where(unit_id: unit_ids).where("name = 'unit_office' OR name = 'contact_phone'").group_by(&:unit_id).to_a
+    authorize :welcome_page
+  end
+
 end

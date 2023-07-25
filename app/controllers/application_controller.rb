@@ -40,6 +40,8 @@ class ApplicationController < ActionController::Base
       programs_path
     elsif is_student?(resource)
       welcome_pages_student_path
+    elsif is_manager?(resource)
+      welcome_pages_student_path
     else
       root_path
     end
