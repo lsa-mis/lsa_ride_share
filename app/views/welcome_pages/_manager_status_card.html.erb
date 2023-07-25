@@ -20,25 +20,6 @@
     <hr>
   <% end %>
 
-  <% @contact_data.each do |id, data| %>
-    <div class="body-md-bold-text">
-      <%= Unit.find(id).name %>
-    </div>
-    <% data.each do |contact| %>
-      <div>
-        <% if contact['name'] == 'contact_phone' && contact['value'].present? %>
-          <i class="fa-solid fa-phone"></i>
-          <span class="ml-2 body-sm-semibold-text"><%= contact['value'] %></span>
-        <% end %>
-        <% if contact['name'] == 'unit_office' && contact['value'].present? %>
-        <i class="fa-solid fa-location-dot"></i>
-          <span class="ml-4 body-sm-semibold-text"><%= contact['value'] %></span>
-        <% end %>
-      </div>
-    <% end %>
-    <hr>
-  <% end %>
-
   <h3>Reservation Checklist</h3>
   <div class="py-2">
     <% if @manager.mvr_status.present? %>
