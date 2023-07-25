@@ -10,6 +10,9 @@
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  program_id :bigint
+#  mvr_status                  :string
+#  canvas_course_complete_date :date
+#  meeting_with_admin_date     :date
 #
 class Manager < ApplicationRecord
   has_many :managers_programs
