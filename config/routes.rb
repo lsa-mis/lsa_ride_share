@@ -25,7 +25,7 @@ Rails.application.routes.draw do
   
   post 'vehicle_reports/upload_image/:id', to: 'vehicle_reports#upload_image', as: :upload_image
   post 'vehicle_reports/upload_damage_images/:id', to: 'vehicle_reports#upload_damage_images', as: :upload_damage_images
-  get 'vehicle_reports/delete_image/:id/:image_id/:image_field_name', to: 'vehicle_reports#delete_image', as: :delete_image
+  get 'vehicle_reports/delete_image/:id/:image_id/:image_field_name', to: 'vehicle_reports#delete_image', as: :delete_image, defaults: { format: :turbo_stream }
 
   get '/reservations/week_calendar/', to: 'reservations#week_calendar', as: 'week_calendar'
   resources :reservations do
