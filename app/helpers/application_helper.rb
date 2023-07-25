@@ -4,6 +4,8 @@ module ApplicationHelper
     if user_signed_in?
       if is_student?(current_user)
         welcome_pages_student_path
+      elsif is_manager?(current_user)
+        welcome_pages_manager_path
       else
         all_root_path
       end
