@@ -61,7 +61,7 @@
             </td>
             <td class="mi_tbody_td">
               <% if vehicle_report.updated_at.present? %>
-                <%= vehicle_report.updated_at %>
+                <%= show_date_time(vehicle_report.updated_at) %>
               <% end %>
             </td>
             <td class="mi_tbody_td status-<%= vehicle_report.approved %>">
