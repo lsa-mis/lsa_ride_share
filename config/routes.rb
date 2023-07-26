@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   end
   get '/faculty_surveys/survey/:faculty_survey_id', to: 'faculty_surveys/config_questions#survey', as: :survey
   post '/faculty_surveys/survey/:faculty_survey_id', to: 'faculty_surveys/config_questions#save_survey'
+  get '/faculty_surveys/send_faculty_survey_email/:id', to: 'faculty_surveys#send_faculty_survey_email', as: :send_faculty_survey_email
 
   resources :units
 

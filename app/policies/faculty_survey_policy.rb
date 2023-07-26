@@ -30,6 +30,10 @@ class FacultySurveyPolicy < ApplicationPolicy
     update?
   end
 
+  def send_faculty_survey_email?
+    user_in_access_group?
+  end
+
   def destroy?
     false
   end
