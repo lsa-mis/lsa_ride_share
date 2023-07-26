@@ -139,6 +139,9 @@ module ApplicationHelper
   def show_driver(reservation)
     if reservation.driver.present?
       reservation.driver.display_name
+    elsif
+      reservation.driver_manager.present?
+      reservation.driver_manager.display_name + " (manager)"
     else
       "No driver selected"
     end
@@ -308,6 +311,21 @@ module ApplicationHelper
     return false unless Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program).present?
     student = Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program)
     return false if student.passenger_future.include?(reservation)
+    if ((reservation.start_time - DateTime.now)/3600).round > 72
+      return true
+    else
+      return false
+    end
+  end
+
+  def allow_manager_to_edit_reservation?(reservation)
+    return false unless is_manager?(current_user)
+    manager = Manager.find_by(uniqname: current_user.uniqname)
+    if reservation.driver_manager_id.present?
+      return false unless Manager.find(reservation.driver_manager_id).uniqname == current_user.uniqname
+    else 
+      return false
+    end
     if ((reservation.start_time - DateTime.now)/3600).round > 72
       return true
     else
