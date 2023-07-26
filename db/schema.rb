@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_24_213336) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_26_183902) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -212,9 +212,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_24_213336) do
     t.boolean "approved", default: false
     t.string "non_uofm_passengers"
     t.integer "number_of_non_uofm_passengers", default: 0
+    t.bigint "driver_manager_id"
     t.index ["backup_driver_id"], name: "index_reservations_on_backup_driver_id"
     t.index ["car_id"], name: "index_reservations_on_car_id"
     t.index ["driver_id"], name: "index_reservations_on_driver_id"
+    t.index ["driver_manager_id"], name: "index_reservations_on_driver_manager_id"
     t.index ["program_id"], name: "index_reservations_on_program_id"
     t.index ["site_id"], name: "index_reservations_on_site_id"
   end
@@ -329,6 +331,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_24_213336) do
   add_foreign_key "reservation_passengers", "reservations"
   add_foreign_key "reservation_passengers", "students"
   add_foreign_key "reservations", "cars"
+  add_foreign_key "reservations", "managers", column: "driver_manager_id"
   add_foreign_key "reservations", "programs"
   add_foreign_key "reservations", "sites"
   add_foreign_key "reservations", "students", column: "backup_driver_id"

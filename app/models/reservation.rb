@@ -22,12 +22,14 @@
 #  approved                 :boolean          default false
 #  non_uofm_passengers      :string
 #  number_of_non_uofm_passengers :integer
+#  driver_manager_id        :bigint
 #
 class Reservation < ApplicationRecord
   belongs_to :program
   belongs_to :site
   belongs_to :car, optional: true
   belongs_to :driver, optional: true, class_name: 'Student', foreign_key: :driver_id
+  belongs_to :driver_manager, optional: true, class_name: 'Manager', foreign_key: :driver_manager_id
   belongs_to :backup_driver, optional: true, class_name: 'Student', foreign_key: :backup_driver_id
   has_many :reservation_passengers
   has_many :passengers, through: :reservation_passengers, source: :student
@@ -38,6 +40,7 @@ class Reservation < ApplicationRecord
   has_rich_text :note
 
   validate :check_number_of_people_on_trip, on: :update
+  validate :driver_student_or_manager, on: :update
   validate :check_drivers, on: :update
 
   scope :with_passengers, -> { Reservation.includes(:passengers) }
@@ -57,7 +60,7 @@ class Reservation < ApplicationRecord
   end
 
   def added_people
-    number = self.passengers.count + (self.driver.present? ? 1 : 0).to_i + (self.backup_driver.present? ? 1 : 0).to_i
+    number = self.passengers.count + (self.driver.present? ? 1 : 0).to_i + (self.backup_driver.present? ? 1 : 0).to_i + + (self.driver_manager.present? ? 1 : 0).to_i
     if self.program.non_uofm_passengers
       number += self.number_of_non_uofm_passengers
     end
@@ -91,14 +94,20 @@ class Reservation < ApplicationRecord
       self.passengers.delete_all
     end
     ReservationMailer.car_reservation_cancel_admin(self, cancel_passengers, cancel_emails, self.reserved_by).deliver_now
-    if self.driver_id.present?
-      ReservationMailer.car_reservation_cancel_student(self, cancel_passengers, cancel_emails, self.reserved_by).deliver_now
+    if self.driver_id.present? || self.driver_manager_id.present? 
+      ReservationMailer.car_reservation_cancel_driver(self, cancel_passengers, cancel_emails, self.reserved_by).deliver_now
     end
   end
 
   def check_number_of_non_uofm_passengers
     unless self.number_of_non_uofm_passengers.present?
       self.number_of_non_uofm_passengers = 0
+    end
+  end
+
+  def driver_student_or_manager
+    if [driver_id, driver_manager_id].compact.count != 1
+      errors.add(:base, "Only one driver should be added: a student or a manager")
     end
   end
 
