@@ -52,6 +52,14 @@ class Manager < ApplicationRecord
     where.not(class_training_date: nil) 
   end
 
+  def reservations_past
+    Reservation.where('reserved_by = ? AND start_time <= ?', User.find_by(uniqname: self.uniqname), DateTime.now)
+  end
+
+  def reservations_future
+    Reservation.where('reserved_by = ? AND start_time > ?', User.find_by(uniqname: self.uniqname), DateTime.now)
+  end
+
   def display_name
     "#{self.first_name} #{self.last_name} - #{self.uniqname}" 
   end
