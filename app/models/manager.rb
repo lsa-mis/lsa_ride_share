@@ -25,7 +25,7 @@ class Manager < ApplicationRecord
   end
 
   def manager
-    Program.current_term.includes(:managers).where(managers_programs: [self])
+    Program.current_term.joins(:managers).where('managers_programs.manager_id = ?', self)
   end
 
   def programs
