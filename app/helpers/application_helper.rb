@@ -321,6 +321,7 @@ module ApplicationHelper
     return false unless Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program).present?
     student = Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program)
     return false if student.passenger_future.include?(reservation)
+    return false if reservation.backup_driver == student
     if ((reservation.start_time - DateTime.now)/3600).round > 72
       return true
     else
