@@ -7,7 +7,7 @@
           <label for="program_id" class="fancy_label">Select a Program</label>
           <%#= form.select "program_id", options_for_select(@programs, selected: params[:program_id]), {include_blank: "All Programs"}, {class: "filter_select w-full",
             :"data-action" => "change->autosubmit#search"} %>
-          <%= select_tag "program_id", options_from_collection_for_select(@programs, :id, :display_name_with_title, selected: params[:program_id]), include_blank: "All Programs", class: "filter_select w-full",
+          <%= select_tag "program_id", options_from_collection_for_select(@programs, :id, :display_name_with_title_and_unit, selected: params[:program_id]), include_blank: "All Programs", class: "filter_select w-full",
             :"data-action" => "change->autosubmit#search" %>
         </div>
       <% end %>
@@ -30,6 +30,10 @@
         <% end %>
       </div>
       <div class="my-2">
+        <% if @program.present? %>
+          <h2><%= @program.display_name_with_title_and_unit %></h2>
+          <p class="body-md-text"><%= show_manager(@program, current_user) %></p>
+        <% end %>
         <div>
           <% if @reservations_future.present? %>
             <%= render 'manager_reservations_future' %>
