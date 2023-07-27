@@ -147,6 +147,16 @@ module ApplicationHelper
     end
   end
 
+  def show_manager(program, user)
+    if program.instructor.uniqname == user.uniqname
+      return "(instructor)"
+    elsif program.managers.pluck(:uniqname).include?(user.uniqname)
+      return "(manager)"
+    else
+      return ""
+    end
+  end
+
   def show_reservation_date(reservation)
     show_date_time(reservation.start_time) + " - " +  show_date_time(reservation.end_time)
   end
