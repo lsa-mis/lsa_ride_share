@@ -80,9 +80,9 @@
         <div class="my-2">
           <% unless is_manager?(current_user) %>
             <% if @reservation.vehicle_report.present? %>
-              <%= link_to 'Vehicle Report', vehicle_report_path(@reservation.vehicle_report), class: "secondary_blue_button" %>
+              <%= link_to 'Vehicle Report', vehicle_report_path(@reservation.vehicle_report), class: "secondary_blue_button" if @reservation.car.present? %>
             <% else %>
-              <%= link_to 'New Vehicle Report', new_reservation_vehicle_report_path(@reservation), class: "secondary_blue_button" %>
+              <%= link_to 'New Vehicle Report', new_reservation_vehicle_report_path(@reservation), class: "secondary_blue_button" if @reservation.car.present? %>
             <% end %>
           <% end %>
         </div>

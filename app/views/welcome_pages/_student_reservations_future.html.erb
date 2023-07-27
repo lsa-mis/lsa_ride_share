@@ -56,7 +56,7 @@
                   <%= link_to 'Vehicle report', vehicle_report_path(reservation.vehicle_report), class: "link_to" %>
                 <% end %>
               <% else %>
-                <%= link_to 'New vehicle report', new_reservation_vehicle_report_path(reservation), class: "link_to" %>
+                <%= link_to 'New vehicle report', new_reservation_vehicle_report_path(reservation), class: "link_to" if reservation.car.present? %>
               <% end %>
             </td>
           </tr>
