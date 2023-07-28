@@ -128,28 +128,22 @@
   </div>
   
   <div>
-    <p class="body-md-bold-text">
+    <p class="body-md-bold-text mb-2">
       Images (jpg, png)
     </p>
-    <div class="m-2">
-      <p class="body-sm-text">
-        <% if @reservation.program.pictures_required_start && !@reservation.program.pictures_required_end %>
-          All start images must be uploaded in order to complete form.  
-        <% elsif !@reservation.program.pictures_required_start && @reservation.program.pictures_required_end %>
-          All end images must be uploaded in order to complete form.
-        <% elsif @reservation.program.pictures_required_start && @reservation.program.pictures_required_end %>
-          All start and end images must be uploaded in order to complete form.
-        <% end %>
-      </p>
-    </div>
-
     <% if @reservation.program.pictures_required_start %>
+      <p class="body-sm-semibold-text">
+        All start images must be uploaded in order to complete form.
+      </p>
       <%= render 'image_name', image_name: @vehicle_report.image_front_start, image_field_name: 'image_front_start' %>
       <%= render 'image_name', image_name: @vehicle_report.image_driver_start, image_field_name: 'image_driver_start' %>
       <%= render 'image_name', image_name: @vehicle_report.image_passenger_start, image_field_name: 'image_passenger_start' %>
       <%= render 'image_name', image_name: @vehicle_report.image_back_start, image_field_name: 'image_back_start' %>
     <% end %>
     <% if @reservation.program.pictures_required_end %>
+      <p class="body-sm-semibold-text my-2">
+        All end images must be uploaded in order to complete form.
+      </p>
       <%= render 'image_name', image_name: @vehicle_report.image_front_end, image_field_name: 'image_front_end' %>
       <%= render 'image_name', image_name: @vehicle_report.image_driver_end, image_field_name: 'image_driver_end' %>
       <%= render 'image_name', image_name: @vehicle_report.image_passenger_end, image_field_name: 'image_passenger_end' %>
