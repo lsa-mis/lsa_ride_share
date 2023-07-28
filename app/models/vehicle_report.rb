@@ -95,83 +95,83 @@ class VehicleReport < ApplicationRecord
 
     if image_front_start.attached?
       unless image_front_start.byte_size <= 20.megabyte
-        errors.add(:image_front_start, "is too big")
+        errors.add(:base, "The image is too big")
       end
       unless acceptable_types.include?(image_front_start.content_type)
-        errors.add(:image_front_start, "must be an acceptable file type (jpg,png)")
+        errors.add(:base, "The image must be an acceptable file type (jpg, png)")
       end
     end
   
     if image_driver_start.attached?
       unless image_driver_start.byte_size <= 20.megabyte
-        errors.add(:image_driver_start, "is too big")
+        errors.add(:base, "The image is too big")
       end
       unless acceptable_types.include?(image_driver_start.content_type)
-        errors.add(:image_driver_start, "must be an acceptable file type (jpg,png)")
+        errors.add(:base, "The image must be an acceptable file type (jpg, png)")
       end
     end
 
     if image_passenger_start.attached?
       unless image_passenger_start.byte_size <= 20.megabyte
-        errors.add(:image_passenger_start, "is too big")
+        errors.add(:base, "The image is too big")
       end
       unless acceptable_types.include?(image_passenger_start.content_type)
-        errors.add(:image_passenger_start, "must be an acceptable file type (jpg,png)")
+        errors.add(:base, "The image must be an acceptable file type (jpg, png)")
       end
     end
 
     if image_back_start.attached?
       unless image_back_start.byte_size <= 20.megabyte
-        errors.add(:image_back_start, "is too big")
+        errors.add(:base, "The image is too big")
       end
       unless acceptable_types.include?(image_back_start.content_type)
-        errors.add(:image_back_start, "must be an acceptable file type (jpg,png)")
+        errors.add(:base, "The image must be an acceptable file type (jpg, png)")
       end
     end
 
     if image_front_end.attached?
       unless image_front_end.byte_size <= 20.megabyte
-        errors.add(:image_front_end, "is too big")
+        errors.add(:base, "The image is too big")
       end
       unless acceptable_types.include?(image_front_end.content_type)
-        errors.add(:image_front_end, "must be an acceptable file type (jpg,png)")
+        errors.add(:base, "The image must be an acceptable file type (jpg, png)")
       end
     end
 
     if image_driver_end.attached?
       unless image_driver_end.byte_size <= 20.megabyte
-        errors.add(:image_driver_end, "is too big")
+        errors.add(:base, "The image is too big")
         end
       unless acceptable_types.include?(image_driver_end.content_type)
-        errors.add(:image_driver_end, "must be an acceptable file type (jpg,png)")
+        errors.add(:base, "The image must be an acceptable file type (jpg, png)")
       end
     end
 
     if image_passenger_end.attached?
       unless image_passenger_end.byte_size <= 20.megabyte
-        errors.add(:image_passenger_end, "is too big")
+        errors.add(:base, "The image is too big")
       end
       unless acceptable_types.include?(image_passenger_end.content_type)
-        errors.add(:image_passenger_end, "must be an acceptable file type (jpg,png)")
+        errors.add(:base, "The image must be an acceptable file type (jpg, png)")
       end
     end
 
     if image_back_end.attached?
       unless image_back_end.byte_size <= 20.megabyte
-        errors.add(:image_back_end, "is too big")
+        errors.add(:base, "The image is too big")
       end
       unless acceptable_types.include?(image_back_end.content_type)
-        errors.add(:image_back_end, "must be an acceptable file type (jpg,png)")
+        errors.add(:base, "The image must be an acceptable file type (jpg, png)")
       end
     end
 
     image_damages.each do |image|
       unless image.byte_size <= 20.megabyte
-        errors.add(:image_damages, "is too big")
+        errors.add(:base, "An image is too big")
       end
 
       unless acceptable_types.include?(image.content_type)
-        errors.add(:image_damages, "must be an acceptable file type (jpg,png)")
+        errors.add(:base, "An image must be an acceptable file type (jpg, png)")
       end
     end
   end
