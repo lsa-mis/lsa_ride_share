@@ -29,7 +29,9 @@
     <% end %>
   </div>
 
-  <div id="config_questions" class="min-w-full">
     <%= render 'config_question', locals: { faculty_survey: @faculty_survey } %>
-  </div>
+    
+    <% if is_admin?(current_user) %>
+      <%= render 'email_logs/email_log', email_log_entries: @email_log_entries %>
+    <% end %>
 </div>
