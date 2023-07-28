@@ -9,7 +9,7 @@
 #  color           :string
 #  number_of_seats :integer
 #  mileage         :float
-#  gas             :integer
+#  gas             :decimal
 #  parking_spot    :string
 #  last_used       :datetime
 #  last_driver     :integer
