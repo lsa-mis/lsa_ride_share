@@ -61,7 +61,7 @@ class UnitsController < ApplicationController
   # DELETE /units/1 or /units/1.json
   def destroy
     if @unit.programs.present? || @unit.cars.present?
-      flash.now[:alert] = "he Unit can't be deleted because it has programs or cars."
+      flash.now[:alert] = "The Unit can't be deleted because it has programs or cars."
       @units = Unit.all
       return
     else
