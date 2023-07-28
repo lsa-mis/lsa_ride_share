@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_28_010811) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_28_012113) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -238,7 +238,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_28_010811) do
     t.string "uniqname"
     t.string "last_name"
     t.string "first_name"
-    t.date "class_training_date"
     t.date "canvas_course_complete_date"
     t.integer "updated_by"
     t.datetime "created_at", null: false

@@ -6,7 +6,6 @@
 #  uniqname                    :string
 #  last_name                   :string
 #  first_name                  :string
-#  class_training_date         :date
 #  canvas_course_complete_date :date
 #  meeting_with_admin_date     :date
 #  updated_by                  :integer
@@ -84,10 +83,6 @@ class Student < ApplicationRecord
 
   def self.canvas_pass
     where.not(canvas_course_complete_date: nil) 
-  end
-
-  def self.class_training
-    where.not(class_training_date: nil) 
   end
 
   def self.meeting_with_admin
