@@ -3,6 +3,8 @@ class SystemReportsController < ApplicationController
   before_action :set_units, :set_terms
 
   def index
+    @vehicle_reports = VehicleReport.all
+    
     authorize :system_report
   end
 
@@ -15,6 +17,8 @@ class SystemReportsController < ApplicationController
     render turbo_stream: turbo_stream.replace(
       :reportListing,
       partial: "system_reports/listing")
+
+    authorize :system_report
   end
 
   private
