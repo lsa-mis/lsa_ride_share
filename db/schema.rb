@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_28_012113) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_28_202119) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -59,7 +59,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_28_012113) do
     t.string "color"
     t.integer "number_of_seats"
     t.float "mileage"
-    t.integer "gas"
+    t.decimal "gas"
     t.string "parking_spot"
     t.datetime "last_used"
     t.integer "last_driver_id"
