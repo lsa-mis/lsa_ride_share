@@ -26,14 +26,14 @@ class UnitsController < ApplicationController
     if @unit.save
       # create preferences for the unit
       prefs = UnitPreference.distinct.pluck(:name, :description, :pref_type)
-      prefs.each do |name, descr, type|
-        if type == "boolean"
-          unless UnitPreference.create(name: name, description: descr, type: type, on_off: false, unit_id: @unit.id)
+      prefs.each do |name, descr, pref_type|
+        if pref_type == "boolean"
+          unless UnitPreference.create(name: name, description: descr, pref_type: pref_type, on_off: false, unit_id: @unit.id)
             @units = Unit.all
             return
           end
         else
-          unless UnitPreference.create(name: name, description: descr, type: type, unit_id: @unit.id)
+          unless UnitPreference.create(name: name, description: descr, pref_type: pref_type, unit_id: @unit.id)
             @units = Unit.all
             return
           end 
@@ -60,8 +60,17 @@ class UnitsController < ApplicationController
 
   # DELETE /units/1 or /units/1.json
   def destroy
-    if @unit.destroy
-      flash.now[:notice] = "Unit was deleted."
+    if @unit.programs.present? || @unit.cars.present?
+      flash.now[:alert] = "he Unit can't be deleted because it has programs or cars."
+      @units = Unit.all
+      return
+    else
+      if @unit.destroy
+        flash.now[:notice] = "Unit was deleted."
+      else
+        @units = Unit.all
+        render :aindex, status: :unprocessable_entity
+      end
     end
     @units = Unit.all
   end
