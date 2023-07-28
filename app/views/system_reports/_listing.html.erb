@@ -1,4 +1,4 @@
-<%= turbo_frame_tag 'listing' do %>
+<%= turbo_frame_tag 'reportListing' do %>
   <div class="min-w-full">
     <table class="mi_table">
       <thead class="border border-l-0 border-r-0 border-gray-um60">
@@ -20,7 +20,7 @@
         </tr>
       </thead>
       <tbody>
-        <% @vehicle_reports.order(updated_at: :desc).each do |vehicle_report| %>
+        <% @vehicle_reports.each do |vehicle_report| %>
           <tr class="mi_tbody_tr">
             <td class="mi_tbody_td">
               <%= link_to vehicle_report.id, vehicle_report_path(vehicle_report), class: "link_to" %>
