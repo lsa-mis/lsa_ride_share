@@ -1,7 +1,7 @@
 class FacultySurveys::ConfigQuestionsController < ApplicationController
   before_action :auth_user
   before_action :set_faculty_survey
-  before_action :set_config_question, only: %i[ edit update destroy]
+  before_action :set_config_question, only: %i[ edit update destroy ]
 
   def index
     @config_questions = @faculty_survey.config_questions.order(:id)
@@ -38,7 +38,7 @@ class FacultySurveys::ConfigQuestionsController < ApplicationController
 
   def destroy
     if @config_question.destroy
-      flash.now[:notice] =  "Question was deleted."
+      flash.now[:notice] = "Question was deleted."
     end
     @config_questions = @faculty_survey.config_questions.order(:id)
   end

@@ -12,7 +12,6 @@
 #  gas             :integer
 #  parking_spot    :string
 #  last_used       :datetime
-#  last_checked    :datetime
 #  last_driver     :integer
 #  updated_by      :integer
 #  created_at      :datetime         not null
