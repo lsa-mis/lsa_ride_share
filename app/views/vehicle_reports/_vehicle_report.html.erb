@@ -128,12 +128,12 @@
   </div>
   
   <div>
-    <p class="body-md-bold-text mb-2">
+    <p class="body-lg-bold-text mb-2">
       Images (jpg, png)
     </p>
     <% if @reservation.program.pictures_required_start %>
-      <p class="body-sm-semibold-text">
-        All start images must be uploaded in order to complete form.
+      <p class="body-md-semibold-text">
+        All start images must be uploaded in order to complete the report.
       </p>
       <%= render 'image_name', image_name: @vehicle_report.image_front_start, image_field_name: 'image_front_start' %>
       <%= render 'image_name', image_name: @vehicle_report.image_driver_start, image_field_name: 'image_driver_start' %>
@@ -141,8 +141,8 @@
       <%= render 'image_name', image_name: @vehicle_report.image_back_start, image_field_name: 'image_back_start' %>
     <% end %>
     <% if @reservation.program.pictures_required_end %>
-      <p class="body-sm-semibold-text my-2">
-        All end images must be uploaded in order to complete form.
+      <p class="body-md-semibold-text my-2">
+        All end images must be uploaded in order to complete the report.
       </p>
       <%= render 'image_name', image_name: @vehicle_report.image_front_end, image_field_name: 'image_front_end' %>
       <%= render 'image_name', image_name: @vehicle_report.image_driver_end, image_field_name: 'image_driver_end' %>
