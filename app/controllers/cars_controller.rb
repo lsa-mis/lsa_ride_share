@@ -45,6 +45,7 @@ class CarsController < ApplicationController
 
   # PATCH/PUT /cars/1 or /cars/1.json
   def update
+    fail
     if car_params[:is_checked_today] == "1"
       @car.last_checked = DateTime.now
     end
