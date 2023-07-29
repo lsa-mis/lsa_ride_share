@@ -41,7 +41,7 @@ class ApplicationController < ActionController::Base
     elsif is_student?(resource)
       welcome_pages_student_path
     elsif is_manager?(resource)
-      welcome_pages_student_path
+      welcome_pages_manager_path
     else
       root_path
     end
