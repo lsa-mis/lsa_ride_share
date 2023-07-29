@@ -50,12 +50,11 @@ export default class extends Controller {
       if (backup_driver != "" && number == 0) {
         backup_driver_error_place.innerHTML = 'Please remove one passenger then add a backup driver'
         submitForm = false
-      } else if (backup_driver != "" && backup_driver_phone == "") {
-        backup_driver_error_place.innerHTML = "Please enter backup driver's phone"
-        submitForm = false
-      } else if (backup_driver == "" && backup_driver_phone != "") {
-        backup_driver_error_place.innerHTML = "Please select a backup driver or remove a backup driver's phone"
-        submitForm = false
+      } else if (backup_driver != "" && backup_driver_phone != "") {
+        if (driver == backup_driver) {
+          backup_driver_error_place.innerHTML = 'Driver and backup driver should be different'
+          submitForm = false
+        }
         if (driver_phone == backup_driver_phone) {
           backup_driver_error_place.innerHTML += "<br>Drivers' phones should be different"
           submitForm = false
@@ -64,11 +63,16 @@ export default class extends Controller {
           backup_driver_error_place.innerHTML += "<br>Backup driver's phone number format is incorrect"
           submitForm = false
         }
-      } else if (backup_driver != "" && backup_driver_phone != "") {
+      } else if (backup_driver != "" && backup_driver_phone == "") {
+        backup_driver_error_place.innerHTML = "Please enter backup driver's phone"
+        submitForm = false
         if (driver == backup_driver) {
-          backup_driver_error_place.innerHTML = 'Driver and backup driver should be different'
+          backup_driver_error_place.innerHTML += '<br>Driver and backup driver should be different'
           submitForm = false
         }
+      } else if (backup_driver == "" && backup_driver_phone != "") {
+        backup_driver_error_place.innerHTML = "Please select a backup driver or remove a backup driver's phone"
+        submitForm = false
         if (driver_phone == backup_driver_phone) {
           backup_driver_error_place.innerHTML += "<br>Drivers' phones should be different"
           submitForm = false

@@ -6,4 +6,8 @@ class WelcomePagePolicy < ApplicationPolicy
     is_student?
   end
 
+  def manager?
+    is_manager?
+  end
+
 end

@@ -2,7 +2,8 @@
   <h1>
     <%= @reservation.program.unit.name %> Reservation
   </h1>
-  <% if is_student?(current_user) && allow_student_to_edit_reservation?(@reservation) %>
+  <% if is_student?(current_user) && allow_student_to_edit_reservation?(@reservation) || 
+    is_manager?(current_user) && allow_manager_to_edit_reservation?(@reservation)%>
     <p class="body-md-text mt-2 text-blue-900">
       If you need to edit the reservation, please cancel it and create a new one, 
       or you can email <%= unit_email(@reservation) %> or call the office at: <%= contact_phone(@reservation) %>
@@ -60,7 +61,7 @@
             </div>
           <% end %>
         <% else %>
-          <% if allow_student_to_edit_reservation?(@reservation) && future_reservation?(@reservation) %>
+          <% if (allow_student_to_edit_reservation?(@reservation) || allow_manager_to_edit_reservation?(@reservation)) && future_reservation?(@reservation) %>
             <div class="my-2">
               <%= link_to 'Edit Drivers and Passengers', add_drivers_path(@reservation, :edit => true), class: "primary_button" if policy(@reservation).edit? %>
             </div>
@@ -77,10 +78,12 @@
           <% end %>
         <% end %>
         <div class="my-2">
-          <% if @reservation.vehicle_report.present? %>
-            <%= link_to 'Vehicle Report', vehicle_report_path(@reservation.vehicle_report), class: "secondary_blue_button" %>
-          <% else %>
-            <%= link_to 'New Vehicle Report', new_reservation_vehicle_report_path(@reservation), class: "secondary_blue_button" %>
+          <% unless is_manager?(current_user) %>
+            <% if @reservation.vehicle_report.present? %>
+              <%= link_to 'Vehicle Report', vehicle_report_path(@reservation.vehicle_report), class: "secondary_blue_button" if @reservation.car.present? %>
+            <% else %>
+              <%= link_to 'New Vehicle Report', new_reservation_vehicle_report_path(@reservation), class: "secondary_blue_button" if @reservation.car.present? %>
+            <% end %>
           <% end %>
         </div>
       </div>

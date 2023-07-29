@@ -4,6 +4,8 @@ module ApplicationHelper
     if user_signed_in?
       if is_student?(current_user)
         welcome_pages_student_path
+      elsif is_manager?(current_user)
+        welcome_pages_manager_path
       else
         all_root_path
       end
@@ -137,8 +139,21 @@ module ApplicationHelper
   def show_driver(reservation)
     if reservation.driver.present?
       reservation.driver.display_name
+    elsif
+      reservation.driver_manager.present?
+      reservation.driver_manager.display_name + " (manager)"
     else
       "No driver selected"
+    end
+  end
+
+  def show_manager(program, user)
+    if program.instructor.uniqname == user.uniqname
+      return "(instructor)"
+    elsif program.managers.pluck(:uniqname).include?(user.uniqname)
+      return "(manager)"
+    else
+      return ""
     end
   end
 
@@ -306,6 +321,22 @@ module ApplicationHelper
     return false unless Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program).present?
     student = Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program)
     return false if student.passenger_future.include?(reservation)
+    return false if reservation.backup_driver == student
+    if ((reservation.start_time - DateTime.now)/3600).round > 72
+      return true
+    else
+      return false
+    end
+  end
+
+  def allow_manager_to_edit_reservation?(reservation)
+    return false unless is_manager?(current_user)
+    manager = Manager.find_by(uniqname: current_user.uniqname)
+    if reservation.driver_manager_id.present?
+      return false unless Manager.find(reservation.driver_manager_id).uniqname == current_user.uniqname
+    else 
+      return false
+    end
     if ((reservation.start_time - DateTime.now)/3600).round > 72
       return true
     else

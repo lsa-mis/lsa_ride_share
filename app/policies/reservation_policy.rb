@@ -19,7 +19,7 @@ class ReservationPolicy < ApplicationPolicy
   end
 
   def create?
-    user_in_access_group? || is_student?
+    user_in_access_group? || is_student? || is_manager?
   end
 
   def new?

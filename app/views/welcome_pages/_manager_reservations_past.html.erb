@@ -1,4 +1,4 @@
-<%= turbo_frame_tag 'student_reservations' do %>
+<%= turbo_frame_tag 'manager_reservations' do %>
   <h3 class="my-2">Past Reservations</h3>
   <div class="min-w-full">
     <table class="mi_table">
@@ -10,23 +10,18 @@
           <th class="header_th">Drop-off</th>
           <th class="header_th">Site</th>
           <th class="header_th">Car</th>
-          <th class="header_th">Vehicle Report</th>
         </tr>
       </thead>
       <tbody>
         <% @reservations_past.each do |reservation| %>
           <tr>
-            <% if reservation.driver == @student %>
+            <% if reservation.driver_manager == @manager %>
               <td class="mi_tbody_td">
                 <%= link_to 'Driver', reservation_path(reservation), class: "link_to" %>
               </td>
-            <% elsif reservation.backup_driver == @student %>
-              <td class="mi_tbody_td">
-                <%= link_to 'Backup Driver', reservation_path(reservation), class: "link_to" %>
-              </td>
             <% else %>
               <td class="mi_tbody_td">
-                <%= link_to 'Passenger', reservation_path(reservation), class: "link_to" %>
+                <%= link_to 'Reserved By', reservation_path(reservation), class: "link_to" %>
               </td>
             <% end %>
             <td class="mi_tbody_td">
@@ -45,19 +40,6 @@
             </td>
             <td class="mi_tbody_td">
               <%= show_car(reservation) %>
-            </td>
-            <td class="mi_tbody_td">
-              <% if reservation.vehicle_report.present? %>
-                <% if reservation.vehicle_report.approved %>
-                  Approved by admin
-                <% elsif reservation.vehicle_report.student_status %>
-                  Completed
-                <% else %>
-                  <%= link_to 'Vehicle report', vehicle_report_path(reservation.vehicle_report), class: "link_to" %>
-                <% end %>
-              <% else %>
-                <%= link_to 'New vehicle report', new_reservation_vehicle_report_path(reservation), class: "link_to" if reservation.car.present? %>
-              <% end %>
             </td>
           </tr>
         <% end %>
