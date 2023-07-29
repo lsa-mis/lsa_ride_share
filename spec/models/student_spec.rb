@@ -6,7 +6,6 @@
 #  uniqname                    :string
 #  last_name                   :string
 #  first_name                  :string
-#  class_training_date         :date
 #  canvas_course_complete_date :date
 #  meeting_with_admin_date     :string
 #  updated_by                  :integer

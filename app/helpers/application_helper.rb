@@ -392,6 +392,18 @@ module ApplicationHelper
     reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
   end
 
+  def show_image_name(image_field_name)
+    return "Front of Car *" if image_field_name == "image_front_start"
+    return "Driver Side *" if image_field_name == "image_driver_start"
+    return "Passenger Side *" if image_field_name == "image_passenger_start"
+    return "Back of Car *" if image_field_name == "image_back_start"
+    return "Front of Car *" if image_field_name == "image_front_end"
+    return "Driver Side *" if image_field_name == "image_driver_end"
+    return "Passenger Side *" if image_field_name == "image_passenger_end"
+    return "Back of Car *" if image_field_name == "image_back_end"
+    return ""
+  end
+
   def us_states
     [
       ['Alabama', 'AL'],
@@ -462,6 +474,6 @@ module ApplicationHelper
     ]
   end
 
-  def time_list = ["12:00AM"] + (1..11).map {|h| "#{h}:00AM"}.to_a + ["12:00PM"] + (1..11).map {|h| "#{h}:00PM"}.to_a
+  def time_list = ["1:00AM"] + (1..10).map {|h| "#{h}:00AM"}.to_a + ["1:00PM"] + (1..10).map {|h| "#{h}:00PM"}.to_a
 
 end

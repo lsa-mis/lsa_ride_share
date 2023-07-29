@@ -1,0 +1,7 @@
+<%= turbo_frame_tag "student_status" do %>
+  <div class="">
+    <p class='body-md-text status-<%= vehicle_report.student_status %>'>
+    <%= show_vehicle_report_student_status(vehicle_report) %>
+    </p>
+  </div>
+<% end %>
