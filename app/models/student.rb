@@ -24,6 +24,7 @@ class Student < ApplicationRecord
   validates :uniqname, uniqueness: { scope: :program, message: "is already in the program list" }
 
   scope :registered, -> { where(registered: true) }
+  scope :added_manually, -> { where(registered: false) }
 
   def driver_past
     Reservation.where('driver_id = ? AND start_time <= ?', self, DateTime.now)
