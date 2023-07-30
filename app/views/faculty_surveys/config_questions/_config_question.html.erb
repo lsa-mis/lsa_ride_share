@@ -12,20 +12,20 @@
       <tbody>
         <% @config_questions.each do |q| %>
           <tr class="mi_tbody_tr">
-            <td class="">
+            <td class="mi_tbody_td">
               <% unless @faculty_survey.program_id.present? %>
                 <%= link_to "Delete", faculty_survey_config_question_path(@faculty_survey, q), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete}, class: "link_to" %>
               <% end %>
             </td>
-            <td class="">
+            <td class="mi_tbody_td">
               <% unless @faculty_survey.program_id.present? %>
                 <%= link_to 'Edit', edit_faculty_survey_config_question_path(@faculty_survey, q), class: "link_to" %>
               <% end %>
             </td>
-            <td class="">
+            <td class="mi_tbody_td">
               <%= q.question %>
             </td>
-            <td class="">
+            <td class="mi_tbody_td">
               <%= q.answer if q.answer.present? %>
             </td>
           </tr>
