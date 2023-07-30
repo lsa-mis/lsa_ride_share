@@ -2,7 +2,7 @@ module ConfigQuestionsHelper
   def default_config_questions
     [
       "What is the Title of your program? This will be used as the program title in RideShare.",
-      "Is this program a course? Yes or No. If the program is not a course, no need to enter subject/catalog number/section",
+      "Is this program a course? Yes or No. If the program is a course, please enter subject, catalog number and section",
       "Subject (if exist)",
       "Catalog number (if exist)",
       "Section (if exist)",
