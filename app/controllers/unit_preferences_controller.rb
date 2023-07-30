@@ -30,6 +30,9 @@ class UnitPreferencesController < ApplicationController
           if pref.pref_type == 'time' || pref.pref_type == 'string'
             pref.update(value: v)
           end
+          if pref.pref_type == 'integer'
+            pref.update(value: v.to_s)
+          end
         end
       end
     end

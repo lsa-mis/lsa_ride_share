@@ -315,6 +315,14 @@ module ApplicationHelper
     end
     return available
   end
+  
+  def minimum_hours_before_reservation(unit_id)
+    if UnitPreference.find_by(name: "hours_before_reservation", unit_id: unit_id).value.present?
+      UnitPreference.find_by(name: "hours_before_reservation", unit_id: unit_id).value.to_i
+    else
+      0
+    end
+  end
 
   def allow_student_to_edit_reservation?(reservation)
     return false unless is_student?(current_user)
@@ -322,7 +330,7 @@ module ApplicationHelper
     student = Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program)
     return false if student.passenger_future.include?(reservation)
     return false if reservation.backup_driver == student
-    if ((reservation.start_time - DateTime.now)/3600).round > 72
+    if ((reservation.start_time - DateTime.now)/3600).round > minimum_hours_before_reservation(reservation.program.unit)
       return true
     else
       return false
@@ -337,7 +345,7 @@ module ApplicationHelper
     else 
       return false
     end
-    if ((reservation.start_time - DateTime.now)/3600).round > 72
+    if ((reservation.start_time - DateTime.now)/3600).round > minimum_hours_before_reservation(reservation.program.unit)
       return true
     else
       return false
@@ -378,8 +386,8 @@ module ApplicationHelper
     end
   end
 
-  def default_reservation_for_students
-    day = DateTime.now + 72.hours
+  def default_reservation_for_students(unit_id)
+    day = DateTime.now + minimum_hours_before_reservation(unit_id).hours
     return day + 48.hours if day.saturday?
     return day + 24.hours if day.sunday?
     return day
