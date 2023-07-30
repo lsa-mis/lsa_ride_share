@@ -1,6 +1,6 @@
 <div class="w-full">
-  <div class="flex justify-between items-center mb-4">
-    <h1><%= @faculty_survey.display_name %></h1>
+  <div class="lg:flex justify-between items-center mb-4">
+    <h1 class="mb-2"><%= @faculty_survey.display_name %></h1>
     <% if is_admin?(current_user) %> 
       <% unless @faculty_survey.program_id.present? %>
         <%= link_to 'Send Email to Instructor', send_faculty_survey_email_path(@faculty_survey), class: "secondary_yellow_button" %>
@@ -23,8 +23,7 @@
       </div>
     <% else %>
       <p class="body-sm-text mb-2">
-        If the survey contains a title, subject, catalog number, and section questions,
-        a program will be created from answers after the survey is submitted.
+        Survey must contain Title, Subject, Catalog Number, and Section for a program to be created in LSA RideShare from a survey submission.
       </p>
     <% end %>
   </div>

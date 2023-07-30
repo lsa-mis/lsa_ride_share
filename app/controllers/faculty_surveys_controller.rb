@@ -51,7 +51,7 @@ class FacultySurveysController < ApplicationController
     end
     if @faculty_survey.save
       add_config_questions(@faculty_survey)
-      redirect_to faculty_surveys_path(:term_id => @faculty_survey.term_id), notice: "Faculty survey was successfully created." + result['note']
+      redirect_to faculty_survey_config_questions_path(@faculty_survey), notice: "Faculty survey was successfully created." + result['note'] + " You can edit the questions and send an email to the instructor."
     else
       render :new, status: :unprocessable_entity
     end
