@@ -1,6 +1,6 @@
 Ride Share program: survey confirmation.
 
-Dear <%= "#{@faculty_survey.first_name}" %>  <%= "#{@faculty_survey.last_name}" %>
+Dear <%= "#{@faculty_survey.first_name}" %>  <%= "#{@faculty_survey.last_name}" %>,
 
 Thank you for submitting the survey.
 The program <%= link_to "#{Program.find(@faculty_survey.program_id).display_name_with_title}", program_url(Program.find(@faculty_survey.program_id)) %>
