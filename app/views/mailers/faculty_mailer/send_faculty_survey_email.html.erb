@@ -6,7 +6,7 @@
   <body>
     <h3>Ride Share program: Please fill out the following survey. </h3>
     <p>
-      Dear <%= "#{@faculty_survey.first_name}" %> <%= "#{@faculty_survey.last_name}" %>
+      Dear <%= "#{@faculty_survey.first_name}" %> <%= "#{@faculty_survey.last_name}" %>,
     </p>
     <p>
       Please fill out the following form <%= link_to "#{@faculty_survey.title}", survey_url(@faculty_survey) %>

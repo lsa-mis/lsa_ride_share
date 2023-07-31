@@ -55,9 +55,15 @@
       <label class="body-sm-semibold-text ml-2">
         Canvas Course Completion Date:
       </label>
-      <p class="body-sm-text ml-2">
-        Take <%= link_to 'Canvas Course', @program.canvas_link, :target => "_blank", class: "link_to" %>
-      </p>
+      <% if @program.present? %>
+        <p class="body-sm-text ml-2">
+          Take <%= link_to 'Canvas Course', @program.canvas_link, :target => "_blank", class: "link_to" %>
+        </p>
+      <% else %>
+        <p class="body-sm-text ml-2">
+          Select a program to get Canvas course link
+        </p>
+      <% end %>
     <% end %>
   </div>
 
