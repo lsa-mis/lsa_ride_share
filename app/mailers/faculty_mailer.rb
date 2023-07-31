@@ -3,7 +3,7 @@ class FacultyMailer < ApplicationMailer
 
   def send_faculty_survey_email(user)
     @recipient = @faculty_survey.uniqname + '@umich.edu'
-    mail(to: @recipient, subject: "RideShare program: plaese fill out the survey" )
+    mail(to: @recipient, subject: "RideShare program: please fill out the survey" )
     EmailLog.create(sent_from_model: "FacultySurvey", record_id: @faculty_survey.id, email_type: "send_faculty_survey_email",
       sent_to: @recipient, sent_by: user.id, sent_at: DateTime.now)
   end
