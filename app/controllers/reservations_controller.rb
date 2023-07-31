@@ -109,7 +109,14 @@ class ReservationsController < ApplicationController
       @term_id = @program.term.id
       @sites = @program.sites
       @cars = @cars.where(unit_id: @unit_id).order(:car_number)
-      @min_date = default_reservation_for_students
+      @min_date = default_reservation_for_students(@unit_id)
+    elsif is_manager?(current_user)
+      @program = Program.find(params[:program_id])
+      @unit_id = @program.unit_id
+      @term_id = @program.term.id
+      @sites = @program.sites
+      @cars = @cars.where(unit_id: @unit_id).order(:car_number)
+      @min_date = default_reservation_for_students(@unit_id)
     elsif params[:unit_id].present?
       @unit_id = params[:unit_id]
       @min_date =  DateTime.now
@@ -120,7 +127,7 @@ class ReservationsController < ApplicationController
     if params[:day_start].present?
       @day_start = params[:day_start].to_date
     else
-      @day_start = default_reservation_for_students
+      @day_start = default_reservation_for_students(@unit_id)
     end
     if params[:day_end].present?
       @day_end = params[:day_end].to_date
