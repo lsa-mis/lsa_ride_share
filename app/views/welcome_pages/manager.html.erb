@@ -26,7 +26,8 @@
       </p>
       <div class="my-8">
         <% if @program.present? %>
-          <%= link_to "Reserve Car", new_reservation_path(:program_id => @program.id), class: "secondary_blue_button" if @manager.can_reserve_car? %>
+          <%= link_to "Reserve Car - One Day", new_reservation_path(:program_id => @program.id), class: "secondary_blue_button" if @manager.can_reserve_car? %>
+          <%= link_to "Reserve Car - Long", new_long_reservation_path(:program_id => @program.id), class: "secondary_blue_button" if @manager.can_reserve_car? %>
         <% end %>
       </div>
       <div class="my-2">
