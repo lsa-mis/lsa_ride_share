@@ -8,6 +8,7 @@
     <p>
       Dear <%= "#{@faculty_survey.first_name} #{@faculty_survey.last_name}" %>
     </p>
+    <p>
       Thank you for submitting the survey.
       The program <%= link_to "#{Program.find(@faculty_survey.program_id).display_name_with_title}", program_url(Program.find(@faculty_survey.program_id)) %>
       was created based on your answers. You can edit the program data and add sites to the program at the above link.
