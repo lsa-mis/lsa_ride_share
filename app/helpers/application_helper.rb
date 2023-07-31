@@ -482,6 +482,11 @@ module ApplicationHelper
     ]
   end
 
-  def time_list = ["1:00AM"] + (1..10).map {|h| "#{h}:00AM"}.to_a + ["1:00PM"] + (1..10).map {|h| "#{h}:00PM"}.to_a
+  # def time_list = ["1:00AM"] + (0..11).map {|h| "#{h}:00AM"}.to_a + ["11:00PM"] + (0..11).map {|h| "#{h}:00PM"}.to_a
+  def time_list 
+    time_list = ["12:00AM"] + (1..11).map {|h| "#{h}:00AM"}.to_a + ["12:00PM"] + (1..11).map {|h| "#{h}:00PM"}.to_a
+    time_list.shift
+    return time_list
+  end
 
 end
