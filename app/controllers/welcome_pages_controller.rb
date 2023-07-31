@@ -49,6 +49,9 @@ class WelcomePagesController < ApplicationController
     update_status(@manager)
     unit_ids = @manager.programs.pluck(:unit_id).uniq
     @programs = @manager.programs
+    if @programs.count == 1
+      @program = @programs.first
+    end
     if params[:program_id].present?
       @program = Program.find(params[:program_id])
       @unit_id = @program.unit.id
