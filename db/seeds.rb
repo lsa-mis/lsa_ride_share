@@ -44,11 +44,14 @@ test_unit = Unit.find_by(name: "Test Unit")
 test_car = Car.create!(car_number: "1234-Test Car", make: "Toyota", model: "Corolla", color: "yellow", number_of_seats: 4, mileage: 101.30, gas: 80, parking_spot: "301 Liberty", updated_by: user_test.id, status: "available", unit_id: test_unit.id)
 
 UnitPreference.create!([
-  { name: "contact_phone", description: "A phone that students can call with questions about cars reservations", on_off: nil, unit_id: test_unit.id, value: "808 453-3245", pref_type: "string" },
-  { name: "unit_office", description: "The unit's office number", on_off: nil, unit_id: test_unit.id, value: "123 Main St", pref_type: "string" },
-  { name: "reservation_time_begin", description: "The earliest time of the day to pick up cars", on_off: nil, unit_id: test_unit.id, value: "8:00AM", pref_type: "time" },
-  { name: "reservation_time_end", description: "The latest time of the day to drop off cars", on_off: nil, unit_id: test_unit.id, value: "5:00PM", pref_type: "time" },
-  { name: "notification_email", description: "The email address that system notification emails are sent to", on_off: nil, unit_id: test_unit.id, value: nil, pref_type: "string"}
+  { name: "contact_phone", description: "A phone that students can call with questions about cars reservations", on_off: false, unit_id: test_unit.id, value: "808 453-3245", pref_type: "string" },
+  { name: "unit_office", description: "The unit's office number", on_off: false, unit_id: test_unit.id, value: "123 Main St", pref_type: "string" },
+  { name: "reservation_time_begin", description: "The earliest time of the day to pick up cars", on_off: false, unit_id: test_unit.id, value: "8:00AM", pref_type: "time" },
+  { name: "reservation_time_end", description: "The latest time of the day to drop off cars", on_off: false, unit_id: test_unit.id, value: "5:00PM", pref_type: "time" },
+  { name: "notification_email", description: "The email address that system notification emails are sent to", on_off: false, unit_id: test_unit.id, value: "admin@test.com", pref_type: "string"},
+  { name: "faculty_survey", description: "Use faculty survey to create programs", on_off: false, unit_id: test_unit.id, value: nil, pref_type: "boolean"},
+  { name: "hours_before_reservation", description: "Allow to create reservations without cars", on_off: false, unit_id: test_unit.id, value: "72", pref_type: "integer"},
+  { name: "no_car_reservations", description: "The email address that system notification emails are sent to", on_off: false, unit_id: test_unit.id, value: nil, pref_type: "boolean"}
 ])
 
 # create a manager
