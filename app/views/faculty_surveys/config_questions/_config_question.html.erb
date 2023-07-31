@@ -23,10 +23,10 @@
               <% end %>
             </td>
             <td class="mi_tbody_td">
-              <%= q.question.body.html_safe %>
+              <%= q.question %>
             </td>
             <td class="mi_tbody_td">
-              <%= q.answer.body.html_safe if q.answer.present? %>
+              <%= q.answer if q.answer.present? %>
             </td>
           </tr>
         <% end %>

@@ -6,7 +6,6 @@
 #  uniqname                    :string
 #  last_name                   :string
 #  first_name                  :string
-#  class_training_date         :date
 #  canvas_course_complete_date :date
 #  meeting_with_admin_date     :string
 #  updated_by                  :integer
@@ -21,7 +20,6 @@ FactoryBot.define do
     last_name { "MyString" }
     first_name { "MyString" }
     mvr_expiration_date { "2023-02-14" }
-    class_training_date { "2023-02-14" }
     canvas_course_complete_date { "2023-02-14" }
     meeting_with_admin_date { "MyString" }
   end

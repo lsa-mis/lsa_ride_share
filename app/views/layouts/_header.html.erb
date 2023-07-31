@@ -26,7 +26,13 @@
               <%= link_to "Sites", sites_path, class: "#{class_names(active: current_page?(sites_path))}" if policy(Site).index? %>
             </div>
             <div class="header_link">
+              <%= link_to "Managers", managers_path, class: "#{class_names(active: current_page?(managers_path))}" if policy(Manager).index? %>
+            </div>
+            <div class="header_link">
               <%= link_to "Reservations", reservations_path, class: "#{class_names(active: current_page?(reservations_path))}" if policy(Reservation).index? %>
+            </div>
+            <div class="header_link">
+              <%= link_to "Reservations", welcome_pages_manager_path, class: "#{class_names(active: current_page?(welcome_pages_manager_path))}" if is_manager?(current_user) %>
             </div>
             <div class="header_link">
               <%= link_to "Vehicle Reports", vehicle_reports_path, class: "#{class_names(active: current_page?(vehicle_reports_path))}" if policy(VehicleReport).index? %>

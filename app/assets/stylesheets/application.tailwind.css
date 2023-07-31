@@ -24,11 +24,11 @@ from https://tailwindcss.com/docs/adding-custom-styles
     @apply text-yellow-500;
   }
   .unavailable {
-    @apply text-red-700
+    @apply text-red-umred
   }
 
   .available {
-    @apply text-green-700
+    @apply text-green-umgreen
   }
 
   h1 {
@@ -229,7 +229,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .fancy_label {
-    @apply text-sm font-semibold text-gray-900 bg-white relative px-1 top-2 left-3 w-auto group-focus-within:text-red-600;
+    @apply text-sm font-semibold text-gray-900 bg-white relative px-1 top-2 left-3 w-auto group-focus-within:text-red-umred;
   }
 
   .filter_select {
@@ -267,11 +267,11 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .alert {
-    @apply text-red-500 text-sm font-normal font-montserrat;
+    @apply text-red-umred text-sm font-normal font-montserrat;
   }
 
   .notice {
-    @apply text-green-500 text-sm font-normal font-montserrat;
+    @apply text-green-umgreen text-sm font-normal font-montserrat;
   }
 
   .fields--hide {
@@ -283,7 +283,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .error_text {
-    @apply text-red-500 text-sm font-normal font-montserrat;
+    @apply text-red-umred text-sm font-normal font-montserrat;
   }
   /* ... */
 }

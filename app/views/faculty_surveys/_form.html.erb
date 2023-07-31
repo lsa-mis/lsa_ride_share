@@ -1,6 +1,6 @@
 <%= form_with(model: faculty_survey, class: "contents") do |form| %>
   <% if faculty_survey.errors.any? %>
-    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
+    <div id="error_explanation" class="text-red-umred px-3 py-2 font-medium rounded-lg mt-3">
       <h2><%= pluralize(faculty_survey.errors.count, "error") %> prohibited this faculty_survey from being saved:</h2>
       <ul>
         <% faculty_survey.errors.each do |error| %>
@@ -25,7 +25,7 @@
   </div>
 
   <div class="my-5">
-    <%= form.label :uniqname, 'Uniqname *', class: "fancy_label"  %>
+    <%= form.label :uniqname, 'Instructor Uniqname *', class: "fancy_label"  %>
     <%= form.text_field :uniqname, required: true, class: "input_text_field" %>
   </div>
 

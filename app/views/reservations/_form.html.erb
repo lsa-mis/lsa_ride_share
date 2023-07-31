@@ -1,7 +1,7 @@
 <%= form_with model: reservation,
     data: { controller: "reservation", reservation_target: "form", action: "submit->reservation#submitForm" } do |form| %>
   <% if reservation.errors.any? %>
-    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
+    <div id="error_explanation" class="text-red-umred px-3 py-2 font-medium rounded-lg mt-3">
       <h2><%= pluralize(reservation.errors.count, "error") %> prohibited this reservation from being saved:</h2>
       <ul>
         <% reservation.errors.each do |error| %>
@@ -15,7 +15,7 @@
   <div class="error_text mt-2" id="required_fields"></div>
 
   <input type="hidden" id="unit_id" name="unit_id" value=<%= @unit_id %> data-reservation-target="unit">
-  <% if is_student?(current_user) %>
+  <% if is_student?(current_user) || is_manager?(current_user) %>
     <p class="body-lg-text mt-2">
       Program:
       <%= @program.display_name_with_title %>

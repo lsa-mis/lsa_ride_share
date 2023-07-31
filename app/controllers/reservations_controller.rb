@@ -51,7 +51,7 @@ class ReservationsController < ApplicationController
   # GET /reservations/1 or /reservations/1.json
   def show
     @passengers = @reservation.passengers
-    @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id)
+    @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id).order(created_at: :desc)
   end
 
   # GET /reservations/new
@@ -64,7 +64,14 @@ class ReservationsController < ApplicationController
       @term_id = @program.term.id
       @sites = @program.sites
       @cars = @cars.where(unit_id: @unit_id).order(:car_number)
-      @min_date = default_reservation_for_students
+      @min_date = default_reservation_for_students(@unit_id)
+    elsif is_manager?(current_user)
+      @program = Program.find(params[:program_id])
+      @unit_id = @program.unit_id
+      @term_id = @program.term.id
+      @sites = @program.sites
+      @cars = @cars.where(unit_id: @unit_id).order(:car_number)
+      @min_date = default_reservation_for_students(@unit_id)
     elsif params[:unit_id].present?
       @unit_id = params[:unit_id]
       @min_date =  DateTime.now
@@ -75,7 +82,7 @@ class ReservationsController < ApplicationController
     if params[:day_start].present?
       @day_start = params[:day_start].to_date
     else
-      @day_start = default_reservation_for_students
+      @day_start = default_reservation_for_students(@unit_id)
     end
     if params[:term_id].present?
       @term_id = params[:term_id]
@@ -310,7 +317,10 @@ class ReservationsController < ApplicationController
         render turbo_stream: turbo_stream.update("flash", partial: "layouts/notification")
       end
     end
-    if params[:reservation][:driver_id].present?
+    if params[:reservation][:driver_id].present? || params[:reservation][:driver_manager_id].present?
+      if @reservation.driver_manager.present? && params[:reservation][:driver_id].present?
+        @reservation.update(driver_manager: nil)
+      end
       if @reservation.update(reservation_params)
         redirect_to add_passengers_path(@reservation, :edit => params[:edit])
         return
@@ -351,7 +361,7 @@ class ReservationsController < ApplicationController
   def send_reservation_updated_email
     authorize @reservation
     ReservationMailer.with(reservation: @reservation).car_reservation_updated(current_user).deliver_now
-    @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id)
+    @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id).order(created_at: :desc)
     flash.now[:notice] = 'Email was sent'
     render :show
   end
@@ -375,8 +385,13 @@ class ReservationsController < ApplicationController
     @drivers = @reservation.program.students.eligible_drivers
     @passengers = @reservation.passengers
     unless is_admin?(current_user)
-      driver = Student.find_by(program_id: @reservation.program_id, uniqname: current_user.uniqname)
-      @reservation.update(driver_id: driver.id)
+      if is_student?(current_user)
+        driver = Student.find_by(program_id: @reservation.program_id, uniqname: current_user.uniqname)
+        @reservation.update(driver_id: driver.id)
+      elsif is_manager?(current_user)
+        driver_manager = Manager.find_by(uniqname: current_user.uniqname)
+        @reservation.update(driver_manager_id: driver_manager.id)
+      end
     end
   end
 
@@ -400,6 +415,9 @@ class ReservationsController < ApplicationController
             format.json { head :no_content }
           elsif is_student?(current_user)
             format.html { redirect_to welcome_pages_student_url, notice: "Reservation was canceled." }
+            format.json { head :no_content }
+          elsif is_manager?(current_user)
+            format.html { redirect_to welcome_pages_manager_url, notice: "Reservation was canceled." }
             format.json { head :no_content }
           end
         else
@@ -439,7 +457,7 @@ class ReservationsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def reservation_params
-      params.require(:reservation).permit(:status, :start_time, :end_time, :recurring, :driver_id, :driver_phone, :backup_driver_id, :backup_driver_phone, 
+      params.require(:reservation).permit(:status, :start_time, :end_time, :recurring, :driver_id, :driver_manager_id, :driver_phone, :backup_driver_id, :backup_driver_phone, 
       :number_of_people_on_trip, :program_id, :site_id, :car_id, :reserved_by, :approved, :non_uofm_passengers, :number_of_non_uofm_passengers)
     end
 end

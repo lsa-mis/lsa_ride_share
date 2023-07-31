@@ -108,7 +108,7 @@ class Survey
         title = rich_text_no_tags_value(s.answer)
       end
       if rich_text_value(s.question).include?("not a course")
-        if rich_text_value(s.answer).include?("no")
+        if rich_text_value(s.answer).downcase.include?("no")
           not_course = true 
         end
       end

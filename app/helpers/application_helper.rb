@@ -4,6 +4,8 @@ module ApplicationHelper
     if user_signed_in?
       if is_student?(current_user)
         welcome_pages_student_path
+      elsif is_manager?(current_user)
+        welcome_pages_manager_path
       else
         all_root_path
       end
@@ -137,8 +139,21 @@ module ApplicationHelper
   def show_driver(reservation)
     if reservation.driver.present?
       reservation.driver.display_name
+    elsif
+      reservation.driver_manager.present?
+      reservation.driver_manager.display_name + " (manager)"
     else
       "No driver selected"
+    end
+  end
+
+  def show_manager(program, user)
+    if program.instructor.uniqname == user.uniqname
+      return "(instructor)"
+    elsif program.managers.pluck(:uniqname).include?(user.uniqname)
+      return "(manager)"
+    else
+      return ""
     end
   end
 
@@ -360,6 +375,14 @@ module ApplicationHelper
     end
     return available
   end
+  
+  def minimum_hours_before_reservation(unit_id)
+    if UnitPreference.find_by(name: "hours_before_reservation", unit_id: unit_id).value.present?
+      UnitPreference.find_by(name: "hours_before_reservation", unit_id: unit_id).value.to_i
+    else
+      0
+    end
+  end
 
   # def is_car_available?(car, range)
   #   Rails.logger.debug "************************* car #{car.id}"
@@ -381,7 +404,23 @@ module ApplicationHelper
     return false unless Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program).present?
     student = Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program)
     return false if student.passenger_future.include?(reservation)
-    if ((reservation.start_time - DateTime.now)/3600).round > 72
+    return false if reservation.backup_driver == student
+    if ((reservation.start_time - DateTime.now)/3600).round > minimum_hours_before_reservation(reservation.program.unit)
+      return true
+    else
+      return false
+    end
+  end
+
+  def allow_manager_to_edit_reservation?(reservation)
+    return false unless is_manager?(current_user)
+    manager = Manager.find_by(uniqname: current_user.uniqname)
+    if reservation.driver_manager_id.present?
+      return false unless Manager.find(reservation.driver_manager_id).uniqname == current_user.uniqname
+    else 
+      return false
+    end
+    if ((reservation.start_time - DateTime.now)/3600).round > minimum_hours_before_reservation(reservation.program.unit)
       return true
     else
       return false
@@ -422,8 +461,8 @@ module ApplicationHelper
     end
   end
 
-  def default_reservation_for_students
-    day = DateTime.now + 72.hours
+  def default_reservation_for_students(unit_id)
+    day = DateTime.now + minimum_hours_before_reservation(unit_id).hours
     return day + 48.hours if day.saturday?
     return day + 24.hours if day.sunday?
     return day
@@ -434,6 +473,18 @@ module ApplicationHelper
   end 
   def unit_email(reservation)
     reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
+  end
+
+  def show_image_name(image_field_name)
+    return "Front of Car *" if image_field_name == "image_front_start"
+    return "Driver Side *" if image_field_name == "image_driver_start"
+    return "Passenger Side *" if image_field_name == "image_passenger_start"
+    return "Back of Car *" if image_field_name == "image_back_start"
+    return "Front of Car *" if image_field_name == "image_front_end"
+    return "Driver Side *" if image_field_name == "image_driver_end"
+    return "Passenger Side *" if image_field_name == "image_passenger_end"
+    return "Back of Car *" if image_field_name == "image_back_end"
+    return ""
   end
 
   def us_states
@@ -506,6 +557,10 @@ module ApplicationHelper
     ]
   end
 
-  def time_list = ["12:00AM"] + (1..11).map {|h| "#{h}:00AM"}.to_a + ["12:00PM"] + (1..11).map {|h| "#{h}:00PM"}.to_a
+  def time_list 
+    time_list = ["12:00AM"] + (1..11).map {|h| "#{h}:00AM"}.to_a + ["12:00PM"] + (1..11).map {|h| "#{h}:00PM"}.to_a
+    time_list.shift
+    return time_list
+  end
 
 end

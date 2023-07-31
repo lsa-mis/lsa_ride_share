@@ -1,0 +1,45 @@
+<%= turbo_frame_tag "images_damage" do %>
+  <div class="my-5">
+    <p class="body-md-bold-text">
+      Damage Images (if applicable)
+    </p>
+    <p class="body-sm-text my-2">
+      To upload multiple images, click Choose Files and select all images at once.
+    </p>
+    <%= form_with(model: @vehicle_report, url: upload_damage_images_path, method: :post, html: { class: "sm:flex sm:items-center" }) do |form| %>
+      <%= form.label :image_damages, "Damage (upload multiple images)", class: "hidden" %>
+      <%= form.file_field :image_damages, multiple: true, class: "body-sm-text" %>
+      <%= form.submit 'Save', class: "secondary_blue_button" %>
+    <% end %>
+  </div>
+
+  <% if @vehicle_report.image_damages.attached? %>
+    <div class="">
+      <p class="body-md-bold-text mb-2">Uploaded images:</p>
+      <div>
+        <ul class="list-none grid grid-cols-2 gap-x-4 gap-y-8 mb-2">
+          <% @vehicle_report.image_damages.order(created_at: :desc).each do |image| %>
+            <li class="relative">
+              <div class="flex flex-col">
+                <%= link_to url_for(image), target: "_blank" do %>
+                  <%= image_tag image.variant(:thumb), class: "object-cover group-hover:opacity-75" %>
+                <% end %>
+                <p class="body-sm-text pt-2">
+                  Uploaded on <%= show_date_time(image.created_at) %>
+                </p>
+                <div>
+                  <%= link_to delete_file_path(image), data: { turbo_method: :get, turbo_confirm: 'Are you sure?' } do %>
+                    <span class="tertiary_button">Remove
+                      <i class="fa fa-times" aria-hidden="true"></i>
+                    </span>
+                  <% end %>
+                </div>
+              </div>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+  <%= render 'image_errors', image_field_name: 'image_damages' %>
+<% end %>

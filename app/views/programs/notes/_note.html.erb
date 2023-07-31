@@ -9,7 +9,7 @@
       <div class="flex items-center">
         <p class="body-sm-text my-2">
           Updated on 
-          <%= note.updated_at.strftime('%m/%d/%Y') %>
+          <%= show_date_time(note.updated_at) %>
           by
           <%= note.user.display_name %>
         </p>

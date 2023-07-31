@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   end
   get '/faculty_surveys/survey/:faculty_survey_id', to: 'faculty_surveys/config_questions#survey', as: :survey
   post '/faculty_surveys/survey/:faculty_survey_id', to: 'faculty_surveys/config_questions#save_survey'
+  get '/faculty_surveys/send_faculty_survey_email/:id', to: 'faculty_surveys#send_faculty_survey_email', as: :send_faculty_survey_email
 
   resources :units
 
@@ -22,7 +23,10 @@ Rails.application.routes.draw do
   resources :vehicle_reports do
     resources :notes, module: :vehicle_reports
   end
-  # get '/vehicle_reports/:reports_ids', to: 'vehicle_reports#index', as: 'vehicle_reports'
+  
+  post 'vehicle_reports/upload_image/:id', to: 'vehicle_reports#upload_image', as: :upload_image
+  post 'vehicle_reports/upload_damage_images/:id', to: 'vehicle_reports#upload_damage_images', as: :upload_damage_images
+  get 'vehicle_reports/delete_image/:id/:image_id/:image_field_name', to: 'vehicle_reports#delete_image', as: :delete_image, defaults: { format: :turbo_stream }
 
   get '/reservations/new_long', to: 'reservations#new_long', as: :new_long_reservation
   get '/reservations/week_calendar/', to: 'reservations#week_calendar', as: 'week_calendar'
@@ -64,6 +68,11 @@ Rails.application.routes.draw do
   resources :programs do
     resources :managers, module: :programs, only: [ :new, :create ]
   end
+
+  resources :managers
+  get '/managers/update_managers_mvr_status/:id', to: 'managers#update_managers_mvr_status', as: :update_managers_mvr_status, defaults: { format: :turbo_stream }
+
+
   get '/programs/managers/edit_program_managers/:program_id', to: 'programs/managers#edit_program_managers', as: :edit_program_managers
   delete 'programs/managers/remove_manager/:program_id/:id', to: 'programs/managers#remove_manager_from_program', as: :remove_manager_from_program
 
@@ -98,6 +107,7 @@ Rails.application.routes.draw do
   resources :notes
 
   get 'welcome_pages/student'
+  get 'welcome_pages/manager'
   
   get 'static_pages/home'
 

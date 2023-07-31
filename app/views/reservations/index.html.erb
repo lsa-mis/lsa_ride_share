@@ -1,7 +1,12 @@
 <div class="w-full" data-controller='autosubmit'>
 <a name="top" style="display: none;">top<a>
-  <div class="pb-4">
+  <div class="flex justify-between items-center pb-4">
     <h1 class="mb-2">Reservations</h1>
+    <%= link_to new_reservation_path(:unit_id => @unit_id, :day_start => Date.today) do %>
+      <span class="primary_button">
+        New Reservation
+      </span>
+    <% end %>
   </div>
   
   <%= form_with url: reservations_path, method: :get, class: "", data: { autosubmit_target: "form", turbo_frame: "unit-calendar" } do |form| %>

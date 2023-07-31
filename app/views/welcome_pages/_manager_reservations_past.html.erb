@@ -1,0 +1,49 @@
+<%= turbo_frame_tag 'manager_reservations' do %>
+  <h3 class="my-2">Past Reservations</h3>
+  <div class="min-w-full">
+    <table class="mi_table">
+      <thead class="border border-l-0 border-r-0 border-gray-um60">
+        <tr>
+          <th class="header_th">Reservation</th>
+          <th class="header_th">Approved</th>
+          <th class="header_th">Pick-up</th>
+          <th class="header_th">Drop-off</th>
+          <th class="header_th">Site</th>
+          <th class="header_th">Car</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @reservations_past.each do |reservation| %>
+          <tr>
+            <% if reservation.driver_manager == @manager %>
+              <td class="mi_tbody_td">
+                <%= link_to 'Driver', reservation_path(reservation), class: "link_to" %>
+              </td>
+            <% else %>
+              <td class="mi_tbody_td">
+                <%= link_to 'Reserved By', reservation_path(reservation), class: "link_to" %>
+              </td>
+            <% end %>
+            <td class="mi_tbody_td">
+              <% if reservation.approved %>
+                <i class="fa-solid fa-check"></i>
+              <% end %>
+            </td>
+            <td class="mi_tbody_td">
+            <%= show_date_time(reservation.start_time + 15.minute) %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= show_date_time(reservation.end_time - 15.minute) %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= reservation.site.title %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= show_car(reservation) %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

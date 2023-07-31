@@ -1,7 +1,7 @@
 <%= turbo_frame_tag 'new_preference' do %>
   <%= form_with(model: unit_preference, class: "contents") do |form| %>
     <% if unit_preference.errors.any? %>
-      <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
+      <div id="error_explanation" class="text-red-umred px-3 py-2 font-medium rounded-lg mt-3">
         <h2><%= pluralize(unit_preference.errors.count, "error") %> prohibited this unit_preference from being saved:</h2>
         <ul>
           <% unit_preference.errors.each do |error| %>

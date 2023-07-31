@@ -1,10 +1,11 @@
 class FacultySurveys::ConfigQuestionsController < ApplicationController
   before_action :auth_user
   before_action :set_faculty_survey
-  before_action :set_config_question, only: %i[ edit update destroy]
+  before_action :set_config_question, only: %i[ edit update destroy ]
 
   def index
     @config_questions = @faculty_survey.config_questions.order(:id)
+    @email_log_entries = EmailLog.where(sent_from_model: "FacultySurvey", record_id: @faculty_survey.id).order(created_at: :desc)
     authorize @config_questions
   end
 
@@ -37,7 +38,7 @@ class FacultySurveys::ConfigQuestionsController < ApplicationController
 
   def destroy
     if @config_question.destroy
-      flash.now[:notice] =  "Question was deleted."
+      flash.now[:notice] = "Question was deleted."
     end
     @config_questions = @faculty_survey.config_questions.order(:id)
   end
@@ -60,6 +61,10 @@ class FacultySurveys::ConfigQuestionsController < ApplicationController
       program_id = new_survey.create_program_from_survey(current_user)
       if program_id
         @faculty_survey.update(program_id: program_id)
+        # send email to the admin that the proram was created
+        FacultyMailer.with(faculty_survey: @faculty_survey).faculty_survey_program_created(current_user).deliver_now
+        # send confirmation email to faculty that the survey was submitted
+        FacultyMailer.with(faculty_survey: @faculty_survey).faculty_survey_confirmation(current_user).deliver_now
       else
         redirect_to faculty_index_path, alert: "Error creating program form the survey. Please report an issue."
         return

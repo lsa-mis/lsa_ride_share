@@ -1,7 +1,7 @@
 <%= turbo_frame_tag 'edit_unit' do %>
   <%= form_with(model: unit, class: "contents") do |form| %>
     <% if unit.errors.any? %>
-      <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
+      <div id="error_explanation" class="text-red-umred px-3 py-2 font-medium rounded-lg mt-3">
         <h2><%= pluralize(unit.errors.count, "error") %> prohibited this unit from being saved:</h2>
         <ul>
           <% unit.errors.each do |error| %>
