@@ -246,16 +246,6 @@ module ApplicationHelper
     return car_available
   end
 
-  # def show_time_begin_end(day_start, day_end, unit_id)
-  #   t_begin = UnitPreference.find_by(name: "reservation_time_begin", unit_id: unit_id).value
-  #   t_begin = Time.parse(t_begin).strftime("%H").to_i
-  #   t_end = UnitPreference.find_by(name: "reservation_time_end", unit_id: unit_id).value
-  #   t_end = Time.parse(t_end).strftime("%H").to_i
-  #   day_begin = DateTime.new(day_start.year, day_start.month, day_start.day, t_begin, 0, 0, 'EDT')
-  #   day_end = DateTime.new(day_end.year, day_end.month, day_end.day, t_end, 0, 0, 'EDT')
-  #   return [day_begin, day_end]
-  # end
-
   def unit_begining_of_day(day, unit_id)
     t_begin = UnitPreference.find_by(name: "reservation_time_begin", unit_id: unit_id).value
     t_begin = Time.parse(t_begin).strftime("%H").to_i
@@ -383,21 +373,6 @@ module ApplicationHelper
       0
     end
   end
-
-  # def is_car_available?(car, range)
-  #   Rails.logger.debug "************************* car #{car.id}"
-  #   Rails.logger.debug "************************* range #{range}"
-  #   car_reservations = car.reservations.where("(? BETWEEN start_time AND end_time) OR (? BETWEEN start_time AND end_time) 
-  #       OR (start_time > ? AND end_time < ?)", range.begin, range.end, range.begin, range.end)
-  #   return true unless car_reservations.present?
-
-  #   car_ranges = car_reservations.map { |res| (res.start_time - 14.minute)..(res.end_time + 14.minute) }
-  #     if car_ranges.any? { |r| r.overlaps?(range)}
-  #       return false
-  #     else 
-  #       return true
-  #     end
-  # end
 
   def allow_student_to_edit_reservation?(reservation)
     return false unless is_student?(current_user)

@@ -57,46 +57,4 @@ export default class extends Controller {
 
   }
 
-  // submitForm(event) {
-  //   let term = this.termTarget.value
-  //   let program = this.programTarget.value
-  //   let site = this.siteTarget.value
-  //   let car = this.carTarget.value
-
-  //   let start_time = this.start_timeTarget.value
-  //   let end_time = this.end_timeTarget.value
-  //   let start_time_format = new Date(start_time)
-  //   let end_time_format = new Date(end_time)
-  //   let diff_time = parseInt(end_time_format - start_time_format)/60000;
-    
-  //   let time_field_error = document.getElementById('time_field')
-  //   let required_fields_error = document.getElementById('required_fields')
-  //   let car_field_error = document.getElementById('car_field')
-  //   let submitForm = true
-
-  //   if(term == "" || program == "" || site == "") {
-  //     required_fields_error.innerHTML = "Please select required data"
-  //     car_field_error.innerHTML = ''
-  //     submitForm = false
-  //   } else if (car == "") {
-  //     car_field_error.innerHTML = "Please select a car"
-  //     required_fields_error.innerHTML = ''
-  //     submitForm = false
-  //   } else {
-  //     required_fields_error.innerHTML = ''
-  //     car_field_error.innerHTML = ''
-  //   }
-
-  //   if (diff_time < 31) {
-  //     time_field_error.innerHTML = "End time is too close to the start time"
-  //     submitForm = false
-  //   } else {
-  //     time_field_error.innerHTML = ''
-  //   }
-
-  //   if(submitForm == false) {
-  //     event.preventDefault()
-  //   }
-  // }
-
 }

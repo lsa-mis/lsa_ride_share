@@ -216,33 +216,8 @@ class ReservationsController < ApplicationController
       exclude_cars = (between_reservations + day_start_reservations + day_end_reservations + long_reservations).uniq
       @cars = @cars.where.not(id: exclude_cars)
     end
-    # if params[:start_time].present?
-    #   @start_time = params[:start_time]
-    # end
-    # if params[:end_time].present?
-    #   @end_time = params[:end_time]
-    # end
-
-    # if ((@end_time.to_datetime - @start_time.to_datetime) * 24 * 60).to_i > 30
-    #   @reserv_begin = @start_time.to_datetime
-    #   @reserv_end = @end_time.to_datetime
-    #   range = @reserv_begin..@reserv_end
-    #   @cars = available_cars_long(@cars, range)
-    # end
     authorize Reservation
   end
-
-#   def check_car_availability
-#     car = Car.find(params[:car])
-#     start_time = params[:start_time]
-#     end_time = params[:end_time]
-#     range = start_time.to_datetime..end_time.to_datetime
-#     result = is_car_available?(car, range)
-# Rails.logger.debug "************************* result #{result}"
-
-#     render json: [{available: result}]
-#     authorize Reservation
-#   end
 
   def list_of_available_cars(unit_id, day_start, number, start_time, end_time)
     cars = Car.available.data(unit_id).order(:car_number)
