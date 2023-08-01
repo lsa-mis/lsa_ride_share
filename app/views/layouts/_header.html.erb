@@ -50,12 +50,12 @@
             <% end %>
             <% if unit_use_faculty_survey?(current_user.unit_ids) %>
               <div class="header_link">
-                <%= link_to "Faculty Surveys", faculty_surveys_path, class: "#{class_names(active: current_page?(faculty_surveys_path))}" %>
+                <%= link_to "Program Surveys", faculty_surveys_path, class: "#{class_names(active: current_page?(faculty_surveys_path))}" %>
               </div>
             <% end %>
             <% if faculty_has_survey?(current_user) %>
               <div class="header_link">
-                <%= link_to "Faculty Survey", faculty_index_path, class: "#{class_names(active: current_page?(faculty_surveys_path))}" %>
+                <%= link_to "Program Survey", faculty_index_path, class: "#{class_names(active: current_page?(faculty_surveys_path))}" %>
               </div>
             <% end %>
           <% end %>
