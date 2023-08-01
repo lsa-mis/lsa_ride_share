@@ -4,6 +4,7 @@
       <thead class="mi_thead">
         <tr>
           <td></td>
+          <td></td>
           <th class="header_th">Created At</th>
           <th class="header_th">Title</th>
           <th class="header_th">Instructor</th>
@@ -19,6 +20,11 @@
             <td class="mi_tbody_td">
               <% unless survey.program_id.present? %>
                 <%= link_to 'Edit', edit_faculty_survey_path(survey), class: "link_to" %>
+              <% end %>
+            </td>
+            <td class="mi_tbody_td">
+              <% unless survey.program_id.present? %>
+                <%= link_to 'Delete', faculty_survey_path(survey, :term_id => survey.term_id, :unit_id => survey.unit_id), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete }, class: "link_to" %>
               <% end %>
             </td>
             <td class="mi_tbody_td">
