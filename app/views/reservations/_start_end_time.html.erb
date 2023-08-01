@@ -1,13 +1,11 @@
 <%= turbo_frame_tag "start_end_time" do %>
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full">
     <div>
-    <%= @day_start %>
       <%= label_tag :start_time, 'Start Time *', class: "fancy_label" %>
       <%= select_tag "start_time", options_for_select(available_time(@day_start, @cars, @unit_id)[:begin], @start_time), class: "input_text_field",
       "data-reservation-target": "start_time", "data-action": "change->reservation#availableCars" %>
     </div>
     <div>
-    <%= @day_start %>
       <%= label_tag :end_time, 'End Time *', class: "fancy_label" %>
       <%= select_tag "end_time", options_for_select(available_time(@day_start, @cars, @unit_id)[:end], @end_time), class: "input_text_field",
       "data-reservation-target": "end_time", "data-action": "change->reservation#availableCars" %>
