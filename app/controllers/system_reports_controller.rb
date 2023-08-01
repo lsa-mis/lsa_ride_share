@@ -2,6 +2,8 @@ class SystemReportsController < ApplicationController
   before_action :auth_user
   before_action :set_units, :set_terms
 
+  require 'csv'
+
   def index
     @vehicle_reports = []
 
@@ -9,8 +11,6 @@ class SystemReportsController < ApplicationController
   end
 
   def run_report
-
-    @vehicle_reports = VehicleReport.all
 
     if params[:unit_id].present?
       car_ids = Car.where(unit_id: params[:unit_id]).pluck(:id)
@@ -33,10 +33,11 @@ class SystemReportsController < ApplicationController
       @result.push({"table" => "vehicle_report", "total" => records_array.count, "header" => records_array.columns, "rows" => records_array.rows})
     
       data = data_to_csv(@result, @title)
+
       respond_to do |format|
         format.html
-        format.csv { send_data data, filename: "LSARideShare-report-#{DateTime.now.strftime('%-d-%-m-%Y at %I-%M%p')}.csv"}
-      end
+        format.csv { send_data data, filename: "LSARideShare-report-#{DateTime.now.strftime('%-d-%-m-%Y at %I-%M%p')}.csv" }
+        end
     else
       render turbo_stream: turbo_stream.replace(
         :reportListing,
@@ -45,6 +46,7 @@ class SystemReportsController < ApplicationController
 
     authorize :system_report
   end
+
 
   private
 
