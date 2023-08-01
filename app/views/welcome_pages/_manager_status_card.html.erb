@@ -31,7 +31,6 @@
         <%= @manager.mvr_status %>
       </p>
     <% else %>
-      <i class="fa-regular fa-square"></i>
       <label class="body-sm-semibold-text ml-2">
           MVR Status:
       </label>
@@ -51,12 +50,12 @@
         <%= show_date(@manager.canvas_course_complete_date) %>
       </p>
     <% else %>
-      <i class="fa-regular fa-square"></i>
       <label class="body-sm-semibold-text ml-2">
         Canvas Course Completion Date:
       </label>
       <% if @program.present? %>
         <p class="body-sm-text ml-2">
+          Not completed<br>
           Take <%= link_to 'Canvas Course', @program.canvas_link, :target => "_blank", class: "link_to" %>
         </p>
       <% else %>
@@ -77,7 +76,6 @@
         Completed on <%= show_date(@manager.meeting_with_admin_date) %>
       </p>
     <% else %>
-      <i class="fa-regular fa-square"></i>
       <label class="body-sm-semibold-text ml-2">
         In Person Orientation:
       </label>

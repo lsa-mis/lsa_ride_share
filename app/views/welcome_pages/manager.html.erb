@@ -1,33 +1,36 @@
 <div class="container px-1 mb-20" data-controller='autosubmit'>
   <h1 class="m-4">Welcome <%= current_user.display_name %></h1>
-  <div class="my-4">
-    <%= form_with url: welcome_pages_manager_path, method: :get, class: "", data: { autosubmit_target: "form", turbo_frame: "turbo-programs" } do |form| %>
-      <% if @programs.count > 1 %>
-        <div class="">
-          <label for="program_id" class="fancy_label">Select a Program</label>
-          <%#= form.select "program_id", options_for_select(@programs, selected: params[:program_id]), {include_blank: "All Programs"}, {class: "filter_select w-full",
-            :"data-action" => "change->autosubmit#search"} %>
-          <%= select_tag "program_id", options_from_collection_for_select(@programs, :id, :display_name_with_title_and_unit, selected: params[:program_id]), include_blank: "All Programs", class: "filter_select w-full",
-            :"data-action" => "change->autosubmit#search" %>
-        </div>
-      <% end %>
-    <% end %>
-  </div>
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
     <div class="col-span-3">
-      <p class="body-sm-text mx-2">
-        To see all your programs click on Programs link in the header
-      </p>
-      <p class="body-sm-text mx-2">
-        To look at your surveys click on Program Survey link in the header
-      </p>
-      <p class="body-sm-text mx-2">
-        You can reserve cars you have to finish all steps listed in the Status Card
-      </p>
+      <div>
+        <p class="body-sm-text mx-2">
+          To see all your programs click on Programs link in the header
+        </p>
+        <p class="body-sm-text mx-2">
+          To look at your surveys click on Program Survey link in the header
+        </p>
+        <p class="body-sm-text mx-2">
+          You can reserve cars you have to finish all steps listed in the Status Card
+        </p>
+      </div>
+      <div class="my-4">
+        <%= form_with url: welcome_pages_manager_path, method: :get, class: "", data: { autosubmit_target: "form", turbo_frame: "turbo-programs" } do |form| %>
+          <% if @programs.count > 1 %>
+            <div class="">
+              <label for="program_id" class="fancy_label">Select a Program</label>
+              <%#= form.select "program_id", options_for_select(@programs, selected: params[:program_id]), {include_blank: "All Programs"}, {class: "filter_select w-full",
+                :"data-action" => "change->autosubmit#search"} %>
+              <%= select_tag "program_id", options_from_collection_for_select(@programs, :id, :display_name_with_title_and_unit, selected: params[:program_id]), include_blank: "All Programs", class: "filter_select w-full",
+                :"data-action" => "change->autosubmit#search" %>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+
       <div class="my-8">
         <% if @program.present? %>
-          <%= link_to "Reserve Car - One Day", new_reservation_path(:program_id => @program.id), class: "secondary_blue_button" if @manager.can_reserve_car? %>
-          <%= link_to "Reserve Car - Long", new_long_reservation_path(:program_id => @program.id), class: "secondary_blue_button" if @manager.can_reserve_car? %>
+          <%= link_to "One Day Reservation", new_reservation_path(:program_id => @program.id), class: "secondary_blue_button" if @manager.can_reserve_car? %>
+          <%= link_to "Multiple Day Reservation", new_long_reservation_path(:program_id => @program.id), class: "secondary_blue_button" if @manager.can_reserve_car? %>
         <% end %>
       </div>
       <div class="my-2">

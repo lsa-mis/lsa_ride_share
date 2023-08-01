@@ -1,26 +1,28 @@
 <div class="container px-1 mb-20" data-controller='autosubmit'>
   <h1 class="m-4">Welcome <%= current_user.display_name %></h1>
-  <div class="my-4">
-    <%= form_with url: welcome_pages_student_path, method: :get, class: "", data: { autosubmit_target: "form", turbo_frame: "turbo-programs" } do |form| %>
-      <% if @students.count > 1 %>
-        <div class="">
-          <label for="student_id" class="fancy_label">Select a Program</label>
-          <%= form.select "student_id", options_for_select(@students_data, selected: params[:student_id]), {include_blank: "All Programs"}, {class: "filter_select w-full",
-            :"data-action" => "change->autosubmit#search"} %>
-        </div>
-      <% end %>
-    <% end %>
-  </div>
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
     <div class="col-span-3">
-      <p class="body-sm-text mx-2">
-        The Department of Psychology provides vehicles for individuals and groups to use for getting to and from their site placements for specific Experiential Learning Courses:
-        Psych 211, 306, & 325. To be eligible, sites must not be accessible by walking, MBus, or AATA bus.
-        Drivers will complete the Transportation Canvas Course that covers all the details for registering as a driver for your psychology course.
-        There are 4 modules and a quiz. Completing these modules & quiz will prepare you to use and reserve a vehicle to get to your site.
-        Once you’ve submitted your Motor Vehicle Report request and it’s been approved, as well as completed the Transportation Canvas Course and
-        In Person Transportation Orientation, you will be approved to reserve vehicles.
-      </p>
+      <div>
+        <p class="body-sm-text mx-2">
+          The Department of Psychology provides vehicles for individuals and groups to use for getting to and from their site placements for specific Experiential Learning Courses:
+          Psych 211, 306, & 325. To be eligible, sites must not be accessible by walking, MBus, or AATA bus.
+          Drivers will complete the Transportation Canvas Course that covers all the details for registering as a driver for your psychology course.
+          There are 4 modules and a quiz. Completing these modules & quiz will prepare you to use and reserve a vehicle to get to your site.
+          Once you’ve submitted your Motor Vehicle Report request and it’s been approved, as well as completed the Transportation Canvas Course and
+          In Person Transportation Orientation, you will be approved to reserve vehicles.
+        </p>
+      </div>
+      <div class="my-4">
+        <%= form_with url: welcome_pages_student_path, method: :get, class: "", data: { autosubmit_target: "form", turbo_frame: "turbo-programs" } do |form| %>
+          <% if @students.count > 1 %>
+            <div class="">
+              <label for="student_id" class="fancy_label">Select a Program</label>
+              <%= form.select "student_id", options_for_select(@students_data, selected: params[:student_id]), {include_blank: "All Programs"}, {class: "filter_select w-full",
+                :"data-action" => "change->autosubmit#search"} %>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
       <% if @program.present? && @student.canvas_course_complete_date.nil? %>
         <p class="body-sm-text mx-2 mt-4">
           If you have not yet completed these steps, please click the link below to begin the Canvas Course.
@@ -30,8 +32,8 @@
       </p>
       <div class="my-8">
         <% if @student.present? %>
-          <%= link_to "Reserve Car - One Day", new_reservation_path(:student_id => @student.id), class: "secondary_blue_button" if @student.can_reserve_car? %>
-          <%= link_to "Reserve Car - Long", new_long_reservation_path(:student_id => @student.id), class: "secondary_blue_button" if @student.can_reserve_car? %>
+          <%= link_to "One Day Reservation", new_reservation_path(:student_id => @student.id), class: "secondary_blue_button" if @student.can_reserve_car? %>
+          <%= link_to "Multiple Day Reservation", new_long_reservation_path(:student_id => @student.id), class: "secondary_blue_button" if @student.can_reserve_car? %>
         <% end %>
       </div>
       <div class="my-2">
@@ -51,7 +53,7 @@
       </div>
     </div>
     <div class="order-first md:order-last card_area">
-      <%= render 'status_card' %>
+      <%= render 'student_status_card' %>
     <div>
   <div>
 </div>

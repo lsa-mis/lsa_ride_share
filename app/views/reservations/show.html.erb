@@ -47,7 +47,7 @@
               <%= link_to 'Edit Drivers and Passengers', add_drivers_path(@reservation, :edit => true), class: "primary_button" if policy(@reservation).edit? %>
             </div>
             <div>
-            <%= link_to 'Reservation Updated - Send Email', send_reservation_updated_email_path(@reservation), class: "secondary_blue_button", data: { turbo_confirm: 'Are you sure?', turbo_method: :get} if policy(@reservation).edit? %>
+            <%= link_to 'Reservation Updated - Send Email', send_reservation_updated_email_path(@reservation), class: "secondary_yellow_button", data: { turbo_confirm: 'Are you sure?', turbo_method: :get} if policy(@reservation).edit? %>
           </div>
           <% end %>
           <% unless @reservation.approved %>
