@@ -30,7 +30,8 @@
       </p>
       <div class="my-8">
         <% if @student.present? %>
-          <%= link_to "Reserve Car", new_reservation_path(:student_id => @student.id), class: "secondary_blue_button" if @student.can_reserve_car? %>
+          <%= link_to "Reserve Car - One Day", new_reservation_path(:student_id => @student.id), class: "secondary_blue_button" if @student.can_reserve_car? %>
+          <%= link_to "Reserve Car - Long", new_long_reservation_path(:student_id => @student.id), class: "secondary_blue_button" if @student.can_reserve_car? %>
         <% end %>
       </div>
       <div class="my-2">

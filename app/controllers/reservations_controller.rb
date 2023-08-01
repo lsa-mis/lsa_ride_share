@@ -3,8 +3,8 @@ class ReservationsController < ApplicationController
   before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger finish_reservation update_passengers send_reservation_updated_email ]
   before_action :set_terms_and_units
   before_action :set_programs
-  before_action :set_cars, only: %i[ new get_available_cars ]
-  before_action :set_number_of_seats, only: %i[ new create edit ]
+  before_action :set_cars, only: %i[ new new_long get_available_cars get_available_cars_long ]
+  before_action :set_number_of_seats, only: %i[ new new_long create edit ]
 
   # GET /reservations or /reservations.json
   def index
@@ -99,6 +99,57 @@ class ReservationsController < ApplicationController
     @reservation.start_time = @day_start
   end
 
+  def new_long
+    session[:return_to] = request.referer
+    @reservation = Reservation.new
+    authorize @reservation
+    if is_student?(current_user)
+      @program = Student.find(params[:student_id]).program
+      @unit_id = @program.unit_id
+      @term_id = @program.term.id
+      @sites = @program.sites
+      @cars = @cars.where(unit_id: @unit_id).order(:car_number)
+      @min_date = default_reservation_for_students(@unit_id)
+    elsif is_manager?(current_user)
+      @program = Program.find(params[:program_id])
+      @unit_id = @program.unit_id
+      @term_id = @program.term.id
+      @sites = @program.sites
+      @cars = @cars.where(unit_id: @unit_id).order(:car_number)
+      @min_date = default_reservation_for_students(@unit_id)
+    elsif params[:unit_id].present?
+      @unit_id = params[:unit_id]
+      @min_date =  DateTime.now
+    else
+      flash.now[:alert] = 'You must select a unit first.'
+      render turbo_stream: turbo_stream.update("flash", partial: "layouts/notification")
+    end
+    if params[:day_start].present?
+      @day_start = params[:day_start].to_date
+    else
+      @day_start = default_reservation_for_students(@unit_id)
+    end
+    if params[:day_end].present?
+      @day_end = params[:day_end].to_date
+    else
+      @day_end = @day_start
+    end
+    if params[:term_id].present?
+      @term_id = params[:term_id]
+    end
+    if params[:car_id].present?
+      @car_id = params[:car_id]
+    end
+    if params[:start_time].present?
+      @start_time = params[:start_time]
+    end
+    if is_admin?(current_user)
+      @sites = []
+    end
+    @reservation.start_time = @day_start
+    @reservation.end_time = @day_end
+  end
+
   # GET /reservations/1/edit
   def edit
     @day_start = @reservation.start_time.to_date
@@ -132,6 +183,38 @@ class ReservationsController < ApplicationController
       @reserv_end = @end_time.to_datetime
       range = @reserv_begin..@reserv_end
       @cars = available_cars(@cars, range)
+    end
+    authorize Reservation
+  end
+
+  def get_available_cars_long
+    if params[:unit_id].present?
+      @unit_id = params[:unit_id]
+    end
+    if params[:day_start].present?
+      @day_start = params[:day_start].to_date
+    end
+    if params[:day_end].present?
+      @day_end = params[:day_end].to_date
+    end
+    if params[:number].present?
+      @cars = @cars.where("number_of_seats >= ?", params[:number]).order(:car_number)
+    end
+    if (@day_end.to_date - @day_start.to_date).to_i > 1
+
+      cars_reservations = Reservation.where(car_id: @cars)
+      day_start_beginning = unit_begining_of_day(@day_start, @unit_id) - 15.minute
+      day_start_finish = unit_end_of_day(@day_start, @unit_id) + 15.minute
+
+      day_end_begining = unit_begining_of_day(@day_end, @unit_id) - 15.minute
+      day_end_finish = unit_end_of_day(@day_end, @unit_id) + 15.minute
+
+      long_reservations = cars_reservations.where("start_time < ? AND end_time > ?", day_start_finish, day_end_begining).pluck(:car_id)
+      between_reservations = cars_reservations.where(start_time: (day_start_beginning + 1.day).., end_time: ..(day_end_finish - 1.day)).pluck(:car_id)
+      day_start_reservations = cars_reservations.where(start_time: day_start_beginning..day_start_finish, end_time: day_start_finish - 30.minute..day_start_finish).pluck(:car_id)
+      day_end_reservations = cars_reservations.where(start_time: day_end_begining..day_end_begining + 30.minute, end_time: day_end_begining..day_end_finish).pluck(:car_id)
+      exclude_cars = (between_reservations + day_start_reservations + day_end_reservations + long_reservations).uniq
+      @cars = @cars.where.not(id: exclude_cars)
     end
     authorize Reservation
   end

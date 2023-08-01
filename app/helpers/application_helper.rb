@@ -210,6 +210,33 @@ module ApplicationHelper
     return car_available
   end
 
+  def available_ranges_long(car, day_start, day_end, unit_id)
+    # time renges when the car is available from day_start to day_end
+    day_start_beginning = unit_begining_of_day(@day_start, @unit_id) - 15.minute
+    day_start_finish = unit_end_of_day(@day_start, @unit_id) + 15.minute
+
+    day_end_begining = unit_begining_of_day(@day_end, @unit_id) - 15.minute
+    day_end_finish = unit_end_of_day(@day_end, @unit_id) + 15.minute
+    day_start_reservation = car.reservations.where(start_time: day_start_beginning..day_start_finish).order(end_time: :desc).first
+    day_end_reservation = car.reservations.where(start_time: day_end_begining..day_end_finish).order(:start_time).first
+
+    car_available = []
+    if day_start_reservation.present?
+      range_start = day_start_reservation.end_time
+    else
+      range_start = day_start_beginning
+    end
+
+    if day_end_reservation.present?
+      range_end = day_end_reservation.start_time
+    else
+      range_end = day_end_finish
+    end
+
+    car_available << show_time_range_long(range_start..range_end)
+    return car_available
+  end
+
   def available_ranges_edit(car, day, unit_id, reservation)
     # time renges when the car is available on the day including time for reservation that student is editing
     # example: ["04:30PM - 05:00PM", "08:00AM - 11:00AM", "11:00AM - 04:30PM - current"]
@@ -217,6 +244,20 @@ module ApplicationHelper
     r = reservation.start_time..reservation.end_time
     car_available << show_time_range(r, true)
     return car_available
+  end
+
+  def unit_begining_of_day(day, unit_id)
+    t_begin = UnitPreference.find_by(name: "reservation_time_begin", unit_id: unit_id).value
+    t_begin = Time.parse(t_begin).strftime("%H").to_i
+    day_begin = DateTime.new(day.year, day.month, day.day, t_begin, 0, 0, 'EDT')
+    return day_begin
+  end
+
+  def unit_end_of_day(day, unit_id)
+    t_end = UnitPreference.find_by(name: "reservation_time_end", unit_id: unit_id).value
+    t_end = Time.parse(t_end).strftime("%H").to_i
+    day_end = DateTime.new(day.year, day.month, day.day, t_end, 0, 0, 'EDT')
+    return day_end
   end
 
   def show_time_begin_end(day, unit_id)
@@ -234,6 +275,14 @@ module ApplicationHelper
       "#{(day_range.begin + 15.minute).strftime("%I:%M%p")} - #{(day_range.end - 15.minute).strftime("%I:%M%p")} - current"
     else
       "#{(day_range.begin + 15.minute).strftime("%I:%M%p")} - #{(day_range.end - 15.minute).strftime("%I:%M%p")}"
+    end
+  end
+
+  def show_time_range_long(day_range, current = false)
+    if current
+      "#{(day_range.begin + 15.minute).strftime("%I:%M%p")}(#{(day_range.begin).strftime("%b %d")}) - #{(day_range.end - 15.minute).strftime("%I:%M%p")}(#{(day_range.end).strftime("%b %d")}) - current"
+    else
+      "#{(day_range.begin + 15.minute).strftime("%I:%M%p")}(#{(day_range.begin).strftime("%b %d")}) - #{(day_range.end - 15.minute).strftime("%I:%M%p")}(#{(day_range.end).strftime("%b %d")})"
     end
   end
 
@@ -264,6 +313,7 @@ module ApplicationHelper
     available_times_begin.pop
     available_times_end = day_times_with_15_min_steps.map { |t| [show_time(t), t.to_s] }
     available_times_end.shift
+
     available_times = {:begin=>available_times_begin, :end=>available_times_end}
     return available_times
   end

@@ -1,0 +1,15 @@
+<h2 class="m-2">Available Cars</h2>
+<% if @reserv_begin.present? %>
+  <h3>Reservation: 
+    <%= show_date_time(@reserv_begin) %> - <%= show_date_time(@reserv_end) %> 
+  </h3>
+<% end %>
+<div class="mb-10" id="cars_listing">
+  <ul role="list" class="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-4 mt-4">
+    <% @cars.each do |car| %>
+      <li class="card_area">
+        <%= render 'car_card_long', car: car, day_start: @day_start, day_end: @day_end, unit_id: @unit_id %>
+      </li>
+    <% end %>
+  </ul>
+</div>

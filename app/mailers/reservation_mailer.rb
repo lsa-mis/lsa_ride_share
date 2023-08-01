@@ -17,7 +17,7 @@ class ReservationMailer < ApplicationMailer
     recipients << email_address(@reservation.driver_manager) if @reservation.driver_manager.present?
     recipients << email_address(@reservation.backup_driver) if @reservation.backup_driver.present?
     recipients << @passengers_emails if @passengers_emails.present?
-    @recipients = recipients.join(", ")
+    @recipients = recipients.uniq.join(", ")
     mail(to: @recipients, subject: "Reservation confirmation for program: #{@reservation.program.display_name}" )
     EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "car_reservation_confirmation",
       sent_to: @recipients, sent_by: user.id, sent_at: DateTime.now)
@@ -91,7 +91,7 @@ class ReservationMailer < ApplicationMailer
     recipients << email_address(@reservation.driver_manager) if @reservation.driver_manager.present?
     recipients << email_address(@reservation.backup_driver) if @reservation.backup_driver.present?
     recipients << @passengers_emails if @passengers_emails.present?
-    @recipients = recipients.join(", ")
+    @recipients = recipients.uniq.join(", ")
     mail(to: @recipients, subject: "Reservation updated for program: #{@reservation.program.display_name}" )
     EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "car_reservation_updated",
       sent_to: @recipients, sent_by: user.id, sent_at: DateTime.now)

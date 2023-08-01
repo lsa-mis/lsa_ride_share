@@ -29,12 +29,18 @@
             </th>
           <% end %>
         </tr>
-        <% if @reservations.where(car_id: nil).where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day).present? %>
+
+        <% if @reservations.where(car_id: nil).where("(start_time BETWEEN ? AND ?) OR (start_time < ? AND end_time > ?)",
+        day.beginning_of_day, day.end_of_day, day.beginning_of_day, day.beginning_of_day) %>
+
           <%= render 'simple_calendar/week_calendar_no_car_tr', day: day %>
         <% end %>
         <% @cars.each do |car| %>
           <%= render 'simple_calendar/week_calendar_car_tr', car: car, day: day %>
         <% end %>
+
+
+
       <% end %>
     </tbody>
   </table>

@@ -1,0 +1,15 @@
+<%= turbo_frame_tag dom_id(car) do  %>
+  <div class="flex flex-col h-full">
+    <div class="sm:px-0">
+      <%= car.car_number %> - <%= car.number_of_seats %> seats
+    </div>
+    <h5>Available time</h5>
+    <div>
+      <% available_ranges_long(car, day_start, day_end, unit_id).each do |range| %>
+        <div>
+          <%= range %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>
