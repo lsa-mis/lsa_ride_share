@@ -1,110 +1,110 @@
 <div data-controller="longreservation">
-<%= form_with model: reservation,
-    data: { controller: "reservation", reservation_target: "form", action: "submit->reservation#submitForm" } do |form| %>
-  <% if reservation.errors.any? %>
-    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
-      <h2><%= pluralize(reservation.errors.count, "error") %> prohibited this reservation from being saved:</h2>
-      <ul>
-        <% reservation.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <%= form.label :unit_id, 'Unit *', class: "hidden" %>
-  <div class="error_text mt-2" id="required_fields"></div>
-
-  <input type="hidden" id="unit_id" name="unit_id" value=<%= @unit_id %> data-reservation-target="unit" data-longreservation-target="unit">
-  <% if is_student?(current_user) || is_manager?(current_user) %>
-    <p class="body-lg-text mt-2">
-      Program:
-      <%= @program.display_name_with_title %>
-    </p>
-
-    <%= form.label :term_id, 'Term *', class: "hidden" %>
-    <input type="hidden" id="term_id" name="term_id" value=<%= @term_id %> data-reservation-target="term">
-    <%= form.label :program_id, 'Program *', class: "hidden" %>
-    <input type="hidden" id="program_id" name="reservation[program_id]" value=<%= @program.id %> data-reservation-target="program">
-    
-    <div>
-      <%= form.label :site_id, 'Site *', class: "fancy_label" %>
-      <%= form.collection_select :site_id, @sites, :id, :title, { include_blank: "Select Site ..."}, { selected: @site_id, "data-reservation-target": "site", class: "input_text_field" } %>
-    </div>
-    
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-  <% else %>
-    <div>
-      <%= form.label :term_id, 'Term *', class: "fancy_label" %>
-      <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: @term_id), include_blank: "Select Term ...", class: "input_text_field",
-        "data-reservation-target": "term", "data-action": "change->reservation#changePrograms" %>
-    </div>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-      <div>
-        <%= form.label :program_id, 'Program *', class: "fancy_label" %>
-        <%= form.collection_select :program_id, @programs, :id, :display_name_with_title, { include_blank: "Select Program ..."}, { selected: @program_id, "data-reservation-target": "program", "data-action": "change->reservation#setSites", class: "input_text_field" } %>
+  <%= form_with model: reservation,
+      data: { controller: "reservation", reservation_target: "form", action: "submit->reservation#submitForm" } do |form| %>
+    <% if reservation.errors.any? %>
+      <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
+        <h2><%= pluralize(reservation.errors.count, "error") %> prohibited this reservation from being saved:</h2>
+        <ul>
+          <% reservation.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
       </div>
+    <% end %>
+
+    <%= form.label :unit_id, 'Unit *', class: "hidden" %>
+    <input type="hidden" id="unit_id" name="unit_id" value=<%= @unit_id %> data-reservation-target="unit" data-longreservation-target="unit">
+    <div class="error_text mt-2" id="required_fields"></div>
+
+    <% if is_student?(current_user) || is_manager?(current_user) %>
+      <p class="body-lg-text mt-2">
+        Program:
+        <%= @program.display_name_with_title %>
+      </p>
+
+      <%= form.label :term_id, 'Term *', class: "hidden" %>
+      <input type="hidden" id="term_id" name="term_id" value=<%= @term_id %> data-reservation-target="term">
+      <%= form.label :program_id, 'Program *', class: "hidden" %>
+      <input type="hidden" id="program_id" name="reservation[program_id]" value=<%= @program.id %> data-reservation-target="program">
+
       <div>
         <%= form.label :site_id, 'Site *', class: "fancy_label" %>
-        <%= form.collection_select :site_id, @sites, :id, :title, { include_blank: "Select Site ..." }, { "data-reservation-target": "site", class: "input_text_field" } %>
+        <%= form.collection_select :site_id, @sites, :id, :title, { include_blank: "Select Site ..."}, { selected: @site_id, "data-reservation-target": "site", class: "input_text_field" } %>
       </div>
-  <% end %>
-  <div>
-      <%= form.label :number_of_people_on_trip, 'Number of People on Trip *', class: "fancy_label" %>
-      <%= select_tag :number_of_people_on_trip, options_for_select(@number_of_seats, @number_of_people_on_trip), class: "input_text_field",
-        "data-longreservation-target": "number", "data-action": "change->longreservation#availableCars" %>
-    </div>
-    <div></div>
-    <div>
-        <%= form.label :day_start, "Choose a Start Date", class: "fancy_label" %>
-        <%= text_field_tag :day_start, @day_start,
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+    <% else %>
+      <div>
+        <%= form.label :term_id, 'Term *', class: "fancy_label" %>
+        <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: @term_id), include_blank: "Select Term ...", class: "input_text_field",
+          "data-reservation-target": "term", "data-action": "change->reservation#changePrograms" %>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div>
+          <%= form.label :program_id, 'Program *', class: "fancy_label" %>
+          <%= form.collection_select :program_id, @programs, :id, :display_name_with_title, { include_blank: "Select Program ..."}, { selected: @program_id, "data-reservation-target": "program", "data-action": "change->reservation#setSites", class: "input_text_field" } %>
+        </div>
+        <div>
+          <%= form.label :site_id, 'Site *', class: "fancy_label" %>
+          <%= form.collection_select :site_id, @sites, :id, :title, { include_blank: "Select Site ..." }, { "data-reservation-target": "site", class: "input_text_field" } %>
+        </div>
+    <% end %>
+      <div>
+        <%= form.label :number_of_people_on_trip, 'Number of People on Trip *', class: "fancy_label" %>
+        <%= select_tag :number_of_people_on_trip, options_for_select(@number_of_seats, @number_of_people_on_trip), class: "input_text_field",
+          "data-longreservation-target": "number", "data-action": "change->longreservation#availableCars" %>
+      </div>
+      <div></div>
+      <div>
+          <%= form.label :day_start, "Choose a Start Date", class: "fancy_label" %>
+          <%= text_field_tag :day_start, @day_start,
+            data: {
+            controller: "flatpickr",
+            flatpickr_date_format: "Y-m-d",
+            flatpickr_min_date: @min_date
+            }, "data-longreservation-target": "day_start", "data-action": "change->longreservation#availableCars",
+            class: "input_text_field"
+          %>
+      </div>
+      <div>
+        <%= form.label :day_end, "Choose an End Date", class: "fancy_label" %>
+        <%= text_field_tag :day_end, @day_end,
           data: {
           controller: "flatpickr",
           flatpickr_date_format: "Y-m-d",
           flatpickr_min_date: @min_date
-          }, "data-longreservation-target": "day_start", "data-action": "change->longreservation#availableCars",
+          }, "data-longreservation-target": "day_end", "data-action": "change->longreservation#availableCars",
           class: "input_text_field"
         %>
+      </div>
     </div>
-    <div>
-      <%= form.label :day_end, "Choose an End Date", class: "fancy_label" %>
-      <%= text_field_tag :day_end, @day_end,
-        data: {
-        controller: "flatpickr",
-        flatpickr_date_format: "Y-m-d",
-        flatpickr_min_date: @min_date
-        }, "data-longreservation-target": "day_end", "data-action": "change->longreservation#availableCars",
-        class: "input_text_field"
-      %>
+
+    <%= render 'start_end_time_long' %>
+
+    <div class="mb-4">
+      <% if UnitPreference.find_by(unit_id: @unit_id, name: "no_car_reservations").on_off %>
+        <%= label_tag("no_car", nil, class: "hidden") %>
+        <%= check_box_tag "no_car", 1, nil, class: "check_box", "data-longreservation-target": "no_car", "data-action": "longreservation#hideCarSelection" %>
+        <span class="check_box_text">Create a reservation without a car - if no time or cars are available.</span>
+      <% end %>
     </div>
-  </div>
 
-  <%= render 'start_end_time_long' %>
+    <div data-longreservation-target="car_selection" class="fields--display">
+      <p class="body-sm-text mt-4 mb-2">
+        Select a car and click Create Reservation.
+      </p>
+      <%= render 'cars_dropdown' %>
+    </div>
 
-  <div class="mb-4">
-    <% if UnitPreference.find_by(unit_id: @unit_id, name: "no_car_reservations").on_off %>
-      <%= label_tag("no_car", nil, class: "hidden") %>
-      <%= check_box_tag "no_car", 1, nil, class: "check_box", "data-longreservation-target": "no_car", "data-action": "longreservation#hideCarSelection" %>
-      <span class="check_box_text">Create a reservation without a car - if no time or cars are available.</span>
+    <div class="inline">
+      <%= form.submit class: "primary_button" %>
+    </div>
+
+    <%= link_to reservations_path do %>
+      <span class="tertiary_button">Cancel
+      <i class="fa fa-times" aria-hidden="true"></i>
+      </span>
     <% end %>
-  </div>
-
-  <div data-longreservation-target="car_selection" class="fields--display">
-    <p class="body-sm-text mt-4 mb-2">
-      Select a car and click Create Reservation.
-    </p>
-    <%= render 'cars_dropdown' %>
-  </div>
-
-  <div class="inline">
-    <%= form.submit class: "primary_button" %>
-  </div>
-
-  <%= link_to reservations_path do %>
-    <span class="tertiary_button">Cancel
-    <i class="fa fa-times" aria-hidden="true"></i>
-    </span>
   <% end %>
-<% end %>
 </div>
