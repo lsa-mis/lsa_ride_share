@@ -10,7 +10,19 @@
         </tr>
       </thead>
       <tbody>
-        <% @config_questions.each do |q| %>
+        <% @config_questions_no_edit.each do |q| %>
+          <tr class="mi_tbody_tr">
+            <td></td>
+            <td></td>
+            <td class="mi_tbody_td">
+              <%= q.question %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= q.answer if q.answer.present? %>
+            </td>
+          </tr>
+        <% end %>
+        <% @config_questions_edit.each do |q| %>
           <tr class="mi_tbody_tr">
             <td class="mi_tbody_td">
               <% unless @faculty_survey.program_id.present? %>

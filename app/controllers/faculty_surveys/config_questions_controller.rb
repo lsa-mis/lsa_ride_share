@@ -4,9 +4,11 @@ class FacultySurveys::ConfigQuestionsController < ApplicationController
   before_action :set_config_question, only: %i[ edit update destroy ]
 
   def index
-    @config_questions = @faculty_survey.config_questions.order(:id)
+    config_questions = @faculty_survey.config_questions.order(:id)
+    @config_questions_no_edit = config_questions[0..5]
+    @config_questions_edit = config_questions.drop(6)
     @email_log_entries = EmailLog.where(sent_from_model: "FacultySurvey", record_id: @faculty_survey.id).order(created_at: :desc)
-    authorize @config_questions
+    authorize config_questions
   end
 
   def new
