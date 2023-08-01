@@ -86,11 +86,14 @@ class FacultySurveysController < ApplicationController
   # DELETE /faculty_surveys/1 or /faculty_surveys/1.json
   def destroy
     @faculty_survey.destroy
-
-    respond_to do |format|
-      format.html { redirect_to faculty_surveys_url, notice: "Faculty survey was successfully destroyed." }
-      format.json { head :no_content }
+    flash.now[:notice] = "Program survey was successfully deleted."
+    if params[:unit_id].present?
+      @faculty_surveys = FacultySurvey.where(unit_id: params[:unit_id])
+    else
+      @faculty_surveys = FacultySurvey.where(unit_id: @units)
     end
+    @faculty_surveys = @faculty_surveys.data(params[:term_id]).order(created_at: :desc)
+    authorize @faculty_surveys
   end
 
   def add_config_questions(faculty_survey)

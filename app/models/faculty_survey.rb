@@ -15,7 +15,7 @@
 #
 
 class FacultySurvey < ApplicationRecord
-  has_many :config_questions
+  has_many :config_questions, dependent: :destroy
   belongs_to :term
   belongs_to :unit
 

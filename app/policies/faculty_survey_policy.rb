@@ -35,7 +35,7 @@ class FacultySurveyPolicy < ApplicationPolicy
   end
 
   def destroy?
-    false
+    user_in_access_group?
   end
 
 end
