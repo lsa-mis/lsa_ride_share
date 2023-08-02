@@ -1,7 +1,7 @@
 class ReservationMailer < ApplicationMailer
-  before_action :set_reservation, only: [:car_reservation_created, :car_reservation_approved, :car_reservation_confirmation, :car_reservation_updated]
-  before_action :set_driver_name, only: [:car_reservation_created, :car_reservation_approved, :car_reservation_confirmation, :car_reservation_updated]
-  before_action :set_passengers, only: [:car_reservation_created, :car_reservation_approved, :car_reservation_confirmation, :car_reservation_updated]
+  before_action :set_reservation, only: [:car_reservation_created, :car_reservation_approved, :car_reservation_confirmation, :car_reservation_updated, :car_reservation_remove_passenger, :car_reservation_update_passengers]
+  before_action :set_driver_name, only: [:car_reservation_created, :car_reservation_approved, :car_reservation_confirmation, :car_reservation_updated, :car_reservation_remove_passenger, :car_reservation_update_passengers]
+  before_action :set_passengers, only: [:car_reservation_created, :car_reservation_approved, :car_reservation_confirmation, :car_reservation_updated, :car_reservation_remove_passenger, :car_reservation_update_passengers]
 
   def car_reservation_created(user)
     @recipient = @reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
@@ -91,6 +91,28 @@ class ReservationMailer < ApplicationMailer
     mail(to: @recipients, subject: "Reservation drivers changed for program: #{@reservation.program.display_name}" )
     EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "car_reservation_drivers_edited",
       sent_to: @recipients, sent_by: reserved_by, sent_at: DateTime.now)
+  end
+
+  def car_reservation_remove_passenger(student, user)
+    @name = student.name
+    @email = email_address(student)
+    mail(to: @email, subject: "Removed from the reservation passagers' list for program: #{@reservation.program.display_name}" )
+    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "car_reservation_remove_passenger",
+      sent_to: @email, sent_by: user.id, sent_at: DateTime.now)
+  end
+
+  def car_reservation_update_passengers(user)
+    recipients = []
+    recipients << User.find(@reservation.reserved_by).principal_name.presence
+    recipients << email_address(@reservation.driver) if @reservation.driver.present?
+    recipients << email_address(@reservation.driver_manager) if @reservation.driver_manager.present?
+    recipients << email_address(@reservation.backup_driver) if @reservation.backup_driver.present?
+    recipients << @passengers_emails if @passengers_emails.present?
+    recipients << @unit_email
+    @recipients = recipients.uniq.join(", ")
+    mail(to: @recipients, subject: "Reservation passengers list updated for program: #{@reservation.program.display_name}" )
+    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "car_reservation_update_passengers",
+      sent_to: @recipients, sent_by: user.id, sent_at: DateTime.now)
   end
 
   private 

@@ -149,7 +149,6 @@ class Reservation < ApplicationRecord
       end
     end
     if drivers_emails.present?
-
       ReservationMailer.car_reservation_drivers_edited(self, drivers_emails, self.reserved_by).deliver_now
     end
   end

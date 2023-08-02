@@ -384,6 +384,7 @@ class ReservationsController < ApplicationController
   end
 
   def update_passengers
+    ReservationMailer.with(reservation: @reservation).car_reservation_update_passengers(current_user).deliver_now
     redirect_to reservation_path(@reservation), notice: "Passengers list was updated"
   end
 
