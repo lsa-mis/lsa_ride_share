@@ -22,16 +22,16 @@
         <% list_start = day_reserv.where(start_time: step) %>
         <% list_end = day_reserv.where(end_time: step + 15.minute) %>
         <% if list_start.present? %>
-          <td class="td-week bg-yellow-600 border-r border-gray-um90">
+          <td class="td-week bg-yellow-900 border-r border-gray-um90">
             <% list_start.each do |one_reserv| %>
               <div title="<%= show_reservation(day_reserv.find_by(start_time: step)) %>" class="body-sm-semibold-text">
-                <%= link_to show_reserved_by_in_week_calendar(one_reserv), reservation_path(one_reserv), class: 'link_to_white' %>
+                <%= link_to show_reserved_by_in_week_calendar(one_reserv), reservation_path(one_reserv), class: 'link_to_white ml-2' %>
               </div>
               <br>
             <% end %>
           </td>
         <% elsif list_end.present? %>
-          <td class="td-week bg-yellow-600 border-r border-gray-um90"></td>
+          <td class="td-week bg-yellow-900 border-r border-gray-um90"></td>
         <% else %>
           <td class="td-week bg-red-800 border-r border-gray-um90"></td>
         <% end %>
