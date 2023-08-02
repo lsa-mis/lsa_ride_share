@@ -84,7 +84,7 @@ class Reservation < ApplicationRecord
     if students.present?
       students.each do |s|
         cancel_passengers << s.name
-        cancel_emails << s.uniqname + "@umich.edu"
+        cancel_emails << email_address(s)
       end
     else
       cancel_passengers = ["No passengers"]
