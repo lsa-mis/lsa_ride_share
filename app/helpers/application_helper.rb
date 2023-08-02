@@ -380,7 +380,7 @@ module ApplicationHelper
     student = Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program)
     return false if student.passenger_future.include?(reservation)
     return false if reservation.backup_driver == student
-    if ((reservation.start_time - DateTime.now)/3600).round > minimum_hours_before_reservation(reservation.program.unit)
+    if ((reservation.start_time - DateTime.now.beginning_of_day)/3600).round > minimum_hours_before_reservation(reservation.program.unit)
       return true
     else
       return false
@@ -395,7 +395,7 @@ module ApplicationHelper
     else 
       return false
     end
-    if ((reservation.start_time - DateTime.now)/3600).round > minimum_hours_before_reservation(reservation.program.unit)
+    if ((reservation.start_time - DateTime.now.beginning_of_day)/3600).round > minimum_hours_before_reservation(reservation.program.unit)
       return true
     else
       return false
