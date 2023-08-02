@@ -36,49 +36,27 @@ class ReservationMailer < ApplicationMailer
   end
 
   def car_reservation_cancel_admin(cancel_reservation, cancel_passengers, cancel_emails, user)
-    @passengers = cancel_passengers
-    @start_time = show_date_time(cancel_reservation.start_time)
-    @end_time = show_date_time(cancel_reservation.end_time)
-    if cancel_reservation.driver.present? || cancel_reservation.driver_manager.present?
-      @driver_name = show_driver(cancel_reservation)
-    else
-      @driver_name = "Not Selected"
-    end
-    if cancel_reservation.backup_driver.present?
-      @backup_driver_name = show_backup_driver(cancel_reservation)
-    else
-      @backup_driver_name = "Not Selected"
-    end
-    @admin_email = cancel_reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
     @reservation = cancel_reservation
-    mail(to: @admin_email, subject: "Reservation canceled for program: #{@reservation.program.display_name}" )
+    set_reservation_data(@reservation)
+    set_driver_name
+    @passengers = cancel_passengers
+
+    mail(to: @unit_email, subject: "Reservation canceled for program: #{@reservation.program.display_name}" )
     EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "car_reservation_cancel_admin",
-      sent_to: @admin_email, sent_by: user, sent_at: DateTime.now)
+      sent_to: @unit_email, sent_by: user, sent_at: DateTime.now)
   end
 
   def car_reservation_cancel_driver(cancel_reservation, cancel_passengers, cancel_emails, user)
-    @contact_phone = cancel_reservation.program.unit.unit_preferences.find_by(name: "contact_phone").value.presence || ""
-    @unit_email = cancel_reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
+    @reservation = cancel_reservation
+    set_reservation_data(@reservation)
+    set_driver_name
     @passengers = cancel_passengers
-    @start_time = show_date_time(cancel_reservation.start_time)
-    @end_time = show_date_time(cancel_reservation.end_time)
-    if cancel_reservation.driver.present? || cancel_reservation.driver_manager.present?
-      @driver_name = show_driver(cancel_reservation)
-    else
-      @driver_name = "Not Selected"
-    end
-    if cancel_reservation.backup_driver.present?
-      @backup_driver_name = show_backup_driver(cancel_reservation)
-    else
-      @backup_driver_name = "Not Selected"
-    end
     recipients = []
     recipients << email_address(cancel_reservation.driver) if cancel_reservation.driver.present?
     recipients << email_address(cancel_reservation.driver_manager) if cancel_reservation.driver_manager.present?
     recipients << email_address(cancel_reservation.backup_driver) if cancel_reservation.backup_driver.present?
     recipients << cancel_emails if cancel_emails.present?
     @recipients = recipients.join(", ")
-    @reservation = cancel_reservation
     mail(to: @recipients, subject: "Reservation canceled for program: #{@reservation.program.display_name}" )
     EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "car_reservation_cancel_driver",
       sent_to: @recipients, sent_by: user, sent_at: DateTime.now)
@@ -97,6 +75,24 @@ class ReservationMailer < ApplicationMailer
       sent_to: @recipients, sent_by: user.id, sent_at: DateTime.now)
   end
 
+  def car_reservation_drivers_edited(drivers_reservation, drivers_emails, reserved_by)
+    @reservation = drivers_reservation
+    set_reservation_data(@reservation)
+    recipients = drivers_emails
+    recipients << User.find(reserved_by).principal_name.presence
+    recipients << email_address(@reservation.driver) if @reservation.driver.present?
+    recipients << email_address(@reservation.driver_manager) if @reservation.driver_manager.present?
+    recipients << email_address(@reservation.backup_driver) if @reservation.backup_driver.present?
+    set_passengers
+    set_driver_name
+    recipients << @passengers_emails if @passengers_emails.present?
+    recipients << @unit_email
+    @recipients = recipients.uniq.join(", ")
+    mail(to: @recipients, subject: "Reservation drivers changed for program: #{@reservation.program.display_name}" )
+    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "car_reservation_drivers_edited",
+      sent_to: @recipients, sent_by: reserved_by, sent_at: DateTime.now)
+  end
+
   private 
 
   def set_reservation
@@ -105,6 +101,13 @@ class ReservationMailer < ApplicationMailer
     @end_time = show_date_time(@reservation.end_time)
     @contact_phone = @reservation.program.unit.unit_preferences.find_by(name: "contact_phone").value.presence || ""
     @unit_email = @reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
+  end
+
+  def set_reservation_data(reservation)
+    @start_time = show_date_time(reservation.start_time)
+    @end_time = show_date_time(reservation.end_time)
+    @contact_phone = reservation.program.unit.unit_preferences.find_by(name: "contact_phone").value.presence || ""
+    @unit_email = reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
   end
 
   def set_driver_name
