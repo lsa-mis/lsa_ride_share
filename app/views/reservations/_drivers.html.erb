@@ -100,14 +100,7 @@
   <div class="md:flex items-center whitespace-nowrap">
     <% if params["edit"] == "true" %>
       <div>
-        <%= form.submit "Update and Edit Passengers", form_class: "flex", class: "primary_button" %>
-      </div>
-      <div>
-        <%= link_to add_passengers_path(@reservation, :edit => params[:edit]) do %>
-          <span class="tertiary_button">Go to Passengers Page
-          <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-          </span>
-        <% end %>
+        <%= form.submit "Update Drivers", form_class: "flex", class: "primary_button" %>
       </div>
     <% else %>
       <div>
@@ -115,19 +108,18 @@
       </div>
     <% end %>
     <div>
-      <% if is_admin?(current_user) %>
-        <% if params["edit"] == "true" %>
-          <%= link_to reservation_path(@reservation) do %>
-            <span class="tertiary_button">Cancel
-              <i class="fa fa-times" aria-hidden="true"></i>
-            </span>
-          <% end %>
-        <% else %>
-          <%= link_to reservation_path(@reservation) do %>
-            <span class="tertiary_button">Add Drivers Later
-              <i class="fa fa-times" aria-hidden="true"></i>
-            </span>
-          <% end %>
+      <% if params["edit"] == "true" %>
+        <%= link_to reservation_path(@reservation) do %>
+          <span class="tertiary_button">Cancel
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </span>
+        <% end %>
+      <% end %>
+      <% if is_admin?(current_user) && params["edit"] != "true" %>
+        <%= link_to reservation_path(@reservation) do %>
+          <span class="tertiary_button">Add Drivers Later
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </span>
         <% end %>
       <% end %>
     </div>

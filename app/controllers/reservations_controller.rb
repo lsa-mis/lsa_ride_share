@@ -292,7 +292,7 @@ class ReservationsController < ApplicationController
     if params[:reservation][:approved].present?
       if @reservation.update(reservation_params)
         ReservationMailer.with(reservation: @reservation).car_reservation_approved(current_user).deliver_now unless @reservation.approved == false
-        redirect_to reservation_path(@reservation), notice: "Reservation was updated"
+        redirect_to reservation_path(@reservation), notice: "Reservation was updated."
         return
       else
         flash.now[:alert] = 'Error approving the reservation'
@@ -304,8 +304,13 @@ class ReservationsController < ApplicationController
         @reservation.update(driver_manager: nil)
       end
       if @reservation.update(reservation_params)
-        redirect_to add_passengers_path(@reservation, :edit => params[:edit])
-        return
+        if params[:edit] == "true"
+          redirect_to reservation_path(@reservation), notice: "Drivers were updated."
+          return
+        else
+          redirect_to add_passengers_path(@reservation)
+         return
+        end
       else
         @drivers = @reservation.program.students.eligible_drivers
         render :add_drivers, status: :unprocessable_entity
@@ -384,6 +389,7 @@ class ReservationsController < ApplicationController
   end
 
   def update_passengers
+    ReservationMailer.with(reservation: @reservation).car_reservation_update_passengers(current_user).deliver_now
     redirect_to reservation_path(@reservation), notice: "Passengers list was updated"
   end
 
