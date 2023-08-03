@@ -450,6 +450,10 @@ module ApplicationHelper
     reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
   end
 
+  def email_was_sent?(model, record)
+    EmailLog.find_by(sent_from_model: model, record_id: record).present?
+  end
+
   def show_image_name(image_field_name)
     return "Front of Car *" if image_field_name == "image_front_start"
     return "Driver Side *" if image_field_name == "image_driver_start"
