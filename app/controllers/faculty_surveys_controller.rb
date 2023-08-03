@@ -79,8 +79,8 @@ class FacultySurveysController < ApplicationController
 
   def send_faculty_survey_email
     FacultyMailer.with(faculty_survey: @faculty_survey).send_faculty_survey_email(current_user).deliver_now
-    flash.now[:notice] = 'Email was sent'
-    render turbo_stream: turbo_stream.update("flash", partial: "layouts/notification")
+    @email_log_entries = EmailLog.where(sent_from_model: "FacultySurvey", record_id: @faculty_survey.id).order(created_at: :desc)
+    redirect_to faculty_survey_config_questions_path(@faculty_survey), notice: 'Email was sent'
   end
 
   # DELETE /faculty_surveys/1 or /faculty_surveys/1.json
