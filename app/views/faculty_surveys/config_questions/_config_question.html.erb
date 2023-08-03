@@ -25,12 +25,12 @@
         <% @config_questions_edit.each do |q| %>
           <tr class="mi_tbody_tr">
             <td class="mi_tbody_td">
-            <% unless EmailLog.find_by(sent_from_model: "FacultySurvey", record_id: @faculty_survey).present? %>
+            <% unless email_was_sent?("FacultySurvey", @faculty_survey) %>
                 <%= link_to "Delete", faculty_survey_config_question_path(@faculty_survey, q), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete}, class: "link_to" %>
               <% end %>
             </td>
             <td class="mi_tbody_td">
-            <% unless EmailLog.find_by(sent_from_model: "FacultySurvey", record_id: @faculty_survey).present? %>
+            <% unless email_was_sent?("FacultySurvey", @faculty_survey) %>
                 <%= link_to 'Edit', edit_faculty_survey_config_question_path(@faculty_survey, q), class: "link_to" %>
               <% end %>
             </td>
