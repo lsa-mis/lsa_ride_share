@@ -6,7 +6,7 @@ class ReservationMailer < ApplicationMailer
   def car_reservation_created(user)
     @recipient = @reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
     mail(to: @recipient, subject: "New reservation for program: #{@reservation.program.display_name}" )
-    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "car_reservation_created",
+    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "created",
       sent_to: @recipient, sent_by: user.id, sent_at: DateTime.now)
   end
 
@@ -19,7 +19,7 @@ class ReservationMailer < ApplicationMailer
     recipients << @passengers_emails if @passengers_emails.present?
     @recipients = recipients.uniq.join(", ")
     mail(to: @recipients, subject: "Reservation confirmation for program: #{@reservation.program.display_name}" )
-    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "car_reservation_confirmation",
+    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "confirmation",
       sent_to: @recipients, sent_by: user.id, sent_at: DateTime.now)
   end
 
@@ -31,7 +31,7 @@ class ReservationMailer < ApplicationMailer
     recipients << @passengers_emails if @passengers_emails.present?
     @recipients = recipients.join(", ")
     mail(to: @recipients, subject: "Reservation approved for program: #{@reservation.program.display_name}" )
-    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "car_reservation_approved",
+    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "approved",
       sent_to: @recipients, sent_by: user.id, sent_at: DateTime.now)
   end
 
@@ -42,7 +42,7 @@ class ReservationMailer < ApplicationMailer
     @passengers = cancel_passengers
 
     mail(to: @unit_email, subject: "Reservation canceled for program: #{@reservation.program.display_name}" )
-    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "car_reservation_cancel_admin",
+    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "cancel_admin",
       sent_to: @unit_email, sent_by: user, sent_at: DateTime.now)
   end
 
@@ -58,7 +58,7 @@ class ReservationMailer < ApplicationMailer
     recipients << cancel_emails if cancel_emails.present?
     @recipients = recipients.join(", ")
     mail(to: @recipients, subject: "Reservation canceled for program: #{@reservation.program.display_name}" )
-    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "car_reservation_cancel_driver",
+    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "cancel_driver",
       sent_to: @recipients, sent_by: user, sent_at: DateTime.now)
   end
 
@@ -71,7 +71,7 @@ class ReservationMailer < ApplicationMailer
     recipients << @passengers_emails if @passengers_emails.present?
     @recipients = recipients.uniq.join(", ")
     mail(to: @recipients, subject: "Reservation updated for program: #{@reservation.program.display_name}" )
-    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "car_reservation_updated",
+    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "updated",
       sent_to: @recipients, sent_by: user.id, sent_at: DateTime.now)
   end
 
@@ -89,7 +89,7 @@ class ReservationMailer < ApplicationMailer
     recipients << @unit_email
     @recipients = recipients.uniq.join(", ")
     mail(to: @recipients, subject: "Reservation drivers changed for program: #{@reservation.program.display_name}" )
-    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "car_reservation_drivers_edited",
+    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "drivers_edited",
       sent_to: @recipients, sent_by: reserved_by, sent_at: DateTime.now)
   end
 
@@ -97,7 +97,7 @@ class ReservationMailer < ApplicationMailer
     @name = student.name
     @email = email_address(student)
     mail(to: @email, subject: "Removed from the reservation passagers' list for program: #{@reservation.program.display_name}" )
-    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "car_reservation_remove_passenger",
+    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "passenger_removed",
       sent_to: @email, sent_by: user.id, sent_at: DateTime.now)
   end
 
@@ -111,7 +111,7 @@ class ReservationMailer < ApplicationMailer
     recipients << @unit_email
     @recipients = recipients.uniq.join(", ")
     mail(to: @recipients, subject: "Reservation passengers list updated for program: #{@reservation.program.display_name}" )
-    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "car_reservation_update_passengers",
+    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "passengers_edited",
       sent_to: @recipients, sent_by: user.id, sent_at: DateTime.now)
   end
 

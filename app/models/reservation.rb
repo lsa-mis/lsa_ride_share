@@ -124,6 +124,11 @@ class Reservation < ApplicationRecord
 
   def send_email_on_drivers_update
     drivers_emails = []
+    if self.driver_id.present? && self.driver_changed?
+      if self.driver_id_change[1].present? && self.driver_id_change[0].nil?
+        return
+      end
+    end
     if self.driver_changed?
       if self.driver_id_change[0].present?
         drivers_emails << email_address(Student.find(self.driver_id_change[0]))
