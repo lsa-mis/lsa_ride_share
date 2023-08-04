@@ -2,8 +2,6 @@ class SystemReportsController < ApplicationController
   before_action :auth_user
   before_action :set_units, :set_terms
 
-  require 'csv'
-
   def index
     @vehicle_reports = []
 
