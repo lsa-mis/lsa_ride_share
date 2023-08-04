@@ -1,6 +1,6 @@
 <div>
   <h1 class="font-bold text-4xl">System Reports</h1>
-    <%= form_with(url: "run_report", method: :get, format: :csv) do |f| %>
+    <%= form_with url: run_report_path, method: :get do |f| %>
       <div class="flex gap-2">
         <div class="">
           <% if Term.current.present? %>
