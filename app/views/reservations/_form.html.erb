@@ -71,6 +71,11 @@
     <%= render 'start_end_time' %>
   </div>
 
+  <div class="my-5">
+    <%= form.label :recurring %>
+    <%= form.select_recurring :recurring, nil, allow_blank: true, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  </div>
+
   <div class="mb-4">
     <% if UnitPreference.find_by(unit_id: @unit_id, name: "no_car_reservations").on_off %>
       <%= label_tag("no_car", nil, class: "hidden") %>
