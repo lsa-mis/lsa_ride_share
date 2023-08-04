@@ -1,0 +1,39 @@
+<div>
+  <h1 class="font-bold text-4xl">System Reports</h1>
+    <%= form_with(url: "run_report", method: :get, format: :csv) do |f| %>
+      <div class="flex gap-2">
+        <div class="">
+          <% if Term.current.present? %>
+            <label for="term_id" class="fancy_label">Select a Term</label>
+            <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: params[:term_id]), include_blank: "Current Term", class: "filter_select w-48" %>
+          <% else %>
+            <label for="term_id" class="fancy_label">Select a Term</label>
+            <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: params[:term_id]), include_blank: "Select ...", class: "filter_select w-48" %>
+          <% end %>
+        </div>
+
+        <% if current_user.unit_ids.count > 1 %>
+          <div class="">
+            <label for="unit_id" class="fancy_label">Select a Unit</label>
+            <%= select_tag "unit_id", options_from_collection_for_select(@units, :id, :name, selected: params[:unit_id]), include_blank: "All Units", class: "filter_select w-48" %>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="mt-2">
+        <%= label_tag "Select a report type" %>
+        <%= select_tag :format, options_for_select({"Display in a browser" => "html", "Export to CSV" => "csv"}, "Display in a browser"), required: true %>
+      </div>
+
+      <div class="my-2">
+        <%= f.submit "Run report", data: { disable_with: false }, method: :get, class: "primary_button" %>
+      </div>
+
+      <a href="run_report?term_id=3&unit_id=3&format=csv&commit=Run+report">Download report</a>
+
+    <% end %>
+    
+    <div>
+      <%= render partial: "system_reports/listing", locals: { title: @title }  %>
+    </div>
+</div>
