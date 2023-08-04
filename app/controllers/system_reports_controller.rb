@@ -21,7 +21,7 @@ class SystemReportsController < ApplicationController
       @vehicle_reports =  @vehicle_reports.where(reservation_id: reservation_ids)
     end
 
-    @title = "Vehicle report woo hoo" #ADD STUFF LATER
+    @title = "Vehicle report"
 
     if params[:format] == "csv"
       sql = 'SELECT "vehicle_reports".* FROM "vehicle_reports"'
