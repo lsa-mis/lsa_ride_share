@@ -370,7 +370,7 @@ module ApplicationHelper
     if UnitPreference.find_by(name: "hours_before_reservation", unit_id: unit_id).value.present?
       UnitPreference.find_by(name: "hours_before_reservation", unit_id: unit_id).value.to_i
     else
-      0
+      24
     end
   end
 
