@@ -8,6 +8,7 @@ export default class extends Controller {
   }
 
   toggleApprove(event) {
+    console.log("approve")
     var car = document.getElementById("car").textContent
     var driver = document.getElementById("driver").textContent
     var approve_error = document.getElementById("approve_error")
@@ -17,9 +18,11 @@ export default class extends Controller {
         approve_error.innerHTML = "Do not approve if a car or a driver is not selected"
         check.checked = false
         event.preventDefault()
+      } else {
+        approve_error.innerHTML = ""
+        Turbo.navigator.submitForm(this.formTarget)
       }
     } else {
-      approve_error.innerHTML = ""
       Turbo.navigator.submitForm(this.formTarget)
     }
   }
