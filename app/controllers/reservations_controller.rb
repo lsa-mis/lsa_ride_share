@@ -349,8 +349,7 @@ class ReservationsController < ApplicationController
     authorize @reservation
     ReservationMailer.with(reservation: @reservation).car_reservation_updated(current_user).deliver_now
     @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id).order(created_at: :desc)
-    flash.now[:notice] = 'Email was sent'
-    render :show
+    redirect_to reservation_path(@reservation), notice: 'Email was sent'
   end
 
   def add_non_uofm_passengers
