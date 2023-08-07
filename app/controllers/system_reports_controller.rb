@@ -24,8 +24,14 @@ class SystemReportsController < ApplicationController
       @vehicle_reports =  @vehicle_reports.where(reservation_id: reservation_ids)
       all_records = false
     end
+    if params[:program_id].present?
+      program_ids = Program.where(id: params[:program_id]).pluck(:id)
+      reservation_ids = Reservation.where(program_id: program_ids)
+      @vehicle_reports =  @vehicle_reports.where(reservation_id: reservation_ids)
+      all_records = false
+    end
 
-    @title = "Vehicle report"
+    @title = "LSA Rideshare System Report"
 
     if params[:format] == "csv"
 
