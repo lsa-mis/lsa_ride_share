@@ -96,15 +96,27 @@ from https://tailwindcss.com/docs/adding-custom-styles
     @apply text-sm font-semibold text-gray-900
   }
 
-  .nav-md-text {
+  .nav-sm-text {
+    @apply text-base font-normal font-montserrat;
+  }
+
+  .nav-sm-medium-text {
+    @apply text-base font-medium font-montserrat;
+  }
+
+  .nav-sm-bold-text {
+    @apply text-base font-bold font-montserrat;
+  }
+
+  .nav-text {
     @apply text-2xl font-normal font-montserrat;
   }
 
-  .nav-md-medium-text {
+  .nav-medium-text {
     @apply text-2xl font-medium font-montserrat;
   }
 
-  .nav-md-bold-text {
+  .nav-bold-text {
     @apply text-2xl font-bold font-montserrat;
   }
 
