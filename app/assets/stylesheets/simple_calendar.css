@@ -151,7 +151,7 @@
 
 /* recurring_select
   /* -------- resets ---------------*/
-  .rs_dialog_holder {
+ /* .rs_dialog_holder {
     font-size: 14px;
     color: black;
   }
@@ -175,12 +175,13 @@
     border-radius: 2px;
     position: relative;
     background-image: -webkit-linear-gradient(top, #f5f5f5, #f1f1f1); /* Chrome 10+, Saf5.1+ */
-    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#f5f5f5), to(#f1f1f1)); /* Saf4+, Chrome */
-    background-image: -moz-linear-gradient(top, #f5f5f5, #f1f1f1); /* FF3.6 */
-    background-image: -ms-linear-gradient(top, #f5f5f5, #f1f1f1); /* IE10 */
-    background-image: -o-linear-gradient(top, #f5f5f5, #f1f1f1); /* Opera 11.10+ */
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorStr="#f5f5f5",EndColorStr="#f1f1f1");
-  }
+    /* background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#f5f5f5), to(#f1f1f1)); /* Saf4+, Chrome */
+    /* background-image: -moz-linear-gradient(top, #f5f5f5, #f1f1f1); /* FF3.6 */
+    /* background-image: -ms-linear-gradient(top, #f5f5f5, #f1f1f1); /* IE10 */
+   /* background-image: -o-linear-gradient(top, #f5f5f5, #f1f1f1); /* Opera 11.10+ */
+   /* filter: progid:DXImageTransform.Microsoft.gradient(startColorStr="#f5f5f5",EndColorStr="#f1f1f1");
+  } */
+  /*
   .rs_dialog_holder input[type=button]:hover {
     border-color: #aaa;
     color: #222;
@@ -199,6 +200,7 @@
   }
   
   /*------- defaults ------------ */
+  /*
   .rs_dialog_holder {
     font-family: helvetica, arial, "san-serif";
     color: #222;
@@ -206,6 +208,7 @@
   }
   
   /*------- specifics ------------ */
+  /*
   select option.bold {
     font-weight: bold;
     color: red;
@@ -275,11 +278,13 @@
   .rs_dialog .rs_dialog_content .freq_option_section label {
     font-weight: bold;
   }
+  */
   .rs_dialog .rs_dialog_content .freq_option_section .rs_interval {
-    width: 40px;
-    text-align: center;
-    display: inline-block;
+    width: 40px !important;
+    text-align: center !important;
+    display: inline-block !important;
   }
+  /*
   .rs_dialog .rs_dialog_content .freq_option_section .day_holder {
     border-left: 1px solid #ccc;
     position: relative;
@@ -313,10 +318,11 @@
     box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2) inset;
     position: relative;
     background-image: -webkit-linear-gradient(top, #9ab, #789); /* Chrome 10+, Saf5.1+ */
-    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#9ab), to(#789)); /* Saf4+, Chrome */
-    background-image: -moz-linear-gradient(top, #9ab, #789); /* FF3.6 */
-    background-image: -ms-linear-gradient(top, #9ab, #789); /* IE10 */
-    background-image: -o-linear-gradient(top, #9ab, #789); /* Opera 11.10+ */
+   /* background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#9ab), to(#789)); /* Saf4+, Chrome */
+  /*  background-image: -moz-linear-gradient(top, #9ab, #789); /* FF3.6 */
+  /*  background-image: -ms-linear-gradient(top, #9ab, #789); /* IE10 */
+  /*  background-image: -o-linear-gradient(top, #9ab, #789); /* Opera 11.10+ */
+  /*
   }
   .rs_dialog .rs_dialog_content .freq_option_section .day_holder a.selected:hover {
     cursor: pointer;
@@ -344,11 +350,11 @@
     color: #fff;
     position: relative;
     background-image: -webkit-linear-gradient(top, #9ab, #789); /* Chrome 10+, Saf5.1+ */
-    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#9ab), to(#789)); /* Saf4+, Chrome */
-    background-image: -moz-linear-gradient(top, #9ab, #789); /* FF3.6 */
-    background-image: -ms-linear-gradient(top, #9ab, #789); /* IE10 */
-    background-image: -o-linear-gradient(top, #9ab, #789); /* Opera 11.10+ */
-    -webkit-box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2) inset;
+ /*   background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#9ab), to(#789)); /* Saf4+, Chrome */
+/*    background-image: -moz-linear-gradient(top, #9ab, #789); /* FF3.6 */
+/*    background-image: -ms-linear-gradient(top, #9ab, #789); /* IE10 */
+ /*   background-image: -o-linear-gradient(top, #9ab, #789); /* Opera 11.10+ */
+ /*   -webkit-box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2) inset;
     -moz-box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2) inset;
     -ms-box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2) inset;
     -o-box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2) inset;
@@ -425,3 +431,4 @@
   .rs_dialog .rs_dialog_content.animated .rs_summary, .rs_dialog .rs_dialog_content.animated .freq_option_section {
     display: none;
   }
+*/
