@@ -14,15 +14,42 @@
             </div>
           <% end %>
         </div>
-        <div class="hidden lg:ml-6 lg:block">
-          <div class="flex space-x-4">
-            <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-            <%# <a href="#" class="rounded-md px-3 py-2 nav-sm-text xl:nav-text text-yellow-ummaze">Programs</a> %>
-            <a href="#" class="rounded-md px-3 py-2 nav-sm-text xl:nav-text text-gray-300 hover:bg-gray-700 hover:text-white">Programs</a>
-            <a href="#" class="rounded-md px-3 py-2 nav-sm-text xl:nav-text text-gray-300 hover:bg-gray-700 hover:text-white">Reservations</a>
-            <a href="#" class="rounded-md px-3 py-2 nav-sm-text xl:nav-text text-gray-300 hover:bg-gray-700 hover:text-white">Unit Options</a>
+        <% if user_signed_in? %>
+          <div class="hidden lg:ml-6 lg:block">
+            <div class="flex space-x-4">
+              <div class="group relative cursor-pointer">
+                <div class="flex items-center justify-between">
+                  <%= content_tag :span, "Programs", class: "rounded-md px-3 py-2 nav-text xl:nav-lg-text text-white hover:text-yellow-ummaze" if policy(Program).index? || policy(Site).index? %>
+                </div>
+                <div class="invisible absolute z-50 flex w-full flex-col bg-blue-umblue py-1 group-hover:visible" onClick="">
+                  <%= link_to "All Programs", programs_path, class: "my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" %>
+                  <%= link_to "Sites", sites_path, class: "my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" if policy(Site).index? %>
+                </div>
+              </div>
+              <div class="group relative cursor-pointer">
+                <div class="flex items-center justify-between">
+                  <%= content_tag :span, "Reservations", class: "rounded-md px-3 py-2 nav-text xl:nav-lg-text text-white hover:text-yellow-ummaze" if policy(Reservation).index? || policy(VehicleReport).index? %>
+                </div>
+                <div class="invisible absolute z-50 flex w-full flex-col bg-blue-umblue py-1 group-hover:visible" onClick="">
+                  <%= link_to "Reservations", reservations_path, class:"no-underline my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" %>
+                  <%= link_to "Vehicle Reports", vehicle_reports_path, class: "my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" if policy(VehicleReport).index? %>
+                </div>
+              </div>
+              <div class="group relative cursor-pointer">
+                <div class="flex items-center justify-between">
+                  <%= content_tag :span, "Unit Options", class: "rounded-md px-3 py-2 nav-text xl:nav-lg-text text-white hover:text-yellow-ummaze" if policy(Unit).index? || policy(Term).index? || unit_use_faculty_survey?(current_user.unit_ids) || policy(Car).index? %>
+                </div>
+                <div class="invisible absolute z-50 flex w-full flex-col bg-blue-umblue py-1 group-hover:visible" onClick="">
+                  <%= link_to "All Units", units_path, class: "my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" %>
+                  <%= link_to "Unit Preferences", unit_preferences_path, class: "my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" %>
+                  <%= link_to "View Terms", terms_path, class: "my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" if policy(Term).index? %>
+                  <%= link_to "Faculty Surveys", faculty_surveys_path, class: "my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" if unit_use_faculty_survey?(current_user.unit_ids) %>
+                  <%= link_to "Cars", cars_path, class: "my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" if policy(Car).index? %>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
+        <% end %>
       </div>
       <div class="hidden lg:ml-6 lg:block">
         <div class="flex items-center">
@@ -73,30 +100,57 @@
   </div>
     <!-- Mobile menu, show/hide based on menu state. -->
   <div class= "lg:hidden">
-    <div data-navbar-target="toggleable" class="hidden" id="mobile-menu">
-      <div class="space-y-1 px-2 pb-3 pt-2">
-        <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-        <%# <a href="#" class="block rounded-md px-3 py-2 nav-md-text text-yellow-ummaze">Programs</a> %>
-        <a href="#" class="block rounded-md px-3 py-2 nav-md-text text-gray-300 hover:bg-gray-700 hover:text-white">Programs</a>
-        <a href="#" class="block rounded-md px-3 py-2 nav-md-text text-gray-300 hover:bg-gray-700 hover:text-white">Reservations</a>
-        <a href="#" class="block rounded-md px-3 py-2 nav-md-text text-gray-300 hover:bg-gray-700 hover:text-white">Unit Options</a>
-      </div>
-      <div class="border-t border-gray-700 pb-3 pt-4">
-        <div class="mt-3 space-y-1 px-2">
-          <div>
+    <div data-navbar-target="toggleable" class="hidden " id="mobile-menu">
+      <div class="border-t border-gray-700">
+        <div class="flex justify-end">
+          <div class= "flex flex-row pr-1 z-50">
             <% if user_signed_in? %>
-              <div class="text-white body-text pb-1">Welcome <%= current_user.display_name.split[0] %></div>
+              <div class="text-white body-text pr-2">Welcome <%= current_user.display_name.split[0] %></div>
               <%= button_to destroy_user_session_path, method: :delete, data: {turbo: "false"} do %>
-                <div class="sign_button">Sign Out</div>
+                <div class="sign_button mt-1">Sign Out</div>
               <% end %>
             <% else %> 
               <div>
                 <%= button_to user_saml_omniauth_authorize_path, data: {turbo: "false"} do %>
-                  <div class="sign_button">Sign In</div>
+                  <div class="sign_button mt-1">Sign In</div>
                 <% end %>
               </div>
             <% end %>
           </div>
+        </div>
+      </div>
+      <% if user_signed_in? %>
+        <div class="pb-3 -mt-10">
+          <div class="w-full flex flex-col">
+            <div>
+              <%= content_tag :span, "Programs", class: "rounded-md py-2 nav-text xl:nav-lg-text text-white" if policy(Program).index? || policy(Site).index? %>
+            </div>
+            <div class="cursor-pointer flex flex-row justify-start ml-4 bg-blue-umblue py-1" onClick="">
+              <%= link_to "All Programs", programs_path, class: "mx-2 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" %>
+              <%= link_to "Sites", sites_path, class: "mx-2 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" if policy(Site).index? %>
+            </div>
+          </div>
+          <div class="w-full flex flex-col">
+            <div>
+              <%= content_tag :span, "Reservations", class: "rounded-md py-2 nav-text xl:nav-lg-text text-white" if policy(Reservation).index? || policy(VehicleReport).index? %>
+            </div>
+            <div class="cursor-pointer  flex flex-row justify-start ml-4 bg-blue-umblue py-1">
+              <%= link_to "Reservations", reservations_path, class:"no-underline mx-2 block nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" %>
+              <%= link_to "Vehicle Reports", vehicle_reports_path, class: "mx-2 block nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" if policy(VehicleReport).index? %>
+            </div>
+          </div>
+          <div class="relative w-full flex flex-col">
+            <div>
+              <%= content_tag :span, "Unit Options", class: "rounded-md py-2 nav-text xl:nav-lg-text text-white" if policy(Unit).index? || policy(Term).index? || unit_use_faculty_survey?(current_user.unit_ids) || policy(Car).index? %>
+            </div>
+            <div class=" cursor-pointer flex flex-row justify-start ml-4 bg-blue-umblue py-1">
+              <%= link_to "All Units", units_path, class: "mx-2 block py-1 nav-sm-text text-white md:mx-2 hover:text-yellow-ummaze" %>
+              <%= link_to "Unit Preferences", unit_preferences_path, class: "mx-2 block py-1 nav-sm-text text-white md:mx-2 hover:text-yellow-ummaze" %>
+              <%= link_to "View Terms", terms_path, class: "mx-2 block py-1 nav-sm-text text-white md:mx-2 hover:text-yellow-ummaze" if policy(Term).index? %>
+              <%= link_to "Faculty Surveys", faculty_surveys_path, class: "mx-2 block py-1 nav-sm-text text-white md:mx-2 hover:text-yellow-ummaze" if unit_use_faculty_survey?(current_user.unit_ids) %>
+              <%= link_to "Cars", cars_path, class: "mx-2 block py-1 nav-sm-text text-white md:mx-2 hover:text-yellow-ummaze" if policy(Car).index? %>
+            </div>
+          <% end %>
         </div>
       </div>
     </div>
