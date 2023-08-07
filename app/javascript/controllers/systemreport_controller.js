@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["format", "unit", "term"]
+  static targets = ["format", "unit", "term", "program"]
 
   connect() {
     console.log("connect - system report")
@@ -11,6 +11,7 @@ export default class extends Controller {
     var format = this.formatTarget.value
     var unit = this.unitTarget.value
     var term = this.termTarget.value
+    var program = this.programTarget.value
 
     var needsAmp = false
 
@@ -32,7 +33,15 @@ export default class extends Controller {
       a.href = a.href + "unit_id=" + unit
       needsAmp = true
     }
-
+    if(program != "") {
+      if(needsAmp == true) {
+        a.href = a.href + "&"
+        needsAmp = false
+      }
+      a.href = a.href + "program_id=" + unit
+      needsAmp = true
+    }
+    
     if(needsAmp == true) {
       a.href = a.href + "&"
       needsAmp = false
