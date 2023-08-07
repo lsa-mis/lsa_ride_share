@@ -9,7 +9,7 @@
 #  car_id                   :bigint
 #  start_time               :datetime
 #  end_time                 :datetime
-#  recurring                :string
+#  recurring                :text
 #  driver_id                :bigint
 #  driver_phone             :string
 #  backup_driver_id         :bigint
@@ -23,6 +23,8 @@
 #  non_uofm_passengers      :string
 #  number_of_non_uofm_passengers :integer
 #  driver_manager_id        :bigint
+#  prev                     :bigint
+#  next                     :bigint
 #
 class Reservation < ApplicationRecord
   include ApplicationHelper
@@ -32,6 +34,11 @@ class Reservation < ApplicationRecord
   belongs_to :driver, optional: true, class_name: 'Student', foreign_key: :driver_id
   belongs_to :driver_manager, optional: true, class_name: 'Manager', foreign_key: :driver_manager_id
   belongs_to :backup_driver, optional: true, class_name: 'Student', foreign_key: :backup_driver_id
+
+  has_one :next_reservation, class_name: "Reservation", foreign_key: :next
+  belongs_to :prev_reservation, class_name: "Reservation", foreign_key: :prev, optional: true
+
+
   has_many :reservation_passengers
   has_many :passengers, through: :reservation_passengers, source: :student
   has_one :vehicle_report, dependent: :destroy
@@ -156,6 +163,63 @@ class Reservation < ApplicationRecord
     if drivers_emails.present?
       ReservationMailer.car_reservation_drivers_edited(self, drivers_emails, self.reserved_by).deliver_now
     end
+  end
+
+  def dup
+    super.tap do |new_reservation|
+      new_reservation.recurring = nil
+      new_reservation.start_time = nil
+      new_reservation.end_time = nil
+      new_reservation.prev = nil
+      new_reservation.next = nil
+    end
+  end
+
+  serialize :recurring, Hash
+
+  def recurring=(value)
+    if RecurringSelect.is_valid_rule?(value)
+      v = RecurringSelect.dirty_hash_to_rule(value).to_hash
+      v[:count] = 6
+      super(v)
+    else
+      super(nil)
+    end
+  end
+  # schedule = IceCube::Schedule.new(start = Time.now, :end_time => start + 600)
+
+  def rule
+    IceCube::Rule.from_hash recurring
+  end
+
+  def schedule(start)
+    # schedule = IceCube::Schedule.new (start_time = params['schedule_starttime'])
+    # schedule.add_recurrence_rule( RecurringSelect.dirty_hash_to_rule(params['schedule_rule']) )
+    
+    # schedule = IceCube::Schedule.new(start = Time.now, :end_time => start + 600)
+
+    schedule = IceCube::Schedule.new(start)
+    # start_time = params['schedule_starttime']
+    schedule.add_recurrence_rule(rule)
+    schedule
+  end
+
+  def calendar_reservations(start)
+    if recurring.empty?
+      [self]
+    else
+      start_date = start.beginning_of_month.beginning_of_week
+      end_date = start.end_of_month.end_of_week
+      schedule(start_time).occurrences(end_date).map do |date|
+        Reservation.new(id: id, start_time: date)
+      end
+    end
+  end
+  
+  def reservation_date
+    start_d = start_date.present? ? start_date.strftime("%m/%d/%Y %I:%M%p") : ''
+    end_d = end_date.present? ? end_date.strftime("%m/%d/%Y %I:%M%p") : ''
+    "#{start_d} - #{end_d}"
   end
 
 end
