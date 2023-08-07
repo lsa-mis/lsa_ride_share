@@ -7,6 +7,11 @@ export default class extends Controller {
     console.log("connect approve")
   }
 
+  cancelReservation() {
+    console.log("cancel")
+  }
+
+
   toggleApprove(event) {
     var car = document.getElementById("car").textContent
     var driver = document.getElementById("driver").textContent
