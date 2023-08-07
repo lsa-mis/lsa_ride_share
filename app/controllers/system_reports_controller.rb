@@ -1,6 +1,6 @@
 class SystemReportsController < ApplicationController
   before_action :auth_user
-  before_action :set_units, :set_terms
+  before_action :set_units, :set_terms, :set_programs
 
   def index
     @vehicle_reports = []
@@ -10,21 +10,30 @@ class SystemReportsController < ApplicationController
 
   def run_report
 
+    all_records = true
+
     if params[:unit_id].present?
       car_ids = Car.where(unit_id: params[:unit_id]).pluck(:id)
       reservation_ids = Reservation.where(car_id: car_ids)
       @vehicle_reports = VehicleReport.where(reservation_id: reservation_ids)
+      all_records = false
     end
     if params[:term_id].present?
       program_ids = Program.where(term_id: params[:term_id]).pluck(:id)
       reservation_ids = Reservation.where(program_id: program_ids)
       @vehicle_reports =  @vehicle_reports.where(reservation_id: reservation_ids)
+      all_records = false
     end
 
     @title = "Vehicle report"
 
     if params[:format] == "csv"
-      sql = 'SELECT "vehicle_reports".* FROM "vehicle_reports"'
+
+      if all_records = true
+        sql = 'SELECT "vehicle_reports".* FROM "vehicle_reports"'
+      else
+        sql = @vehicle_reports 
+      end
 
       records_array = ActiveRecord::Base.connection.exec_query(sql)
       @result = []
@@ -61,6 +70,10 @@ class SystemReportsController < ApplicationController
 
     def set_terms
       @terms = Term.current_and_future
+    end
+
+    def set_programs
+      @programs = Program.where(unit_id: current_user.unit_ids)
     end
 
     def data_to_csv(result, title)

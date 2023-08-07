@@ -18,6 +18,12 @@
             <%= select_tag "unit_id", options_from_collection_for_select(@units, :id, :name, selected: params[:unit_id]), include_blank: "All Units", class: "filter_select w-48", "data-systemreport-target": "unit" %>
           </div>
         <% end %>
+
+        <div class="">
+          <label for="program_id" class="fancy_label">Select a Program</label>
+          <%= select_tag "program_id", options_from_collection_for_select(@programs, :id, :title, selected: params[:program_id]), include_blank: "All Programs", class: "filter_select w-48", "data-systemreport-target": "program" %>
+        </div>
+
       </div>
 
       <div class="mt-2">
