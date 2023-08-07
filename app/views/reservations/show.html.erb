@@ -1,4 +1,4 @@
-<div class="mx-auto w-full">
+<div class="mx-auto w-full" data-controller="approve">
   <h1>
     <%= @reservation.program.unit.name %> Reservation
   </h1>
@@ -16,13 +16,13 @@
     <div class="col-span-3">
       <% if is_admin?(current_user) %>
         <%= form_with model: @reservation, html: { class: "sm:flex sm:items-center" },
-          data: { controller: "approve",
+          data: {
                   approve_target: "form"
                 } do |f| %>
           <div class="sm:col-span-4">
             <ol class="switches">
               <li>
-                <%= f.check_box :approved, "data-action": "change->approve#toggleApprove"  %>
+                <%= f.check_box :approved, "data-action": "change->approve#toggleApprove" %>
                 <%= f.label :approved do %>
                   <span class="label-text">Approved</span>
                   <span></span>
@@ -62,7 +62,43 @@
                 </span>
               <% end %>
             </div>
+            <div class="my-2">
+              <button type="button" class="secondary_blue_button"
+                data-action='click->approve#cancelReservation'>
+                Cancel Recurring Reservation
+              </button>
+            </div>
           <% end %>
+          <div>
+          <a class="checked" href="http://www.google.com">Click here</a>
+            <script type="text/javascript">
+
+                $(function() {
+                    $('.checked').click(function(e) {
+                        e.preventDefault();
+                        var dialog = $('<p>Are you sure?</p>').dialog({
+                            buttons: {
+                                "Yes": function() {$.ajax({
+                                  type: "DELETE",
+                                  url: "/reservations/343",
+                                  data: { _method: "delete"}
+                          
+                              });
+                                console.log("delete")
+                              },
+                                "No":  function() {alert('you chose no');},
+                                "All":  function() {alert('you chose all');},
+                                "Cancel":  function() {
+                                    alert('you chose cancel');
+                                    dialog.dialog('close');
+                                }
+                            }
+                        });
+                    });
+                });
+
+            </script>
+          </div>
         <% else %>
           <% if (allow_student_to_edit_reservation?(@reservation) || allow_manager_to_edit_reservation?(@reservation)) && future_reservation?(@reservation) %>
             <div class="my-2">

@@ -383,6 +383,10 @@ class ReservationsController < ApplicationController
   end
 
   def finish_reservation
+    if @reservation.recurring.present?
+      recurring_reservation = RecurringReservation.new(@reservation)
+      recurring_reservation.create_all
+    end
     ReservationMailer.with(reservation: @reservation).car_reservation_confirmation(current_user).deliver_now
     ReservationMailer.with(reservation: @reservation).car_reservation_created(current_user).deliver_now
     redirect_to reservation_path(@reservation)
@@ -395,6 +399,7 @@ class ReservationsController < ApplicationController
 
   # DELETE /reservations/1 or /reservations/1.json
   def destroy
+    fail
     unless @reservation.approved
       respond_to do |format|
         if @reservation.destroy
