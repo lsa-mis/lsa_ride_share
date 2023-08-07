@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_28_202119) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_06_210239) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -198,7 +198,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_28_202119) do
     t.bigint "car_id"
     t.datetime "start_time"
     t.datetime "end_time"
-    t.string "recurring"
+    t.text "recurring"
     t.bigint "driver_id"
     t.string "driver_phone"
     t.bigint "backup_driver_id"
@@ -212,6 +212,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_28_202119) do
     t.string "non_uofm_passengers"
     t.integer "number_of_non_uofm_passengers", default: 0
     t.bigint "driver_manager_id"
+    t.integer "prev"
+    t.integer "next"
     t.index ["backup_driver_id"], name: "index_reservations_on_backup_driver_id"
     t.index ["car_id"], name: "index_reservations_on_car_id"
     t.index ["driver_id"], name: "index_reservations_on_driver_id"
