@@ -8,28 +8,28 @@
               <div class="inline-block h-8 justify-self-start content-start items-start">
                 <%= image_tag 'mlsa.png', alt: 'LSA Logo', height: '35.75', width: '100', class: '' %>
               </div>
-              <span class="text-white navlogo-sm-text sm:navlogo-text pl-4">
+              <span class="text-white navlogo-sm-text xl:navlogo-text pl-4">
                 Ride Share
               </span>
             </div>
           <% end %>
         </div>
-        <div class="hidden sm:ml-6 sm:block">
+        <div class="hidden lg:ml-6 lg:block">
           <div class="flex space-x-4">
             <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-            <a href="#" class="rounded-md px-3 py-2 nav-md-text text-yellow-ummaze">Programs</a>
-            <a href="#" class="rounded-md px-3 py-2 nav-md-text text-gray-300 hover:bg-gray-700 hover:text-white">Reservations</a>
-            <a href="#" class="rounded-md px-3 py-2 nav-md-text text-gray-300 hover:bg-gray-700 hover:text-white">Unit Options</a>
+            <a href="#" class="rounded-md px-3 py-2 nav-sm-text xl:nav-text text-yellow-ummaze">Programs</a>
+            <a href="#" class="rounded-md px-3 py-2 nav-sm-text xl:nav-text text-gray-300 hover:bg-gray-700 hover:text-white">Reservations</a>
+            <a href="#" class="rounded-md px-3 py-2 nav-sm-text xl:nav-text text-gray-300 hover:bg-gray-700 hover:text-white">Unit Options</a>
           </div>
         </div>
       </div>
-      <div class="hidden sm:ml-6 sm:block">
+      <div class="hidden lg:ml-6 lg:block">
         <div class="flex items-center">
           <!-- Profile dropdown -->
 
             <% if user_signed_in? %>
               <div>
-                <div class="text-white body-text pb-1">Welcome <%= current_user.display_name %></div>
+                <div class="text-white body-text pb-1">Welcome <%= current_user.display_name.split[0] %></div>
                 <%= button_to destroy_user_session_path, method: :delete, data: {turbo: "false"} do %>
                   <span class="sign_button body-md-text">Sign Out</span>
                 <% end %>
@@ -45,7 +45,7 @@
 
         </div>
       </div>
-      <div class="-mr-2 flex sm:hidden">
+      <div class="-mr-2 flex lg:hidden">
         <!-- Mobile menu button -->
         <button type="button" class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
           <span class="absolute -inset-0.5"></span>
@@ -72,7 +72,7 @@
   </div>
 
   <!-- Mobile menu, show/hide based on menu state. -->
-  <div class="sm:hidden" id="mobile-menu">
+  <div class="lg:hidden" id="mobile-menu">
     <div class="space-y-1 px-2 pb-3 pt-2">
       <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
       <a href="#" class="block rounded-md px-3 py-2 nav-md-text text-yellow-ummaze">Programs</a>
