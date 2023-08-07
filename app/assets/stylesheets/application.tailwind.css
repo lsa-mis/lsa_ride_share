@@ -97,22 +97,34 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .nav-sm-text {
-    @apply text-base font-normal font-montserrat;
+    @apply text-sm font-normal font-montserrat;
   }
 
   .nav-sm-medium-text {
-    @apply text-base font-medium font-montserrat;
+    @apply text-sm font-medium font-montserrat;
   }
 
   .nav-sm-bold-text {
-    @apply text-base font-bold font-montserrat;
+    @apply text-sm font-bold font-montserrat;
   }
 
   .nav-text {
-    @apply text-2xl font-normal font-montserrat;
+    @apply text-base font-normal font-montserrat;
   }
 
   .nav-medium-text {
+    @apply text-base font-medium font-montserrat;
+  }
+
+  .nav-bold-text {
+    @apply text-base font-bold font-montserrat;
+  }
+
+  .nav-lg-text {
+    @apply text-2xl font-normal font-montserrat;
+  }
+
+  .nav-lg-medium-text {
     @apply text-2xl font-medium font-montserrat;
   }
 
