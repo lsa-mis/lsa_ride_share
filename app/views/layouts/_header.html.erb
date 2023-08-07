@@ -1,4 +1,4 @@
-<nav class="bg-blue-900">
+<nav data-controller="navbar" class="bg-blue-900">
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div class="flex h-16 items-center justify-between">
       <div class="flex items-center">
@@ -17,7 +17,8 @@
         <div class="hidden lg:ml-6 lg:block">
           <div class="flex space-x-4">
             <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-            <a href="#" class="rounded-md px-3 py-2 nav-sm-text xl:nav-text text-yellow-ummaze">Programs</a>
+            <%# <a href="#" class="rounded-md px-3 py-2 nav-sm-text xl:nav-text text-yellow-ummaze">Programs</a> %>
+            <a href="#" class="rounded-md px-3 py-2 nav-sm-text xl:nav-text text-gray-300 hover:bg-gray-700 hover:text-white">Programs</a>
             <a href="#" class="rounded-md px-3 py-2 nav-sm-text xl:nav-text text-gray-300 hover:bg-gray-700 hover:text-white">Reservations</a>
             <a href="#" class="rounded-md px-3 py-2 nav-sm-text xl:nav-text text-gray-300 hover:bg-gray-700 hover:text-white">Unit Options</a>
           </div>
@@ -47,7 +48,7 @@
       </div>
       <div class="-mr-2 flex lg:hidden">
         <!-- Mobile menu button -->
-        <button type="button" class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+        <button data-action="click->navbar#toggle" type="button" class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
           <span class="absolute -inset-0.5"></span>
           <span class="sr-only">Open main menu</span>
           <!--
@@ -70,30 +71,32 @@
       </div>
     </div>
   </div>
-
-  <!-- Mobile menu, show/hide based on menu state. -->
-  <div class="lg:hidden" id="mobile-menu">
-    <div class="space-y-1 px-2 pb-3 pt-2">
-      <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-      <a href="#" class="block rounded-md px-3 py-2 nav-md-text text-yellow-ummaze">Programs</a>
-      <a href="#" class="block rounded-md px-3 py-2 nav-md-text text-gray-300 hover:bg-gray-700 hover:text-white">Reservations</a>
-      <a href="#" class="block rounded-md px-3 py-2 nav-md-text text-gray-300 hover:bg-gray-700 hover:text-white">Unit Options</a>
-    </div>
-    <div class="border-t border-gray-700 pb-3 pt-4">
-      <div class="mt-3 space-y-1 px-2">
-        <div>
-          <% if user_signed_in? %>
-            <div class="text-white body-text pb-1">Welcome <%= current_user.display_name %></div>
-            <%= button_to destroy_user_session_path, method: :delete, data: {turbo: "false"} do %>
-              <div class="sign_button">Sign Out</div>
-            <% end %>
-          <% else %> 
-            <div>
-              <%= button_to user_saml_omniauth_authorize_path, data: {turbo: "false"} do %>
-                <div class="sign_button">Sign In</div>
+    <!-- Mobile menu, show/hide based on menu state. -->
+  <div class= "lg:hidden">
+    <div data-navbar-target="toggleable" class="hidden" id="mobile-menu">
+      <div class="space-y-1 px-2 pb-3 pt-2">
+        <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+        <%# <a href="#" class="block rounded-md px-3 py-2 nav-md-text text-yellow-ummaze">Programs</a> %>
+        <a href="#" class="block rounded-md px-3 py-2 nav-md-text text-gray-300 hover:bg-gray-700 hover:text-white">Programs</a>
+        <a href="#" class="block rounded-md px-3 py-2 nav-md-text text-gray-300 hover:bg-gray-700 hover:text-white">Reservations</a>
+        <a href="#" class="block rounded-md px-3 py-2 nav-md-text text-gray-300 hover:bg-gray-700 hover:text-white">Unit Options</a>
+      </div>
+      <div class="border-t border-gray-700 pb-3 pt-4">
+        <div class="mt-3 space-y-1 px-2">
+          <div>
+            <% if user_signed_in? %>
+              <div class="text-white body-text pb-1">Welcome <%= current_user.display_name.split[0] %></div>
+              <%= button_to destroy_user_session_path, method: :delete, data: {turbo: "false"} do %>
+                <div class="sign_button">Sign Out</div>
               <% end %>
-            </div>
-          <% end %>
+            <% else %> 
+              <div>
+                <%= button_to user_saml_omniauth_authorize_path, data: {turbo: "false"} do %>
+                  <div class="sign_button">Sign In</div>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
         </div>
       </div>
     </div>
