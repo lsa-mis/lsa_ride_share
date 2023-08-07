@@ -108,8 +108,8 @@ class Reservation < ApplicationRecord
   end
 
   def driver_student_or_manager
-    if [driver_id, driver_manager_id].compact.count != 1
-      errors.add(:base, "Only one driver should be added: a student or a manager")
+    if self.driver_id.present? && self.driver_manager_id.present?
+      self.driver_manager_id = nil
     end
   end
 
