@@ -9,7 +9,7 @@
                 <%= image_tag 'mlsa.png', alt: 'LSA Logo', height: '35.75', width: '100', class: '' %>
               </div>
               <span class="text-white navlogo-sm-text xl:navlogo-text pl-4">
-                Ride Share
+                RIDE SHARE
               </span>
             </div>
           <% end %>
@@ -31,7 +31,7 @@
                   <%= content_tag :span, "Reservations", class: "rounded-md px-3 py-2 nav-text xl:nav-lg-text text-white hover:text-yellow-ummaze" if policy(Reservation).index? || policy(VehicleReport).index? %>
                 </div>
                 <div class="invisible absolute z-50 flex w-full flex-col bg-blue-umblue py-1 group-hover:visible" onClick="">
-                  <%= link_to "Reservations", reservations_path, class:"no-underline my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" %>
+                  <%= link_to "Reservations", reservations_path, class:"my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" %>
                   <%= link_to "Vehicle Reports", vehicle_reports_path, class: "my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" if policy(VehicleReport).index? %>
                 </div>
               </div>
