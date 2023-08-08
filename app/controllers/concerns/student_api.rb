@@ -62,7 +62,7 @@ module StudentApi
     if result['success']
       if result['data']['Classes']['Class']['ClassSections']['ClassSection']['ClassStudents'].present?
         data = result['data']['Classes']['Class']['ClassSections']['ClassSection']['ClassStudents']['ClassStudent']
-        students_in_db = @student_program.students.pluck(:uniqname)
+        students_in_db = @student_program.students.registered.pluck(:uniqname)
         data.each do |student_info|
           uniqname = student_info['Uniqname']
           if students_in_db.include?(uniqname)
@@ -123,6 +123,22 @@ module StudentApi
       end
     end
     return result
+  end
+
+  def update_my_canvas_status(student)
+    scope = "canvasreadonly"
+    token = get_auth_token(scope)
+    if token['success']
+      result = canvas_readonly(student.program.canvas_course_id, token['access_token'])
+    end
+    if result['success']
+      students_with_good_score = result['data']
+      uniqnames = students_with_good_score.keys
+      if uniqnames.include?(student.uniqname)
+        return students_with_good_score[student.uniqname]
+      end
+    end
+    return false
   end
 
   def get_auth_token(scope)

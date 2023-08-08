@@ -1,12 +1,12 @@
 <%= turbo_frame_tag "#{dom_id student}" do %>
   <div class="mt-2">
-    <p class="body-bold-text">
+    <p class="body-sm-bold-text">
       <%= student.display_name %>
     </p>
 
     <div class="py-2">
       <label class="body-lg-bold-text">
-        Mvr Status:
+        MVR Status:
       </label>
       <p class="body-lg-text ml-2 inline-block">
         <%= student.mvr_status %>
@@ -24,16 +24,7 @@
 
     <div class="py-2">
       <label class="body-lg-bold-text">
-        Class Training Date:
-      </label>
-      <p class="body-lg-text ml-2 inline-block">
-        <%= show_date(student.class_training_date) %>
-      </p>
-    </div>
-
-    <div class="py-2">
-      <label class="body-lg-bold-text">
-        Meeting with Admin Date:
+        In Person Orientation Date:
       </label>
       <p class="body-lg-text ml-2 inline-block">
         <%= show_date(student.meeting_with_admin_date) %>

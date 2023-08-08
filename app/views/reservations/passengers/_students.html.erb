@@ -1,5 +1,5 @@
 <%= turbo_frame_tag 'new_passenger' do %>
-  <%= form_with model: [@reservation], 
+  <%= form_with url: add_passenger_path, method: :get, class: "",
     data: { controller: "autosubmit", autosubmit_target: "form" } do |form| %>
     <% @students.each do |student| %>
       <div>
@@ -10,5 +10,6 @@
         <span class="check_box_text"><%= student.display_name %></span>
       </div>
     <% end %>
+    <input type="hidden" id="reservation_edit" name="reservation[edit]" value=<%= params[:edit] %>>
   <% end %>
 <% end %>

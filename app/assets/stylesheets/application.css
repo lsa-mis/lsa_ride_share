@@ -15,17 +15,17 @@
  */
 
 .field_with_errors input {
-  border-color: #d70303;
+  border-color: #B51E0A;
 }
 
 .field_with_errors select {
-  border-color: #d70303 !important;
+  border-color: #B51E0A !important;
 }
 
 .status-false {
-  color: #d70303
+  color: #B51E0A
 }
 
 .status-true {
-  color: green
+  color: #00743C
 }

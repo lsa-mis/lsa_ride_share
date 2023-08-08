@@ -1,0 +1,19 @@
+<%= render_flash_stream %>
+
+<%= turbo_stream.update "new_passenger" do %>
+  <%= render "students", edit: params[:edit] %>
+<% end %>
+
+<%= turbo_stream.update "passenger_list" do %>
+  <%= render "passenger_list", locals: { reservation: @reservation} %>
+<% end %>
+
+<%= turbo_stream.update "number_of_added_people_on_trip" do %>
+  <%= render "reservations/number_of_added_people_on_trip" %>
+<% end %>
+
+<% if @reservation.program.non_uofm_passengers %>
+  <%= turbo_stream.update "non_uofm_passengers" do %>
+    <%= render 'non_uofm_passengers' %>
+  <% end %>
+<% end %>

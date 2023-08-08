@@ -1,16 +1,11 @@
 <%= turbo_frame_tag "cars_dropdown" do %>
-    <p class="body-text mt-4 mb-2">
-      Select a car and click Create Reservation. You can add passengers after submitting the reservation.
-    </p>
   
     <div class="mb-4">
       <%= label_tag 'Car *', nil, class: "fancy_label" %>
-      <%#= form.collection_select :car_id, @cars, :id, :car_number, { include_blank: "Select Car ..." }, { "data-reservation-target": "car", class: "input_text_field" } %>
       <%= select_tag "car_id", options_from_collection_for_select(@cars, :id, :car_number, selected: @car_id), include_blank: "Select Car ...", class: "input_text_field",
       "data-reservation-target": "car" %>
     </div>
   
-    <div class="error_text fields--hide mb-2" data-reservation-target="car_field">
-      <span>Please select a car</span>
-    </div>
+    <div class="error_text mb-2" id="car_field"></div>
+
   <% end %>

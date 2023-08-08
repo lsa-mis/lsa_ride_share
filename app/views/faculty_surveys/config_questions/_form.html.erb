@@ -1,6 +1,6 @@
 <%= form_with model: [@faculty_survey, @config_question] do |form| %>
   <% if @config_question.errors.any? %>
-    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
+    <div id="error_explanation" class="text-red-umred px-3 py-2 font-medium rounded-lg mt-3">
       <h2><%= pluralize(@config_question.errors.count, "error") %> prohibited this question from being saved:</h2>
       <ul>
         <% @config_question.errors.each do |error| %>
@@ -10,7 +10,7 @@
     </div>
   <% end %>
 
-  <p class="my-5 body-text">
+  <p class="my-5 body-sm-text">
     Faculty Survey for
     <%= @faculty_survey.display_name %>
   </p>

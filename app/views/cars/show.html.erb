@@ -15,19 +15,19 @@
 
   <div class="container p-2 rounded-lg shadow-lg text-xl mb-20 bg-gray-50">
     <h2 class="mb-4">Notes:</h2>
-    <% if user_signed_in? %>
+    <% if user_signed_in? && policy(@car).edit? %>
       <%= render partial: "notes/form", locals: { note: Note.new, noteable: @car } %>
     <% end %>
-    
+
     <%= turbo_stream_from @car, :notes %>
     <%= tag.div id: "#{dom_id(@car)}_notes" do %>
       <%= render @car.notes %>
     <% end %>
   </div>
-  <div>
-    <h2 class="mb-4">Reservations</h2>
+  <% if policy(@car).edit? %>
     <div>
-      <%= render 'reservations' %>
+      <%= render 'reservations_future' %>
+      <%= render 'reservations_past' %>
     </div>
-  </div>
+  <% end %>
 </div>

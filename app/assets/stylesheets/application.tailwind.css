@@ -25,11 +25,11 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .unavailable {
-    @apply text-red-700
+    @apply text-red-umred
   }
 
   .available {
-    @apply text-green-700
+    @apply text-green-umgreen
   }
 
   h1 {
@@ -57,23 +57,23 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   hr {
-    @apply border-blue-900 border m-4;
+    @apply border-gray-um50 border my-2;
   }
 
-  .body-text {
+  .body-sm-text {
     @apply text-sm font-normal font-montserrat;
   }
 
-  .body-bold-text {
+  .body-sm-semibold-text {
+    @apply text-sm font-semibold text-gray-900
+  }
+
+  .body-sm-bold-text {
     @apply text-sm font-bold font-montserrat;
   }
 
   .body-md-text {
     @apply text-base font-normal font-montserrat;
-  }
-
-  .body-md-medium-text {
-    @apply text-base font-medium font-montserrat;
   }
 
   .body-md-bold-text {
@@ -96,50 +96,6 @@ from https://tailwindcss.com/docs/adding-custom-styles
     @apply text-sm font-semibold text-gray-900
   }
 
-  .nav-sm-text {
-    @apply text-sm font-normal font-montserrat;
-  }
-
-  .nav-sm-medium-text {
-    @apply text-sm font-medium font-montserrat;
-  }
-
-  .nav-sm-bold-text {
-    @apply text-sm font-bold font-montserrat;
-  }
-
-  .nav-text {
-    @apply text-base font-normal font-montserrat;
-  }
-
-  .nav-medium-text {
-    @apply text-base font-medium font-montserrat;
-  }
-
-  .nav-bold-text {
-    @apply text-base font-bold font-montserrat;
-  }
-
-  .nav-lg-text {
-    @apply text-2xl font-normal font-montserrat;
-  }
-
-  .nav-lg-medium-text {
-    @apply text-2xl font-medium font-montserrat;
-  }
-
-  .nav-bold-text {
-    @apply text-2xl font-bold font-montserrat;
-  }
-
-  .navlogo-text {
-    @apply text-5xl font-normal font-anektamil;
-  }
-
-  .navlogo-sm-text {
-    @apply text-4xl font-normal font-anektamil;
-  }
-
   .button_label {
     @apply text-sm font-medium leading-4 text-gray-550 font-montserrat;
   }
@@ -154,10 +110,6 @@ from https://tailwindcss.com/docs/adding-custom-styles
 
   .text_field_label {
     @apply text-base font-semibold leading-4 text-gray-900 font-montserrat mb-2;
-  }
-
-  .text_small {
-    @apply ml-2 text-sm text-gray-700;
   }
 
   .check_box {
@@ -252,6 +204,10 @@ from https://tailwindcss.com/docs/adding-custom-styles
     @apply px-2.5 py-1.5 shadow-sm rounded text-blue-umblue bg-yellow-ummaze hover:bg-gray-700 hover:text-blue-300;
   }
 
+  .uniqname_text {
+    @apply leading-tight text-sm font-medium text-white
+  }
+
   .edit_button {
     @apply my-2 px-2 py-1 rounded-md shadow-sm bg-blue-umblue text-sm text-gray-100 text-center hover:underline;
   }
@@ -269,11 +225,12 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .input_text_field {
-    @apply w-full text-lg font-medium text-gray-900 bg-white border border-gray-600 rounded block p-2 focus:ring-blue-500 placeholder:font-montserrat placeholder:font-medium placeholder:leading-7 placeholder:text-sm placeholder:text-black;
+    @apply w-full text-lg font-medium text-gray-900 bg-white border border-gray-600 rounded block p-2 focus:ring-blue-500 focus:border-blue-500 
+    placeholder:font-montserrat placeholder:font-medium placeholder:leading-7 placeholder:text-sm placeholder:text-gray-um60;
   }
 
   .fancy_label {
-    @apply text-sm font-semibold text-gray-900 bg-white relative px-1 top-2 left-3 w-auto group-focus-within:text-red-600;
+    @apply text-sm font-semibold text-gray-900 bg-white relative px-1 top-2 left-3 w-auto group-focus-within:text-red-umred;
   }
 
   .filter_select {
@@ -285,7 +242,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .card_area {
-    @apply col-span-1 bg-white rounded-lg shadow-md divide-y divide-gray-400 px-2 place-items-stretch bg-white border border-gray-300 rounded-l
+    @apply col-span-1 bg-white rounded-lg shadow-md px-2 place-items-stretch bg-white border border-gray-300 rounded-l
   }
 
   /* table */
@@ -311,11 +268,11 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .alert {
-    @apply text-red-500 text-sm font-normal font-montserrat;
+    @apply text-red-umred text-sm font-normal font-montserrat;
   }
 
   .notice {
-    @apply text-green-500;
+    @apply text-green-umgreen text-sm font-normal font-montserrat;
   }
 
   .fields--hide {
@@ -327,7 +284,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .error_text {
-    @apply text-red-500
+    @apply text-red-umred text-sm font-normal font-montserrat;
   }
 
   /* ... */

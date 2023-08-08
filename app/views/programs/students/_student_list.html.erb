@@ -5,13 +5,13 @@
         <tr>
           <th class="header_th">  </th>
           <th class="header_th">  </th>
+          <th class="header_th">Registered</th>
           <th class="header_th">Uniqname</th>
-          <th class="header_th">Last name</th>
-          <th class="header_th">First name</th>
-          <th class="header_th">MVR status</th>
-          <th class="header_th">Canvas course complete date</th>
-          <th class="header_th">Class training date</th>
-          <th class="header_th">Meeting with admin date</th>
+          <th class="header_th">Last Name</th>
+          <th class="header_th">First Name</th>
+          <th class="header_th">MVR Status</th>
+          <th class="header_th">Canvas Course Complete Date</th>
+          <th class="header_th">In Person Orientation Date</th>
         </tr>
       </thead>
       <tbody>
@@ -22,6 +22,11 @@
             </td>
             <td class="mi_tbody_td">
               <%= link_to 'Edit', edit_program_student_path(@student_program, student), class: "link_to" %>
+            </td>
+            <td class="mi_tbody_td">
+              <% if student.registered %>
+                <i class="fa-solid fa-check"></i>
+              <% end %>
             </td>
             <td class="mi_tbody_td">
               <%= student.uniqname %>
@@ -37,9 +42,6 @@
             </td>
             <td class="mi_tbody_td">
               <%= student.canvas_course_complete_date %>
-            </td>
-            <td class="mi_tbody_td">
-              <%= student.class_training_date %>
             </td>
             <td class="mi_tbody_td">
               <%= student.meeting_with_admin_date %>

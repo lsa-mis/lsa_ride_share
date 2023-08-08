@@ -1,29 +1,92 @@
 <div class="mx-auto w-full">
-  <div class="grid grid-cols-1 lg:grid-cols-2">
-    <div>
-      <h1>
-        <%= @reservation.program.unit.name %> reservation
-      </h1>
-      <h2>
-        <%= @reservation.program.display_name_with_title %>
-      </h2>
+  <h1>
+    <%= @reservation.program.unit.name %> Reservation
+  </h1>
+  <% if is_student?(current_user) && allow_student_to_edit_reservation?(@reservation) %>
+    <p class="body-md-text mt-2 text-blue-900">
+      If you need to edit the reservation, please cancel it and create a new one, 
+      or you can email <%= unit_email(@reservation) %> or call the office at: <%= contact_phone(@reservation) %>
+    </p>
+  <% end %>
+  <h2 class="mb-4">
+    <%= @reservation.program.display_name_with_title %>
+  </h2>
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+    <div class="col-span-3">
+      <% if is_admin?(current_user) %>
+        <%= form_with model: @reservation, html: { class: "sm:flex sm:items-center" },
+          data: { controller: "approve",
+                  approve_target: "form"
+                } do |f| %>
+          <div class="sm:col-span-4">
+            <ol class="switches">
+              <li>
+                <%= f.check_box :approved, "data-action": "change->approve#toggleApprove"  %>
+                <%= f.label :approved do %>
+                  <span class="label-text">Approved</span>
+                  <span></span>
+                <% end %>
+              </li>
+            </ol>
+          </div>
+        <% end %>
+        <div class="error_text" id="approve_error"></div>
+      <% end %>
+      <%= render @reservation %>
+      
     </div>
-    <div class="lg:grid lg:justify-items-end py-2">
-      <% if allow_student_to_edit_reservation?(@reservation) %>
-        <%= link_to 'Edit Reservation', edit_reservation_path(@reservation), class: "primary_button" %>
-        <%= link_to 'Edit Drivers and Passengers', add_drivers_path(@reservation), class: "primary_button" %>
-      <% else %>
-      <div></div>
-      <div></div>
-      <% end %>
-      <% if @reservation.vehicle_report.present? %>
-        <%= link_to 'Vehicle report', vehicle_report_path(@reservation.vehicle_report), class: "secondary_blue_button" %>
-      <% else %>
-        <%= link_to 'New vehicle report', new_reservation_vehicle_report_path(@reservation), class: "secondary_blue_button" %>
-      <% end %>
+    <div class="order-first md:order-last">
+      <div class="lg:flex lg:flex-col place-items-end whitespace-nowrap">
+        <% if (is_admin?(current_user)) %>
+          <% if future_reservation?(@reservation) && !@reservation.approved %>
+            <div class="my-2">
+              <%= link_to 'Edit Reservation', edit_reservation_path(@reservation), class: "primary_button" if policy(@reservation).edit? %>
+            </div>
+            <div class="my-2">
+              <%= link_to 'Edit Drivers and Passengers', add_drivers_path(@reservation, :edit => true), class: "primary_button" if policy(@reservation).edit? %>
+            </div>
+            <div>
+            <%= link_to 'Reservation Updated - Send Email', send_reservation_updated_email_path(@reservation), class: "secondary_blue_button", data: { turbo_confirm: 'Are you sure?', turbo_method: :get} if policy(@reservation).edit? %>
+          </div>
+          <% end %>
+          <% unless @reservation.approved %>
+            <div class="my-2">
+              <%= link_to reservation_path(@reservation), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete} do %>
+                <span class="secondary_blue_button my-2">
+                  <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
+                  Cancel Reservation
+                </span>
+              <% end %>
+            </div>
+          <% end %>
+        <% else %>
+          <% if allow_student_to_edit_reservation?(@reservation) && future_reservation?(@reservation) %>
+            <div class="my-2">
+              <%= link_to 'Edit Drivers and Passengers', add_drivers_path(@reservation, :edit => true), class: "primary_button" if policy(@reservation).edit? %>
+            </div>
+            <% unless @reservation.approved %>
+              <div class="my-2">
+                <%= link_to reservation_path(@reservation), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete} do %>
+                  <span class="secondary_blue_button my-2">
+                    <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
+                    Cancel Reservation
+                  </span>
+                <% end %>
+              </div>
+            <% end %>
+          <% end %>
+        <% end %>
+        <div class="my-2">
+          <% if @reservation.vehicle_report.present? %>
+            <%= link_to 'Vehicle Report', vehicle_report_path(@reservation.vehicle_report), class: "secondary_blue_button" %>
+          <% else %>
+            <%= link_to 'New Vehicle Report', new_reservation_vehicle_report_path(@reservation), class: "secondary_blue_button" %>
+          <% end %>
+        </div>
+      </div>
     </div>
   </div>
-  <div>
-    <%= render @reservation %>
-  <div>
+  <% if is_admin?(current_user) %>
+    <%= render 'email_logs/email_log', email_log_entries: @email_log_entries %>
+  <% end %>
 </div>

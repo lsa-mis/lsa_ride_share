@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_12_154640) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_17_125330) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -59,7 +59,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_12_154640) do
     t.string "color"
     t.integer "number_of_seats"
     t.float "mileage"
-    t.float "gas"
+    t.integer "gas"
     t.string "parking_spot"
     t.datetime "last_used"
     t.datetime "last_checked"
@@ -89,6 +89,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_12_154640) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["site_id"], name: "index_contacts_on_site_id"
+  end
+
+  create_table "email_logs", force: :cascade do |t|
+    t.string "sent_from_model"
+    t.integer "record_id"
+    t.string "email_type"
+    t.string "sent_to"
+    t.integer "sent_by"
+    t.datetime "sent_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "faculty_surveys", force: :cascade do |t|
@@ -195,6 +206,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_12_154640) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "reserved_by"
+    t.boolean "approved", default: false
+    t.string "non_uofm_passengers"
+    t.integer "number_of_non_uofm_passengers", default: 0
     t.index ["backup_driver_id"], name: "index_reservations_on_backup_driver_id"
     t.index ["car_id"], name: "index_reservations_on_car_id"
     t.index ["driver_id"], name: "index_reservations_on_driver_id"
@@ -228,6 +242,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_12_154640) do
     t.string "mvr_status"
     t.bigint "program_id"
     t.date "meeting_with_admin_date"
+    t.boolean "registered", default: true
     t.index ["program_id"], name: "index_students_on_program_id"
   end
 
@@ -285,8 +300,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_12_154640) do
     t.bigint "reservation_id", null: false
     t.float "mileage_start"
     t.float "mileage_end"
-    t.integer "gas_start"
-    t.integer "gas_end"
+    t.decimal "gas_start"
+    t.decimal "gas_end"
     t.string "parking_spot"
     t.integer "created_by"
     t.integer "updated_by"
@@ -294,6 +309,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_12_154640) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "student_status", default: false
+    t.boolean "approved", default: false
+    t.string "parking_spot_return"
     t.index ["reservation_id"], name: "index_vehicle_reports_on_reservation_id"
   end
 

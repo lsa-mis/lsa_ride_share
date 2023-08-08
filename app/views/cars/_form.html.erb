@@ -1,6 +1,6 @@
 <%= form_with(model: car, class: "contents") do |form| %>
   <% if car.errors.any? %>
-    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
+    <div id="error_explanation" class="text-red-umred px-3 py-2 font-medium rounded-lg mt-3">
       <h2><%= pluralize(car.errors.count, "error") %> prohibited this car from being saved:</h2>
       <ul>
         <% car.errors.each do |error| %>
@@ -44,13 +44,13 @@
 
       <div class="my-5">
         <%= form.label :mileage, 'Mileage *', class: "fancy_label" %>
-        <%= form.text_field :mileage, required: true, placeholder: "Mileage", class: "input_text_field" %>
+        <%= form.number_field :mileage, step: 0.01, required: true, placeholder: "000.00", class: "input_text_field" %>
       </div>
 
       <div class="my-5">
-        <%= form.label :gas, 'Gas *',class: "fancy_label" %>
-        <%= form.text_field :gas, required: true, placeholder: "Gas", class: "input_text_field" %>
-      </div>
+      <%= form.label :gas, 'Percent of Fuel Remaining *', class: "fancy_label"  %>
+      <%= form.select(:gas, options_for_select(gas_percent, @car.gas), { include_blank: "Select ..." }, { class: "input_text_field" }) %>
+    </div>
 
       <div class="my-5">
         <%= form.label :parking_spot, 'Parking Spot *', class: "fancy_label" %>
@@ -58,20 +58,6 @@
       </div>
 
       <%= form.hidden_field :updated_by, value: current_user.id %>
-
-      <% if car.persisted? %>
-        <span class="body-lg-medium-text">Last time the car has been checked:<span>
-        <div class="flex gap-2 items-center w-full">
-          <div class="px-1">
-            <%= form.check_box :is_checked_today, class: "check_box" %>
-            <%= form.label :is_checked_today, "Now - or", class: "body-lg-medium-text" %>
-          </div>
-          <div class="flex-1">
-            <%= form.label :checked, "Select date and time", class: "fancy_label" %>
-            <%= form.datetime_field(:checked, placeholder: "Last checked date", value: @last_checked, class: "input_text_field") %>
-          </div>
-        </div>
-      <% end %>
 
       <div class="my-5">
         <%= form.label :status, 'Status *', class: "fancy_label" %>
@@ -81,6 +67,9 @@
     <div>
       <div id="attached_initial_damages" class="mx-4 my-2">
         <%= form.label :initial_damages, "Initial damage images (jpg, png)", class: "text_field_label" %>
+        <p class="body-sm-text my-2">
+          To upload multiple images select multiple files at once, you can't click Choose Files button several times
+        </p>
         <%= form.file_field :initial_damages, multiple: true, class: "file-upload" %>
       </div>
       <% if car.persisted? && car.initial_damages.attached? %>

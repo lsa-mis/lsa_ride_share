@@ -1,61 +1,105 @@
-<div class="card_area">
-  <h3>Contact information</h3>
-  <p class="body-md-text">
-    <% @contact_data.each do |id, data| %>
-      <div class="body-md-bold-text">
-        <%= Unit.find(id).name %>
-      </div>
-      <% data.each do |contact| %>
-        <%= contact['name'].titleize %> - <%= contact['value'] %>
-        <br>
+<div class="m-2">
+  <h3 class="mb-2">Contact Us</h3>
+    <% if @student.present? %>
+      <% @contact_data.each do |id, data| %>
+        <div class="body-md-bold-text">
+          <%= Unit.find(id).name %>
+        </div>
+        <% data.each do |contact| %>
+          <div>
+            <% if contact['name'] == 'contact_phone' && contact['value'].present? %>
+              <i class="fa-solid fa-phone"></i>
+              <span class="ml-2 body-sm-semibold-text"><%= contact['value'] %></span>
+            <% end %>
+            <% if contact['name'] == 'unit_office' && contact['value'].present? %>
+            <i class="fa-solid fa-location-dot"></i>
+              <span class="ml-4 body-sm-semibold-text"><%= contact['value'] %></span>
+            <% end %>
+          </div>
+        <% end %>
+        <hr>
+      <% end %>
+    <% else %>
+      <% @contact_data.each do |id, data| %>
+        <div class="body-md-bold-text">
+          <%= Unit.find(id).name %>
+        </div>
+        <% data.each do |contact| %>
+          <div>
+            <% if contact['name'] == 'contact_phone' && contact['value'].present? %>
+              <i class="fa-solid fa-phone"></i>
+              <span class="ml-2 body-sm-semibold-text"><%= contact['value'] %></span>
+            <% end %>
+            <% if contact['name'] == 'unit_office' && contact['value'].present? %>
+            <i class="fa-solid fa-location-dot"></i>
+              <span class="ml-4 body-sm-semibold-text"><%= contact['value'] %></span>
+            <% end %>
+          </div>
+        <% end %>
+        <hr>
       <% end %>
     <% end %>
-  </p>
   
   <% if @student.present? %>
-    <h3>Things to complete</h3>
+    <h3>Reservation Checklist</h3>
     <div class="py-2">
-      <label class="body-sm-bold-text">
-        Mvr Status:
-      </label>
-      <p class="body-sm-text ml-2">
-        <% if @student.mvr_status.present? %>
+      <% if @student.mvr_status.present? %>
+        <i class="fa-solid fa-check"></i>
+        <label class="body-sm-semibold-text ml-2">
+            MVR Status:
+        </label>
+        <p class="body-sm-text ml-2">
           <%= @student.mvr_status %>
-        <% else %>
+        </p>
+      <% else %>
+        <i class="fa-regular fa-square"></i>
+        <label class="body-sm-semibold-text ml-2">
+            MVR Status:
+        </label>
+        <p class="body-sm-text ml-2">
           Get your <%= link_to 'license approved', 'https://ltp.fo.umich.edu/mvr/index.php', class: "link_to" %> 
-        <% end %>
-      </p>
+        </p>
+      <% end %>
     </div>
 
     <div class="py-2">
-      <label class="body-sm-bold-text">
-        Canvas Course Complete Date:
-      </label>
-      <p class="body-sm-text ml-2">
       <% if @student.canvas_course_complete_date.present? %>
-        Completed <%= show_date(@student.canvas_course_complete_date) %>
-        <% else %>
+        <i class="fa-solid fa-check"></i>
+        <label class="body-sm-semibold-text ml-2">
+          Canvas Course Completion Date:
+        </label>
+        <p class="body-sm-text ml-2">
+          <%= show_date(@student.canvas_course_complete_date) %>
+        </p>
+      <% else %>
+        <i class="fa-regular fa-square"></i>
+        <label class="body-sm-semibold-text ml-2">
+          Canvas Course Completion Date:
+        </label>
+        <p class="body-sm-text ml-2">
           Take <%= link_to 'Canvas Course', @student.program.canvas_link, :target => "_blank", class: "link_to" %>
-        <% end %>
-      </p>
+        </p>
+      <% end %>
     </div>
 
     <div class="py-2">
-      <label class="body-sm-bold-text">
-        Class Training Date:
-      </label>
-      <p class="body-sm-text ml-2">
-        Completed <%= show_date(@student.class_training_date) %>
-      </p>
-    </div>
-
-    <div class="py-2">
-      <label class="body-sm-bold-text">
-        Meeting with Admin Date:
-      </label>
-      <p class="body-sm-text ml-2">
-        Completed <%= show_date(@student.meeting_with_admin_date) %>
-      </p>
+      <% if @student.meeting_with_admin_date.present? %>
+        <i class="fa-solid fa-check"></i>
+        <label class="body-sm-semibold-text ml-2">
+          In Person Orientation:
+        </label>
+        <p class="body-sm-text ml-2">
+          Completed on <%= show_date(@student.meeting_with_admin_date) %>
+        </p>
+      <% else %>
+        <i class="fa-regular fa-square"></i>
+        <label class="body-sm-semibold-text ml-2">
+          In Person Orientation:
+        </label>
+        <p class="body-sm-text ml-2">
+         Not completed
+        </p>
+      <% end %>
     </div>
   <% end %>
 </div>

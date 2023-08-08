@@ -5,12 +5,12 @@
         <%= link_to site.title, site_path(site), class: "link_to" %>
       </div>
       <p class="flex-1 w-0 truncate">
-        <%= site.address1 %>
+        <%= site.address %>
       </p>
     </div>
   <% end %>
 <% else %>
-  <p class="m-2 body-text">
+  <p class="m-2 body-sm-text">
     The program currently does not have any sites.
   </p>
 <% end %>

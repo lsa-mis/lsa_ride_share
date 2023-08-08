@@ -26,12 +26,24 @@ module ApplicationHelper
     field.strftime("%m/%d/%Y %I:%M%p") unless field.blank?
   end
 
+  def show_time(field)
+    field.strftime("%I:%M%p") unless field.blank?
+  end
+
   def show_user_name_by_id(id)
     User.find(id).display_name_email
   end
 
   def updated_on_and_by(resource)
     return "Updated on " + resource.updated_at.strftime('%m/%d/%Y') + " by " + show_user_name_by_id(resource.updated_by)
+  end
+
+  def reserved_on_and_by(resource)
+    return "Reserved on " + resource.created_at.strftime('%m/%d/%Y') + " by " + show_user_name_by_id(resource.reserved_by)
+  end
+
+  def email_address(student)
+    student.uniqname + "@umich.edu"
   end
 
   def number_of_students(program)
@@ -130,6 +142,19 @@ module ApplicationHelper
     end
   end
 
+  def show_reservation_date(reservation)
+    show_date_time(reservation.start_time) + " - " +  show_date_time(reservation.end_time)
+  end
+  
+  def show_reserved_by_in_week_calendar(reservation)
+    User.find(reservation.reserved_by).display_name
+  end
+
+  def show_reservation(reservation)
+    reservation.program.title + "\n" + reservation.site.title + "\n" +
+    show_date_time(reservation.start_time + 15.minute) + "\n" +  show_date_time(reservation.end_time - 15.minute)
+  end
+
   def show_backup_driver(reservation)
     if reservation.backup_driver.present?
       reservation.backup_driver.display_name
@@ -141,8 +166,8 @@ module ApplicationHelper
   def available_ranges(car, day, unit_id)
     # time renges when the car is available on the day
     times = show_time_begin_end(day, unit_id)
-    day_begin  = times[0]
-    day_end  = times[1]
+    day_begin  = times[0] - 15.minute
+    day_end  = times[1] + 15.minute
     car_available = []
     space_begin = day_begin
     car_day_reserv = car.reservations.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day).order(:start_time)
@@ -151,9 +176,11 @@ module ApplicationHelper
       day_ranges.each do |range|
         if space_begin == range.begin
           space_begin = range.end
-        elsif space_begin < range.begin
+        elsif space_begin < range.begin && (range.begin - space_begin)/1.minute > 30
           r = space_begin..range.begin
           car_available << show_time_range(r)
+          space_begin = range.end
+        else
           space_begin = range.end
         end
       end
@@ -168,6 +195,15 @@ module ApplicationHelper
     return car_available
   end
 
+  def available_ranges_edit(car, day, unit_id, reservation)
+    # time renges when the car is available on the day including time for reservation that student is editing
+    # example: ["04:30PM - 05:00PM", "08:00AM - 11:00AM", "11:00AM - 04:30PM - current"]
+    car_available = available_ranges(car, day, unit_id)
+    r = reservation.start_time..reservation.end_time
+    car_available << show_time_range(r, true)
+    return car_available
+  end
+
   def show_time_begin_end(day, unit_id)
     t_begin = UnitPreference.find_by(name: "reservation_time_begin", unit_id: unit_id).value
     t_begin = Time.parse(t_begin).strftime("%H").to_i
@@ -178,8 +214,12 @@ module ApplicationHelper
     return [day_begin, day_end]
   end
 
-  def show_time_range(day_range)
-    "#{day_range.begin.strftime("%I:%M%p")} - #{day_range.end.strftime("%I:%M%p")}"
+  def show_time_range(day_range, current = false)
+    if current
+      "#{(day_range.begin + 15.minute).strftime("%I:%M%p")} - #{(day_range.end - 15.minute).strftime("%I:%M%p")} - current"
+    else
+      "#{(day_range.begin + 15.minute).strftime("%I:%M%p")} - #{(day_range.end - 15.minute).strftime("%I:%M%p")}"
+    end
   end
 
   def show_time(time)
@@ -190,7 +230,8 @@ module ApplicationHelper
     day = range.begin.to_date
     day_reservations = car.reservations.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day).order(:start_time)
     return true unless day_reservations.present?
-    car_ranges = day_reservations.map { |res| (res.start_time + 1.minute)..(res.end_time - 1.minute) }
+    # to add 15 minutes to nother reservation. Time slot between two reservations should be 30 minutes
+    car_ranges = day_reservations.map { |res| (res.start_time - 14.minute)..(res.end_time + 14.minute) }
     if car_ranges.any? { |r| r.overlaps?(range)}
       return false
     else
@@ -198,34 +239,56 @@ module ApplicationHelper
     end
   end
 
+  def all_day_available_time(day, unit_id)
+    # all day time renges for unit
+    times = show_time_begin_end(day, unit_id)
+    day_begin = times[0]
+    day_end = times[1]
+    day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) }
+    available_times_begin = day_times_with_15_min_steps.map { |t| [show_time(t), t.to_s] }
+    available_times_begin.pop
+    available_times_end = day_times_with_15_min_steps.map { |t| [show_time(t), t.to_s] }
+    available_times_end.shift
+    available_times = {:begin=>available_times_begin, :end=>available_times_end}
+    return available_times
+  end
+
   def available_time(day, cars, unit_id)
+    unless cars.present?
+      return all_day_available_time(day, unit_id)
+    end
     # array of time with 15 minutes step available to reserve cars
     times = show_time_begin_end(day, unit_id)
-    day_begin  = times[0]
-    day_end  = times[1]
+    day_begin = times[0]
+    day_end = times[1]
     day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) }
     available_times_begin = []
     available_times_end = []
+
     day_reservations = Reservation.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day).order(:start_time)
     if day_reservations.present?
       day_times_with_15_min_steps.each do |step|
         range = step..step + 15.minutes
         cars.each do |car|
           if available?(car, range)
-            available_times_begin << show_time(step)
-            available_times_end << show_time(step  + 15.minutes)
+            available_times_begin << [show_time(step), step]
+            available_times_end << [show_time(step + 15.minutes), step + 15.minutes]
             break
           end
         end
       end
     else
-      available_times_begin = day_times_with_15_min_steps.map { |t| show_time(t) }
+      available_times_begin = day_times_with_15_min_steps.map { |t| [show_time(t), t.to_s] }
       available_times_begin.pop
-      available_times_end = day_times_with_15_min_steps.map { |t| show_time(t) }
+      available_times_end = day_times_with_15_min_steps.map { |t| [show_time(t), t.to_s] }
       available_times_end.shift
     end
-    available_times = {:begin=>available_times_begin, :end=>available_times_end}
-    return available_times
+    unless available_times_begin.present? || available_times_end.present?
+      return all_day_available_time(day, unit_id)
+    else
+      available_times = {:begin=>available_times_begin, :end=>available_times_end}
+      return available_times
+    end
   end
 
   def available_cars(cars, range)
@@ -239,13 +302,19 @@ module ApplicationHelper
   end
 
   def allow_student_to_edit_reservation?(reservation)
-    return true unless is_student?(current_user)
+    return false unless is_student?(current_user)
+    return false unless Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program).present?
     student = Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program)
-    if ((reservation.start_time - DateTime.now)*24).round > 72 && reservation.program.students.include?(student)
+    return false if student.passenger_future.include?(reservation)
+    if ((reservation.start_time - DateTime.now)/3600).round > 72
       return true
     else
       return false
     end
+  end
+
+  def future_reservation?(reservation)
+    reservation.start_time > DateTime.now
   end
   
   def render_flash_stream
@@ -258,6 +327,38 @@ module ApplicationHelper
     else
       "Not Completed"
     end
+  end
+
+  def calculate_mileage(vehicle_report)
+    if vehicle_report.mileage_end.present?
+      mileage_trip_total = vehicle_report.mileage_end - vehicle_report.mileage_start
+      mileage_trip_total = (mileage_trip_total).round(2)
+    else
+      mileage_trip_total = "N/A"
+    end
+      return mileage_trip_total
+  end
+
+  def show_percentage(value)
+    if value.present?
+      value.to_s + "%"
+    else
+      ""
+    end
+  end
+
+  def default_reservation_for_students
+    day = DateTime.now + 72.hours
+    return day + 48.hours if day.saturday?
+    return day + 24.hours if day.sunday?
+    return day
+  end
+
+  def contact_phone(reservation)
+    reservation.program.unit.unit_preferences.find_by(name: "contact_phone").value.presence || ""
+  end 
+  def unit_email(reservation)
+    reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
   end
 
   def us_states
@@ -314,6 +415,19 @@ module ApplicationHelper
       ['West Virginia', 'WV'],
       ['Wisconsin', 'WI'],
       ['Wyoming', 'WY']
+    ]
+  end
+  
+  def gas_percent
+    [
+      ['12.5', '12.5'],
+      ['25.0', '25.0'],
+      ['37.5', '37.5'],
+      ['50.0', '50.0'],
+      ['62.5', '62.5'],
+      ['75.0', '75.0'],
+      ['87.5', '87.5'],
+      ['100', '100.0']
     ]
   end
 

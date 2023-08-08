@@ -1,0 +1,47 @@
+<%= turbo_frame_tag 'non_uofm_passengers' do %>
+  <div class="m-2 card_area">
+    <p class="mt-4 body-sm-text">
+      The program allows passengers that are not part of the UM community.
+    </p>
+    <%= form_with(model: @reservation, url: add_non_uofm_passengers_path,
+      data: { controller: "nonuofmpassengers",
+            target: "form",
+            action: "submit->nonuofmpassengers#submitForm"
+            }) do |form| %>
+      <% if @reservation.errors.any? %>
+        <div id="error_explanation" class="text-red-umred px-3 py-2 font-medium rounded-lg mt-3">
+          <h2><%= pluralize(@reservation.errors.count, "error") %> prohibited this reservation from being saved:</h2>
+          <ul>
+            <% @reservation.errors.each do |error| %>
+              <li><%= error.full_message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div>
+        <%= form.label :number_of_non_uofm_passengers, "Number of Non UofM Passengers", class: "fancy_label" %>
+        <%= form.select(:number_of_non_uofm_passengers, options_for_select(1..(@reservation.number_of_people_on_trip - @reservation.added_people + @reservation.number_of_non_uofm_passengers), @reservation.number_of_non_uofm_passengers), { include_blank: "Choose Number" }, { class: "input_text_field",
+          "data-nonuofmpassengers-target": "number_of_non_uofm_passengers" }) %>
+      </div>
+      <p class="mt-4 body-sm-text">
+        Add names of all passengers.
+      </p>
+      <div class="">
+        <%= form.label :non_uofm_passengers, "Non UofM Passengers", class: "fancy_label" %>
+        <%= form.text_field :non_uofm_passengers, placeholder: "Names", class: "input_text_field", "data-nonuofmpassengers-target": "non_uofm_passengers" %>
+      </div>
+
+      <div class="error_text mb-2" id="error_place"></div>
+      <input type="hidden" id="edit" name="edit" value=<%= params[:edit] %>>
+
+      <div>
+          <% if @reservation.number_of_non_uofm_passengers == 0 %>
+            <%= form.submit 'Add Non UofM Passengers', class: "secondary_blue_button" %>
+          <% else %>
+            <%= form.submit 'Update Non UofM Passengers', class: "secondary_blue_button" %>
+          <% end %>
+      </div>
+    <% end %>
+  </div>
+<% end %>

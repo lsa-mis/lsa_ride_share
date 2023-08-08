@@ -1,7 +1,14 @@
 <div class="w-full" data-controller='autosubmit'>
-  <div class="pb-4">
+<a name="top" style="display: none;">top<a>
+  <div class="flex justify-between items-center pb-4">
     <h1 class="mb-2">Reservations</h1>
+    <%= link_to new_reservation_path(:unit_id => @unit_id, :day_start => Date.today) do %>
+      <span class="primary_button">
+        New Reservation
+      </span>
+    <% end %>
   </div>
+  
   <%= form_with url: reservations_path, method: :get, class: "", data: { autosubmit_target: "form", turbo_frame: "unit-calendar" } do |form| %>
     <% if current_user.unit_ids.count > 1 %>
       <div class="my-2">
@@ -13,41 +20,52 @@
       <%= form.label :unit_id, 'Unit *', class: "hidden" %>
       <input type="hidden" id="unit_id" name="unit_id" value=<%= @unit_id %>>
     <% end %>
+  <% end %>
+  <div class="mb-2">
+    <%= link_to 'Week calendar', week_calendar_path(:unit_id => @unit_id), class: "secondary_blue_button" %>
+  </div>
 
-    <%= turbo_frame_tag 'unit-calendar' do %>
-      <%= month_calendar(events: @reservations) do |date, reservations| %>
-        <div class="day-header">
-          <%= date.mday %>
-        </div>
+  <%= turbo_frame_tag 'unit-calendar' do %>
+    <%= month_calendar(events: @reservations) do |date, reservations| %>
+      <div class="day-header">
+        <%= date.mday %>
+      </div>
 
-        <div class="flex flex-col justify-between">
-          <% reservations.each do |reservation| %>
-            <div>
-              <%= link_to reservation.display_name, reservation_path(reservation.id) %>
-              <p>
-                From: 
-                <%= show_date_time(reservation.start_time) %>
-              </p>
-              <p>
-                To: 
-                <%= show_date_time(reservation.end_time) %>
-              </p>
-            </div>
-          <% end %>
-          <div class="">
+      <div class="body-sm-text">
+        <%= link_to "Today List", day_reservations_path(date), class: "link_to" %>
+      </div>
+      <div class="flex flex-col justify-between">
+        <% reservations.each do |reservation| %>
+          <div class="body-sm-text">
+            <% if reservation.car_id.present? %>
+              <%= link_to reservation.display_name, reservation_path(reservation.id), class: "link_to" %>
+            <% else %>
+              <%= link_to reservation_path(reservation.id), class: "link_to" do %>
+                <span>
+                  <%= reservation.display_name %>
+                  <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
+                </span>
+              <% end %>
+            <% end %>
+            <p>
+              <%= show_time(reservation.start_time + 15.minute) %>
+              -
+              <%= show_time(reservation.end_time - 15.minute) %>
+            </p>
+          </div>
+        <% end %>
+        <div class="">
+          <% if date >= Date.today %>
             <%= link_to new_reservation_path(:unit_id => @unit_id, :day_start => date) do %>
               <i class="fa fa-plus" aria-hidden="true"></i>
               <span class="tertiary_button -m-4">
                 Add Reservation
               </span>
             <% end %>
-          </div>
+          <% end %>
         </div>
-      <% end %>
+      </div>
     <% end %>
-
-    <div id="reservations" class="min-w-full mt-2">
-      <%= render 'listing' %>
-    </div>
   <% end %>
+
 </div>

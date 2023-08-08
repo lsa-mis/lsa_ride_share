@@ -1,11 +1,24 @@
 <div class="grid grid-cols-1 sm:grid-cols-2">
   <div>
+    <div class="">
+      <% if is_student?(current_user) && @reservation.approved %>
+        <p class="body-md-text status-true">
+          The reservation is approved by admins
+        </p>
+      <% end %>
+    </div>
     <div class="py-2">
       <label class="body-lg-bold-text">
         Car:
       </label>
-      <p class="body-lg-text ml-2 inline-block">
-        <%= show_car(reservation) %>
+      <p id="car" class="body-lg-text ml-2 inline-block">
+        <% if reservation.car.present? %>
+          <%= link_to show_car(reservation), car_path(reservation.car), class: "link_to" %>
+        <% else %>
+          <span class="status-false">
+            No car selected
+          </span>
+        <% end %>
       </p>
     </div>
 
@@ -23,7 +36,7 @@
         Start time:
       </label>
       <p class="body-lg-text ml-2 inline-block">
-        <%= reservation.start_time %>
+        <%= show_date_time(reservation.start_time + 15.minute) %>
       </p>
     </div>
 
@@ -32,7 +45,7 @@
         End time:
       </label>
       <p class="body-lg-text ml-2 inline-block">
-        <%= reservation.end_time %>
+        <%= show_date_time(reservation.end_time - 15.minute) %>
       </p>
     </div>
 
@@ -40,7 +53,7 @@
       <label class="body-lg-bold-text">
         Driver:
       </label>
-      <p class="body-lg-text ml-2 inline-block">
+      <p id="driver" class="body-lg-text ml-2 inline-block">
         <%= show_driver(reservation) %>
       </p>
     </div>
@@ -84,7 +97,7 @@
   <div>
     <% if @passengers.present? %>
       <label class="body-lg-bold-text">
-        Passengers:
+        Passengers (<%= @reservation.passengers.count %>):
       </label>
       <ul>
         <% @passengers.each do |passenger| %>
@@ -94,6 +107,19 @@
         <% end %>
       </ul>
     <% end %>
+    <div class="mt-2">
+      <% if @reservation.program.non_uofm_passengers && @reservation.non_uofm_passengers.present? %>
+        <label class="body-lg-bold-text">
+          Non UofM Passengers (<%= @reservation.number_of_non_uofm_passengers %>):
+        </label>
+        <p class="body-lg-text ml-2">
+          <%= @reservation.non_uofm_passengers %>
+        </p>
+      <% end %>
+    </div>
   </div>
 
 </div>
+<p class="body-sm-text m-2">
+  <%= reserved_on_and_by(reservation) %>
+</p>

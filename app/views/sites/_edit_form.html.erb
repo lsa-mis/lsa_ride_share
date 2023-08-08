@@ -1,6 +1,6 @@
 <%= form_with(model: site, class: "contents") do |form| %>
   <% if site.errors.any? %>
-    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
+    <div id="error_explanation" class="text-red-umred px-3 py-2 font-medium rounded-lg mt-3">
       <h2><%= pluralize(site.errors.count, "error") %> prohibited this site from being saved:</h2>
       <ul>
         <% site.errors.each do |error| %>
@@ -42,7 +42,7 @@
 
   <%= form.hidden_field :updated_by, value: current_user.id %>
 
-  <p class="my-4 body-text">
+  <p class="my-4 body-sm-text">
     Add/edit site's contacts on the site' show page
   </p>
 

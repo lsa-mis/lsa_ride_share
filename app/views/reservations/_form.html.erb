@@ -1,7 +1,7 @@
 <%= form_with model: reservation,
     data: { controller: "reservation", reservation_target: "form", action: "submit->reservation#submitForm" } do |form| %>
   <% if reservation.errors.any? %>
-    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
+    <div id="error_explanation" class="text-red-umred px-3 py-2 font-medium rounded-lg mt-3">
       <h2><%= pluralize(reservation.errors.count, "error") %> prohibited this reservation from being saved:</h2>
       <ul>
         <% reservation.errors.each do |error| %>
@@ -12,9 +12,8 @@
   <% end %>
 
   <%= form.label :unit_id, 'Unit *', class: "hidden" %>
-  <div class="error_text fields--hide mt-2" data-reservation-target="required_fields">
-    <span>Please select required data </span>
-  </div>
+  <div class="error_text mt-2" id="required_fields"></div>
+
   <input type="hidden" id="unit_id" name="unit_id" value=<%= @unit_id %> data-reservation-target="unit">
   <% if is_student?(current_user) %>
     <p class="body-lg-text mt-2">
@@ -51,36 +50,41 @@
       </div>
   <% end %>
     <div>
-        <%= form.label :day_start, "Choose a start date", class: "fancy_label" %>
+        <%= form.label :day_start, "Choose a Start Date", class: "fancy_label" %>
         <%= text_field_tag :day_start, @day_start,
           data: {
           controller: "flatpickr",
           flatpickr_date_format: "Y-m-d",
+          flatpickr_min_date: @min_date
           }, "data-reservation-target": "day_start", "data-action": "change->reservation#availableCars",
           class: "input_text_field"
         %>
     </div>
-
     <div>
       <%= form.label :number_of_people_on_trip, 'Number of People on Trip *', class: "fancy_label" %>
       <%= select_tag :number_of_people_on_trip, options_for_select(@number_of_seats, @number_of_people_on_trip), class: "input_text_field",
         "data-reservation-target": "number", "data-action": "change->reservation#availableCars" %>
     </div>
-
-    <div>
-      <%= form.label :time_start, 'Start Time *', class: "fancy_label" %>
-      <%= select_tag "time_start", options_for_select(available_time(@day_start, @cars, @unit_id)[:begin], @time_start), class: "input_text_field",
-        "data-reservation-target": "time_start", "data-action": "change->reservation#availableCars" %>
-    </div>
-
-    <div>
-      <%= form.label :time_end, 'End Time *', class: "fancy_label" %>
-      <%= select_tag "time_end", options_for_select(available_time(@day_start, @cars, @unit_id)[:end], @time_end), class: "input_text_field",
-        "data-reservation-target": "time_end", "data-action": "change->reservation#availableCars" %>
-    </div>
   </div>
 
-  <%= render 'cars_dropdown' %>
+  <div class="mb-2">
+    <%= render 'start_end_time' %>
+  </div>
+
+  <div class="mb-4">
+    <% if UnitPreference.find_by(unit_id: @unit_id, name: "no_car_reservations").on_off %>
+      <%= label_tag("no_car", nil, class: "hidden") %>
+      <%= check_box_tag "no_car", 1, nil, class: "check_box", "data-reservation-target": "no_car", "data-action": "reservation#hideCarSelection" %>
+      <span class="check_box_text">Create a reservation without a car - if no time or cars are available.</span>
+    <% end %>
+  </div>
+
+  <div data-reservation-target="car_selection" class="fields--display">
+    <p class="body-sm-text mt-4 mb-2">
+      Select a car and click Create Reservation.
+    </p>
+    <%= render 'cars_dropdown' %>
+  </div>
 
   <div class="inline">
     <%= form.submit class: "primary_button" %>

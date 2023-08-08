@@ -19,21 +19,33 @@ Rails.application.routes.draw do
   resources :unit_preferences
 
   resources :terms
-  resources :vehicle_reports
+  resources :vehicle_reports do
+    resources :notes, module: :vehicle_reports
+  end
   # get '/vehicle_reports/:reports_ids', to: 'vehicle_reports#index', as: 'vehicle_reports'
 
+  get '/reservations/week_calendar/', to: 'reservations#week_calendar', as: 'week_calendar'
   resources :reservations do
     resources :vehicle_reports, module: :reservations
   end
-  get '/reservations/get_available_cars/:unit_id/:day_start/:number/:time_start/:time_end', to: 'reservations#get_available_cars'
-  get '/reservations/add_passengers/:id', to: 'reservations#add_passengers', as: :add_passengers
+  get '/reservations/get_available_cars/:unit_id/:day_start/:number/:start_time/:end_time', to: 'reservations#get_available_cars'
+  get '/reservations/no_car_all_times/:unit_id/:day_start', to: 'reservations#no_car_all_times'
+  get '/reservations/edit_change_day/:unit_id/:day_start', to: 'reservations#edit_change_day'
+  patch '/reservations/add_non_uofm_passengers/:reservation_id', to: 'reservations#add_non_uofm_passengers', as: :add_non_uofm_passengers
+  get '/reservations/add_passengers/:reservation_id', to: 'reservations/passengers#add_passengers', as: :add_passengers
+  get '/reservations/add_passenger/:reservation_id', to: 'reservations/passengers#add_passenger', as: :add_passenger
+
   get '/reservations/add_drivers/:id', to: 'reservations#add_drivers', as: :add_drivers
-  delete 'reservations/:id/:student_id', to: 'reservations#remove_passenger', as: :remove_passenger
+  delete 'reservations/:reservation_id/:student_id', to: 'reservations/passengers#remove_passenger', as: :remove_passenger
+  get '/reservations/day_reservations/:date', to: 'reservations#day_reservations', as: :day_reservations
+  get '/reservations/:id/finish_reservation', to: 'reservations#finish_reservation', as: :finish_reservation
+  get '/reservations/:id/update_passengers/', to: 'reservations#update_passengers', as: :update_passengers
+
+  get 'send_reservation_updated_email/:id', to: 'reservations#send_reservation_updated_email', as: :send_reservation_updated_email
 
   resources :cars do
     resources :notes, module: :cars
   end
-  resources :students
   
   resources :programs do
     resources :cars, module: :programs
@@ -53,9 +65,6 @@ Rails.application.routes.draw do
   get '/programs/managers/edit_program_managers/:program_id', to: 'programs/managers#edit_program_managers', as: :edit_program_managers
   delete 'programs/managers/remove_manager/:program_id/:id', to: 'programs/managers#remove_manager_from_program', as: :remove_manager_from_program
 
-  resources :programs do
-    resources :config_questions, module: :programs
-  end
   resources :programs do
     resources :students, module: :programs
   end

@@ -8,7 +8,7 @@
       <%= link_to 'Edit Survey Answers', survey_path(@faculty_survey), class: "primary_button" %>
     <% end %>
   </div>
-  <div class="body-text mb-2">
+  <div class="body-sm-text mb-2">
     <% if @faculty_survey.program_id.present? %>
       <div class="flex justify-between items-center mb-4">
         <p>
@@ -19,7 +19,7 @@
         <%= link_to 'Add Sites to Program', edit_program_sites_path(@faculty_survey.program_id), class: "secondary_blue_button" unless is_admin?(current_user) %> 
       </div>
     <% else %>
-      <p class="body-text mb-2">
+      <p class="body-sm-text mb-2">
         If the survey contains a title, subject, catalog number, and section questions,
         a program will be created from answers after the survey is submitted.
       </p>

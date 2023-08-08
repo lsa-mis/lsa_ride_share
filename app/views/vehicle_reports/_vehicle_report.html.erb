@@ -11,10 +11,26 @@
 <div class="grid grid-cols-1 sm:grid-cols-2">
   <div>
     <div class="">
+      <% if is_student?(current_user) && @vehicle_report.approved %>
+        <p class="body-md-text status-true">
+          The report is approved by admins
+        </p>
+      <% end %>
+    </div>
+
+    <div class="">
       <p class='body-md-text status-<%= vehicle_report.student_status %>'>
         <%= show_vehicle_report_student_status(vehicle_report) %>
       </p>
     </div>
+
+    <% if vehicle_report.gas_end.present?  %>
+      <% if vehicle_report.gas_end <= 50 %>
+        <div class="error_text" data-vehiclereport-target="gas_error">
+          <span>The fuel level should be at least 50%. Please refuel.</span>
+        </div>
+      <% end %>
+    <% end %>
 
     <div class="py-2">
       <label class="body-lg-bold-text">
@@ -36,30 +52,55 @@
 
     <div class="py-2">
       <label class="body-lg-bold-text">
-        Gas start:
+        Trip mileage total:
       </label>
       <p class="body-lg-text inline-block">
-        <%= vehicle_report.gas_start %>
+        <%= calculate_mileage(vehicle_report) %>
       </p>
     </div>
 
-    <% if vehicle_report.gas_end.present? %>
-      <div class="py-2">
-        <label class="body-lg-bold-text">
-          Gas end:
-        </label>
-        <p class="body-lg-text inline-block">
-          <%= vehicle_report.gas_end %>
-        </p>
-      </div>
-    <% end%>
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Fuel % (departure):
+      </label>
+      <p class="body-lg-text inline-block">
+        <%= show_percentage(vehicle_report.gas_start) %>
+      </p>
+    </div>
 
     <div class="py-2">
       <label class="body-lg-bold-text">
-        Parking spot:
+        Fuel % (return):
+      </label>
+      <p class="body-lg-text inline-block">
+        <%= show_percentage(vehicle_report.gas_end) %>
+      </p>
+    </div>
+
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Parking spot (depart):
       </label>
       <p class="body-lg-text inline-block">
         <%= vehicle_report.parking_spot %>
+      </p>
+    </div>
+
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Parking spot (return):
+      </label>
+      <p class="body-lg-text inline-block">
+        <%= vehicle_report.parking_spot_return %>
+      </p>
+    </div>
+
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Comment:
+      </label>
+      <p class="body-lg-text inline-block">
+        <%= vehicle_report.comment %>
       </p>
     </div>
 
@@ -72,27 +113,83 @@
       </p>
     </div>
 
-    <div class="py-2">
-      <label class="body-lg-bold-text">
-        Updated by:
-      </label>
-      <p class="body-lg-text inline-block">
-          <%= User.find(vehicle_report.updated_by).display_name %>
+    <div>
+      <p class="body-sm-text m-2">
+        <%= updated_on_and_by(vehicle_report) %>
       </p>
     </div>
 
-    <div class="py-2">
-      <label class="body-lg-bold-text">
-        Last Updated:
-      </label>
-      <p class="body-lg-text inline-block">
-          <%= vehicle_report.updated_at %>
-      </p>
-    </div>
-
+    <% if is_admin?(current_user) %>
+      <div class="py-2">
+        <label class="body-lg-bold-text">
+          Admin Comment:
+        </label>
+        <p class="body-lg-text inline-block">
+          <%= vehicle_report.admin_comment %>
+        </p>
+      </div>
+    <% end %>
   </div>
   
   <div>
+
+  <% if @vehicle_report.image_front_start.attached? %>
+    <div class="sm:col-span-3">
+      Front of car (start): <%= link_to @vehicle_report.image_front_start.filename, url_for(@vehicle_report.image_front_start), target: "_blank" %>
+      <%= image_tag @vehicle_report.image_front_start.variant(:thumb),  alt: 'Front of car (start)', class: "object-cover group-hover:opacity-75" %>
+    </div>
+  <% end %>
+
+  <% if @vehicle_report.image_driver_start.attached? %>
+    <div class="sm:col-span-3">
+       Driver side of car (start): <%= link_to @vehicle_report.image_driver_start.filename, url_for(@vehicle_report.image_driver_start), target: "_blank" %>
+      <%= image_tag @vehicle_report.image_driver_start.variant(:thumb),  alt: 'Driver side of car (start)', class: "object-cover group-hover:opacity-75" %>
+    </div>
+  <% end %>
+
+  <% if @vehicle_report.image_passenger_start.attached? %>
+    <div class="sm:col-span-3">
+      Passenger side of car (start): <%= link_to @vehicle_report.image_passenger_start.filename, url_for(@vehicle_report.image_passenger_start), target: "_blank" %>
+      <%= image_tag @vehicle_report.image_passenger_start.variant(:thumb),  alt: 'Passenger side of car (start)', class: "object-cover group-hover:opacity-75" %>
+    </div>
+  <% end %>
+
+  <% if @vehicle_report.image_back_start.attached? %>
+    <div class="sm:col-span-3">
+      Back of car (start): <%= link_to @vehicle_report.image_back_start.filename, url_for(@vehicle_report.image_back_start), target: "_blank" %>
+      <%= image_tag @vehicle_report.image_back_start.variant(:thumb),  alt: 'Back of car (start)', class: "object-cover group-hover:opacity-75" %>
+    </div>
+  <% end %>
+
+  <% if @vehicle_report.image_front_end.attached? %>
+    <div class="sm:col-span-3">
+      Front of car (end): <%= link_to @vehicle_report.image_front_end.filename, url_for(@vehicle_report.image_front_end), target: "_blank" %>
+      <%= image_tag @vehicle_report.image_front_end.variant(:thumb),  alt: 'Front of car (end)', class: "object-cover group-hover:opacity-75" %>
+    </div>
+  <% end %>
+
+  <% if @vehicle_report.image_driver_end.attached? %>
+    <div class="sm:col-span-3">
+      Driver side of car (end): <%= link_to @vehicle_report.image_driver_end.filename, url_for(@vehicle_report.image_driver_end), target: "_blank" %>
+      <%= image_tag @vehicle_report.image_driver_end.variant(:thumb),  alt: 'Driver side of car (end)', class: "object-cover group-hover:opacity-75" %>
+    </div>
+  <% end %>
+
+  <% if @vehicle_report.image_passenger_end.attached? %>
+    <div class="sm:col-span-3">
+      Passenger side of car (end): <%= link_to @vehicle_report.image_passenger_end.filename, url_for(@vehicle_report.image_passenger_end), target: "_blank" %>
+      <%= image_tag @vehicle_report.image_passenger_end.variant(:thumb),  alt: 'Passenger side of car (end)', class: "object-cover group-hover:opacity-75" %>
+    </div>
+  <% end %>
+
+  <% if @vehicle_report.image_back_end.attached? %>
+    <div class="sm:col-span-3">
+      Back of car (end): <%= link_to @vehicle_report.image_back_end.filename, url_for(@vehicle_report.image_back_end), target: "_blank" %>
+      <%= image_tag @vehicle_report.image_back_end.variant(:thumb),  alt: 'Back of car (end)', class: "object-cover group-hover:opacity-75" %>
+    </div>
+  <% end %>
+
+
     <% if @vehicle_report.image_damages.attached? %>
       <div class="">
         <p class="body-md-bold-text m-4">Images (damage):</p>
@@ -104,7 +201,7 @@
                   <div class="group block w-full h-40 rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-indigo-500 overflow-hidden">
                     <%= image_tag image.variant(:thumb), class: "object-cover h-full w-full group-hover:opacity-75" %>
                   </div>
-                  <p alertclass="body-text pt-2">
+                  <p alertclass="body-sm-text pt-2">
                     Uploaded on <%= show_date_time(image.created_at) %>
                   </p>
                 </div>

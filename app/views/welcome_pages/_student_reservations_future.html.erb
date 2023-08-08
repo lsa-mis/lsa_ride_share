@@ -1,10 +1,11 @@
 <%= turbo_frame_tag 'student_reservations' do %>
-  <h3 class="my-2">Upcoming Reservatons</h3>
+  <h3 class="my-2">Upcoming Reservations</h3>
   <div class="min-w-full">
     <table class="mi_table">
       <thead class="border border-l-0 border-r-0 border-gray-um60">
         <tr>
           <th class="header_th">Reservation</th>
+          <th class="header_th">Approved</th>
           <th class="header_th">Pick-up</th>
           <th class="header_th">Drop-off</th>
           <th class="header_th">Site</th>
@@ -13,7 +14,7 @@
         </tr>
       </thead>
       <tbody>
-        <% @reservations.each do |reservation| %>
+        <% @reservations_future.each do |reservation| %>
           <tr>
             <% if reservation.driver == @student %>
               <td class="mi_tbody_td">
@@ -21,18 +22,23 @@
               </td>
             <% elsif reservation.backup_driver == @student %>
               <td class="mi_tbody_td">
-                Backup Driver
+                <%= link_to 'Backup Driver', reservation_path(reservation), class: "link_to" %>
               </td>
             <% else %>
               <td class="mi_tbody_td">
-                Passenger
+                <%= link_to 'Passenger', reservation_path(reservation), class: "link_to" %>
               </td>
             <% end %>
             <td class="mi_tbody_td">
-            <%= show_date_time(reservation.start_time) %>
+              <% if reservation.approved %>
+                <i class="fa-solid fa-check"></i>
+              <% end %>
             </td>
             <td class="mi_tbody_td">
-              <%= show_date_time(reservation.end_time) %>
+              <%= show_date_time(reservation.start_time + 15.minute) %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= show_date_time(reservation.end_time - 15.minute) %>
             </td>
             <td class="mi_tbody_td">
               <%= reservation.site.title %>
@@ -42,7 +48,13 @@
             </td>
             <td class="mi_tbody_td">
               <% if reservation.vehicle_report.present? %>
-                <%= link_to 'Vehicle report', vehicle_report_path(reservation.vehicle_report), class: "link_to" %>
+                <% if reservation.vehicle_report.approved %>
+                  Approved by admin
+                <% elsif reservation.vehicle_report.student_status %>
+                  Completed
+                <% else %>
+                  <%= link_to 'Vehicle report', vehicle_report_path(reservation.vehicle_report), class: "link_to" %>
+                <% end %>
               <% else %>
                 <%= link_to 'New vehicle report', new_reservation_vehicle_report_path(reservation), class: "link_to" %>
               <% end %>
