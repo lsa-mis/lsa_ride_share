@@ -96,6 +96,7 @@ class ReservationsController < ApplicationController
     if is_admin?(current_user)
       @sites = []
     end
+    @until_date = Term.current.pluck(:classes_end_date).min
     @reservation.start_time = @day_start
   end
 
@@ -256,6 +257,8 @@ class ReservationsController < ApplicationController
     @reservation.end_time = (params[:end_time]).to_datetime + 15.minute
     @reservation.number_of_people_on_trip = params[:number_of_people_on_trip]
     @reservation.reserved_by = current_user.id
+    @reservation.until_date = params[:until_date] if params[:reservation][:recurring].present? 
+    fail
     authorize @reservation
     if @reservation.save
       @students = @reservation.program.students 
@@ -484,6 +487,6 @@ class ReservationsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def reservation_params
       params.require(:reservation).permit(:status, :start_time, :end_time, :recurring, :driver_id, :driver_manager_id, :driver_phone, :backup_driver_id, :backup_driver_phone, 
-      :number_of_people_on_trip, :program_id, :site_id, :car_id, :reserved_by, :approved, :non_uofm_passengers, :number_of_non_uofm_passengers)
+      :number_of_people_on_trip, :program_id, :site_id, :car_id, :reserved_by, :approved, :non_uofm_passengers, :number_of_non_uofm_passengers, :until_date)
     end
 end

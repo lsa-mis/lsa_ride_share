@@ -25,6 +25,7 @@
 #  driver_manager_id        :bigint
 #  prev                     :bigint
 #  next                     :bigint
+#  until_date               :date
 #
 class Reservation < ApplicationRecord
   include ApplicationHelper
@@ -180,7 +181,9 @@ class Reservation < ApplicationRecord
   def recurring=(value)
     if RecurringSelect.is_valid_rule?(value)
       v = RecurringSelect.dirty_hash_to_rule(value).to_hash
-      v[:count] = 6
+      # v[:count] = 6
+      v[:until] = self.until_date.to_s
+      fail
       super(v)
     else
       super(nil)
