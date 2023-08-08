@@ -79,7 +79,7 @@
 
     <div>
       <%= form.label :until_date, "Until Date", class: "fancy_label" %>
-      <%= form.text_field :until_date,
+      <%= form.text_field :until_date, value: @until_date,
         data: {
         controller: "flatpickr",
         flatpickr_date_format: "Y-m-d",

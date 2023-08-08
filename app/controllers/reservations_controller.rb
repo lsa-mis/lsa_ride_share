@@ -257,8 +257,6 @@ class ReservationsController < ApplicationController
     @reservation.end_time = (params[:end_time]).to_datetime + 15.minute
     @reservation.number_of_people_on_trip = params[:number_of_people_on_trip]
     @reservation.reserved_by = current_user.id
-    @reservation.until_date = params[:until_date] if params[:reservation][:recurring].present? 
-    fail
     authorize @reservation
     if @reservation.save
       @students = @reservation.program.students 
