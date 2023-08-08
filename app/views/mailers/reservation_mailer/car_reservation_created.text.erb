@@ -3,7 +3,7 @@ New transportation reservation for (<%= "#{@start_time} - #{@end_time}" %>) has 
 Reservation for:  <%= link_to "#{@reservation.display_name}", reservation_url(@reservation) %>
 ================================================================================================
 DATE: <%= "#{@start_time} - #{@end_time}" %>
-<% if recurring?(@reservation) %>
+<% if @reservation.recurring.present? %>
   <% recurring_reservation = RecurringReservation.new(@reservation) %>
   RECURRING: <%= recurring_reservation.first_reservation.rule.to_s %>
   <%= "starting on #{recurring_reservation.start_on} ending on #{recurring_reservation.end_on}" %>
