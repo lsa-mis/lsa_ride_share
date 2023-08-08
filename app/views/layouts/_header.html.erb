@@ -41,7 +41,7 @@
                 </div>
                 <div class="invisible absolute z-50 flex w-full flex-col bg-blue-umblue py-1 group-hover:visible" onClick="">
                   <%= link_to "All Units", units_path, class: "my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" %>
-                  <%= link_to "Unit Preferences", unit_preferences_path, class: "my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" %>
+                  <%= link_to "Unit Preferences", unit_prefs_path, class: "my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" %>
                   <%= link_to "View Terms", terms_path, class: "my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" if policy(Term).index? %>
                   <%= link_to "Faculty Surveys", faculty_surveys_path, class: "my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" if unit_use_faculty_survey?(current_user.unit_ids) %>
                   <%= link_to "Cars", cars_path, class: "my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" if policy(Car).index? %>
