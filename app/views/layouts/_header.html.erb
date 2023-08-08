@@ -41,7 +41,7 @@
                   <%= content_tag :span, "Unit Options", class: "rounded-md px-3 py-2 nav-text xl:nav-lg-text text-white hover:text-yellow-ummaze" if policy(Unit).index? || policy(Term).index? || unit_use_faculty_survey?(current_user.unit_ids) || policy(Car).index? %>
                 </div>
                 <div class="invisible absolute z-50 flex w-full flex-col bg-blue-umblue py-1 group-hover:visible" onClick="">
-                  <%= link_to "All Units", units_path, class: "my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" %>
+                  <%= link_to "All Units", units_path, class: "my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" if policy(Unit).index? %>
                   <%= link_to "Unit Preferences", unit_prefs_path, class: "my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" %>
                   <%= link_to "View Terms", terms_path, class: "my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" if policy(Term).index? %>
                   <%= link_to "Faculty Surveys", faculty_surveys_path, class: "my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" if unit_use_faculty_survey?(current_user.unit_ids) %>
