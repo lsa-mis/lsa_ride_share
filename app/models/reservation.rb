@@ -46,6 +46,7 @@ class Reservation < ApplicationRecord
   before_destroy :car_reservation_cancel
   before_update :check_number_of_non_uofm_passengers
   before_update :send_email_on_drivers_update
+  before_create :check_recurring
   
   has_rich_text :note
 
@@ -176,31 +177,30 @@ class Reservation < ApplicationRecord
     end
   end
 
+  def check_recurring
+    if self.recurring.present?
+      if self.until_date.present?
+        recurring[:until] = self.until_date.to_s
+      end
+    end
+  end
+
   serialize :recurring, Hash
 
   def recurring=(value)
     if RecurringSelect.is_valid_rule?(value)
       v = RecurringSelect.dirty_hash_to_rule(value).to_hash
-      # v[:count] = 6
-      v[:until] = self.until_date.to_s
-      fail
       super(v)
     else
       super(nil)
     end
   end
-  # schedule = IceCube::Schedule.new(start = Time.now, :end_time => start + 600)
 
   def rule
     IceCube::Rule.from_hash recurring
   end
 
   def schedule(start)
-    # schedule = IceCube::Schedule.new (start_time = params['schedule_starttime'])
-    # schedule.add_recurrence_rule( RecurringSelect.dirty_hash_to_rule(params['schedule_rule']) )
-    
-    # schedule = IceCube::Schedule.new(start = Time.now, :end_time => start + 600)
-
     schedule = IceCube::Schedule.new(start)
     # start_time = params['schedule_starttime']
     schedule.add_recurrence_rule(rule)
