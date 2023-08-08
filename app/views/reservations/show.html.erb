@@ -31,7 +31,9 @@
             </ol>
           </div>
         <% end %>
+        <input type="hidden" id="reservation_id" name="reservation_id" value=<%= @reservation.id %> data-approve-target="reservation_id">
         <div class="error_text" id="approve_error"></div>
+
       <% end %>
       <%= render @reservation %>
       
@@ -39,10 +41,18 @@
     <div class="order-first md:order-last">
       <div class="lg:flex lg:flex-col place-items-end whitespace-nowrap">
         <% if (is_admin?(current_user) || allow_student_to_edit_reservation?(@reservation) || allow_manager_to_edit_reservation?(@reservation)) && future_reservation?(@reservation) && !@reservation.approved %>
-          <%= link_to reservation_path(@reservation), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete} do %>
-            <span class="tertiary_button">Cancel Reservation
-              <i class="fa fa-times" aria-hidden="true"></i>
-            </span>
+          <% if recurring?(@reservation) %>
+            <div class="my-2">
+              <label for="cancel_recurring" class="fancy_label">Cancel Recurring Reservation</label>
+              <%= select_tag "cancel_recurring", options_for_select(cancel_type), include_blank: "Select ...", class: "filter_select",
+              "data-approve-target": "cancel_type", :"data-action" => "change->approve#cancelReservation" %>
+            </div>
+          <% else %>
+            <%= link_to reservation_path(@reservation), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete} do %>
+              <span class="tertiary_button">Cancel Reservation
+                <i class="fa fa-times" aria-hidden="true"></i>
+              </span>
+            <% end %>
           <% end %>
         <% end %>
         <% if (is_admin?(current_user)) %>

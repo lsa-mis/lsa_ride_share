@@ -51,7 +51,7 @@
     </div>
 
     <div class="py-2 body-md-text">
-      <% if @reservation.prev.present? || @reservation.next.present? %>
+      <% if recurring?(@reservation) %>
         <% recurring_reservation = RecurringReservation.new(@reservation) %>
         <label class="body-lg-bold-text">
           Recurring:
@@ -65,13 +65,6 @@
       <% end %>
     </div>
 
-    <div class="py-2">
-      <label class="body-lg-bold-text">
-        Driver:
-      </label>
-      <p id="driver" class="body-lg-text ml-2 inline-block">
-        <%= show_driver(reservation) %>
-      </p>
     <div class="md:flex items-end gap-2 whitespace-nowrap">
       <div class="py-2">
         <label class="body-lg-bold-text">

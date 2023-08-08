@@ -45,7 +45,7 @@
         <% reservations.each do |reservation| %>
           <div class="body-sm-text">
             <% if reservation.car_id.present? %>
-              <% if reservation.prev.present? || reservation.next.present? %>
+              <% if recurring?(reservation) %>
                 <%= link_to reservation_path(reservation.id), class: "link_to" do %>
                   <span>
                     <%= reservation.display_name %>
