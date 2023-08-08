@@ -1,6 +1,6 @@
 class ReservationsController < ApplicationController
   before_action :auth_user
-  before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger finish_reservation update_passengers send_reservation_updated_email ]
+  before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger finish_reservation update_passengers send_reservation_updated_email cancel_recurring_reservation ]
   before_action :set_terms_and_units
   before_action :set_programs
   before_action :set_cars, only: %i[ new new_long get_available_cars get_available_cars_long ]
@@ -398,7 +398,6 @@ class ReservationsController < ApplicationController
 
   # DELETE /reservations/1 or /reservations/1.json
   def destroy
-    fail
     unless @reservation.approved
       respond_to do |format|
         if @reservation.destroy
@@ -410,6 +409,41 @@ class ReservationsController < ApplicationController
             format.json { head :no_content }
           elsif is_manager?(current_user)
             format.html { redirect_to welcome_pages_manager_url, notice: "Reservation was canceled." }
+            format.json { head :no_content }
+          end
+        else
+          format.html { render :show, status: :unprocessable_entity }
+          format.json { render json: @reservation.errors, status: :unprocessable_entity }
+        end
+      end
+    else
+      flash.now[:alert] = 'The reservation is approved. To cancel, please contact your administrator'
+      render turbo_stream: turbo_stream.update("flash", partial: "layouts/notification")
+    end
+  end
+
+  def cancel_recurring_reservation
+    unless @reservation.approved
+      cancel_type = params[:cancel_type]
+      recurring_reservation =  RecurringReservation.new(@reservation)
+      case cancel_type
+      when "one"
+        result = recurring_reservation.delete_one
+      when "following"
+        result = recurring_reservation.delete_following
+      when "all"
+        result = recurring_reservation.delete_all
+      end
+      respond_to do |format|
+        if Reservation.where(id: result).destroy_all
+          if is_admin?(current_user)
+            format.html { redirect_to reservations_url, notice: "Selected Reservation(s) were canceled." }
+            format.json { head :no_content }
+          elsif is_student?(current_user)
+            format.html { redirect_to welcome_pages_student_url, notice: "Selected Reservation(s) were canceled." }
+            format.json { head :no_content }
+          elsif is_manager?(current_user)
+            format.html { redirect_to welcome_pages_manager_url, notice: "Selected Reservation(s) were canceled." }
             format.json { head :no_content }
           end
         else

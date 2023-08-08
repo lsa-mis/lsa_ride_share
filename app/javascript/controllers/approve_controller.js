@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
-
+import { get } from "@rails/request.js"
 export default class extends Controller {
-  static targets = ['form']
+  static targets = ['form', 'cancel_type', 'reservation_id']
   
   connect () {
     console.log("connect approve")
@@ -9,6 +9,13 @@ export default class extends Controller {
 
   cancelReservation() {
     console.log("cancel")
+    var cancel_type = this.cancel_typeTarget.value
+    var reservation_id = this.reservation_idTarget.value
+
+    get(`/reservations/cancel_recurring_reservation/${cancel_type}/${reservation_id}`, {
+      responseKind: "html"
+    })
+
   }
 
 

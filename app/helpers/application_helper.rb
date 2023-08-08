@@ -542,4 +542,16 @@ module ApplicationHelper
     return time_list
   end
 
+  def cancel_type
+    [
+      ["This Reservation", "one"],
+      ["This and Following Reservations", "following"],
+      ["All Reservations", "all"]
+    ]
+  end
+
+  def recurring?(reservation)
+    reservation.prev.present? || reservation.next.present? || reservation.recurring.present?
+  end
+
 end

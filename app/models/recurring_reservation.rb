@@ -28,6 +28,16 @@ class RecurringReservation
     end
   end
 
+  def prev_reservation
+    return false unless @reservation.prev.present?
+    Reservation.find(@reservation.prev)
+  end
+
+  def next_reservation
+    return false unless @reservation.next.present?
+    Reservation.find(@reservation.next)
+  end
+
   def start_on
     show_date_time(first_reservation.start_time)
   end
@@ -59,14 +69,50 @@ class RecurringReservation
     end
   end
 
+  def delete_one
+    if prev_reservation && next_reservation
+      next_reservation.update(prev: prev_reservation.id)
+      prev_reservation.update(next: next_reservation.id)
+    elsif prev_reservation
+      prev_reservation.update(next: nil)
+    elsif next_reservation
+      if first_reservation == @reservation
+        next_reservation.update(recurring: @reservation.recurring)
+      end
+      next_reservation.update(prev: nil)
+    end
+    return Array(@reservation.id)
+  end
+
+  def delete_following
+    list = Array(@reservation.id)
+    if prev_reservation
+      prev_reservation.update(next: nil)
+    end
+    next_id = @reservation.next
+    until next_id.nil? do
+      reserv = Reservation.find(next_id)
+      list << reserv.id
+      next_id = reserv.next
+    end
+    return list
+  end
+
+  def delete_all
+    list = Array(first_reservation.id)
+    next_id = first_reservation.next
+    until next_id.nil? do
+      reserv = Reservation.find(next_id)
+      list << reserv.id
+      next_id = reserv.next
+    end
+    return list
+  end
+
   def schedule
     day = @reservation.start_time.to_date
     schedule = @reservation.schedule(day)
     return schedule
-  end
-
-  def count
-    @reservation.rule.validations.count
   end
 
 end
