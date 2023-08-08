@@ -4,7 +4,9 @@
       <thead class="mi_thead">
         <tr>
           <td></td>
+          <td></td>
           <th class="header_th">Created At</th>
+          <th class="header_th">Email Sent</th>
           <th class="header_th">Title</th>
           <th class="header_th">Instructor</th>
           <th class="header_th">Unit</th>
@@ -17,12 +19,22 @@
         <% @faculty_surveys.each do |survey| %>
           <tr class="mi_tbody_tr">
             <td class="mi_tbody_td">
-              <% unless survey.program_id.present? %>
+              <% unless email_was_sent?("FacultySurvey", survey) %>
                 <%= link_to 'Edit', edit_faculty_survey_path(survey), class: "link_to" %>
               <% end %>
             </td>
             <td class="mi_tbody_td">
+              <% unless email_was_sent?("FacultySurvey", survey) %>
+                <%= link_to 'Delete', faculty_survey_path(survey, :term_id => survey.term_id, :unit_id => survey.unit_id), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete }, class: "link_to" %>
+              <% end %>
+            </td>
+            <td class="mi_tbody_td">
               <%= show_date(survey.created_at) %>
+            </td>
+            <td class="mi_tbody_td">
+              <% if email_was_sent?("FacultySurvey", survey) %>
+                <i class="fa-solid fa-check"></i>
+              <% end %>
             </td>
             <td class="mi_tbody_td">
               <%= survey.title %>

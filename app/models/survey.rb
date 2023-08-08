@@ -68,9 +68,14 @@ class Survey
         if question_number == '2'
           if strip_tags(p[1]).strip == ''
             result['success'] = false
-            result['note'] += "Is the program a course? The answer is required. "
+            result['note'] += "Is the program a course? The answer is required (Yes or No). "
+          elsif p[1].downcase.include?("yes")
+            course = true
+          elsif p[1].downcase.include?("no")
+            course = false
           else
-            course = true if p[1].downcase.include?("yes")
+            result['success'] = false
+            result['note'] += "Is the program a course? The answer must be Yes or No. "
           end
         end
         if course && strip_tags(p[1]).strip == ''
@@ -107,8 +112,8 @@ class Survey
       if rich_text_value(s.question).include?("title")
         title = rich_text_no_tags_value(s.answer)
       end
-      if rich_text_value(s.question).include?("not a course")
-        if rich_text_value(s.answer).include?("no")
+      if rich_text_value(s.question).include?("a course")
+        if rich_text_value(s.answer).downcase.include?("no")
           not_course = true 
         end
       end

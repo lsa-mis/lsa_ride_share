@@ -25,7 +25,7 @@
   </div>
 
   <div class="my-5">
-    <%= form.label :uniqname, 'Uniqname *', class: "fancy_label"  %>
+    <%= form.label :uniqname, 'Instructor Uniqname *', class: "fancy_label"  %>
     <%= form.text_field :uniqname, required: true, class: "input_text_field" %>
   </div>
 
@@ -48,9 +48,9 @@
 
   <div class="inline">
     <% if action_name == "new" %>
-      <%= form.submit 'Create Faculty Survey', class: "primary_button" %>
+      <%= form.submit 'Create Program Survey', class: "primary_button" %>
     <% else %>
-      <%= form.submit 'Update Faculty Survey', class: "primary_button" %>
+      <%= form.submit 'Update Program Survey', class: "primary_button" %>
     <% end %>
   </div>
   <%= link_to faculty_surveys_path(:term_id => faculty_survey.term_id) do %>

@@ -19,10 +19,14 @@ class ReservationPolicy < ApplicationPolicy
   end
 
   def create?
-    user_in_access_group? || is_student?
+    user_in_access_group? || is_student? || is_manager?
   end
 
   def new?
+    create?
+  end
+
+  def new_long?
     create?
   end
 
@@ -35,6 +39,10 @@ class ReservationPolicy < ApplicationPolicy
   end
 
   def get_available_cars?
+    create?
+  end
+
+  def get_available_cars_long?
     create?
   end
 

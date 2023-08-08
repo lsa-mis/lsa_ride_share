@@ -22,22 +22,27 @@
 #  approved                 :boolean          default false
 #  non_uofm_passengers      :string
 #  number_of_non_uofm_passengers :integer
+#  driver_manager_id        :bigint
 #
 class Reservation < ApplicationRecord
+  include ApplicationHelper
   belongs_to :program
   belongs_to :site
   belongs_to :car, optional: true
   belongs_to :driver, optional: true, class_name: 'Student', foreign_key: :driver_id
+  belongs_to :driver_manager, optional: true, class_name: 'Manager', foreign_key: :driver_manager_id
   belongs_to :backup_driver, optional: true, class_name: 'Student', foreign_key: :backup_driver_id
   has_many :reservation_passengers
   has_many :passengers, through: :reservation_passengers, source: :student
   has_one :vehicle_report, dependent: :destroy
   before_destroy :car_reservation_cancel
   before_update :check_number_of_non_uofm_passengers
+  before_update :send_email_on_drivers_update
   
   has_rich_text :note
 
   validate :check_number_of_people_on_trip, on: :update
+  validate :driver_student_or_manager, on: :update
   validate :check_drivers, on: :update
 
   scope :with_passengers, -> { Reservation.includes(:passengers) }
@@ -57,7 +62,7 @@ class Reservation < ApplicationRecord
   end
 
   def added_people
-    number = self.passengers.count + (self.driver.present? ? 1 : 0).to_i + (self.backup_driver.present? ? 1 : 0).to_i
+    number = self.passengers.count + (self.driver.present? ? 1 : 0).to_i + (self.backup_driver.present? ? 1 : 0).to_i + + (self.driver_manager.present? ? 1 : 0).to_i
     if self.program.non_uofm_passengers
       number += self.number_of_non_uofm_passengers
     end
@@ -79,7 +84,7 @@ class Reservation < ApplicationRecord
     if students.present?
       students.each do |s|
         cancel_passengers << s.name
-        cancel_emails << s.uniqname + "@umich.edu"
+        cancel_emails << email_address(s)
       end
     else
       cancel_passengers = ["No passengers"]
@@ -91,8 +96,8 @@ class Reservation < ApplicationRecord
       self.passengers.delete_all
     end
     ReservationMailer.car_reservation_cancel_admin(self, cancel_passengers, cancel_emails, self.reserved_by).deliver_now
-    if self.driver_id.present?
-      ReservationMailer.car_reservation_cancel_student(self, cancel_passengers, cancel_emails, self.reserved_by).deliver_now
+    if self.driver_id.present? || self.driver_manager_id.present? 
+      ReservationMailer.car_reservation_cancel_driver(self, cancel_passengers, cancel_emails, self.reserved_by).deliver_now
     end
   end
 
@@ -102,12 +107,54 @@ class Reservation < ApplicationRecord
     end
   end
 
+  def driver_student_or_manager
+    if self.driver_id.present? && self.driver_manager_id.present?
+      self.driver_manager_id = nil
+    end
+  end
+
   def check_drivers
     if self.passengers.include?(self.driver)
       errors.add(:base, "remove this driver from the passenger list first.")
     end
     if self.passengers.include?(self.backup_driver)
       errors.add(:base, "remove this backup driver from the passengers list first.")
+    end
+  end
+
+  def send_email_on_drivers_update
+    drivers_emails = []
+    if self.driver_id.present? && self.driver_changed?
+      if self.driver_id_change[1].present? && self.driver_id_change[0].nil?
+        return
+      end
+    end
+    if self.driver_changed?
+      if self.driver_id_change[0].present?
+        drivers_emails << email_address(Student.find(self.driver_id_change[0]))
+      end
+      if self.driver_id_change[1].present?
+        drivers_emails << email_address(Student.find(self.driver_id_change[1]))
+      end
+    end
+    if self.driver_manager_changed?
+      if self.driver_manager_id_change[0].present?
+        drivers_emails << email_address(Manager.find(self.driver_manager_id_change[0]))
+      end
+      if self.driver_manager_id_change[1].present?
+        drivers_emails << email_address(Manager.find(self.driver_manager_id_change[1]))
+      end
+    end
+    if self.backup_driver_changed?
+      if self.backup_driver_id_change[0].present?
+        drivers_emails << email_address(Student.find(self.backup_driver_id_change[0]))
+      end
+      if self.backup_driver_id_change[1].present?
+        drivers_emails << email_address(Student.find(self.backup_driver_id_change[1]))
+      end
+    end
+    if drivers_emails.present?
+      ReservationMailer.car_reservation_drivers_edited(self, drivers_emails, self.reserved_by).deliver_now
     end
   end
 

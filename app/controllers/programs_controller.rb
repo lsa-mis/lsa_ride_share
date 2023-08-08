@@ -18,7 +18,7 @@ class ProgramsController < ApplicationController
     @programs = @programs.data(params[:term_id])
     if is_manager?(current_user)
       @programs = Program.all.data(params[:term_id])
-      programs = Manager.find_by(uniqname: current_user.uniqname).programs
+      programs = Manager.find_by(uniqname: current_user.uniqname).all_programs
       @programs = @programs.where(id: programs.map(&:id))
     end
     authorize @programs

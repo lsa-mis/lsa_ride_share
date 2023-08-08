@@ -1,7 +1,7 @@
 class VehicleReportsController < ApplicationController
   before_action :auth_user
   before_action :set_units
-  before_action :set_vehicle_report, only: %i[ show edit update destroy ]
+  before_action :set_vehicle_report, only: %i[ show edit update destroy upload_image upload_damage_images ]
 
   # GET /vehicle_reports or /vehicle_reports.json
   def index
@@ -31,6 +31,7 @@ class VehicleReportsController < ApplicationController
 
   # GET /vehicle_reports/1 or /vehicle_reports/1.json
   def show
+    @reservation = @vehicle_report.reservation
   end
 
   def delete_file_attachment
@@ -103,6 +104,33 @@ class VehicleReportsController < ApplicationController
         format.json { render json: @vehicle_report.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  def upload_image
+    if @vehicle_report.update(vehicle_report_params)
+      @image_field_name = params[:vehicle_report].keys[0]
+      @image_name = @vehicle_report.send(params[:vehicle_report].keys[0].to_sym)
+    else
+      render turbo_stream: turbo_stream.update("image_errors_#{params[:vehicle_report].keys[0]}", partial: "image_errors", locals: { image_field_name: params[:vehicle_report].keys[0] })
+    end
+  end
+
+  def upload_damage_images
+    if @vehicle_report.update(vehicle_report_params)
+      render turbo_stream: turbo_stream.update("images_damage", partial: "images_damage")
+    else
+      render turbo_stream: turbo_stream.update("image_errors_image_damages", partial: "image_errors", locals: { image_field_name: 'image_damages' })
+    end
+  end
+
+  def delete_image
+    delete_file = ActiveStorage::Attachment.find(params[:image_id])
+    delete_file.purge
+    @vehicle_report = VehicleReport.find(params[:id])
+    @vehicle_report.update(student_status: false)
+    @image_field_name = params[:image_field_name]
+    @image_name = @vehicle_report.send(params[:image_field_name].to_sym)
+    authorize @vehicle_report
   end
 
   def destroy

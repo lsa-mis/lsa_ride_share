@@ -1,0 +1,5 @@
+<%= render_flash_stream %>
+
+<%= turbo_stream.update "manager_list" do %>
+  <%= render "manager_list" %>
+<% end %>

@@ -62,22 +62,28 @@ module StudentApi
     if result['success']
       if result['data']['Classes']['Class']['ClassSections']['ClassSection']['ClassStudents'].present?
         data = result['data']['Classes']['Class']['ClassSections']['ClassSection']['ClassStudents']['ClassStudent']
-        students_in_db = @student_program.students.registered.pluck(:uniqname)
+        students_in_db_registered = @student_program.students.registered.pluck(:uniqname)
+        students_in_db_added_manually = @student_program.students.added_manually.pluck(:uniqname)
         data.each do |student_info|
           uniqname = student_info['Uniqname']
-          if students_in_db.include?(uniqname)
-            students_in_db.delete(uniqname)
+          if students_in_db_registered.include?(uniqname)
+            students_in_db_registered.delete(uniqname)
+          elsif students_in_db_added_manually.include?(uniqname)
+            unless Student.find_by(uniqname: student_info['Uniqname'], program: program).update(registered: true)
+              flash.now[:alert] = "Error updating student record from manually added to registered."
+              return
+            end
           else
             student = Student.new(uniqname: student_info['Uniqname'], first_name: student_info['Name'].split(",").last, last_name: student_info['Name'].split(",").first, program: program)
             unless student.save
-              flash.now[:alert] = "Error saving student record."
+              flash.now[:alert] = "Error saving registered student record."
               return
             end
           end
         end
-        if students_in_db.present?
+        if students_in_db_registered.present?
           # delete students who dropped the course
-          Student.where(uniqname: students_in_db, program_id: @student_program).delete_all
+          Student.where(uniqname: students_in_db_registered, program_id: @student_program).delete_all
         end
         unless @student_program.update(number_of_students: @student_program.students.count)
           flash.now[:error] = "Error updating number of students."
@@ -125,11 +131,11 @@ module StudentApi
     return result
   end
 
-  def update_my_canvas_status(student)
+  def update_my_canvas_status(student, program)
     scope = "canvasreadonly"
     token = get_auth_token(scope)
     if token['success']
-      result = canvas_readonly(student.program.canvas_course_id, token['access_token'])
+      result = canvas_readonly(program.canvas_course_id, token['access_token'])
     end
     if result['success']
       students_with_good_score = result['data']

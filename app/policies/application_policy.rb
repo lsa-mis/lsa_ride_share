@@ -54,6 +54,10 @@ class ApplicationPolicy
     Student.where(uniqname: user.uniqname, program: Program.current_term).present?
   end
 
+  def is_manager?
+    Manager.where(uniqname: user.uniqname).present?
+  end
+
   def user_in_access_group?
     unit_admin? || user_admin?
   end

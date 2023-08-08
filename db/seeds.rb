@@ -44,11 +44,14 @@ test_unit = Unit.find_by(name: "Test Unit")
 test_car = Car.create!(car_number: "1234-Test Car", make: "Toyota", model: "Corolla", color: "yellow", number_of_seats: 4, mileage: 101.30, gas: 80, parking_spot: "301 Liberty", updated_by: user_test.id, status: "available", unit_id: test_unit.id)
 
 UnitPreference.create!([
-  { name: "contact_phone", description: "A phone that students can call with questions about cars reservations", on_off: nil, unit_id: test_unit.id, value: "808 453-3245", pref_type: "string" },
-  { name: "unit_office", description: "The unit's office number", on_off: nil, unit_id: test_unit.id, value: "123 Main St", pref_type: "string" },
-  { name: "reservation_time_begin", description: "The earliest time of the day to pick up cars", on_off: nil, unit_id: test_unit.id, value: "8:00AM", pref_type: "time" },
-  { name: "reservation_time_end", description: "The latest time of the day to drop off cars", on_off: nil, unit_id: test_unit.id, value: "5:00PM", pref_type: "time" },
-  { name: "notification_email", description: "The email address that system notification emails are sent to", on_off: nil, unit_id: test_unit.id, value: nil, pref_type: "string"}
+  { name: "contact_phone", description: "A phone that students can call with questions about cars reservations", on_off: false, unit_id: test_unit.id, value: "808 453-3245", pref_type: "string" },
+  { name: "unit_office", description: "The unit's office number", on_off: false, unit_id: test_unit.id, value: "123 Main St", pref_type: "string" },
+  { name: "reservation_time_begin", description: "The earliest time of the day to pick up cars", on_off: false, unit_id: test_unit.id, value: "8:00AM", pref_type: "time" },
+  { name: "reservation_time_end", description: "The latest time of the day to drop off cars", on_off: false, unit_id: test_unit.id, value: "5:00PM", pref_type: "time" },
+  { name: "notification_email", description: "The email address that system notification emails are sent to", on_off: false, unit_id: test_unit.id, value: "admin@test.com", pref_type: "string"},
+  { name: "faculty_survey", description: "Use faculty survey to create programs", on_off: false, unit_id: test_unit.id, value: nil, pref_type: "boolean"},
+  { name: "hours_before_reservation", description: "Allow to create reservations without cars", on_off: false, unit_id: test_unit.id, value: "72", pref_type: "integer"},
+  { name: "no_car_reservations", description: "The email address that system notification emails are sent to", on_off: false, unit_id: test_unit.id, value: nil, pref_type: "boolean"}
 ])
 
 # create a manager
@@ -68,9 +71,9 @@ site_test = Site.find_by(title: "Test Site")
 ProgramsSite.create!(program_id: p1.id, site_id: site_test.id)
 
 # Create a student
-s1 = Student.create!(uniqname: "test_student", last_name: "Test", first_name: "Student", class_training_date: DateTime.now, canvas_course_complete_date: DateTime.now, mvr_status: "Approved until 2023-08-10", program_id: p1.id)
-s2 = Student.create!(uniqname: "test_student1", last_name: "Test1", first_name: "Student1", class_training_date: DateTime.now, canvas_course_complete_date: DateTime.now, mvr_status: "Approved until 2023-08-10", program_id: p1.id)
-s3 = Student.create!(uniqname: "test_student2", last_name: "Test2", first_name: "Student2", class_training_date: DateTime.now, canvas_course_complete_date: DateTime.now, mvr_status: "Approved until 2023-08-10", program_id: p1.id)
+s1 = Student.create!(uniqname: "test_student", last_name: "Test", first_name: "Student", canvas_course_complete_date: DateTime.now, mvr_status: "Approved until 2023-08-10", program_id: p1.id)
+s2 = Student.create!(uniqname: "test_student1", last_name: "Test1", first_name: "Student1", canvas_course_complete_date: DateTime.now, mvr_status: "Approved until 2023-08-10", program_id: p1.id)
+s3 = Student.create!(uniqname: "test_student2", last_name: "Test2", first_name: "Student2", canvas_course_complete_date: DateTime.now, mvr_status: "Approved until 2023-08-10", program_id: p1.id)
 
 # to create a reservation 
 reservation_test = Reservation.create!(status: "reserved", program_id: p1.id, site_id: site_test.id, start_time: DateTime.now, end_time: DateTime.now + 3.hour, driver_id: s1.id, driver_phone: "123-456-7890", number_of_people_on_trip: 1, car_id: test_car, updated_by: user_test.id, reserved_by: user_test.id)

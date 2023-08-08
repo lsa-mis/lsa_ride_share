@@ -15,7 +15,7 @@
   <div class="error_text mt-2" id="required_fields"></div>
 
   <input type="hidden" id="unit_id" name="unit_id" value=<%= @unit_id %> data-reservation-target="unit">
-  <% if is_student?(current_user) %>
+  <% if is_student?(current_user) || is_manager?(current_user) %>
     <p class="body-lg-text mt-2">
       Program:
       <%= @program.display_name_with_title %>

@@ -8,16 +8,21 @@ export default class extends Controller {
   }
 
   toggleApprove(event) {
+    console.log("approve")
     var car = document.getElementById("car").textContent
     var driver = document.getElementById("driver").textContent
     var approve_error = document.getElementById("approve_error")
     var check = document.getElementById("reservation_approved")
-    if (car.includes("No car selected") || driver.includes("No driver selected")) {
-      approve_error.innerHTML = "Do not approve if a car or a driver is not selected"
-      check.checked = false
-      event.preventDefault()
+    if (check.checked) {
+      if (car.includes("No car selected") || driver.includes("No driver selected")) {
+        approve_error.innerHTML = "Do not approve if a car or a driver is not selected"
+        check.checked = false
+        event.preventDefault()
+      } else {
+        approve_error.innerHTML = ""
+        Turbo.navigator.submitForm(this.formTarget)
+      }
     } else {
-      approve_error.innerHTML = ""
       Turbo.navigator.submitForm(this.formTarget)
     }
   }
