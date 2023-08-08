@@ -145,7 +145,7 @@
             </div>
             <div class=" cursor-pointer flex flex-row justify-start ml-4 bg-blue-umblue py-1">
               <%= link_to "All Units", units_path, class: "mx-2 block py-1 nav-sm-text text-white md:mx-2 hover:text-yellow-ummaze" %>
-              <%= link_to "Unit Preferences", unit_preferences_path, class: "mx-2 block py-1 nav-sm-text text-white md:mx-2 hover:text-yellow-ummaze" %>
+              <%= link_to "Unit Preferences", unit_preferences_unit_prefs_path, class: "mx-2 block py-1 nav-sm-text text-white md:mx-2 hover:text-yellow-ummaze" %>
               <%= link_to "View Terms", terms_path, class: "mx-2 block py-1 nav-sm-text text-white md:mx-2 hover:text-yellow-ummaze" if policy(Term).index? %>
               <%= link_to "Faculty Surveys", faculty_surveys_path, class: "mx-2 block py-1 nav-sm-text text-white md:mx-2 hover:text-yellow-ummaze" if unit_use_faculty_survey?(current_user.unit_ids) %>
               <%= link_to "Cars", cars_path, class: "mx-2 block py-1 nav-sm-text text-white md:mx-2 hover:text-yellow-ummaze" if policy(Car).index? %>
