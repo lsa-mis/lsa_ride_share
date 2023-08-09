@@ -169,7 +169,6 @@ class Reservation < ApplicationRecord
 
   def dup
     super.tap do |new_reservation|
-      new_reservation.recurring = nil
       new_reservation.start_time = nil
       new_reservation.end_time = nil
       new_reservation.prev = nil

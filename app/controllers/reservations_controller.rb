@@ -435,21 +435,18 @@ class ReservationsController < ApplicationController
       when "all"
         result = recurring_reservation.delete_all
       end
+      authorize @reservation
       respond_to do |format|
         if Reservation.where(id: result).destroy_all
           if is_admin?(current_user)
-            format.html { redirect_to reservations_url, notice: "Selected Reservation(s) were canceled." }
-            format.json { head :no_content }
+            format.turbo_stream { redirect_to reservations_url, notice: "Selected Reservation(s) were canceled."  }
           elsif is_student?(current_user)
-            format.html { redirect_to welcome_pages_student_url, notice: "Selected Reservation(s) were canceled." }
-            format.json { head :no_content }
+            format.turbo_stream { redirect_to welcome_pages_student_url, notice: "Selected Reservation(s) were canceled."  }
           elsif is_manager?(current_user)
-            format.html { redirect_to welcome_pages_manager_url, notice: "Selected Reservation(s) were canceled." }
-            format.json { head :no_content }
+            format.turbo_stream { redirect_to welcome_pages_manager_url, notice: "Selected Reservation(s) were canceled."  }
           end
         else
-          format.html { render :show, status: :unprocessable_entity }
-          format.json { render json: @reservation.errors, status: :unprocessable_entity }
+          render :show, status: :unprocessable_entity
         end
       end
     else

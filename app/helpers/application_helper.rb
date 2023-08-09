@@ -542,7 +542,7 @@ module ApplicationHelper
     return time_list
   end
 
-  def cancel_type
+  def cancel_types
     [
       ["This Reservation", "one"],
       ["This and Following Reservations", "following"],

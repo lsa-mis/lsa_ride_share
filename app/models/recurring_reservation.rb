@@ -76,9 +76,6 @@ class RecurringReservation
     elsif prev_reservation
       prev_reservation.update(next: nil)
     elsif next_reservation
-      if first_reservation == @reservation
-        next_reservation.update(recurring: @reservation.recurring)
-      end
       next_reservation.update(prev: nil)
     end
     return Array(@reservation.id)
