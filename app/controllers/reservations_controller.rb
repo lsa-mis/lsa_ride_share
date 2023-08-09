@@ -147,6 +147,7 @@ class ReservationsController < ApplicationController
     if is_admin?(current_user)
       @sites = []
     end
+    @until_date = Term.current.pluck(:classes_end_date).min
     @reservation.start_time = @day_start
     @reservation.end_time = @day_end
   end
