@@ -53,7 +53,11 @@
                   </span>
                 <% end %>
               <% else %>
-                <%= link_to reservation.display_name, reservation_path(reservation.id), class: "link_to" %>
+                <%= link_to reservation_path(reservation.id), class: "link_to" do %>
+                  <span class="status-<%= reservation.approved %>">
+                    <%= reservation.display_name %>
+                  </span>
+                <% end %>
               <% end %>
             <% else %>
               <% if recurring?(reservation)  %>
