@@ -48,8 +48,9 @@ Rails.application.routes.draw do
   get '/reservations/day_reservations/:date', to: 'reservations#day_reservations', as: :day_reservations
   get '/reservations/:id/finish_reservation', to: 'reservations#finish_reservation', as: :finish_reservation
   get '/reservations/:id/update_passengers/', to: 'reservations#update_passengers', as: :update_passengers
+  post '/reservations/cancel_recurring_reservation/:id', to: 'reservations#cancel_recurring_reservation', as: :cancel_recurring_reservation
 
-  get 'send_reservation_updated_email/:id', to: 'reservations#send_reservation_updated_email', as: :send_reservation_updated_email
+  get '/send_reservation_updated_email/:id', to: 'reservations#send_reservation_updated_email', as: :send_reservation_updated_email
 
   resources :cars do
     resources :notes, module: :cars

@@ -82,14 +82,24 @@ class ReservationPolicy < ApplicationPolicy
     user_in_access_group? || is_reservation_driver?
   end
 
+  def cancel_recurring_reservation?
+    user_in_access_group? || is_reservation_driver?
+  end
+
   def is_reservation_student?
     student = Student.find_by(program_id: @record.program, uniqname: @user.uniqname)
     @record.driver == student || @record.backup_driver == student || @record.passengers.include?(student)
   end
 
   def is_reservation_driver?
-    student = Student.find_by(program_id: @record.program, uniqname: @user.uniqname)
-    @record.driver == student || @record.backup_driver == student
+    if is_student?
+      student = Student.find_by(program_id: @record.program, uniqname: @user.uniqname)
+      return @record.driver == student || @record.backup_driver == student
+    elsif is_manager?
+      manager = Manager.find_by(uniqname: @user.uniqname)
+      return @record.driver_manager == manager
+    end
+    return false
   end
 
   def is_reserved_by?

@@ -1,14 +1,19 @@
 import { Controller } from "@hotwired/stimulus"
-
 export default class extends Controller {
-  static targets = ['form']
+  static targets = ['form', 'form1', 'cancel_type']
   
   connect () {
     console.log("connect approve")
   }
 
+  cancelReservation() {
+    var cancel_type = this.cancel_typeTarget.value
+    if (cancel_type) { 
+      Turbo.navigator.submitForm(this.form1Target)
+    }
+  }
+
   toggleApprove(event) {
-    console.log("approve")
     var car = document.getElementById("car").textContent
     var driver = document.getElementById("driver").textContent
     var approve_error = document.getElementById("approve_error")

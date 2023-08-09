@@ -45,13 +45,32 @@
         <% reservations.each do |reservation| %>
           <div class="body-sm-text">
             <% if reservation.car_id.present? %>
-              <%= link_to reservation.display_name, reservation_path(reservation.id), class: "link_to" %>
+              <% if recurring?(reservation) %>
+                <%= link_to reservation_path(reservation.id), class: "link_to" do %>
+                  <span class="status-<%= reservation.approved %>">
+                    <%= reservation.display_name %>
+                    <i class="fa fa-repeat" aria-hidden="true" style="color:#2c5282"></i>
+                  </span>
+                <% end %>
+              <% else %>
+                <%= link_to reservation.display_name, reservation_path(reservation.id), class: "link_to" %>
+              <% end %>
             <% else %>
-              <%= link_to reservation_path(reservation.id), class: "link_to" do %>
-                <span>
-                  <%= reservation.display_name %>
-                  <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
-                </span>
+              <% if recurring?(reservation)  %>
+                <%= link_to reservation_path(reservation.id), class: "link_to" do %>
+                  <span class="status-<%= reservation.approved %>">
+                    <%= reservation.display_name %>
+                    <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
+                    <i class="fa fa-repeat" aria-hidden="true" style="color:#2c5282"></i>
+                  </span>
+                <% end %>
+              <% else %>
+                <%= link_to reservation_path(reservation.id), class: "link_to" do %>
+                  <span class="status-<%= reservation.approved %>">
+                    <%= reservation.display_name %>
+                    <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
+                  </span>
+                <% end %>
               <% end %>
             <% end %>
             <p>

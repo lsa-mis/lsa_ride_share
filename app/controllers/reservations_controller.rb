@@ -1,6 +1,6 @@
 class ReservationsController < ApplicationController
   before_action :auth_user
-  before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger finish_reservation update_passengers send_reservation_updated_email ]
+  before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger finish_reservation update_passengers send_reservation_updated_email cancel_recurring_reservation ]
   before_action :set_terms_and_units
   before_action :set_programs
   before_action :set_cars, only: %i[ new new_long get_available_cars get_available_cars_long ]
@@ -96,6 +96,7 @@ class ReservationsController < ApplicationController
     if is_admin?(current_user)
       @sites = []
     end
+    @until_date = Term.current.pluck(:classes_end_date).min
     @reservation.start_time = @day_start
   end
 
@@ -146,6 +147,7 @@ class ReservationsController < ApplicationController
     if is_admin?(current_user)
       @sites = []
     end
+    @until_date = Term.current.pluck(:classes_end_date).min
     @reservation.start_time = @day_start
     @reservation.end_time = @day_end
   end
@@ -382,6 +384,10 @@ class ReservationsController < ApplicationController
   end
 
   def finish_reservation
+    if @reservation.recurring.present?
+      recurring_reservation = RecurringReservation.new(@reservation)
+      recurring_reservation.create_all
+    end
     ReservationMailer.with(reservation: @reservation).car_reservation_confirmation(current_user).deliver_now
     ReservationMailer.with(reservation: @reservation).car_reservation_created(current_user).deliver_now
     redirect_to reservation_path(@reservation)
@@ -418,6 +424,38 @@ class ReservationsController < ApplicationController
     end
   end
 
+  def cancel_recurring_reservation
+    unless @reservation.approved
+      cancel_type = params[:cancel_type]
+      recurring_reservation =  RecurringReservation.new(@reservation)
+      case cancel_type
+      when "one"
+        result = recurring_reservation.delete_one
+      when "following"
+        result = recurring_reservation.delete_following
+      when "all"
+        result = recurring_reservation.delete_all
+      end
+      authorize @reservation
+      respond_to do |format|
+        if Reservation.where(id: result).destroy_all
+          if is_admin?(current_user)
+            format.turbo_stream { redirect_to reservations_url, notice: "Selected Reservation(s) were canceled."  }
+          elsif is_student?(current_user)
+            format.turbo_stream { redirect_to welcome_pages_student_url, notice: "Selected Reservation(s) were canceled."  }
+          elsif is_manager?(current_user)
+            format.turbo_stream { redirect_to welcome_pages_manager_url, notice: "Selected Reservation(s) were canceled."  }
+          end
+        else
+          render :show, status: :unprocessable_entity
+        end
+      end
+    else
+      flash.now[:alert] = 'The reservation is approved. To cancel, please contact your administrator'
+      render turbo_stream: turbo_stream.update("flash", partial: "layouts/notification")
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_reservation
@@ -445,6 +483,6 @@ class ReservationsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def reservation_params
       params.require(:reservation).permit(:status, :start_time, :end_time, :recurring, :driver_id, :driver_manager_id, :driver_phone, :backup_driver_id, :backup_driver_phone, 
-      :number_of_people_on_trip, :program_id, :site_id, :car_id, :reserved_by, :approved, :non_uofm_passengers, :number_of_non_uofm_passengers)
+      :number_of_people_on_trip, :program_id, :site_id, :car_id, :reserved_by, :approved, :non_uofm_passengers, :number_of_non_uofm_passengers, :until_date)
     end
 end
