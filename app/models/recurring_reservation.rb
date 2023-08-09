@@ -48,28 +48,33 @@ class RecurringReservation
 
   def create_all
     unless @reservation.recurring.empty?
-      start_time = @reservation.start_time
-      end_time = @reservation.end_time
+      start_time = @reservation.start_time.strftime("%I:%M%p")
+      end_time = @reservation.end_time.strftime("%I:%M%p")
+      start_day = @reservation.start_time.to_date
+      end_day = @reservation.end_time.to_date
+      day_diff = (end_day - start_day).to_i
       all_days = schedule.all_occurrences
-      number = schedule.all_occurrences.count - 1
-      if @reservation.recurring[:rule_type].include?("Weekly")
-        index = 7
-      elsif @reservation.recurring[:rule_type].include?("Daily")
-        index = 1
-      end
       prev_reserv = @reservation
       next_reserv = nil
-      number.times do
+      all_days.shift
+      all_days.each do |day|
         next_reservation = prev_reserv.dup
-        next_reservation.start_time = prev_reserv.start_time + index.day
-        next_reservation.end_time = prev_reserv.end_time + index.day
-        next_reservation.prev = prev_reserv.id
-        next_reservation.save
-        if prev_reserv.passengers.present?
-          next_reservation.passengers << prev_reserv.passengers
-        end 
-        prev_reserv.update(next: next_reservation.id)
-        prev_reserv = Reservation.find(next_reservation.id)
+        next_reservation.start_time = day + Time.parse(start_time).seconds_since_midnight.seconds
+        next_reservation.end_time = day + day_diff + Time.parse(end_time).seconds_since_midnight.seconds
+        prev_reserv = @reservation
+        next_reserv = nil
+        number.times do
+          next_reservation = prev_reserv.dup
+          next_reservation.start_time = prev_reserv.start_time + index.day
+          next_reservation.end_time = prev_reserv.end_time + index.day
+          next_reservation.prev = prev_reserv.id
+          next_reservation.save
+          if prev_reserv.passengers.present?
+            next_reservation.passengers << prev_reserv.passengers
+          end 
+          prev_reserv.update(next: next_reservation.id)
+          prev_reserv = Reservation.find(next_reservation.id)
+        end
       end
     end
   end
