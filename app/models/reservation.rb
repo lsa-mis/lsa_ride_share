@@ -217,11 +217,5 @@ class Reservation < ApplicationRecord
       end
     end
   end
-  
-  def reservation_date
-    start_d = start_date.present? ? start_date.strftime("%m/%d/%Y %I:%M%p") : ''
-    end_d = end_date.present? ? end_date.strftime("%m/%d/%Y %I:%M%p") : ''
-    "#{start_d} - #{end_d}"
-  end
 
 end
