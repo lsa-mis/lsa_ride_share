@@ -61,20 +61,13 @@ class RecurringReservation
         next_reservation = prev_reserv.dup
         next_reservation.start_time = day + Time.parse(start_time).seconds_since_midnight.seconds
         next_reservation.end_time = day + day_diff + Time.parse(end_time).seconds_since_midnight.seconds
-        prev_reserv = @reservation
-        next_reserv = nil
-        number.times do
-          next_reservation = prev_reserv.dup
-          next_reservation.start_time = prev_reserv.start_time + index.day
-          next_reservation.end_time = prev_reserv.end_time + index.day
-          next_reservation.prev = prev_reserv.id
-          next_reservation.save
-          if prev_reserv.passengers.present?
-            next_reservation.passengers << prev_reserv.passengers
-          end 
-          prev_reserv.update(next: next_reservation.id)
-          prev_reserv = Reservation.find(next_reservation.id)
+        next_reservation.prev = prev_reserv.id
+        next_reservation.save
+        if prev_reserv.passengers.present?
+          next_reservation.passengers << prev_reserv.passengers
         end
+        prev_reserv.update(next: next_reservation.id)
+        prev_reserv = Reservation.find(next_reservation.id)
       end
     end
   end
