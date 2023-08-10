@@ -96,7 +96,6 @@ class SystemReportsController < ApplicationController
         csv << headers
       
         result.each do |row|
-          headers ||= row.headers
           csv << row.attributes.values
         end
       end
