@@ -39,11 +39,11 @@ class RecurringReservation
   end
 
   def start_on
-    show_date_time(first_reservation.start_time)
+    show_date(first_reservation.start_time)
   end
 
   def end_on
-    show_date_time(last_reservation.end_time)
+    show_date(last_reservation.end_time)
   end
 
   def create_all
