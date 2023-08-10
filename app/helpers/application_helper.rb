@@ -32,6 +32,30 @@ module ApplicationHelper
     field.strftime("%I:%M%p") unless field.blank?
   end
 
+  def show_reservation_start_time(reservation, date)
+    if reservation.start_time.to_date == reservation.end_time.to_date 
+      (reservation.start_time + 15.minute).strftime("%I:%M%p")
+    else
+      if date == reservation.start_time.to_date
+        (reservation.start_time + 15.minute).strftime("%I:%M%p")
+      else
+        ""
+      end
+    end
+  end
+
+  def show_reservation_end_time(reservation, date)
+    if reservation.start_time.to_date == reservation.end_time.to_date 
+      (reservation.end_time - 15.minute).strftime("%I:%M%p")
+    else
+      if date == reservation.end_time.to_date
+        (reservation.end_time - 15.minute).strftime("%I:%M%p")
+      else
+        ""
+      end
+    end
+  end
+
   def show_user_name_by_id(id)
     User.find(id).display_name_email
   end
