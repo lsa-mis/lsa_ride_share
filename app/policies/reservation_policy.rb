@@ -58,6 +58,10 @@ class ReservationPolicy < ApplicationPolicy
     user_in_access_group? || is_reserved_by?
   end
 
+  def add_drivers_later?
+    user_in_access_group?
+  end
+
   def add_non_uofm_passengers?
     user_in_access_group? || is_reserved_by?
   end

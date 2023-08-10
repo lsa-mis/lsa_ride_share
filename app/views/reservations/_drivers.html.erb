@@ -115,7 +115,7 @@
         <% end %>
       <% end %>
       <% if is_admin?(current_user) && params["edit"] != "true" %>
-        <%= link_to reservation_path(@reservation) do %>
+        <%= link_to add_drivers_later_path(@reservation) do %>
           <span class="tertiary_button">Add Drivers Later
             <i class="fa fa-times" aria-hidden="true"></i>
           </span>
