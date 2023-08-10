@@ -50,20 +50,24 @@
       </p>
     </div>
 
-    <div class="py-2 body-md-text">
-      <% if recurring?(@reservation) %>
+    <% if recurring?(@reservation) %>
+      <div class="pt-2 pb-4 flex">
         <% recurring_reservation = RecurringReservation.new(@reservation) %>
-        <label class="body-lg-bold-text">
-          Recurring:
-        </label>
-        <p class="body-lg-text ml-2 inline-block">
-          <%= recurring_reservation.first_reservation.rule.to_s %>
-        </p>
-        <p>
-          <%= "starting on #{recurring_reservation.start_on} ending on #{recurring_reservation.end_on}" %>
-        </p>
-      <% end %>
-    </div>
+        <div class="">
+          <label class="body-lg-bold-text">
+            Recurring:
+          </label>
+        </div>
+        <div class="ml-2">
+          <p class="body-lg-text">
+            <%= recurring_reservation.first_reservation.rule.to_s %>
+          </p>
+          <p class="body-sm-text italic">
+            <%= "Reservation ends: #{recurring_reservation.end_on}" %>
+          </p>
+        </div>
+      </div>
+    <% end %>
 
     <div class="md:flex items-end gap-2 whitespace-nowrap">
       <div class="py-2">
