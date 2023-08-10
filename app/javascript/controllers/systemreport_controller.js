@@ -49,7 +49,12 @@ export default class extends Controller {
 
     a.href = a.href + "format=csv&commit=Run+report"
 
-    a.style.display = "block"
+    if(a.style.display == "none") {
+      a.style.display = "block"
+    }
+    else {
+      a.style.display = "none"
+    }
 
   }
 
