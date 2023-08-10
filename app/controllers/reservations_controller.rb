@@ -1,6 +1,7 @@
 class ReservationsController < ApplicationController
   before_action :auth_user
-  before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger finish_reservation update_passengers send_reservation_updated_email cancel_recurring_reservation ]
+  before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger 
+    finish_reservation update_passengers send_reservation_updated_email cancel_recurring_reservation add_drivers_later ]
   before_action :set_terms_and_units
   before_action :set_programs
   before_action :set_cars, only: %i[ new new_long get_available_cars get_available_cars_long ]
@@ -380,6 +381,16 @@ class ReservationsController < ApplicationController
         driver_manager = Manager.find_by(uniqname: current_user.uniqname)
         @reservation.update(driver_manager_id: driver_manager.id)
       end
+    end
+  end
+
+  def add_drivers_later
+    if @reservation.recurring.present?
+      if @reservation.recurring.present?
+        recurring_reservation = RecurringReservation.new(@reservation)
+        recurring_reservation.create_all
+      end
+      redirect_to reservation_path(@reservation)
     end
   end
 
