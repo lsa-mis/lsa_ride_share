@@ -60,7 +60,7 @@ class RecurringReservation
       all_days.each do |day|
         next_reservation = prev_reserv.dup
         next_reservation.start_time = day + Time.parse(start_time).seconds_since_midnight.seconds
-        next_reservation.end_time = day + day_diff + Time.parse(end_time).seconds_since_midnight.seconds
+        next_reservation.end_time = day + day_diff.day + Time.parse(end_time).seconds_since_midnight.seconds
         next_reservation.prev = prev_reserv.id
         next_reservation.save
         if prev_reserv.passengers.present?
