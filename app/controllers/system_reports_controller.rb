@@ -10,42 +10,49 @@ class SystemReportsController < ApplicationController
 
   def run_report
 
-    all_records = true
+    @vehicle_reports = VehicleReport.all
 
     if params[:unit_id].present?
       car_ids = Car.where(unit_id: params[:unit_id]).pluck(:id)
       reservation_ids = Reservation.where(car_id: car_ids)
       @vehicle_reports = VehicleReport.where(reservation_id: reservation_ids)
-      all_records = false
     end
     if params[:term_id].present?
       program_ids = Program.where(term_id: params[:term_id]).pluck(:id)
       reservation_ids = Reservation.where(program_id: program_ids)
       @vehicle_reports =  @vehicle_reports.where(reservation_id: reservation_ids)
-      all_records = false
-    end
-    if params[:program_id].present?
-      program_ids = Program.where(id: params[:program_id]).pluck(:id)
+    else
+      program_ids = Program.current_term.pluck(:id)
       reservation_ids = Reservation.where(program_id: program_ids)
       @vehicle_reports =  @vehicle_reports.where(reservation_id: reservation_ids)
-      all_records = false
     end
+    if params[:program_id].present?
+      reservation_ids = Reservation.where(program_id: params[:program_id]).ids
+      @vehicle_reports =  @vehicle_reports.where(reservation_id: reservation_ids)
+    end
+
+
 
     @title = "LSA Rideshare System Report"
 
     if params[:format] == "csv"
 
-      if all_records = true
-        sql = 'SELECT "vehicle_reports".* FROM "vehicle_reports"'
-      else
-        sql = @vehicle_reports 
-      end
+      #sql = 'SELECT "vehicle_reports".* FROM "vehicle_reports"'
 
-      records_array = ActiveRecord::Base.connection.exec_query(sql)
-      @result = []
-      @result.push({"table" => "vehicle_report", "total" => records_array.count, "header" => records_array.columns, "rows" => records_array.rows})
+
+
+      #SELECT \"vehicle_reports\".* FROM \"vehicle_reports\" WHERE \"vehicle_reports\".\"reservation_id\" IN (SELECT \"reservations\".\"id\" FROM \"reservations\" WHERE \"reservations\".\"car_id\" IN (1, 2)) AND \"vehicle_reports\".\"reservation_id\" IN (SELECT \"reservations\".\"id\" FROM \"reservations\" WHERE \"reservations\".\"program_id\" = 1) AND \"vehicle_reports\".\"reservation_id\" IN (SELECT \"reservations\".\"id\" FROM \"reservations\" WHERE 1=0)"
+
+      #records_array = ActiveRecord::Base.connection.exec_query(sql)
+
+
+      data = rails_data_to_csv(@vehicle_reports)
+
+      #@result = []
+      #@result.push({"table" => "vehicle_report", "total" => records_array.count, "header" => records_array.columns, "rows" => records_array.rows})
+
     
-      data = data_to_csv(@result, @title)
+      #data = data_to_csv(@result, @title)
 
       respond_to do |format|
         format.html
@@ -81,6 +88,21 @@ class SystemReportsController < ApplicationController
     def set_programs
       @programs = Program.where(unit_id: current_user.unit_ids)
     end
+
+    def rails_data_to_csv(result)
+      headers = ["id", "Reservation id", "Mileage start", "Mileage end", "Fuel % (depart)", "Fuel % (return)", "Parking spot (depart)", "Created by", "Updated by", "Admin Status", "Created", "Last Updated", "Student Status Completed", "Admin Approved", "Parking Spot (return)"]
+
+      CSV.generate(headers: true) do |csv|
+        csv << headers
+      
+        result.each do |row|
+          headers ||= row.headers
+          csv << row.attributes.values
+        end
+      end
+
+    end
+
 
     def data_to_csv(result, title)
       CSV.generate(headers: false) do |csv|

@@ -38,10 +38,10 @@ export default class extends Controller {
         a.href = a.href + "&"
         needsAmp = false
       }
-      a.href = a.href + "program_id=" + unit
+      a.href = a.href + "program_id=" + program
       needsAmp = true
     }
-    
+
     if(needsAmp == true) {
       a.href = a.href + "&"
       needsAmp = false
