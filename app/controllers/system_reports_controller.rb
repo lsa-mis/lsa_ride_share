@@ -16,32 +16,67 @@ class SystemReportsController < ApplicationController
       car_ids = Car.where(unit_id: params[:unit_id]).pluck(:id)
       reservation_ids = Reservation.where(car_id: car_ids)
       @vehicle_reports = VehicleReport.where(reservation_id: reservation_ids)
+      @unit_id_select = params[:unit_id]
     end
     if params[:term_id].present?
       program_ids = Program.where(term_id: params[:term_id]).pluck(:id)
       reservation_ids = Reservation.where(program_id: program_ids)
       @vehicle_reports =  @vehicle_reports.where(reservation_id: reservation_ids)
+      @term_id_select = params[:term_id]
     else
       program_ids = Program.current_term.pluck(:id)
       reservation_ids = Reservation.where(program_id: program_ids)
       @vehicle_reports =  @vehicle_reports.where(reservation_id: reservation_ids)
+      ###
+      @term_id_select = Program.current_term.pluck(:id) #NOT WORKING???
     end
     if params[:program_id].present?
       reservation_ids = Reservation.where(program_id: params[:program_id]).ids
       @vehicle_reports =  @vehicle_reports.where(reservation_id: reservation_ids)
+      @program_id_select = params[:program_id]
     end
 
+    @has_damage = false
+
+    # ?? - HOW TO TRACK DAMAGE?
+
+    @params_exist = false
 
     @title = "LSA Rideshare System Report"
 
     if params[:format] == "csv"
 
-      sql = " SELECT vehicle_reports.id, title AS program, code AS term, reservation_id, start_time, end_time, car.car_number, stu.uniqname AS driver, mileage_start, mileage_end, gas_start, gas_end, vehicle_reports.parking_spot, parking_spot_return, vehicle_reports.status, student_status AS student_status_completed, vehicle_reports.approved AS admin_approved, (SELECT email FROM users WHERE vehicle_reports.updated_by = users.id) AS last_updated_by FROM vehicle_reports 
+      sql = " SELECT vehicle_reports.id, title AS program, code AS term, reservation_id, start_time, end_time, car.car_number, stu.uniqname AS driver, mileage_start, mileage_end, gas_start, gas_end, vehicle_reports.parking_spot, parking_spot_return, vehicle_reports.status, student_status AS student_status_completed, vehicle_reports.approved AS admin_approved, (SELECT email FROM users WHERE vehicle_reports.updated_by = users.id) AS last_updated_by FROM vehicle_reports
       LEFT JOIN reservations AS res ON res.id = vehicle_reports.reservation_id 
       LEFT JOIN students AS stu ON res.driver_id = stu.id 
-      LEFT JOIN cars AS car ON car.id = res.id 
+      LEFT JOIN cars AS car ON car.id = res.car_id
       RIGHT JOIN programs ON res.program_id = programs.id
-      LEFT JOIN terms ON terms.id = programs.term_id;"
+      LEFT JOIN terms ON terms.id = programs.term_id
+      LEFT JOIN units ON programs.unit_id = units.id"
+
+      if params[:program_id].present?
+        sql = sql + " WHERE programs.id = " + @program_id_select 
+        @params_exist = true
+      end
+      if params[:term_id].present?
+        if @params_exist
+          sql = sql + " AND "
+        else
+          sql = sql + " WHERE "
+        end
+        sql = sql + " terms.id = " + @term_id_select 
+        @params_exist = true
+      end
+      if params[:unit_id].present?
+        if @params_exist
+          sql = sql + " AND "
+        else
+          sql = sql + " WHERE "
+        end
+        sql = sql + " units.id = " + @unit_id_select
+      end
+
+      sql = sql + ";"
 
       records_array = ActiveRecord::Base.connection.exec_query(sql)
 
