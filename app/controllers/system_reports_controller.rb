@@ -32,27 +32,24 @@ class SystemReportsController < ApplicationController
     end
 
 
-
     @title = "LSA Rideshare System Report"
 
     if params[:format] == "csv"
 
-      #sql = 'SELECT "vehicle_reports".* FROM "vehicle_reports"'
+      sql = " SELECT vehicle_reports.id, title AS program, code AS term, reservation_id, start_time, end_time, car.car_number, stu.uniqname AS driver, mileage_start, mileage_end, gas_start, gas_end, vehicle_reports.parking_spot, parking_spot_return, vehicle_reports.status, student_status AS student_status_completed, vehicle_reports.approved AS admin_approved, (SELECT email FROM users WHERE vehicle_reports.updated_by = users.id) AS last_updated_by FROM vehicle_reports 
+      LEFT JOIN reservations AS res ON res.id = vehicle_reports.reservation_id 
+      LEFT JOIN students AS stu ON res.driver_id = stu.id 
+      LEFT JOIN cars AS car ON car.id = res.id 
+      RIGHT JOIN programs ON res.program_id = programs.id
+      LEFT JOIN terms ON terms.id = programs.term_id;"
+
+      records_array = ActiveRecord::Base.connection.exec_query(sql)
+
+      @result = []
+      @result.push({"table" => "vehicle_report", "total" => records_array.count, "header" => records_array.columns, "rows" => records_array.rows})
 
 
-
-      #SELECT \"vehicle_reports\".* FROM \"vehicle_reports\" WHERE \"vehicle_reports\".\"reservation_id\" IN (SELECT \"reservations\".\"id\" FROM \"reservations\" WHERE \"reservations\".\"car_id\" IN (1, 2)) AND \"vehicle_reports\".\"reservation_id\" IN (SELECT \"reservations\".\"id\" FROM \"reservations\" WHERE \"reservations\".\"program_id\" = 1) AND \"vehicle_reports\".\"reservation_id\" IN (SELECT \"reservations\".\"id\" FROM \"reservations\" WHERE 1=0)"
-
-      #records_array = ActiveRecord::Base.connection.exec_query(sql)
-
-
-      data = rails_data_to_csv(@vehicle_reports)
-
-      #@result = []
-      #@result.push({"table" => "vehicle_report", "total" => records_array.count, "header" => records_array.columns, "rows" => records_array.rows})
-
-    
-      #data = data_to_csv(@result, @title)
+      data = data_to_csv(@result, @title)
 
       respond_to do |format|
         format.html
@@ -89,37 +86,45 @@ class SystemReportsController < ApplicationController
       @programs = Program.where(unit_id: current_user.unit_ids)
     end
 
-    def rails_data_to_csv(result)
-      headers = ["id", "Reservation id", "Mileage start", "Mileage end", "Fuel % (depart)", "Fuel % (return)", "Parking spot (depart)", "Created by", "Updated by", "Admin Status", "Created", "Last Updated", "Student Status Completed", "Admin Approved", "Parking Spot (return)"]
+    # def rails_data_to_csv(result)
+    #   headers = ["id", "Reservation id", "Mileage start", "Mileage end", "Fuel % (depart)", "Fuel % (return)", "Parking spot (depart)", "Created by", "Updated by", "Admin Status", "Created", "Last Updated", "Student Status Completed", "Admin Approved", "Parking Spot (return)"]
 
-      CSV.generate(headers: true) do |csv|
-        csv << headers
+    #   CSV.generate(headers: true) do |csv|
+    #     csv << headers
       
-        result.each do |row|
-          csv << row.attributes.values
+    #     convert_admin_approved = { "TRUE" => "Approved", "FALSE" => "Not approved" }
+
+    #     result.each do |row|
+
+    #       row["created_by"] = "person" #WORKING ON - not working with strings
+
+    #       record_id = a.attributes.values_at(key_id)[0]
+
+    #       csv << row.attributes.values
+    #     end
+    #   end
+    # end
+
+
+  def data_to_csv(result, title)
+    CSV.generate(headers: true) do |csv|
+      csv << Array(title)
+
+      result.each do |res|
+        line =[]
+        line << res['table'].titleize.upcase
+        line << "Total number of records: " + res['total'].to_s
+        csv << line
+        header = res['header'].map! { |e| e.titleize.upcase }
+        csv << header
+
+        res['rows'].each do |h|
+          h[0] = "http://localhost:3000/" + res['table'] + "/" + h[0].to_s
+          csv << h
         end
-      end
 
-    end
-
-
-    def data_to_csv(result, title)
-      CSV.generate(headers: false) do |csv|
-        csv << Array(title)
-        result.each do |res|
-          line =[]
-          line << res['table'].titleize.upcase
-          line << "Total number of records: " + res['total'].to_s
-          csv << line
-          header = res['header'].map! { |e| e.titleize.upcase }
-          csv << header
-          res['rows'].each do |h|
-            h[0] = "http://localhost:3000/" + res['table'] + "/" + h[0].to_s
-            csv << h
-          end
-          csv << Array('')
-        end
+        csv << Array('')
       end
     end
-
+  end
 end
