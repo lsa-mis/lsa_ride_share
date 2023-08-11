@@ -51,21 +51,14 @@
     </div>
 
     <% if recurring?(@reservation) %>
-      <div class="pt-2 pb-4 flex">
+      <div class="pt-2 pb-8">
         <% recurring_reservation = RecurringReservation.new(@reservation) %>
-        <div class="">
-          <label class="body-lg-bold-text">
-            Recurring:
-          </label>
-        </div>
-        <div class="ml-2">
-          <p class="body-lg-text">
-            <%= recurring_reservation.first_reservation.rule.to_s %>
-          </p>
-          <p class="body-sm-text italic">
-            <%= "Reservation ends: #{recurring_reservation.end_on}" %>
-          </p>
-        </div>
+        <label class="body-lg-bold-text">
+          Recurring:
+        </label>
+        <p class="body-lg-text ml-2 inline-block">
+          <%= recurring_reservation.first_reservation.rule.to_s %>
+        </p>
       </div>
     <% end %>
 
