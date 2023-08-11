@@ -7,7 +7,8 @@ class WelcomePagesController < ApplicationController
     @students = Student.where(uniqname: current_user.uniqname, program: Program.current_term)
     @students_data = @students.map { |s| [s.program.display_name_with_title_and_unit, s.id] }
     program_ids = @students.map { |p| p.program.id }
-    unit_ids = Program.where(id: program_ids).pluck(:unit_id) 
+    unit_ids = Program.where(id: program_ids).pluck(:unit_id)
+    @unit_names =  Unit.all.pluck(:name).join(", ").reverse.sub(',', ' dna ,').reverse
     if params[:student_id].present?
       @student = Student.find(params[:student_id])
       @program = @student.program
