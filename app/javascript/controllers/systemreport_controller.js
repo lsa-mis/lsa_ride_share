@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["format", "unit", "term", "program"]
+  static targets = ["format", "unit", "term", "program", "runreportbutton"]
 
   connect() {
     console.log("connect - system report")
@@ -18,7 +18,7 @@ export default class extends Controller {
     console.log(format)
 
     var a = document.getElementById('csv_link'); 
-    //a.href = "run_report?term_id= " + term + "&unit_id=" + unit + "&format=csv&commit=Run+report"
+
     a.href = "run_report?"
 
     if(term != "") {
@@ -51,9 +51,13 @@ export default class extends Controller {
 
     if(a.style.display == "none") {
       a.style.display = "block"
+      this.runreportbuttonTarget.classList.add("fields--hide")
+      this.runreportbuttonTarget.classList.remove("fields--display")
     }
     else {
       a.style.display = "none"
+      this.runreportbuttonTarget.classList.add("fields--display")
+      this.runreportbuttonTarget.classList.remove("fields--hide")
     }
 
   }

@@ -31,7 +31,7 @@
         <%= select_tag :format, options_for_select({"Display in a browser" => "html", "Export to CSV" => "csv"}, "Display in a browser"), required: true,  :"data-action" => "change->systemreport#saveLink", "data-systemreport-target": "format" %>
       </div>
 
-      <div class="my-2">
+      <div class="my-2" data-systemreport-target="runreportbutton">
         <%= f.submit "Run report", data: { disable_with: false }, method: :get, class: "primary_button" %>
       </div>
 
