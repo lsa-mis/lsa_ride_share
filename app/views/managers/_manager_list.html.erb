@@ -10,6 +10,8 @@
           <th class="header_th">MVR Status</th>
           <th class="header_th">Canvas Course Complete Date</th>
           <th class="header_th">In Person Orientation Date</th>
+          <th class="header_th">Programs</th>
+
         </tr>
       </thead>
       <tbody>
@@ -35,6 +37,16 @@
             </td>
             <td class="mi_tbody_td">
               <%= manager.meeting_with_admin_date %>
+            </td>
+            <td class="mi_tbody_td">
+              <% manager.instructor.each do |program| %>
+                <%= program.title_term %> (instructor)
+                <br>
+              <% end %>
+              <% manager.manager.each do |program| %>
+                <%= program.title_term %> (manager)
+                <br>
+              <% end %>
             </td>
           </tr>
         <% end %>

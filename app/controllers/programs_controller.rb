@@ -85,7 +85,7 @@ class ProgramsController < ApplicationController
         @program.instructor_id = result['instructor_id']
         note = result['note']
       else
-        flash.now[:alert] = "The '#{@program.instructor.uniqname}' uniqname is not valid."
+        flash.now[:alert] = result['note']
         render :edit, status: :unprocessable_entity
         return
       end
@@ -107,6 +107,13 @@ class ProgramsController < ApplicationController
         result['note'] = "The '#{uniqname}' uniqname is not valid."
       else
         result['valid'] =  true
+        # check if uniqname is an admin uniqname
+        ldap_group = is_member_of_admin_groups?(uniqname)
+        if ldap_group
+          result['valid'] = false
+          result['note'] = "#{uniqname} is an admin - a member of #{ldap_group} group. Admins can't be instructors."
+          return result
+        end
         if name.nil?
           result['note'] = "Mcommunity returns no name for '#{uniqname}' uniqname."
           @instructor.first_name = ''
