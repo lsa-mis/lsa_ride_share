@@ -169,7 +169,7 @@ class Reservation < ApplicationRecord
   end
 
   def check_diff_time
-    if ((self.end_time - self.start_time)  / 1.minute).to_i < 46
+    if ((self.end_time - self.start_time) / 1.minute).to_i < 46
       errors.add(:end_time, " is too close to Start Time")
     end
   end
