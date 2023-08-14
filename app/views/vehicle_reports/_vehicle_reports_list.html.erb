@@ -1,6 +1,6 @@
 <%= turbo_frame_tag 'vehicle_reports' do %>
   <div class="min-w-full">
-    <table class="mi_table">
+    <table class="mi_table" id="desk-table">
       <thead class="border border-l-0 border-r-0 border-gray-um60">
         <tr>
           <th class="header_th">Item</th>
@@ -73,6 +73,100 @@
           </tr>
         <% end %>
       </tbody>
+    </table>
+    <table id="phone-table">
+      <% @vehicle_reports.order(updated_at: :desc).each do |vehicle_report| %>
+        <tr class="mi_tbody_tr">
+          <th class="header_mobile">Item</th>
+          <td class="mi_tbody_td">
+            <%= link_to vehicle_report.id, vehicle_report_path(vehicle_report), class: "link_to" %>
+          </td>
+        </tr>
+        <tr class="mi_tbody_tr">
+          <th class="header_mobile">Reservation Dates</th>
+          <td class="mi_tbody_td">
+            <%= link_to show_reservation_date(vehicle_report.reservation), reservation_path(vehicle_report.reservation_id), class: "link_to", data: { "turbo-frame": "_top" } %>
+          </td>
+        </tr>
+        <tr class="mi_tbody_tr">
+          <th class="header_mobile">Car number</th>
+          <td class="mi_tbody_td">
+            <%= show_car(vehicle_report.reservation) %>
+          </td>
+        </tr>
+        <tr class="mi_tbody_tr">
+          <th class="header_mobile">Driver</th>
+          <td class="mi_tbody_td">
+            <%= show_driver(vehicle_report.reservation) %>
+          </td>
+        </tr>
+        <tr class="mi_tbody_tr">
+          <th class="header_mobile">Mileage start</th>
+          <td class="mi_tbody_td">
+            <%= vehicle_report.mileage_start %>
+          </td>
+        </tr>
+        <tr class="mi_tbody_tr">
+          <th class="header_mobile">Mileage end</th>
+          <td class="mi_tbody_td">
+            <%= vehicle_report.mileage_end %>
+          </td>
+        </tr>
+        <tr class="mi_tbody_tr">
+          <th class="header_mobile">Fuel % (depart)</th>
+          <td class="mi_tbody_td">
+            <%= vehicle_report.gas_start %>
+          </td>
+        </tr>
+        <tr class="mi_tbody_tr">
+          <th class="header_mobile">Fuel % (return)</th>
+          <td class="mi_tbody_td">
+            <%= vehicle_report.gas_end %>
+          </td>
+        </tr>
+        <tr class="mi_tbody_tr">
+          <th class="header_mobile">Parking spot (depart)</th>
+          <td class="mi_tbody_td">
+            <%= vehicle_report.parking_spot %>
+          </td>
+        </tr>
+        <tr class="mi_tbody_tr">
+          <th class="header_mobile">Parking spot (return)</th>
+          <td class="mi_tbody_td">
+            <%= vehicle_report.parking_spot_return %>
+          </td>
+        </tr>
+        <tr class="mi_tbody_tr">
+          <th class="header_mobile">Damage</th>
+          <td class="mi_tbody_td">
+            <% if vehicle_report.image_damages.attached? %>
+              <%= link_to vehicle_report_path(vehicle_report), class: "link_to" do %>
+                <i class="fa-solid fa-check"></i>
+              <% end %>
+            <% end %>
+          </td>
+        </tr>
+        <tr class="mi_tbody_tr">
+          <th class="header_mobile">Last updated</th>
+          <td class="mi_tbody_td">
+            <% if vehicle_report.updated_at.present? %>
+              <%= show_date_time(vehicle_report.updated_at) %>
+            <% end %>
+          </td>
+        </tr>
+        <tr class="mi_tbody_tr">
+          <th class="header_mobile">Student Status</th>
+          <td class="mi_tbody_td status-<%= vehicle_report.approved %>">
+            <%= vehicle_report.status %>
+          </td>
+        </tr>
+        <tr class="mobile_tr">
+          <th class="header_mobile">Student Status</th>
+          <td class="mi_tbody_td status-<%= vehicle_report.student_status %>">
+            <%= show_vehicle_report_student_status(vehicle_report) %>
+          </td>
+        </tr>
+      <% end %>
     </table>
   </div>
 <% end %>
