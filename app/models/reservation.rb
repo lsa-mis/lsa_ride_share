@@ -53,6 +53,7 @@ class Reservation < ApplicationRecord
   validate :check_number_of_people_on_trip, on: :update
   validate :driver_student_or_manager, on: :update
   validate :check_drivers, on: :update
+  validate :check_diff_time
 
   scope :with_passengers, -> { Reservation.includes(:passengers) }
 
@@ -164,6 +165,12 @@ class Reservation < ApplicationRecord
     end
     if drivers_emails.present?
       ReservationMailer.car_reservation_drivers_edited(self, drivers_emails, self.reserved_by).deliver_now
+    end
+  end
+
+  def check_diff_time
+    if ((self.end_time - self.start_time) / 1.minute).to_i < 46
+      errors.add(:end_time, " is too close to Start Time")
     end
   end
 
