@@ -33,7 +33,7 @@
 
 /*normal mode*/
 #desk-table {
-  display: block;
+  display: table;
 }
 #phone-table {
   display: none;
