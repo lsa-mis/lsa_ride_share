@@ -391,7 +391,9 @@ class ReservationsController < ApplicationController
         recurring_reservation.create_all
       end
       redirect_to reservation_path(@reservation)
+      return
     end
+    redirect_to reservation_path(@reservation)
   end
 
   def finish_reservation
