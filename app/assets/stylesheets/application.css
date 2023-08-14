@@ -30,3 +30,21 @@
 .status-true {
   color: #00743C
 }
+
+/*normal mode*/
+#desk-table {
+  display: block;
+}
+#phone-table {
+  display: none;
+}
+
+/*mobile mode*/
+@media only screen and (max-width: 500px) {
+  #desk-table {
+      display: none;
+  }
+  #phone-table {
+      display: block;
+  }
+}
