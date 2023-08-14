@@ -4,7 +4,7 @@
 
   <div>
     <%= form_with url: vehicle_reports_path, method: :get, data: { autosubmit_target: "form", turbo_frame: "turbo-vehicle_reports" } do |form| %>
-      <div class="flex gap-2 mb-4">
+      <div class="md:flex gap-2 mb-4">
         <div class="">
           <% if current_user.unit_ids.count > 1 %>
             <label for="unit_id" class="fancy_label">Select a Unit</label>
