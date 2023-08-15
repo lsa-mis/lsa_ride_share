@@ -27,8 +27,7 @@ class SystemReportsController < ApplicationController
       program_ids = Program.current_term.pluck(:id)
       reservation_ids = Reservation.where(program_id: program_ids)
       @vehicle_reports =  @vehicle_reports.where(reservation_id: reservation_ids)
-      ###
-      @term_id_select = Program.current_term.pluck(:id) #NOT WORKING???
+      @term_id_select = Program.current_term.pluck(:id) 
     end
     if params[:program_id].present?
       reservation_ids = Reservation.where(program_id: params[:program_id]).ids
@@ -36,9 +35,18 @@ class SystemReportsController < ApplicationController
       @program_id_select = params[:program_id]
     end
 
+
+    # TODO - above query not working correctly - FALL 2023 shows an item but date is in JUNE
+
     @has_damage = false
 
-    # ?? - HOW TO TRACK DAMAGE?
+    #### TODO - HOW TO TRACK DAMAGE?
+
+   # if @vehicle_reports.image_damages.attached?
+      #how to get at image_damages
+    #end
+
+    #
 
     @params_exist = false
 
@@ -46,9 +54,23 @@ class SystemReportsController < ApplicationController
 
     if params[:format] == "csv"
 
-      sql = " SELECT vehicle_reports.id, title AS program, code AS term, reservation_id, start_time, end_time, car.car_number, stu.uniqname AS driver, mileage_start, mileage_end, gas_start, gas_end, vehicle_reports.parking_spot, parking_spot_return, vehicle_reports.status, student_status AS student_status_completed, vehicle_reports.approved AS admin_approved, (SELECT email FROM users WHERE vehicle_reports.updated_by = users.id) AS last_updated_by FROM vehicle_reports
+      sql = " SELECT vehicle_reports.id, title AS program, code AS term, terms.name AS term_name, reservation_id, start_time, end_time, car.car_number, 
+      (SELECT students.first_name || ' ' || students.last_name FROM students WHERE res.driver_id = students.id ) AS driver_name,
+      (SELECT students.uniqname FROM students WHERE res.driver_id = students.id ) AS driver_uniqname, 
+      driver_phone, 
+      (SELECT students.first_name || ' ' || students.last_name FROM students WHERE res.backup_driver_id = students.id ) AS backup_driver_name,
+      (SELECT students.uniqname FROM students WHERE res.backup_driver_id = students.id ) AS backup_driver_uniqname, 
+      backup_driver_phone,
+
+
+      
+      (SELECT reservation_passengers.student_id FROM reservation_passengers WHERE res.student_id = reservation_passengers.student_id),
+
+
+
+      (SELECT sites.title FROM sites WHERE res.site_id = sites.id) AS site,
+      mileage_start, mileage_end, gas_start, gas_end, vehicle_reports.parking_spot, parking_spot_return, vehicle_reports.status, student_status AS student_status_completed, vehicle_reports.approved AS admin_approved, (SELECT email FROM users WHERE vehicle_reports.updated_by = users.id) AS last_updated_by FROM vehicle_reports
       LEFT JOIN reservations AS res ON res.id = vehicle_reports.reservation_id 
-      LEFT JOIN students AS stu ON res.driver_id = stu.id 
       LEFT JOIN cars AS car ON car.id = res.car_id
       RIGHT JOIN programs ON res.program_id = programs.id
       LEFT JOIN terms ON terms.id = programs.term_id
@@ -121,6 +143,13 @@ class SystemReportsController < ApplicationController
       @programs = Program.where(unit_id: current_user.unit_ids)
     end
 
+    # def image_damages=(attachables)
+    #   attachables = Array(attachables).compact_blank
+    #   if attachables.any?
+    #     return true
+    #   end
+    # end
+
     # def rails_data_to_csv(result)
     #   headers = ["id", "Reservation id", "Mileage start", "Mileage end", "Fuel % (depart)", "Fuel % (return)", "Parking spot (depart)", "Created by", "Updated by", "Admin Status", "Created", "Last Updated", "Student Status Completed", "Admin Approved", "Parking Spot (return)"]
 
@@ -155,7 +184,11 @@ class SystemReportsController < ApplicationController
 
         res['rows'].each do |h|
           h[0] = "http://localhost:3000/" + res['table'] + "/" + h[0].to_s
+
+          h[4] = "http://localhost:3000/reservations/" + h[4].to_s
           csv << h
+
+          
         end
 
         csv << Array('')
