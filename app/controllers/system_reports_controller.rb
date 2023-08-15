@@ -40,13 +40,10 @@ class SystemReportsController < ApplicationController
 
     @has_damage = false
 
-    #### TODO - HOW TO TRACK DAMAGE?
-
-   # if @vehicle_reports.image_damages.attached?
+    if @vehicle_reports.image_damages.attached?
       #how to get at image_damages
-    #end
+    end
 
-    #
 
     @params_exist = false
 
@@ -75,7 +72,8 @@ class SystemReportsController < ApplicationController
       --(SUM(mileage_end) - SUM(mileage_start)) AS mileage_total,
 
 
-      gas_start, gas_end, vehicle_reports.parking_spot, parking_spot_return, vehicle_reports.status, student_status AS student_status_completed, vehicle_reports.approved AS admin_approved, (SELECT email FROM users WHERE vehicle_reports.updated_by = users.id) AS last_updated_by FROM vehicle_reports
+      gas_start, gas_end, vehicle_reports.parking_spot, parking_spot_return, vehicle_reports.status, student_status AS student_status_completed, vehicle_reports.approved AS admin_approved, 
+      (SELECT email FROM users WHERE vehicle_reports.updated_by = users.id) AS last_updated_by FROM vehicle_reports
       LEFT JOIN reservations AS res ON res.id = vehicle_reports.reservation_id 
       LEFT JOIN cars AS car ON car.id = res.car_id
       RIGHT JOIN programs ON res.program_id = programs.id
