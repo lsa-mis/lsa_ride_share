@@ -45,7 +45,7 @@
 
   <% if user_signed_in? && is_admin?(current_user) %>
     <div class="container p-2 rounded-lg shadow-lg text-xl mb-20 bg-gray-50">
-      <h2 class="mb-4">Admin Notes:</h2>
+      <h2 class="mb-4">Admin Comments:</h2>
       <%= render partial: "notes/form", locals: { note: Note.new, noteable: @vehicle_report } %>
     
       <%= turbo_stream_from @vehicle_report, :notes %>
