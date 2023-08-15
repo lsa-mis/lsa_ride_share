@@ -1,8 +1,12 @@
-<%= form_with(model: vehicle_report, class: "contents") do |form| %>
-  <% if vehicle_report.errors.any? %>
-    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
-      <h2><%= pluralize(vehicle_report.errors.count, "error") %> prohibited this vehicle_report from being saved:</h2>
+<%= form_with model: vehicle_report, class: "contents",
+  data: { controller: "vehiclereport",
+          target: "form",
+          action: "submit->vehiclereport#submitForm"
+        } do |form| %>
 
+  <% if vehicle_report.errors.any? %>
+    <div id="error_explanation" class="text-red-umred px-3 py-2 font-medium rounded-lg mt-3">
+      <h2><%= pluralize(vehicle_report.errors.count, "error") %> prohibited this vehicle_report from being saved: </h2>
       <ul>
         <% vehicle_report.errors.each do |error| %>
           <li><%= error.full_message %></li>
@@ -10,53 +14,92 @@
       </ul>
     </div>
   <% end %>
+  <h2>Car: 
+    <%= @reservation.car.car_number + " - " + @reservation.program.title %>
+  </h2>
 
-  <div class="my-5">
-    <%= form.label :reservation_id %>
-    <%= form.text_field :reservation_id, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+  <h3>
+    Student status:
+    <% if @vehicle_report.student_status %>
+    complete
+    <% else %>
+      not complete
+    <% end %>
+  </h3>
+  <p class="body-sm-text m-2">
+    Upload images (if you have to) after submitting the form.
+  </p>
+  <div>
+
+  <%= form.hidden_field :reservation_id, value: @reservation.id %>
+  <div>
+    <div>
+      <div id="error_scroll_place">
+      </div>
+
+      <div class="my-5">
+          <%= form.label :mileage_start, 'Mileage Start *', class: "fancy_label"  %>
+          <%= form.number_field :mileage_start, step: 0.01, required: true, placeholder: "000.00", class: "input_text_field", "data-vehiclereport-target": "mileage_start"  %>
+      </div>
+
+      <div class="error_text" id="mileage_show_error">
+      </div>
+
+      <div class="my-5">
+        <%= form.label :mileage_end, class: "fancy_label" %>
+        <%= form.number_field :mileage_end, step: 0.01, class: "input_text_field", placeholder: "000.00", "data-vehiclereport-target": "mileage_end"  %>
+      </div>
+
+      <div class="my-5">
+          Trip Mileage Total: <%= calculate_mileage(@vehicle_report) %>
+      </div>
+
+      <div class="my-5">
+        <%= form.label :gas_start, 'Percent of Fuel Remaining (Departure) *', class: "fancy_label"  %>
+        <%= form.select(:gas_start, options_for_select(gas_percent, @vehicle_report.gas_start), { include_blank: "Select ..." }, { class: "input_text_field", "data-vehiclereport-target": "gas_start" }) %>
+      </div>
+
+      <div class="error_text" id="gas_error">
+      </div>
+
+      <div class="my-5">
+        <%= form.label :gas_end, 'Percent of Fuel Remaining (Return)', class: "fancy_label"  %>
+        <%= form.select(:gas_end, options_for_select(gas_percent, @vehicle_report.gas_end), { include_blank: "Select ..." }, { class: "input_text_field" } ) %>
+      </div>
+
+      <div class="my-5">
+        <%= form.label :parking_spot, 'Parking Spot (depart)', class: "fancy_label"  %>
+        <%= form.text_field :parking_spot, placeholder: "Parking Spot (depart)", class: "input_text_field" %>
+      </div>
+
+            <div class="my-5">
+        <%= form.label :parking_spot_return, 'Parking Spot (return)', class: "fancy_label"  %>
+        <%= form.text_field :parking_spot_return, placeholder: "Parking Spot (return)", class: "input_text_field" %>
+      </div>
+
+    </div>
+
   </div>
 
   <div class="my-5">
-    <%= form.label :mileage_start %>
-    <%= form.text_field :mileage_start, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+    <%= form.label :comment, class: "fancy_label"  %>
+    <%= form.rich_text_area :comment, class: "input_text_field" %>
+  </div>
+  
+  <% if action_name == "new" %>
+    <%= form.hidden_field :created_by, value: current_user.id %>
+  <% end %>
+  <%= form.hidden_field :updated_by, value: current_user.id %>
+
+  <div class="">
+    <%= form.submit class: "primary_button" %>
+    <% if action_name == "edit" %>
+      <%= link_to vehicle_report_path(vehicle_report) do %>
+        <span class="tertiary_button">Cancel
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </span>
+      <% end %>
+    <% end %>
   </div>
 
-  <div class="my-5">
-    <%= form.label :mileage_end %>
-    <%= form.text_field :mileage_end, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :gas_start %>
-    <%= form.text_field :gas_start, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :gas_end %>
-    <%= form.text_field :gas_end, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :parking_spot %>
-    <%= form.text_field :parking_spot, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :created_by %>
-    <%= form.number_field :created_by, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :updated_by %>
-    <%= form.number_field :updated_by, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
-
-  <div class="my-5">
-    <%= form.label :status %>
-    <%= form.text_field :status, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
-
-  <div class="inline">
-    <%= form.submit class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
-  </div>
 <% end %>

@@ -1,0 +1,36 @@
+<div class="container px-1 mb-20" data-controller='autosubmit'>
+
+  <div class="flex justify-between items-center pb-4">
+    <div>
+      <h1>Managers</h1>
+      <p class="body-sm-text mt-2">To Add a new Manager, go to <%= link_to 'Programs', programs_path, class: "link_to" %> and add the manager to a program that allows to have managers</p>
+    </div>
+    <div class="py-2">
+      <%= link_to 'Update MVR Status', update_managers_mvr_status_path(@managers), class: "secondary_blue_button" %>
+    </div>
+  </div>
+
+  <div>
+    <% if current_user.unit_ids.count > 1 %>
+      <%= form_with url: managers_path, method: :get, class: "", data: { autosubmit_target: "form", turbo_frame: "turbo-managers" } do |form| %>
+        <div class="mb-4">
+          <label for="unit_id" class="fancy_label">Select a Unit</label>
+          <%= select_tag "unit_id", options_from_collection_for_select(@units, :id, :name, selected: params[:unit_id]), include_blank: "All Units", class: "filter_select w-48",
+              :"data-action" => "change->autosubmit#search" %>
+        </div>
+        <%= turbo_frame_tag "turbo-managers" do %>
+          <div id="maincontent"></div>
+          <div class="mb-10" id="managers_listing">
+            <div id="managers" class="min-w-full">
+              <%= render 'manager_list' %>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+    <% else %>
+      <div id="managers" class="min-w-full">
+        <%= render 'manager_list' %>
+      </div>
+    <% end %>
+  </div>
+</div>

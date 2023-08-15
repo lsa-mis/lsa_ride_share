@@ -1,0 +1,41 @@
+<%= form_with(model: term, class: "contents") do |form| %>
+  <% if term.errors.any? %>
+    <div id="error_explanation" class="text-red-umred px-3 py-2 font-medium rounded-lg mt-3">
+      <h2><%= pluralize(term.errors.count, "error") %> prohibited this term from being saved:</h2>
+      <ul>
+        <% term.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="my-5">
+    <%= form.label :code, 'Code *', class: "fancy_label" %>
+    <%= form.text_field :code, required: true, placeholder: "Code", class: "input_text_field" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :name, 'Name *', class: "fancy_label" %>
+    <%= form.text_field :name, required: true, placeholder: "Name", class: "input_text_field" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :classes_begin_date, 'Classes Begin Date *', class: "fancy_label" %>
+    <%= form.date_field :classes_begin_date, required: true, class: "input_text_field" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :classes_end_date, 'Classes End Date *', class: "fancy_label" %>
+    <%= form.date_field :classes_end_date, required: true, class: "input_text_field" %>
+  </div>
+
+  <div class="inline">
+    <%= form.submit class: "primary_button" %>
+  </div>
+  <%= link_to terms_path do %>
+    <span class="tertiary_button">Cancel
+      <i class="fa fa-times" aria-hidden="true"></i>
+    </span>
+  <% end %>
+<% end %>

@@ -1,37 +1,51 @@
 <div id="<%= dom_id site %>">
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Title:</strong>
-    <%= site.title %>
+
+  <div class="py-2">
+    <label class="body-lg-medium-text">
+      Address:
+    </label>
+    <div class="body-lg-text inline-block">
+      <%= site.address %>
+    </div>
+  </div>
+  <div class="flex items-center gap-2">
+    <div class="py-2">
+      <label class="body-lg-medium-text">
+        Contacts:
+      </label>
+      <div class="body-lg-text ml-2">
+        <% @contacts.each do |contact| %>
+          <div>
+              <%= contact.display_name %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    <% if policy(Contact).edit? %>
+      <div class="py-2">
+        <%= link_to 'Edit Contacts', site_contacts_path(@site), class: "primary_button" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="py-2">
+    <label class="body-lg-medium-text">
+      Programs:
+    </label>
+    <div class="body-lg-text ml-2">
+      <% @programs.each do |program| %>
+        <div>
+          <% if policy(program).edit? %>
+            <%= link_to program.display_name_with_title, program_path(program), class: "link_to" %>
+          <% else %>
+            <%= program.display_name_with_title %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <p class="body-sm-text m-2">
+    <%= updated_on_and_by(@site) %>
   </p>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Address1:</strong>
-    <%= site.address1 %>
-  </p>
-
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Address2:</strong>
-    <%= site.address2 %>
-  </p>
-
-  <p class="my-5">
-    <strong class="block font-medium mb-1">City:</strong>
-    <%= site.city %>
-  </p>
-
-  <p class="my-5">
-    <strong class="block font-medium mb-1">State:</strong>
-    <%= site.state %>
-  </p>
-
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Zip code:</strong>
-    <%= site.zip_code %>
-  </p>
-
-  <% if action_name != "show" %>
-    <%= link_to "Show this site", site, class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-    <%= link_to 'Edit this site', edit_site_path(site), class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
-    <hr class="mt-6">
-  <% end %>
 </div>

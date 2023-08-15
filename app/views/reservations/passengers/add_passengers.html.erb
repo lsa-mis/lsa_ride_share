@@ -1,0 +1,57 @@
+<div class="mx-auto w-full">
+  <div class="lg:flex justify-between items-center mb-4">
+    <div>
+      <h1>Add Passengers</h1>
+      <h2>
+        <%= @reservation.program.display_name_with_title %>
+      </h2>
+    </div>
+    <div class="mt-4 whitespace-nowrap">
+      <% if params["edit"] == "true" %>
+        <div class="lg:flex lg:flex-col place-items-end whitespace-nowrap">
+          <%= link_to "Go Back to Reservation Page", update_passengers_path(@reservation), class: "primary_button mb-4" %>
+          <%= link_to reservation_path(@reservation) do %>
+            <span class="tertiary_button">Cancel
+              <i class="fa fa-times" aria-hidden="true"></i>
+            </span>
+          <% end %>
+        </div>
+      <% else %>
+        <%= link_to "Finish Creating Reservation", finish_reservation_path(@reservation), class: "primary_button" %>
+      <% end %>
+    </div>
+  </div>
+
+  <h3 class="m-2">
+    Reservation Passenger List
+  </h3>
+  <div class="m-2">
+    <p class="body-sm-text">
+      Maximum number of people allowed - <%= @reservation.number_of_people_on_trip %>
+    </p>
+    <%= turbo_frame_tag "number_of_added_people_on_trip" do %>
+      <%= render "reservations/number_of_added_people_on_trip" %>
+    <% end %>
+    <%= turbo_frame_tag "passenger_list" do %>
+      <%= render "passenger_list", locals: { reservation: @reservation} %>
+    <% end %>
+  </div>
+
+  <div class="md:flex gap-8 mt-2">
+    <div class="m-2">
+      <h3>
+        List of Students
+      </h3>
+      <p class="body-sm-text mb-2">
+        Choose passengers from the list below
+      </p>
+      <%= render "students" %>
+    </div>
+    <div>
+      <% if @reservation.program.non_uofm_passengers %>
+        <%= render 'non_uofm_passengers' %>
+      <% end %>
+    </div>
+  </div>
+
+</div>

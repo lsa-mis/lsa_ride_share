@@ -1,0 +1,11 @@
+<div class="w-full">
+
+  <div class="flex justify-between items-center pb-4">
+    <h1>Terms</h1>
+    <%= link_to 'New Term', new_term_path, class: "primary_button" %>
+  </div>
+
+  <div id="terms" class="min-w-full">
+    <%= render 'listing' %>
+  </div>
+</div>

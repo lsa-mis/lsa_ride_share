@@ -1,0 +1,22 @@
+<% model = [local_assigns[:noteable], note].compact %>
+<%= form_with model: model,
+  id: dom_id_for_records(*model),
+  data: local_assigns[:data],
+  class: ["my-4"] + Array.wrap(local_assigns[:class]) do |form| %>
+  <% if form.object.errors.any? %>
+    <div class="alert alert-danger">
+      <% form.object.errors.full_messages.each do |message| %>
+        <p><%= message %></p>
+      <% end %>
+    </div>
+  <% end %>
+  <%= form.rich_text_area :body %>
+  <%= form.submit class: "secondary_blue_button mt-2" %>
+  <% if form.object.persisted? %>
+    <%= link_to note do %>
+      <span class="tertiary_button">Cancel
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </span>
+    <% end %>
+  <% end %>
+<% end %>

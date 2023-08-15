@@ -1,0 +1,22 @@
+<div class="lg:flex justify-between">
+  <h1>Edit Sites for 
+    <%= @site_program.title %>
+    program
+  </h1>
+  <div class="mt-4 flex-none">
+    <%= link_to program_data_path(@site_program) do %>
+      <span class="primary_button mb-2" %>
+        <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
+        Exit Edit Sites Page
+        </span>
+    <% end %>
+  </div>
+</div>
+
+<%= render 'form', site: @site %>
+
+<div>
+  <%= turbo_frame_tag "sites_list" do %>
+    <%= render "site_list", locals: { program: @site_program} %>
+  <% end %>
+</div>

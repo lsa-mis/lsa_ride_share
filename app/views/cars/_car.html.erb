@@ -1,62 +1,130 @@
-<div id="<%= dom_id car %>">
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Car number:</strong>
-    <%= car.car_number %>
-  </p>
+<div class="grid grid-cols-1 lg:grid-cols-2">
+  <div class="">
+    <p class='body-sm-bold-text <%= "#{car.status}" %>'>
+      <%= car.status.titleize %>
+    </p>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Make:</strong>
-    <%= car.make %>
-  </p>
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Unit:
+      </label>
+      <p class="body-lg-text inline-block">
+        <%= car.unit.name %>
+      </p>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Model:</strong>
-    <%= car.model %>
-  </p>
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Make:
+      </label>
+      <p class="body-lg-text inline-block">
+        <%= car.make %>
+      </p>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Color:</strong>
-    <%= car.color %>
-  </p>
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Model:
+      </label>
+      <p class="body-lg-text inline-block">
+        <%= car.model %>
+      </p>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Number of seats:</strong>
-    <%= car.number_of_seats %>
-  </p>
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Color:
+      </label>
+      <p class="body-lg-text inline-block">
+        <%= car.color %>
+      </p>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Mileage:</strong>
-    <%= car.mileage %>
-  </p>
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Number of Seats:
+      </label>
+      <p class="body-lg-text inline-block">
+        <%= car.number_of_seats %>
+      </p>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Gas:</strong>
-    <%= car.gas %>
-  </p>
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Mileage:
+      </label>
+      <p class="body-lg-text inline-block">
+        <%= car.mileage %>
+      </p>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Parking spot:</strong>
-    <%= car.parking_spot %>
-  </p>
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+      Fuel %:
+      </label>
+      <p class="body-lg-text inline-block">
+        <%= show_percentage(car.gas) %>
+      </p>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Last used:</strong>
-    <%= car.last_used %>
-  </p>
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Parking Spot:
+      </label>
+      <p class="body-lg-text inline-block">
+        <%= car.parking_spot %>
+      </p>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Last checked:</strong>
-    <%= car.last_checked %>
-  </p>
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Last Driver:
+      </label>
+      <p class="body-lg-text inline-block">
+        <% if car.last_driver_id.present? %>
+          <%= car.last_driver_id %>
+        <% end %>
+      </p>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Last driver:</strong>
-    <%= car.last_driver %>
-  </p>
-
-  <% if action_name != "show" %>
-    <%= link_to "Show this car", car, class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-    <%= link_to 'Edit this car', edit_car_path(car), class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
-    <hr class="mt-6">
-  <% end %>
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Last Used:
+      </label>
+      <p class="body-lg-text inline-block">
+        <%= show_date(car.last_used) %>
+      </p>
+    </div>
+  </div>
+  <div>
+    <% if car.initial_damages.attached? %>
+      <p class="body-md-bold-text m-4">Images of initial damage currently uploaded:</p>
+      <ul class="list-none grid grid-cols-2 gap-x-4 gap-y-8 px-4 mb-2">
+        <% car.initial_damages.order(created_at: :desc).each do |image| %>
+          <li class="relative">
+            <div class="flex flex-col">
+              <div class="group block w-full h-40 rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-indigo-500 overflow-hidden">
+                <%= image_tag image.variant(:thumb), class: "object-cover h-full w-full group-hover:opacity-75" %>
+              </div>
+              <p alertclass="body-sm-text pt-2">
+                Uploaded on <%= show_date_time(image.created_at) %>
+              </p>
+              <div>
+                <% if policy(Car).delete_file? %>
+                  <%= link_to delete_file_path(image), data: { turbo_method: :get, turbo_confirm: 'Are you sure?' } do %>
+                    <span class="tertiary_button">Remove
+                      <i class="fa fa-times" aria-hidden="true"></i>
+                    </span>
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+          </li>
+        <% end %>
+      </ul>
+    <% end %>
+  </div>
 </div>
+<p class="body-sm-text m-2">
+  <%= updated_on_and_by(@car) %>
+</p>

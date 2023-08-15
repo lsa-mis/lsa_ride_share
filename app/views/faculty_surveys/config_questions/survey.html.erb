@@ -1,0 +1,42 @@
+<div class="mx-auto w-full">
+  <h1><%= @faculty_survey.title %></h1>
+  <p class="my-5 body-lg-bold-text">
+    <%= @faculty_survey.uniqname %> - <%= @faculty_survey.unit.name %> - <%= @faculty_survey.term.name %>
+  </p>
+
+  <div class="my-4">
+    <% if @faculty_survey.program_id.present? %>
+      <div>
+        Program
+        <%= link_to Program.find_by(id: @faculty_survey.program_id).display_name_with_title, program_path(Program.find_by(id: @faculty_survey.program_id)), class: "link_to" %>
+        was created for this survey. Follow the link to edit the program.</div>
+    <% end %>
+  </div>
+
+  <%= form_with model: @survey, url: survey_path, method: :post do |form| %>
+    
+    <% @survey.each_with_index do |item, index| %>
+      <%= fields_for 'survey[]' do %>
+        <div class="flex item-center gap-2">
+          <div class="mt-2 text-base font-montserrat">
+            <%= "#{index+1}" %>. 
+          </div>
+          <%= item.question %>
+        </div>
+        <%= label_tag("survey[item_#{item.id}_#{index+1}]", nil, class: "hidden") %>
+        <%= rich_text_area_tag "survey[item_#{item.id}_#{index+1}]", "#{item.answer}", required: true %>
+      <% end %>
+    <% end %>
+
+    <div class="my-4">
+      <div class="inline">
+        <%= submit_tag 'Save Answers', class: "secondary_blue_button" %>
+      </div>
+      <%= link_to faculty_survey_config_questions_path(@faculty_survey) do %>
+        <span class="tertiary_button">Cancel
+        <i class="fa fa-times" aria-hidden="true"></i>
+        </span>
+      <% end %>
+    <div>
+  <% end %>
+</div>

@@ -1,42 +1,162 @@
-<div id="<%= dom_id reservation %>">
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Status:</strong>
-    <%= reservation.status %>
-  </p>
+<div class="grid grid-cols-1 sm:grid-cols-2">
+  <div>
+    <div class="">
+      <% if is_student?(current_user) && @reservation.approved %>
+        <p class="body-md-text status-true">
+          The reservation is approved by admins
+        </p>
+      <% end %>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Start date:</strong>
-    <%= reservation.start_date %>
-  </p>
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Car:
+      </label>
+      <p id="car" class="body-lg-text ml-2 inline-block">
+        <% if reservation.car.present? %>
+          <%= link_to show_car(reservation), car_path(reservation.car), class: "link_to" %>
+        <% else %>
+          <span class="status-false">
+            No car selected
+          </span>
+        <% end %>
+      </p>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">End date:</strong>
-    <%= reservation.end_date %>
-  </p>
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Site:
+      </label>
+      <p class="body-lg-text ml-2 inline-block">
+        <%= reservation.site.title %>
+      </p>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Recurring:</strong>
-    <%= reservation.recurring %>
-  </p>
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Start time:
+      </label>
+      <p class="body-lg-text ml-2 inline-block">
+        <%= show_date_time(reservation.start_time + 15.minute) %>
+      </p>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Driver phone:</strong>
-    <%= reservation.driver_phone %>
-  </p>
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        End time:
+      </label>
+      <p class="body-lg-text ml-2 inline-block">
+        <%= show_date_time(reservation.end_time - 15.minute) %>
+      </p>
+    </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Backup driver phone:</strong>
-    <%= reservation.backup_driver_phone %>
-  </p>
+    <% if recurring?(@reservation) %>
+      <div class="pt-2 pb-8">
+        <% recurring_reservation = RecurringReservation.new(@reservation) %>
+        <label class="body-lg-bold-text">
+          Recurring:
+        </label>
+        <p class="body-lg-text ml-2 inline-block">
+          <%= recurring_reservation.first_reservation.rule.to_s %>
+        </p>
+      </div>
+    <% end %>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Number of people on trip:</strong>
-    <%= reservation.number_of_people_on_trip %>
-  </p>
+    <div class="md:flex items-end gap-2 whitespace-nowrap">
+      <div class="py-2">
+        <label class="body-lg-bold-text">
+          Driver:
+        </label>
+        <p id="driver" class="body-lg-text ml-2 inline-block">
+          <%= show_driver(reservation) %>
+        </p>
+      </div>
+      <% if (is_admin?(current_user) || allow_student_to_edit_reservation?(@reservation) || allow_manager_to_edit_reservation?(@reservation)) && future_reservation?(@reservation) && !@reservation.approved %>
+        <div class="py-2">
+          <%= link_to add_drivers_path(@reservation, :edit => true) do %>
+            <span class="tertiary_button"> 
+              Edit Drivers
+              <i class="fa-solid fa-pen" aria-hidden="true"></i>
+            </span>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
 
-  <% if action_name != "show" %>
-    <%= link_to "Show this reservation", reservation, class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-    <%= link_to 'Edit this reservation', edit_reservation_path(reservation), class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
-    <hr class="mt-6">
-  <% end %>
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Driver phone:
+      </label>
+      <p class="body-lg-text ml-2 inline-block">
+        <%= reservation.driver_phone %>
+      </p>
+    </div>
+
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Backup Driver:
+      </label>
+      <p class="body-lg-text ml-2 inline-block">
+        <%= show_backup_driver(reservation) %>
+      </p>
+    </div>
+
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Backup driver phone:
+      </label>
+      <p class="body-lg-text ml-2 inline-block">
+        <%= reservation.backup_driver_phone %>
+      </p>
+    </div>
+
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Number of people on trip:
+      </label>
+      <p class="body-lg-text ml-2 inline-block">
+        <%= reservation.number_of_people_on_trip %>
+      </p>
+    </div>
+  </div>
+  <div>
+    <div class="flex items-end gap-2 py-2 whitespace-nowrap">
+      <label class="body-lg-bold-text">
+        Passengers (<%= @reservation.passengers.count %>):
+      </label>
+      <% if (is_admin?(current_user) || allow_student_to_edit_reservation?(@reservation) || allow_manager_to_edit_reservation?(@reservation)) && future_reservation?(@reservation) && !@reservation.approved %>
+        <div class="py-2">
+          <%= link_to add_passengers_path(@reservation, :edit => true) do %>
+            <span class="tertiary_button"> 
+              Edit Passengers
+              <i class="fa-solid fa-pen" aria-hidden="true"></i>
+            </span>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+    <% if @passengers.present? %>
+      <ul>
+        <% @passengers.each do |passenger| %>
+          <p class="body-lg-text ml-2">
+            <%= passenger.display_name %>
+          </p>
+        <% end %>
+      </ul>
+    <% end %>
+    <div class="mt-2">
+      <% if @reservation.program.non_uofm_passengers && @reservation.non_uofm_passengers.present? %>
+        <label class="body-lg-bold-text">
+          Non UofM Passengers (<%= @reservation.number_of_non_uofm_passengers %>):
+        </label>
+        <p class="body-lg-text ml-2">
+          <%= @reservation.non_uofm_passengers %>
+        </p>
+      <% end %>
+    </div>
+  </div>
+
 </div>
+<p class="body-sm-text m-2">
+  <%= reserved_on_and_by(reservation) %>
+</p>

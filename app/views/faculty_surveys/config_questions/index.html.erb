@@ -1,0 +1,36 @@
+<div class="w-full">
+  <div class="lg:flex justify-between items-center mb-4">
+    <h1 class="mb-2"><%= @faculty_survey.display_name %></h1>
+    <% if is_admin?(current_user) %> 
+      <% unless email_was_sent?("FacultySurvey", @faculty_survey) %>
+        <%= link_to 'Send Email to Instructor', send_faculty_survey_email_path(@faculty_survey), class: "secondary_yellow_button" %>
+        <%= link_to 'New Survey Question', new_faculty_survey_config_question_path(@faculty_survey), class: "secondary_blue_button" %>
+      <% end %>
+    <% end %>
+    <% if current_user.uniqname == @faculty_survey.uniqname %>
+      <%= link_to 'Edit Survey Answers', survey_path(@faculty_survey), class: "primary_button" %>
+    <% end %>
+  </div>
+  <div class="body-sm-text mb-2">
+    <% if @faculty_survey.program_id.present? %>
+      <div class="flex justify-between items-center mb-4">
+        <p>
+          Program
+          <%= link_to Program.find_by(id: @faculty_survey.program_id).display_name_with_title, program_path(Program.find_by(id: @faculty_survey.program_id)), class: "link_to" %>
+          was created for this survey. Follow the link to edit the program
+        </p>
+        <%= link_to 'Add Sites to Program', edit_program_sites_path(@faculty_survey.program_id), class: "secondary_blue_button" unless is_admin?(current_user) %> 
+      </div>
+    <% else %>
+      <p class="body-sm-text mb-2">
+        Survey must contain Title, Subject, Catalog Number, and Section for a program to be created in LSA RideShare from a survey submission.
+      </p>
+    <% end %>
+  </div>
+
+    <%= render 'config_question', locals: { faculty_survey: @faculty_survey } %>
+    
+    <% if is_admin?(current_user) %>
+      <%= render 'email_logs/email_log', email_log_entries: @email_log_entries %>
+    <% end %>
+</div>

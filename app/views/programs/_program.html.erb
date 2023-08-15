@@ -1,72 +1,78 @@
-<div id="<%= dom_id program %>">
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Active:</strong>
-    <%= program.active %>
+<div class="mt-2">
+  <p class="body-sm-bold-text">
+    <%= program.display_name %>
   </p>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Title:</strong>
-    <%= program.title %>
-  </p>
+  <div class="py-2">
+    <label class="body-lg-bold-text">
+      Unit:
+    </label>
+    <p class="body-lg-text ml-2 inline-block">
+      <%= program.unit.name %>
+    </p>
+  </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Term start:</strong>
-    <%= program.term_start %>
-  </p>
+  <div class="py-2">
+    <label class="body-lg-bold-text">
+      Term:
+    </label>
+    <p class="body-lg-text ml-2 inline-block">
+      <%= program.term.name %>
+    </p>
+  </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Term end:</strong>
-    <%= program.term_end %>
-  </p>
+  <div class="py-2">
+    <label class="body-lg-bold-text">
+      Instructor:
+    </label>
+    <p class="body-lg-text ml-2 inline-block">
+      <%= program.instructor.display_name %>
+    </p>
+  </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Term code:</strong>
-    <%= program.term_code %>
-  </p>
+  <div class="py-2">
+    <label class="body-lg-bold-text">
+      Number of students:
+    </label>
+    <p class="body-lg-text ml-2 inline-block">
+      <%= number_of_students(program) %>
+    </p>
+  </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Subject:</strong>
-    <%= program.subject %>
-  </p>
+  <div class="py-2">
+    <label class="body-lg-bold-text">
+      Number of students using ride share:
+    </label>
+    <p class="body-lg-text ml-2 inline-block">
+      <%= number_of_students_using_ride_share(program) %>
+    </p>
+  </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Catalog number:</strong>
-    <%= program.catalog_number %>
-  </p>
+  <div class="py-2">
+    <label class="body-lg-bold-text">
+      MVR link:
+    </label>
+    <p class="body-lg-text ml-2 inline-block">
+      <%= program.mvr_link %>
+    </p>
+  </div>
 
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Class section:</strong>
-    <%= program.class_section %>
-  </p>
-
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Number of students:</strong>
-    <%= program.number_of_students %>
-  </p>
-
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Number of students using ride share:</strong>
-    <%= program.number_of_students_using_ride_share %>
-  </p>
-
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Pictures required start:</strong>
-    <%= program.pictures_required_start %>
-  </p>
-
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Pictures required end:</strong>
-    <%= program.pictures_required_end %>
-  </p>
-
-  <p class="my-5">
-    <strong class="block font-medium mb-1">Non uofm passengers:</strong>
-    <%= program.non_uofm_passengers %>
-  </p>
-
-  <% if action_name != "show" %>
-    <%= link_to "Show this program", program, class: "rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-    <%= link_to 'Edit this program', edit_program_path(program), class: "rounded-lg py-3 ml-2 px-5 bg-gray-100 inline-block font-medium" %>
-    <hr class="mt-6">
+  <div class="py-2">
+    <label class="body-lg-bold-text">
+      Canvas course link:
+    </label>
+    <p class="body-lg-text ml-2 inline-block">
+      <%= program.canvas_link %>
+    </p>
+  </div>
+  <% if program.additional_options.present? %>
+    <div class="pt-2">
+      <label class="body-lg-bold-text flex-none">
+        Additional options:
+      </label>
+      <p class="body-lg-text ml-2">
+        <%= sanitize program.additional_options %>
+      </p>
+    </div>
   <% end %>
 </div>

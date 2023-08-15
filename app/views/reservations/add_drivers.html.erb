@@ -1,0 +1,13 @@
+<div class="mx-auto w-full">
+  <h1>Add Driver and Backup Driver</h1>
+  <h2>
+    <%= @reservation.program.unit.name %>
+    <%= @reservation.program.display_name_with_title %>
+  </h2>
+  <h3 class="my-2">
+    List of Students Who are Eligible to Drive
+  </h3>
+  <%= turbo_frame_tag 'drivers' do %>
+    <%= render "drivers" %>
+  <% end %>
+</div>

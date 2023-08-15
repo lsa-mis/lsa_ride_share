@@ -1,0 +1,56 @@
+<%= turbo_frame_tag 'manager_list' do %>
+  <div class="min-w-full">
+    <table class="mi_table">
+      <thead class="border border-l-0 border-r-0 border-gray-um60">
+        <tr>
+          <th class="header_th">  </th>
+          <th class="header_th">Uniqname</th>
+          <th class="header_th">Last name</th>
+          <th class="header_th">First name</th>
+          <th class="header_th">MVR Status</th>
+          <th class="header_th">Canvas Course Complete Date</th>
+          <th class="header_th">In Person Orientation Date</th>
+          <th class="header_th">Programs</th>
+
+        </tr>
+      </thead>
+      <tbody>
+        <% @managers.each do |manager| %>
+          <tr class="mi_tbody_tr">
+            <td class="mi_tbody_td">
+              <%= link_to "Edit", edit_manager_path(manager), class: "link_to" %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= manager.uniqname %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= manager.last_name %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= manager.first_name %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= manager.mvr_status %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= manager.canvas_course_complete_date %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= manager.meeting_with_admin_date %>
+            </td>
+            <td class="mi_tbody_td">
+              <% manager.instructor.each do |program| %>
+                <%= program.title_term %> (instructor)
+                <br>
+              <% end %>
+              <% manager.manager.each do |program| %>
+                <%= program.title_term %> (manager)
+                <br>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

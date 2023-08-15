@@ -1,0 +1,32 @@
+<%= turbo_frame_tag 'vehicle_reports' do %>
+  <div class="min-w-full">
+    <table class="mi_table">
+      <thead class="border border-l-0 border-r-0 border-gray-um60">
+        <tr>
+          <th class="header_th">Updated at</th>
+          <th class="header_th">Created at</th>
+          <th class="header_th">Submitted</th>
+          <th class="header_th">status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @car.vehicle_reports.each do |vehicle_report| %>
+          <tr class="mi_tbody_tr">
+            <td class="mi_tbody_td">
+              <%= link_to show_date(vehicle_report.updated_at) , vehicle_report_path(vehicle_report.reservation_id), class: "link_to", data: { "turbo-frame": "_top" } %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= show_date(vehicle_report.created_at) %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= show_user_name_by_id(vehicle_report.updated_by) %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= vehicle_report.status %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

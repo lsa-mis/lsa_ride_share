@@ -1,7 +1,8 @@
-<div class="mx-auto md:w-2/3 w-full">
-  <h1 class="font-bold text-4xl">New program</h1>
+<div class="mx-auto w-full">
+  <h1>New program</h1>
 
-  <%= render "form", program: @program %>
+  <%= turbo_frame_tag 'new_program' do %>
+    <%= render "form", program: @program %>
+  <% end %>
 
-  <%= link_to 'Back to programs', programs_path, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
 </div>

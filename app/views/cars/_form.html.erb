@@ -1,8 +1,7 @@
 <%= form_with(model: car, class: "contents") do |form| %>
   <% if car.errors.any? %>
-    <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
+    <div id="error_explanation" class="text-red-umred px-3 py-2 font-medium rounded-lg mt-3">
       <h2><%= pluralize(car.errors.count, "error") %> prohibited this car from being saved:</h2>
-
       <ul>
         <% car.errors.each do |error| %>
           <li><%= error.full_message %></li>
@@ -11,62 +10,104 @@
     </div>
   <% end %>
 
-  <div class="my-5">
-    <%= form.label :car_number %>
-    <%= form.text_field :car_number, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
+  <div class="grid grid-cols-1 sm:grid-cols-2">
+    <div>
+      <div class="my-5">
+        <%= form.label :unit_id, 'Unit *', class: "fancy_label" %>
+        <%= form.collection_select :unit_id, @units, :id, :name, { required: true }, { class: "input_text_field" } %>
+      </div>
 
-  <div class="my-5">
-    <%= form.label :make %>
-    <%= form.text_field :make, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
+      <div class="my-5">
+        <%= form.label :car_number, 'Car Number *', class: "fancy_label" %>
+        <%= form.text_field :car_number, required: true, placeholder: "Car Number", class: "input_text_field" %>
+      </div>
 
-  <div class="my-5">
-    <%= form.label :model %>
-    <%= form.text_field :model, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
+      <div class="my-5">
+        <%= form.label :make, 'Make *', class: "fancy_label" %>
+        <%= form.text_field :make, required: true, placeholder: "Make", class: "input_text_field" %>
+      </div>
 
-  <div class="my-5">
-    <%= form.label :color %>
-    <%= form.text_field :color, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
+      <div class="my-5">
+        <%= form.label :model, 'Model *', class: "fancy_label" %>
+        <%= form.text_field :model, required: true, placeholder: "Model", class: "input_text_field" %>
+      </div>
 
-  <div class="my-5">
-    <%= form.label :number_of_seats %>
-    <%= form.number_field :number_of_seats, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
+      <div class="my-5">
+        <%= form.label :color, 'Color *', class: "fancy_label" %>
+        <%= form.text_field :color, required: true, placeholder: "Color", class: "input_text_field" %>
+      </div>
 
-  <div class="my-5">
-    <%= form.label :mileage %>
-    <%= form.text_field :mileage, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
+      <div class="my-5">
+        <%= form.label :number_of_seats, 'Number of Seats *', class: "fancy_label" %>
+        <%= form.number_field :number_of_seats, required: true, placeholder: "Number of seats", class: "input_text_field" %>
+      </div>
 
-  <div class="my-5">
-    <%= form.label :gas %>
-    <%= form.text_field :gas, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
+      <div class="my-5">
+        <%= form.label :mileage, 'Mileage *', class: "fancy_label" %>
+        <%= form.number_field :mileage, step: 0.01, required: true, placeholder: "000.00", class: "input_text_field" %>
+      </div>
 
-  <div class="my-5">
-    <%= form.label :parking_spot %>
-    <%= form.text_field :parking_spot, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
+      <div class="my-5">
+      <%= form.label :gas, 'Percent of Fuel Remaining *', class: "fancy_label"  %>
+      <%= form.select(:gas, options_for_select(gas_percent, @car.gas), { include_blank: "Select ..." }, { class: "input_text_field" }) %>
+    </div>
 
-  <div class="my-5">
-    <%= form.label :last_used %>
-    <%= form.datetime_field :last_used, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
+      <div class="my-5">
+        <%= form.label :parking_spot, 'Parking Spot *', class: "fancy_label" %>
+        <%= form.text_field :parking_spot, required: true, placeholder: "Parking spot", class: "input_text_field" %>
+      </div>
 
-  <div class="my-5">
-    <%= form.label :last_checked %>
-    <%= form.datetime_field :last_checked, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
-  </div>
+      <%= form.hidden_field :updated_by, value: current_user.id %>
 
-  <div class="my-5">
-    <%= form.label :last_driver %>
-    <%= form.number_field :last_driver, class: "block shadow rounded-md border border-gray-200 outline-none px-3 py-2 mt-2 w-full" %>
+      <div class="my-5">
+        <%= form.label :status, 'Status *', class: "fancy_label" %>
+        <%= form.select :status, @statuses.map{ |key| [key.titleize, key] }, { selected: @car.status || :available }, { class: "input_text_field" } %>
+      </div>
+    </div>
+    <div>
+      <div id="attached_initial_damages" class="mx-4 my-2">
+        <%= form.label :initial_damages, "Initial damage images (jpg, png)", class: "text_field_label" %>
+        <p class="body-sm-text my-2">
+          To upload multiple images select multiple files at once, you can't click Choose Files button several times
+        </p>
+        <%= form.file_field :initial_damages, multiple: true, class: "file-upload" %>
+      </div>
+      <% if car.persisted? && car.initial_damages.attached? %>
+        <div class="">
+          <span class="body-md-bold-text m-4">Images of initial damage currently uploaded:</span>
+          <div>
+            <ul class="list-none grid grid-cols-2 gap-x-4 gap-y-8 px-4 mb-2">
+              <% car.initial_damages.each do |image| %>
+                <li class="relative">
+                  <div class="flex flex-col">
+                    <div class="group block w-full h-40 rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-indigo-500 overflow-hidden">
+                      <%= image_tag image.variant(:thumb), class: "object-cover h-full w-full group-hover:opacity-75" %>
+                    </div>
+                    <div>
+                      <% if policy(Car).delete_file? %>
+                        <%= link_to delete_file_path(image), data: { turbo_method: :get, turbo_confirm: 'Are you sure?' } do %>
+                          <span class="tertiary_button">Remove
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                          </span>
+                        <% end %>
+                      <% end %>
+                    </div>
+                  </div>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+      <% end %>
+    </div>
   </div>
 
   <div class="inline">
-    <%= form.submit class: "rounded-lg py-3 px-5 bg-blue-600 text-white inline-block font-medium cursor-pointer" %>
+    <%= form.submit class: "primary_button" %>
   </div>
+  <%= link_to cars_path do %>
+    <span class="tertiary_button">Cancel
+      <i class="fa fa-times" aria-hidden="true"></i>
+    </span>
+  <% end %>
 <% end %>

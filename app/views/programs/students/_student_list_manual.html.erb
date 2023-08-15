@@ -1,0 +1,38 @@
+<%= turbo_frame_tag 'students' do %>
+  <div class="w-full">
+    <table class="mi_table">
+      <thead class="mi_thead">
+        <tr>
+          <th class="header_th">  </th>
+          <th class="header_th">Registered</th>
+          <th class="header_th">Uniqname</th>
+          <th class="header_th">Last name</th>
+          <th class="header_th">First name</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @students.each do |student| %>
+          <tr class="mi_tbody_tr">
+            <td class="mi_tbody_td">
+              <%= link_to "Remove", program_student_path(@student_program, student), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete }, class: "link_to" unless student.registered %>
+            </td>
+            <td class="mi_tbody_td">
+              <% if student.registered %>
+                <i class="fa-solid fa-check"></i>
+              <% end %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= student.uniqname %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= student.last_name %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= student.first_name %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

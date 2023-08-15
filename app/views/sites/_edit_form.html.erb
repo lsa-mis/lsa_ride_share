@@ -1,0 +1,57 @@
+<%= form_with(model: site, class: "contents") do |form| %>
+  <% if site.errors.any? %>
+    <div id="error_explanation" class="text-red-umred px-3 py-2 font-medium rounded-lg mt-3">
+      <h2><%= pluralize(site.errors.count, "error") %> prohibited this site from being saved:</h2>
+      <ul>
+        <% site.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="my-5">
+    <%= form.label :title, 'Title *', class: "fancy_label"  %>
+    <%= form.text_field :title, required: true, placeholder: "Title", class: "input_text_field" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :address1, 'Address 1 *', class: "fancy_label"  %>
+    <%= form.text_field :address1, required: true, placeholder: "Address1", class: "input_text_field" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :address2, 'Address 2', class: "fancy_label"  %>
+    <%= form.text_field :address2, placeholder: "Address2", class: "input_text_field" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :city, 'City *', class: "fancy_label"  %>
+    <%= form.text_field :city, required: true, placeholder: "City", class: "input_text_field" %>
+  </div>
+
+  <div class="">
+    <label for="state" class="fancy_label">State *</label>
+    <%= form.select(:state, options_for_select(us_states, us_states.rassoc(params[:site].present? ? params[:site][:state] : site.state)), { include_blank: "Select State" }, { class: "input_text_field" }) %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :zip_code, 'Zip Code *', class: "fancy_label"  %>
+    <%= form.text_field :zip_code, required: true, placeholder: "Zip Code", class: "input_text_field" %>
+  </div>
+
+  <%= form.hidden_field :updated_by, value: current_user.id %>
+
+  <p class="my-4 body-sm-text">
+    Add/edit site's contacts on the site' show page
+  </p>
+
+  <div class="inline">
+    <%= form.submit class: "secondary_blue_button" %>
+  </div>
+  <%= link_to site_path(site) do %>
+    <span class="tertiary_button">Cancel
+      <i class="fa fa-times" aria-hidden="true"></i>
+    </span>
+  <% end %>
+<% end %>

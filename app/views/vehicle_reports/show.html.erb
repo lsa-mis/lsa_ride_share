@@ -1,15 +1,57 @@
-<div class="mx-auto md:w-2/3 w-full flex">
-  <div class="mx-auto">
-    <% if notice.present? %>
-      <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
-    <% end %>
-
-    <%= render @vehicle_report %>
-
-    <%= link_to 'Edit this vehicle_report', edit_vehicle_report_path(@vehicle_report), class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-    <div class="inline-block ml-2">
-      <%= button_to 'Destroy this vehicle_report', vehicle_report_path(@vehicle_report), method: :delete, class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 font-medium" %>
+<div class="mx-auto w-full">
+  <div class="grid grid-cols-1 lg:grid-cols-2 items-center">
+    <div>
+      <h1 class="mb-4">Vehicle Report: <%= @vehicle_report.id %></h1>
+      <% if is_admin?(current_user) %>
+        <%= form_with model: @vehicle_report, html: { class: "sm:flex sm:items-center" },
+          data: { controller: "autosubmit",
+                  autosubmit_target: "form"
+                } do |f| %>
+          <div class="sm:col-span-4">
+            <ol class="switches">
+              <li>
+                <%= f.check_box :approved, "data-action": "change->autosubmit#search" %>
+                <%= f.label :approved do %>
+                  <span class="label-text">Approved</span>
+                  <span></span>
+                <% end %>
+              </li>
+            </ol>
+          </div>
+        <% end %>
+      <% end %>
     </div>
-    <%= link_to 'Back to vehicle_reports', vehicle_reports_path, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
+    <div class="lg:grid lg:justify-items-end">
+      <% unless @vehicle_report.approved %>
+        <div>
+          <%= link_to 'Edit Vehicle Report', edit_vehicle_report_path(@vehicle_report), class: "primary_button" %>
+        </div>
+        <div class="my-2">
+          <%= link_to vehicle_report_path(@vehicle_report), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete} do %>
+            <span class="secondary_blue_button my-2">
+              <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
+              Cancel Vehicle Report
+            </span>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
   </div>
+  <div class="grid grid-cols-1 lg:grid-cols-2">
+    <div class="grid lg:col-span-2">
+         <%= render @vehicle_report %>
+    </div>
+  </div>
+
+  <% if user_signed_in? && is_admin?(current_user) %>
+    <div class="container p-2 rounded-lg shadow-lg text-xl mb-20 bg-gray-50">
+      <h2 class="mb-4">Admin Comments:</h2>
+      <%= render partial: "notes/form", locals: { note: Note.new, noteable: @vehicle_report } %>
+    
+      <%= turbo_stream_from @vehicle_report, :notes %>
+      <%= tag.div id: "#{dom_id(@vehicle_report)}_notes" do %>
+        <%= render @vehicle_report.notes %>
+      <% end %>
+    </div>
+  <% end %>
 </div>

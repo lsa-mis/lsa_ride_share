@@ -1,15 +1,42 @@
-<div class="mx-auto md:w-2/3 w-full flex">
-  <div class="mx-auto">
-    <% if notice.present? %>
-      <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
-    <% end %>
-
-    <%= render @program %>
-
-    <%= link_to 'Edit this program', edit_program_path(@program), class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-    <div class="inline-block ml-2">
-      <%= button_to 'Destroy this program', program_path(@program), method: :delete, class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 font-medium" %>
+<div class="mx-auto w-full">
+  <h1><%= @program.title %></h1>
+  <div>
+    <div class="grid grid-cols-1 lg:grid-cols-3">
+      <div class="grid lg:col-span-2">
+        <%= render @program %>
+      </div>
+      <div class="lg:flex lg:flex-col">
+        <div class="lg:grid lg:justify-items-end">
+          <div class="py-2">
+            <%= link_to 'Edit Program', program_data_path(@program), class: "primary_button" %>
+          </div>
+          <% if policy(Student).update_student_list? %>
+            <div class="py-2">
+              <%= link_to 'Students List', program_students_path(@program), class: "secondary_blue_button" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
     </div>
-    <%= link_to 'Back to programs', programs_path, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
   </div>
+  <div>
+    <h2>Sites</h2>
+    <div>
+      <%= turbo_frame_tag "sites_list" do %>
+        <%= render "sites_list", locals: { program: @program} %>
+      <% end %>
+    </div>
+
+    <% if @program.add_managers %>
+      <h2>Managers</h2>
+      <div>
+        <%= turbo_frame_tag "managers_list" do %>
+          <%= render "managers_list", locals: { program: @program} %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+  <p class="body-sm-text m-4">
+    <%= updated_on_and_by(@program) %>
+  </p>
 </div>

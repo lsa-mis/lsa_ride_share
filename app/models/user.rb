@@ -15,10 +15,22 @@
 #  last_sign_in_ip        :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  uid                    :string
+#  uniqname               :string
+#  principal_name         :string
+#  display_name           :string
+#  person_affiliation     :string
 #
 class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
+  devise :database_authenticatable,
+         :recoverable, :rememberable, :validatable, :omniauthable, omniauth_providers: [:saml]
+
+  attr_accessor :membership, :unit_ids
+
+  def display_name_email
+    "#{display_name} - #{email}"
+  end
+  
 end

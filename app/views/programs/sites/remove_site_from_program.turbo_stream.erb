@@ -1,0 +1,9 @@
+<%= render_flash_stream %>
+
+<%= turbo_stream.update "new_site" do %>
+  <%= render "form", site: @site %>
+<% end %>
+
+<%= turbo_stream.update "sites" do %>
+  <%= render "site_list" %>
+<% end %>

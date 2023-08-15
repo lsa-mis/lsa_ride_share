@@ -3,11 +3,7 @@
 # Table name: programs
 #
 #  id                                  :bigint           not null, primary key
-#  active                              :boolean          default(TRUE)
 #  title                               :string
-#  term_start                          :date             not null
-#  term_end                            :date             not null
-#  term_code                           :string           not null
 #  subject                             :string           not null
 #  catalog_number                      :string           not null
 #  class_section                       :string           not null
@@ -20,10 +16,12 @@
 #  updated_by                          :integer
 #  created_at                          :datetime         not null
 #  updated_at                          :datetime         not null
-#  admin_access_id                     :bigint
 #  mvr_link                            :string
 #  canvas_link                         :string
 #  canvas_course_id                    :integer
+#  term_id                             :integer
+#  add_managers                        :boolean          default(FALSE)
+#  not_course                          :boolean          default(FALSE)
 #
 require 'rails_helper'
 

@@ -12,10 +12,21 @@
 #  updated_by :integer
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  unit_id    :bigint           not_null
 #
 class Site < ApplicationRecord
-  has_and_belongs_to_many :programs
+  has_many :programs_sites
+  has_many :programs, through: :programs_sites
   has_many :reservations
-  has_rich_text :note
-  
+  has_many :contacts, dependent: :destroy
+  has_many :notes, as: :noteable
+
+  accepts_nested_attributes_for :contacts
+  validates_presence_of :title, :address1, :city, :state
+  validates :zip_code, presence: true, format: { with: /\d{5}(-\d{4})?/, message: "should be in the form 12345 or 12345-1234"}
+  validates :title, uniqueness: { case_sensitive: false, scope: [:unit_id], message: "already exist" }
+
+  def address
+    "#{self.address1} #{self.address2} #{self.city} #{self.state} #{self.zip_code}"
+  end
 end

@@ -1,0 +1,27 @@
+<div class="w-full mb-2">
+
+  <div class="flex justify-between items-center mb-4">
+    <h1>Update Student List Manually</h1>
+    <div>
+      <%= link_to program_students_path(@student_program) do %>
+        <span class="primary_button mb-2">
+          <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
+          Exit Update Students Page
+        </span>
+      <% end %>
+    </div>
+  </div>
+
+  <%= render "form", student: @student %>
+
+  <h2 class="my-2">Student List</h2>
+
+  <div class="mb-2">
+    <label class="body-lg-bold-text">
+      Program:
+    </label>
+    <%= link_to @student_program.display_name_with_title, program_path(@student_program), class: "link_to" %>
+  </div>
+
+  <%= render "student_list_manual" %>
+</div>

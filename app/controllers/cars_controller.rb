@@ -1,18 +1,30 @@
 class CarsController < ApplicationController
+  include ActionView::RecordIdentifier
+  before_action :auth_user
   before_action :set_car, only: %i[ show edit update destroy ]
+  before_action :set_statuses, only: %i[ new edit create update]
+  before_action :set_units
 
   # GET /cars or /cars.json
   def index
-    @cars = Car.all
+    if params[:unit_id].present?
+      @cars = Car.where(unit_id: params[:unit_id]).order(:car_number)
+    else
+      @cars = Car.where(unit_id: current_user.unit_ids).order(:car_number)
+    end
+    authorize @cars
+    
   end
 
-  # GET /cars/1 or /cars/1.json
   def show
+    @reservations_past = @car.reservations_past
+    @reservations_future = @car.reservations_future
   end
 
   # GET /cars/new
   def new
     @car = Car.new
+    authorize @car
   end
 
   # GET /cars/1/edit
@@ -22,28 +34,20 @@ class CarsController < ApplicationController
   # POST /cars or /cars.json
   def create
     @car = Car.new(car_params)
-
-    respond_to do |format|
-      if @car.save
-        format.html { redirect_to car_url(@car), notice: "Car was successfully created." }
-        format.json { render :show, status: :created, location: @car }
-      else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @car.errors, status: :unprocessable_entity }
-      end
+    authorize @car
+    if @car.save
+      redirect_to car_path(@car), notice: "A new car was added."
+    else
+      render :new, status: :unprocessable_entity
     end
   end
 
   # PATCH/PUT /cars/1 or /cars/1.json
   def update
-    respond_to do |format|
-      if @car.update(car_params)
-        format.html { redirect_to car_url(@car), notice: "Car was successfully updated." }
-        format.json { render :show, status: :ok, location: @car }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @car.errors, status: :unprocessable_entity }
-      end
+    if @car.update(car_params)
+      redirect_to car_path(@car), notice: "The car was updated."
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 
@@ -61,10 +65,21 @@ class CarsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_car
       @car = Car.find(params[:id])
+      authorize @car
+    end
+
+    def set_statuses
+      @statuses = Car.statuses.keys
+    end
+
+    def set_units
+      @units = Unit.where(id: current_user.unit_ids).order(:name)
     end
 
     # Only allow a list of trusted parameters through.
     def car_params
-      params.require(:car).permit(:car_number, :make, :model, :color, :number_of_seats, :mileage, :gas, :parking_spot, :last_used, :last_checked, :last_driver)
+      params.require(:car).permit(:car_number, :make, :model, :color, :number_of_seats, 
+                 :mileage, :gas, :parking_spot, :last_used, :checked, :last_driver_id, 
+                 :updated_by, :status, :unit_id, initial_damages: [])
     end
 end

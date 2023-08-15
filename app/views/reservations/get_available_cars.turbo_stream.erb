@@ -1,0 +1,11 @@
+<%= turbo_stream.update "start_end_time" do %>
+  <%= render "start_end_time" %>
+<% end %>
+
+<%= turbo_stream.update "cars_dropdown" do %>
+  <%= render "cars_dropdown" %>
+<% end %>
+
+<%= turbo_stream.update "available_cars" do %>
+  <%= render "available_cars", date: @start_date %>
+<% end %>

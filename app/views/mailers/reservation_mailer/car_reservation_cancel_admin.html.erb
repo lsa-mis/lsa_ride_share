@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+  <h3>The transportation reservation has been canceled. </h3>
+    <p>
+     Reservation Summary:
+      <ul>
+        <li>DATE: <%= "#{@start_time} - #{@end_time}" %></li>
+        <% if @reservation.car.present? %>
+          <li>VEHICLE #: <%= link_to @reservation.car.car_number, car_url(@reservation.car) %></li>
+        <% else %>
+          <li>VEHICLE #: No car selected</li>
+        <% end %>
+        <li>SITE: <%= link_to @reservation.site.title, site_url(@reservation.site) %> </li>
+        <li>PROGRAM: <%= link_to @reservation.program.title, program_url(@reservation.program) %></li>
+        <li>DRIVER: <%= @driver_name %> </li>
+        <li>BACKUP DRIVER: <%= @backup_driver_name %> </li>
+      </ul>
+      Passengers:
+      <ul>
+        <% @passengers.each do |p| %>
+          <li> <%= p %> </li>
+        <% end %>
+      </ul>
+    </p>
+    <p>
+      To view/modify/cancel reservations, click here
+      <%= link_to "LSA Ride Share", reservations_url %>
+    </p>
+  </body>
+</html>

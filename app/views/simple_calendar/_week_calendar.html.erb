@@ -1,0 +1,47 @@
+<div class="simple-calendar">
+  <div class="calendar-heading">
+    <%= link_to t('simple_calendar.previous', default: 'Previous'), calendar.url_for_previous_view %>
+    <% if calendar.number_of_weeks == 1 %>
+      <span class="calendar-title"><%= t('simple_calendar.week', default: 'Week') %> <%= date_range.first.strftime('%B %d') %> to <%= date_range.last.strftime('%B %d %Y') %> </span>
+    <% else %>
+      <span class="calendar-title"><%= t('simple_calendar.week', default: 'Week') %> <%= date_range.first.wday %></span>
+    <% end %>
+    <%= link_to t('simple_calendar.next', default: 'Next'), calendar.url_for_next_view %>
+
+    <%= link_to 'Today', week_calendar_path, class: "secondary_yellow_button" %>
+  </div>
+
+  <table class="table-fixed">
+    <thead class="border border-l-0 border-r-0 border-gray-um60">
+
+    </thead>
+    <tbody>
+    <tr class="mi_tbody_tr border-b border-gray-900">
+        <td colspan="2"></td>
+      <% date_range.slice(0, 7).each do |day| %>
+        <tr class="mi_tbody_tr border">
+          <th scope="row" colspan="2" class="header_th border">
+            <%= t('date.abbr_day_names')[day.wday] %> <%= day.to_formatted_s(:short) %>
+          </th>
+          <% @hour_begin.upto(@hour_end).each do |hour| %>
+            <th colspan="4" class="header_th border border-gray-900">
+              <%= Time.parse("#{hour}:00").strftime("%l %P") %>
+            </th>
+          <% end %>
+        </tr>
+
+        <% if @reservations.where(car_id: nil).where("(start_time BETWEEN ? AND ?) OR (start_time < ? AND end_time > ?)",
+        day.beginning_of_day, day.end_of_day, day.beginning_of_day, day.beginning_of_day) %>
+
+          <%= render 'simple_calendar/week_calendar_no_car_tr', day: day %>
+        <% end %>
+        <% @cars.each do |car| %>
+          <%= render 'simple_calendar/week_calendar_car_tr', car: car, day: day %>
+        <% end %>
+
+
+
+      <% end %>
+    </tbody>
+  </table>
+</div>

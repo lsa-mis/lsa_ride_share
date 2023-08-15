@@ -1,0 +1,72 @@
+<div class="min-w-full">
+  <div class="flex justify-between items-center pb-4">
+    <h1 class="my-4">Reservations for <%= show_date(@day) %><h1>
+    <div>
+      <%= link_to reservations_path do %>
+        <span class="primary_button mb-2">
+          <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
+          Back to Calendar
+        </span>
+      <% end %>
+    </div>
+  </div>
+  <div>
+    <%= turbo_frame_tag 'day_reservations' do %>
+      <table class="mi_table">
+        <thead class="border border-l-0 border-r-0 border-gray-um60">
+          <tr>
+            <th class="header_th">Id</th>
+            <th class="header_th">Car</th>
+            <th class="header_th">Program</th>
+            <th class="header_th">Site</th>
+            <th class="header_th">From</th>
+            <th class="header_th">To</th>
+            <th class="header_th">Driver</th>
+            <th class="header_th">Number of People</th>
+            <th class="header_th">Reserved By</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @day_reservations.each do |reservation| %>
+            <tr>
+              <td class="mi_tbody_td">
+                <%= link_to reservation.id, reservation_path(reservation), class: "link_to" %>
+              </td>
+              <td class="mi_tbody_td">
+                <% if reservation.car.present? %>
+                  <%= link_to reservation.car.car_number, car_path(reservation.car), class: "link_to"  %>
+                <% else %>
+                  <span class="status-false">
+                    <%= reservation.display_name %>
+                    <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
+                  </span>
+                <% end %>
+              </td>
+              <td class="mi_tbody_td">
+                <%= reservation.program.title %>
+              </td>
+              <td class="mi_tbody_td">
+                <%= reservation.site.title %>
+              </td>
+              <td class="mi_tbody_td">
+                <%= show_time(reservation.start_time) %>
+              </td>
+              <td class="mi_tbody_td">
+                <%= show_time(reservation.end_time) %>
+              </td>
+              <td class="mi_tbody_td">
+                <%= show_driver(reservation) %>
+              </td>
+              <td class="mi_tbody_td">
+                <%= reservation.number_of_people_on_trip %>
+              </td>
+              <td class="mi_tbody_td">
+                <%= show_user_name_by_id(reservation.reserved_by) %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+  </div>
+</div>

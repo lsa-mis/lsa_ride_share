@@ -1,0 +1,35 @@
+<%= turbo_frame_tag "#{dom_id student}" do %>
+  <div class="mt-2">
+    <p class="body-sm-bold-text">
+      <%= student.display_name %>
+    </p>
+
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        MVR Status:
+      </label>
+      <p class="body-lg-text ml-2 inline-block">
+        <%= student.mvr_status %>
+      </p>
+    </div>
+
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Canvas Course Complete Date:
+      </label>
+      <p class="body-lg-text ml-2 inline-block">
+        <%= show_date(student.canvas_course_complete_date) %>
+      </p>
+    </div>
+
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        In Person Orientation Date:
+      </label>
+      <p class="body-lg-text ml-2 inline-block">
+        <%= show_date(student.meeting_with_admin_date) %>
+      </p>
+    </div>
+
+  </div>
+<% end %>

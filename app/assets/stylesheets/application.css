@@ -10,6 +10,41 @@
  * files in this directory. Styles in this file should be added after the last require_* statement.
  * It is generally better to create a new file per style scope.
  *
+ *= require recurring_select
  *= require_tree .
  *= require_self
  */
+
+.field_with_errors input {
+  border-color: #B51E0A;
+}
+
+.field_with_errors select {
+  border-color: #B51E0A !important;
+}
+
+.status-false {
+  color: #B51E0A
+}
+
+.status-true {
+  color: #00743C
+}
+
+/*normal mode*/
+#desk-table {
+  display: table;
+}
+#phone-table {
+  display: none;
+}
+
+/*mobile mode*/
+@media only screen and (max-width: 1000px) {
+  #desk-table {
+      display: none;
+  }
+  #phone-table {
+      display: block;
+  }
+}

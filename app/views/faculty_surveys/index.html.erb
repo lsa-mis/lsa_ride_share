@@ -1,0 +1,42 @@
+<div class="w-full" data-controller='autosubmit'>
+  <div class="flex flex-row items-center justify-between my-2">
+    <div>
+      <h1>Program Surveys</h1>
+    </div>
+    <div class="flex flex-row justify-between gap-2">
+      <div>
+        <%= link_to 'Create Program Survey', new_faculty_survey_path, class: "secondary_blue_button" %>
+      </div>
+    </div>
+  </div>
+  <div>
+    <%= form_with url: faculty_surveys_path, method: :get, class: "", data: { autosubmit_target: "form", turbo_frame: "surveys" } do |form| %>
+  
+      <div class="flex gap-2 mb-4">
+        <div class="">
+          <% if Term.current.present? %>
+            <label for="term_id" class="fancy_label">Select a Term</label>
+            <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: params[:term_id]), include_blank: "Current Term", class: "filter_select w-48",
+                        :"data-action" => "change->autosubmit#search" %>
+          <% else %>
+            <label for="term_id" class="fancy_label">Select a Term</label>
+              <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: params[:term_id]), include_blank: "Select ...", class: "filter_select w-48",
+                        :"data-action" => "change->autosubmit#search" %>
+          <% end %>
+        </div>
+
+        <% if @units.count > 1 %>
+          <div class="">
+            <label for="unit_id" class="fancy_label">Select a Unit</label>
+            <%= select_tag "unit_id", options_from_collection_for_select(@units, :id, :name, selected: params[:unit_id]), include_blank: "All Units", class: "filter_select w-48",
+                        :"data-action" => "change->autosubmit#search" %>
+          </div>
+        <% end %>
+      </div>
+
+      <%= turbo_frame_tag "surveys" do %>
+        <%= render "listing" %>
+      <% end %>
+    <% end %>
+  </div>
+</div>

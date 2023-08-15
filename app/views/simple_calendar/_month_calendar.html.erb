@@ -1,0 +1,45 @@
+<div class="simple-calendar">
+  <div class="calendar-heading">
+    <%= link_to calendar.url_for_previous_view do %>
+      <span class="tertiary_button">
+        <i class="fa-solid fa-less-than" aria-hidden="true"></i>
+        <%= t('simple_calendar.previous', default: Date::MONTHNAMES[start_date.to_date.month - 1]) %>
+      </span>
+    <% end %>
+    <time datetime="<%= start_date.strftime('%Y-%m') %>" class="calendar-title"><%= t('date.month_names')[start_date.month] %> <%= start_date.year %></time>
+    <%= link_to calendar.url_for_next_view  do %>
+      <span class="tertiary_button">
+        <%= t('simple_calendar.next', default: Date::MONTHNAMES[start_date.to_date.month + 1]) %>
+        <i class="fa-solid fa-greater-than" aria-hidden="true"></i>
+      </span>
+    <% end %>
+
+    <%= link_to 'Today', reservations_path, class: "secondary_yellow_button" %>
+  </div>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <% date_range.slice(0, 7).each do |day| %>
+          <th><%= t('date.abbr_day_names')[day.wday] %></th>
+        <% end %>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% date_range.each_slice(7) do |week| %>
+        <tr>
+          <% week.each do |day| %>
+            <%= content_tag :td, class: calendar.td_classes_for(day) do %>
+              <% if defined?(Haml) && respond_to?(:block_is_haml?) && block_is_haml?(passed_block) %>
+                <% capture_haml(day, sorted_events.fetch(day, []), &passed_block) %>
+              <% else %>
+                <% passed_block.call day, sorted_events.fetch(day, []) %>
+              <% end %>
+            <% end %>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

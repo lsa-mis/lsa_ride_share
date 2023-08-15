@@ -1,0 +1,53 @@
+<%= turbo_frame_tag 'new_contact' do %>
+  <%= form_for [@site, contact]  do |form| %>
+    <% if contact.errors.any? %>
+      <div id="error_explanation" class="text-red-umred px-3 py-2 font-medium rounded-lg mt-3">
+        <h2><%= pluralize(contact.errors.count, "error") %> prohibited this contact from being saved:</h2>
+        <ul>
+          <% contact.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="lg:flex gap-2">
+      <div class="my-2 grow">
+        <%= form.label :title, "Title *", class: "fancy_label" %>
+        <%= form.text_field :title, required: true, placeholder: "Title", class: "input_text_field" %>
+      </div>
+
+      <div class="my-2 grow">
+        <%= form.label :first_name, "First Name *", class: "fancy_label" %>
+        <%= form.text_field :first_name, required: true, placeholder: "First Name", class: "input_text_field" %>
+      </div>
+
+      <div class="my-2 grow">
+        <%= form.label :last_name, "Last Name *", class: "fancy_label" %>
+        <%= form.text_field :last_name, required: true, placeholder: "Last Name", class: "input_text_field" %>
+      </div>
+    </div>
+    <div class="lg:flex gap-2">
+      <div class="my-2">
+        <%= form.label :phone_number, "Phone Number *", class: "fancy_label" %>
+        <%= form.text_field :phone_number, required: true, placeholder: "XXX-XXX-XXXX", class: "input_text_field" %>
+      </div>
+
+      <div class="my-2 grow">
+        <%= form.label :email, "Email *", class: "fancy_label" %>
+        <%= form.text_field :email, required: true, placeholder: "Email", class: "input_text_field" %>
+      </div>
+    </div>
+
+    <div class="my-2">
+      <div class="inline">
+        <%= form.submit 'Add New Contact', class: "secondary_blue_button" %>
+      </div>
+      <%= link_to site_contacts_path do %>
+        <span class="tertiary_button">Clear
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </span>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>

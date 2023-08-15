@@ -13,9 +13,9 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter var', ...defaultTheme.fontFamily.sans],
-        oswald: ['Oswald'],
-        montserrat: ['Montserrat'],
+        sans: ['Inter var'],
+        oswald: ['Oswald', 'sans-serif'],
+        montserrat: ['Montserrat', 'sans-serif'],
       },
     },
     colors: {
@@ -37,6 +37,15 @@ module.exports = {
         700: '#4a5568',
         800: '#2d3748',
         900: '#1a202c',
+        um10: '#E5E5E5',
+        um20: '#CCCCCC',
+        um30: '#B2B2B2',
+        um40: '#999999',
+        um50: '#7F7F7F',
+        um60: '#666666',
+        um70: '#4C4C4C',
+        um80: '#323232',
+        um90: '#191919',
       },
       red: {
         100: '#fff5f5',
@@ -45,9 +54,11 @@ module.exports = {
         400: '#fc8181',
         500: '#f56565',
         600: '#e53e3e',
+        650: '#D05858',
         700: '#c53030',
         800: '#9b2c2c',
         900: '#742a2a',
+        umred: '#B51E0A',
       },
       orange: {
         100: '#fffaf0',
@@ -72,7 +83,8 @@ module.exports = {
         750: '#9D691B',
         800: '#975a16',
         900: '#744210',
-        umyellow: '#ffcb05'
+        umyellow: '#ffcb05',
+        ummaze: '#FFCF01',
       },
       green: {
         100: '#f0fff4',
@@ -84,6 +96,7 @@ module.exports = {
         700: '#2f855a',
         800: '#276749',
         900: '#22543d',
+        umgreen: '#00743C',
       },
 
       blue: {
@@ -95,8 +108,10 @@ module.exports = {
         500: '#4299e1',
         600: '#3182ce',
         700: '#2b6cb0',
+        750: '#006AB8',
         800: '#2c5282',
         900: '#00274c',
+        umlink: '#024794',
         umblue: '#00274c',
       },
       orange: {
