@@ -42,7 +42,7 @@ class FacultySurveys::ConfigQuestionsController < ApplicationController
     if @config_question.destroy
       flash.now[:notice] = "Question was deleted."
     end
-    @config_questions = @faculty_survey.config_questions.order(:id)
+    index
   end
 
   def survey
