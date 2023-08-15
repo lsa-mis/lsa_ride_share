@@ -63,13 +63,19 @@ class SystemReportsController < ApplicationController
       backup_driver_phone,
 
 
-      
-      (SELECT reservation_passengers.student_id FROM reservation_passengers WHERE res.student_id = reservation_passengers.student_id),
+
+     --(SELECT reservation_passengers.student_id FROM reservation_passengers WHERE res.student_id = reservation_passengers.student_id),
 
 
 
       (SELECT sites.title FROM sites WHERE res.site_id = sites.id) AS site,
-      mileage_start, mileage_end, gas_start, gas_end, vehicle_reports.parking_spot, parking_spot_return, vehicle_reports.status, student_status AS student_status_completed, vehicle_reports.approved AS admin_approved, (SELECT email FROM users WHERE vehicle_reports.updated_by = users.id) AS last_updated_by FROM vehicle_reports
+      mileage_start, mileage_end, 
+
+
+      --(SUM(mileage_end) - SUM(mileage_start)) AS mileage_total,
+
+
+      gas_start, gas_end, vehicle_reports.parking_spot, parking_spot_return, vehicle_reports.status, student_status AS student_status_completed, vehicle_reports.approved AS admin_approved, (SELECT email FROM users WHERE vehicle_reports.updated_by = users.id) AS last_updated_by FROM vehicle_reports
       LEFT JOIN reservations AS res ON res.id = vehicle_reports.reservation_id 
       LEFT JOIN cars AS car ON car.id = res.car_id
       RIGHT JOIN programs ON res.program_id = programs.id
@@ -183,9 +189,9 @@ class SystemReportsController < ApplicationController
         csv << header
 
         res['rows'].each do |h|
-          h[0] = "http://localhost:3000/" + res['table'] + "/" + h[0].to_s
+          h[0] = "https://rideshare.lsa.umich.edu/" + res['table'] + "/" + h[0].to_s
 
-          h[4] = "http://localhost:3000/reservations/" + h[4].to_s
+          h[4] = "https://rideshare.lsa.umich.edu/reservations/" + h[4].to_s
           csv << h
 
           
