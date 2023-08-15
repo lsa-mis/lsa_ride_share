@@ -94,3 +94,6 @@ psych_pilot:
 
 production:
   <<: *default
+  database: lsa_ride_share_production
+  username: lsa_ride_share
+  password: <%= ENV["LSA_RIDE_SHARE_DATABASE_PASSWORD"] %>
