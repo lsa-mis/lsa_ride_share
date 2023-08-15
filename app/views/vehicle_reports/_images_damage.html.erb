@@ -3,13 +3,15 @@
     <p class="body-md-bold-text">
       Damage Images (if applicable)
     </p>
-    <p class="body-sm-text my-2">
-      To upload multiple images, click Choose Files and select all images at once.
-    </p>
-    <%= form_with(model: @vehicle_report, url: upload_damage_images_path, method: :post, html: { class: "sm:flex sm:items-center" }) do |form| %>
-      <%= form.label :image_damages, "Damage (upload multiple images)", class: "hidden" %>
-      <%= form.file_field :image_damages, multiple: true, class: "body-sm-text" %>
-      <%= form.submit 'Save', class: "secondary_blue_button" %>
+    <% unless @vehicle_report.approved %>
+      <p class="body-sm-text my-2">
+        To upload multiple images, click Choose Files and select all images at once.
+      </p>
+      <%= form_with(model: @vehicle_report, url: upload_damage_images_path, method: :post, html: { class: "sm:flex sm:items-center" }) do |form| %>
+        <%= form.label :image_damages, "Damage (upload multiple images)", class: "hidden" %>
+        <%= form.file_field :image_damages, multiple: true, class: "body-sm-text" %>
+        <%= form.submit 'Save', class: "secondary_blue_button" %>
+      <% end %>
     <% end %>
   </div>
 
@@ -27,13 +29,15 @@
                 <p class="body-sm-text pt-2">
                   Uploaded on <%= show_date_time(image.created_at) %>
                 </p>
-                <div>
-                  <%= link_to delete_file_path(image), data: { turbo_method: :get, turbo_confirm: 'Are you sure?' } do %>
-                    <span class="tertiary_button">Remove
-                      <i class="fa fa-times" aria-hidden="true"></i>
-                    </span>
-                  <% end %>
-                </div>
+                <% unless @vehicle_report.approved %>
+                  <div>
+                    <%= link_to delete_file_path(image), data: { turbo_method: :get, turbo_confirm: 'Are you sure?' } do %>
+                      <span class="tertiary_button">Remove
+                        <i class="fa fa-times" aria-hidden="true"></i>
+                      </span>
+                    <% end %>
+                  </div>
+                <% end %>
               </div>
             </li>
           <% end %>
