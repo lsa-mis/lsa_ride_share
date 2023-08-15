@@ -40,9 +40,9 @@ class SystemReportsController < ApplicationController
 
     @has_damage = false
 
-    if @vehicle_reports.image_damages.attached?
+    #if @vehicle_reports.image_damages.attached?
       #how to get at image_damages
-    end
+    #end
 
 
     @params_exist = false
