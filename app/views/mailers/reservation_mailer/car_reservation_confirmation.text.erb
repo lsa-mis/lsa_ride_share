@@ -5,6 +5,11 @@ is not possible, your request will be cancelled. Either way, you will receive an
 Reservation for:  <%= link_to "#{@reservation.display_name}", reservation_url(@reservation) %>
 ================================================================================================
 DATE: <%= "#{@start_time} - #{@end_time}" %>
+<% if @reservation.recurring.present?  %>
+  <% recurring_reservation = RecurringReservation.new(@reservation) %>
+  RECURRING: <%= recurring_reservation.first_reservation.rule.to_s %>
+  <%= "starting on #{recurring_reservation.start_on} ending on #{recurring_reservation.end_on}" %>
+<% end %>
 <% if @reservation.car.present? %>
   VEHICLE #: <%= link_to @reservation.car.car_number, car_url(@reservation.car) %>
 <% else %>

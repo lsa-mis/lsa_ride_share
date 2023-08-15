@@ -1,6 +1,6 @@
 class FacultySurveysController < ApplicationController
   before_action :auth_user
-  before_action :set_faculty_survey, only: %i[ show edit update destroy ]
+  before_action :set_faculty_survey, only: %i[ show edit update destroy send_faculty_survey_email]
   before_action :set_units, only: %i[ index new create edit update ]
   before_action :set_terms, only: %i[ new create edit update ]
   include ConfigQuestionsHelper
@@ -51,7 +51,7 @@ class FacultySurveysController < ApplicationController
     end
     if @faculty_survey.save
       add_config_questions(@faculty_survey)
-      redirect_to faculty_surveys_path(:term_id => @faculty_survey.term_id), notice: "Faculty survey was successfully created." + result['note']
+      redirect_to faculty_survey_config_questions_path(@faculty_survey), notice: "Faculty survey was successfully created." + result['note'] + " You can edit the questions and send an email to the instructor."
     else
       render :new, status: :unprocessable_entity
     end
@@ -77,14 +77,23 @@ class FacultySurveysController < ApplicationController
     end
   end
 
+  def send_faculty_survey_email
+    FacultyMailer.with(faculty_survey: @faculty_survey).send_faculty_survey_email(current_user).deliver_now
+    @email_log_entries = EmailLog.where(sent_from_model: "FacultySurvey", record_id: @faculty_survey.id).order(created_at: :desc)
+    redirect_to faculty_survey_config_questions_path(@faculty_survey), notice: 'Email was sent'
+  end
+
   # DELETE /faculty_surveys/1 or /faculty_surveys/1.json
   def destroy
     @faculty_survey.destroy
-
-    respond_to do |format|
-      format.html { redirect_to faculty_surveys_url, notice: "Faculty survey was successfully destroyed." }
-      format.json { head :no_content }
+    flash.now[:notice] = "Program survey was successfully deleted."
+    if params[:unit_id].present?
+      @faculty_surveys = FacultySurvey.where(unit_id: params[:unit_id])
+    else
+      @faculty_surveys = FacultySurvey.where(unit_id: @units)
     end
+    @faculty_surveys = @faculty_surveys.data(params[:term_id]).order(created_at: :desc)
+    authorize @faculty_surveys
   end
 
   def add_config_questions(faculty_survey)

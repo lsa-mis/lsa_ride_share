@@ -38,6 +38,8 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(resource)
     if session[:user_memberships].present?
       programs_path
+    elsif is_manager?(resource)
+      welcome_pages_manager_path
     elsif is_student?(resource)
       welcome_pages_student_path
     else
@@ -68,6 +70,13 @@ class ApplicationController < ActionController::Base
         result['note'] = "#{uniqname} is instructor's uniqname"
       else
         result['valid'] =  true
+        # check if uniqname is an admin uniqname
+        ldap_group = is_member_of_admin_groups?(uniqname)
+        if ldap_group
+          result['valid'] = false
+          result['note'] = "#{uniqname} is an admin - a member of #{ldap_group} group. Admins can't be managers."
+          return result
+        end
         if name.nil?
           result['note'] = "Mcommunity returns no name for '#{uniqname}' uniqname."
         else
@@ -79,6 +88,17 @@ class ApplicationController < ActionController::Base
     return result
   end
 
+  def is_member_of_admin_groups?(uniqname)
+    access_groups = Unit.pluck(:ldap_group) + ['lsa-was-rails-devs']
+    ldap_group = false
+    access_groups.each do |group|
+      if  LdapLookup.is_member_of_group?(uniqname, group)
+        ldap_group = group
+      end
+    end
+    return ldap_group
+  end
+
   def get_faculty_name_for_survey(uniqname)
     result = {'valid' => false, 'note' => '', 'last_name' => '', 'first_name' => ''}
     name = LdapLookup.get_simple_name(uniqname)
@@ -86,6 +106,12 @@ class ApplicationController < ActionController::Base
       result['note'] = "The '#{uniqname}' uniqname is not valid."
     else
       result['valid'] =  true
+      ldap_group = is_member_of_admin_groups?(uniqname)
+        if ldap_group
+          result['valid'] = false
+          result['note'] = "#{uniqname} is an admin - a member of #{ldap_group} group. Admins can't be instructors."
+          return result
+        end
       if name.nil?
         result['note'] = "Mcommunity returns no name for '#{uniqname}' uniqname."
       else

@@ -23,24 +23,44 @@
       The reservation has <%= pluralize(@reservation.passengers.count, 'passenger') %> already
     </p>
   <% end %>
-  <input type="hidden" id="number_of_passengers" name="number_of_passengers" value=<%= @reservation.passengers.count %> data-driver-target="number_of_passengers">    
-  <% if is_student?(current_user) %>
-    <input type="hidden" name="reservation[driver_id]" id="reservation_driver_id" value=<%= @reservation.driver_id %> data-driver-target="driver">
-    <div class="mt-2">
-      <label class="body-lg-bold-text">
-        Driver:
-      </label>
-      <p class="body-lg-text ml-2 inline-block">
-        <%= show_driver(@reservation) %>
-      </p>
-    </div>
-  <% else %>
-    <div class="my-5">
-      <%= form.label :driver_id, "Driver *", class: "fancy_label" %>
-      <%= form.collection_select :driver_id, @drivers, :id, :display_name, { include_blank: "Select ..." }, class: "input_text_field",
-        "data-driver-target": "driver" %>
-    </div>
-  <% end %>
+  <input type="hidden" id="number_of_passengers" name="number_of_passengers" value=<%= @reservation.passengers.count %> data-driver-target="number_of_passengers">
+
+
+
+    <% if is_student?(current_user) || is_manager?(current_user) %>
+      <div class="mt-2">
+        <label class="body-lg-bold-text">
+          Driver:
+        </label>
+        <p class="body-lg-text ml-2 inline-block">
+          <%= show_driver(@reservation) %>
+        </p>
+      </div>
+      <% if is_student?(current_user) %>
+        <input type="hidden" name="reservation[driver_id]" id="reservation_driver_id" value=<%= @reservation.driver_id %> data-driver-target="driver">
+      <% end %>
+      <% if is_manager?(current_user) %>
+        <input type="hidden" name="reservation[driver_manager_id]" id="reservation_driver_manager_id" value=<%= @reservation.driver_manager_id %> data-driver-target="driver">
+      <% end %>
+    <% else %>
+      <% if @reservation.driver_manager.present? %>
+        <div class="mt-2">
+          <label class="body-lg-bold-text">
+            Driver:
+          </label>
+          <p class="body-lg-text ml-2 inline-block">
+            <%= @reservation.driver_manager.display_name + " (manager)" %>
+          </p>
+        </div>
+        <input type="hidden" name="reservation[driver_manager_id]" id="reservation_driver_manager_id" value=<%= @reservation.driver_manager_id %> data-driver-target="driver">
+      <% end %>
+      <div class="my-5">
+        <%= form.label :driver_id, "Driver *", class: "fancy_label" %>
+        <%= form.collection_select :driver_id, @drivers, :id, :display_name, { include_blank: "Select ..." }, class: "input_text_field",
+          "data-driver-target": "driver" %>
+      </div>
+    <% end %>
+  
 
   <div class="error_text" id="driver_error">
   </div>
@@ -79,14 +99,7 @@
   <div class="md:flex items-center whitespace-nowrap">
     <% if params["edit"] == "true" %>
       <div>
-        <%= form.submit "Update and Edit Passengers", form_class: "flex", class: "primary_button" %>
-      </div>
-      <div>
-        <%= link_to add_passengers_path(@reservation, :edit => params[:edit]) do %>
-          <span class="tertiary_button">Go to Passengers Page
-          <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-          </span>
-        <% end %>
+        <%= form.submit "Update Drivers", form_class: "flex", class: "primary_button" %>
       </div>
     <% else %>
       <div>
@@ -94,19 +107,18 @@
       </div>
     <% end %>
     <div>
-      <% if is_admin?(current_user) %>
-        <% if params["edit"] == "true" %>
-          <%= link_to reservation_path(@reservation) do %>
-            <span class="tertiary_button">Cancel
-              <i class="fa fa-times" aria-hidden="true"></i>
-            </span>
-          <% end %>
-        <% else %>
-          <%= link_to reservation_path(@reservation) do %>
-            <span class="tertiary_button">Add Drivers Later
-              <i class="fa fa-times" aria-hidden="true"></i>
-            </span>
-          <% end %>
+      <% if params["edit"] == "true" %>
+        <%= link_to reservation_path(@reservation) do %>
+          <span class="tertiary_button">Cancel
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </span>
+        <% end %>
+      <% end %>
+      <% if is_admin?(current_user) && params["edit"] != "true" %>
+        <%= link_to add_drivers_later_path(@reservation) do %>
+          <span class="tertiary_button">Add Drivers Later
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </span>
         <% end %>
       <% end %>
     </div>

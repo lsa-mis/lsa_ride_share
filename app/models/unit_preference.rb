@@ -16,7 +16,7 @@
 class UnitPreference < ApplicationRecord
   belongs_to :unit
 
-  enum :pref_type, [:boolean, :string, :time], prefix: true, scopes: true
+  enum :pref_type, [:boolean, :integer, :string, :time], prefix: true, scopes: true
 
   validates :name, uniqueness: { scope: :unit_id, message: "should be unique." }
   validates_presence_of :pref_type, :description

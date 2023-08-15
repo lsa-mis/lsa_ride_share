@@ -9,7 +9,7 @@
 #  car_id                   :bigint
 #  start_time               :datetime
 #  end_time                 :datetime
-#  recurring                :string
+#  recurring                :text
 #  driver_id                :bigint
 #  driver_phone             :string
 #  backup_driver_id         :bigint
@@ -22,23 +22,38 @@
 #  approved                 :boolean          default false
 #  non_uofm_passengers      :string
 #  number_of_non_uofm_passengers :integer
+#  driver_manager_id        :bigint
+#  prev                     :bigint
+#  next                     :bigint
+#  until_date               :date
 #
 class Reservation < ApplicationRecord
+  include ApplicationHelper
   belongs_to :program
   belongs_to :site
   belongs_to :car, optional: true
   belongs_to :driver, optional: true, class_name: 'Student', foreign_key: :driver_id
+  belongs_to :driver_manager, optional: true, class_name: 'Manager', foreign_key: :driver_manager_id
   belongs_to :backup_driver, optional: true, class_name: 'Student', foreign_key: :backup_driver_id
+
+  has_one :next_reservation, class_name: "Reservation", foreign_key: :next
+  belongs_to :prev_reservation, class_name: "Reservation", foreign_key: :prev, optional: true
+
+
   has_many :reservation_passengers
   has_many :passengers, through: :reservation_passengers, source: :student
   has_one :vehicle_report, dependent: :destroy
   before_destroy :car_reservation_cancel
   before_update :check_number_of_non_uofm_passengers
+  before_update :send_email_on_drivers_update
+  before_create :check_recurring
   
   has_rich_text :note
 
   validate :check_number_of_people_on_trip, on: :update
+  validate :driver_student_or_manager, on: :update
   validate :check_drivers, on: :update
+  validate :check_diff_time
 
   scope :with_passengers, -> { Reservation.includes(:passengers) }
 
@@ -57,7 +72,7 @@ class Reservation < ApplicationRecord
   end
 
   def added_people
-    number = self.passengers.count + (self.driver.present? ? 1 : 0).to_i + (self.backup_driver.present? ? 1 : 0).to_i
+    number = self.passengers.count + (self.driver.present? ? 1 : 0).to_i + (self.backup_driver.present? ? 1 : 0).to_i + + (self.driver_manager.present? ? 1 : 0).to_i
     if self.program.non_uofm_passengers
       number += self.number_of_non_uofm_passengers
     end
@@ -79,7 +94,7 @@ class Reservation < ApplicationRecord
     if students.present?
       students.each do |s|
         cancel_passengers << s.name
-        cancel_emails << s.uniqname + "@umich.edu"
+        cancel_emails << email_address(s)
       end
     else
       cancel_passengers = ["No passengers"]
@@ -91,8 +106,8 @@ class Reservation < ApplicationRecord
       self.passengers.delete_all
     end
     ReservationMailer.car_reservation_cancel_admin(self, cancel_passengers, cancel_emails, self.reserved_by).deliver_now
-    if self.driver_id.present?
-      ReservationMailer.car_reservation_cancel_student(self, cancel_passengers, cancel_emails, self.reserved_by).deliver_now
+    if self.driver_id.present? || self.driver_manager_id.present? 
+      ReservationMailer.car_reservation_cancel_driver(self, cancel_passengers, cancel_emails, self.reserved_by).deliver_now
     end
   end
 
@@ -102,12 +117,111 @@ class Reservation < ApplicationRecord
     end
   end
 
+  def driver_student_or_manager
+    if self.driver_id.present? && self.driver_manager_id.present?
+      self.driver_manager_id = nil
+    end
+  end
+
   def check_drivers
     if self.passengers.include?(self.driver)
       errors.add(:base, "remove this driver from the passenger list first.")
     end
     if self.passengers.include?(self.backup_driver)
       errors.add(:base, "remove this backup driver from the passengers list first.")
+    end
+  end
+
+  def send_email_on_drivers_update
+    drivers_emails = []
+    if self.driver_id.present? && self.driver_changed?
+      if self.driver_id_change[1].present? && self.driver_id_change[0].nil?
+        return
+      end
+    end
+    if self.driver_changed?
+      if self.driver_id_change[0].present?
+        drivers_emails << email_address(Student.find(self.driver_id_change[0]))
+      end
+      if self.driver_id_change[1].present?
+        drivers_emails << email_address(Student.find(self.driver_id_change[1]))
+      end
+    end
+    if self.driver_manager_changed?
+      if self.driver_manager_id_change[0].present?
+        drivers_emails << email_address(Manager.find(self.driver_manager_id_change[0]))
+      end
+      if self.driver_manager_id_change[1].present?
+        drivers_emails << email_address(Manager.find(self.driver_manager_id_change[1]))
+      end
+    end
+    if self.backup_driver_changed?
+      if self.backup_driver_id_change[0].present?
+        drivers_emails << email_address(Student.find(self.backup_driver_id_change[0]))
+      end
+      if self.backup_driver_id_change[1].present?
+        drivers_emails << email_address(Student.find(self.backup_driver_id_change[1]))
+      end
+    end
+    if drivers_emails.present?
+      ReservationMailer.car_reservation_drivers_edited(self, drivers_emails, self.reserved_by).deliver_now
+    end
+  end
+
+  def check_diff_time
+    if ((self.end_time - self.start_time) / 1.minute).to_i < 46
+      errors.add(:end_time, " is too close to Start Time")
+    end
+  end
+
+  def dup
+    super.tap do |new_reservation|
+      new_reservation.start_time = nil
+      new_reservation.end_time = nil
+      new_reservation.prev = nil
+      new_reservation.next = nil
+    end
+  end
+
+  def check_recurring
+    if self.recurring.present?
+      if self.until_date.present?
+        recurring[:until] = self.until_date.to_s
+      end
+    end
+  end
+
+  serialize :recurring, Hash
+
+  def recurring=(value)
+    if RecurringSelect.is_valid_rule?(value)
+      v = RecurringSelect.dirty_hash_to_rule(value).to_hash
+      super(v)
+    else
+      super(nil)
+    end
+  end
+
+  def rule
+    IceCube::Rule.from_hash recurring
+  end
+
+  def schedule(start)
+    schedule = IceCube::Schedule.new(start)
+    # start_time = params['schedule_starttime']
+    schedule.add_recurrence_rule(rule)
+    schedule
+  end
+
+  def calendar_reservations(start)
+    if recurring.empty?
+      [self]
+    else
+      start_date = start.beginning_of_month.beginning_of_week
+      end_date = start.end_of_month.end_of_week
+      schedule(start_time).occurrences(end_date).map do |date|
+        Reservation.new(id: id, start_time: date)
+      end
     end
   end
 

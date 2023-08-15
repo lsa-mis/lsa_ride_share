@@ -43,6 +43,22 @@
           </td>
         <% end %>
       </tr>
+      <tr class="mi_tbody_tr">
+        <% if @reservation.driver_manager.present? %>
+          <td class="mi_tbody_td">
+            <%= @reservation.driver_manager.uniqname %>
+          </td>
+          <td class="mi_tbody_td">
+            <%= @reservation.driver_manager.first_name %>
+          </td>
+          <td class="mi_tbody_td">
+            <%= @reservation.driver_manager.last_name %>
+          </td>
+          <td class="mi_tbody_td">
+            Driver (manager)
+          </td>
+        <% end %>
+      </tr>
       <% if @reservation.backup_driver.present? %>
         <tr class="mi_tbody_tr">
           <td class="mi_tbody_td">

@@ -10,23 +10,35 @@
         </tr>
       </thead>
       <tbody>
-        <% @config_questions.each do |q| %>
+        <% @config_questions_no_edit.each do |q| %>
+          <tr class="mi_tbody_tr">
+            <td></td>
+            <td></td>
+            <td class="mi_tbody_td">
+              <%= q.question %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= q.answer if q.answer.present? %>
+            </td>
+          </tr>
+        <% end %>
+        <% @config_questions_edit.each do |q| %>
           <tr class="mi_tbody_tr">
             <td class="mi_tbody_td">
-              <% unless @faculty_survey.program_id.present? %>
+            <% unless email_was_sent?("FacultySurvey", @faculty_survey) %>
                 <%= link_to "Delete", faculty_survey_config_question_path(@faculty_survey, q), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete}, class: "link_to" %>
               <% end %>
             </td>
             <td class="mi_tbody_td">
-              <% unless @faculty_survey.program_id.present? %>
+            <% unless email_was_sent?("FacultySurvey", @faculty_survey) %>
                 <%= link_to 'Edit', edit_faculty_survey_config_question_path(@faculty_survey, q), class: "link_to" %>
               <% end %>
             </td>
             <td class="mi_tbody_td">
-              <%= q.question.body.html_safe %>
+              <%= q.question %>
             </td>
             <td class="mi_tbody_td">
-              <%= q.answer.body.html_safe if q.answer.present? %>
+              <%= q.answer if q.answer.present? %>
             </td>
           </tr>
         <% end %>

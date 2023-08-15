@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_17_125330) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_08_174311) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -59,10 +59,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_17_125330) do
     t.string "color"
     t.integer "number_of_seats"
     t.float "mileage"
-    t.integer "gas"
+    t.decimal "gas"
     t.string "parking_spot"
     t.datetime "last_used"
-    t.datetime "last_checked"
     t.integer "last_driver_id"
     t.integer "updated_by"
     t.datetime "created_at", null: false
@@ -124,6 +123,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_17_125330) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "program_id"
+    t.string "mvr_status"
+    t.date "canvas_course_complete_date"
+    t.date "meeting_with_admin_date"
     t.index ["program_id"], name: "index_managers_on_program_id"
   end
 
@@ -196,7 +198,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_17_125330) do
     t.bigint "car_id"
     t.datetime "start_time"
     t.datetime "end_time"
-    t.string "recurring"
+    t.text "recurring"
     t.bigint "driver_id"
     t.string "driver_phone"
     t.bigint "backup_driver_id"
@@ -209,9 +211,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_17_125330) do
     t.boolean "approved", default: false
     t.string "non_uofm_passengers"
     t.integer "number_of_non_uofm_passengers", default: 0
+    t.bigint "driver_manager_id"
+    t.integer "prev"
+    t.integer "next"
+    t.date "until_date"
     t.index ["backup_driver_id"], name: "index_reservations_on_backup_driver_id"
     t.index ["car_id"], name: "index_reservations_on_car_id"
     t.index ["driver_id"], name: "index_reservations_on_driver_id"
+    t.index ["driver_manager_id"], name: "index_reservations_on_driver_manager_id"
     t.index ["program_id"], name: "index_reservations_on_program_id"
     t.index ["site_id"], name: "index_reservations_on_site_id"
   end
@@ -234,7 +241,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_17_125330) do
     t.string "uniqname"
     t.string "last_name"
     t.string "first_name"
-    t.date "class_training_date"
     t.date "canvas_course_complete_date"
     t.integer "updated_by"
     t.datetime "created_at", null: false
@@ -326,6 +332,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_17_125330) do
   add_foreign_key "reservation_passengers", "reservations"
   add_foreign_key "reservation_passengers", "students"
   add_foreign_key "reservations", "cars"
+  add_foreign_key "reservations", "managers", column: "driver_manager_id"
   add_foreign_key "reservations", "programs"
   add_foreign_key "reservations", "sites"
   add_foreign_key "reservations", "students", column: "backup_driver_id"

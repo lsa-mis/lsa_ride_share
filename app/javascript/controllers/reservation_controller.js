@@ -162,6 +162,7 @@ export default class extends Controller {
   }
 
   submitForm(event) {
+    console.log("submit from reservation controller")
     let term = this.termTarget.value
     let program = this.programTarget.value
     let site = this.siteTarget.value
@@ -183,7 +184,8 @@ export default class extends Controller {
     let submitForm = true
 
     if(term == "" || program == "" || site == "") {
-      required_fields_error.innerHTML = "Please select required data"
+      required_fields_error.innerHTML = "Please complete required fields ( * )"
+      required_fields_error.scrollIntoView()
       car_field_error.innerHTML = ''
       submitForm = false
     } else if (car == "" && !no_car) {

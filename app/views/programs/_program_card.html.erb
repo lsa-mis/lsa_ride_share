@@ -1,7 +1,6 @@
 <%= turbo_frame_tag dom_id(program) do  %>
-  <div class="flex flex-col justify-between h-full">
+  <div class="md:flex flex-col justify-between h-full">
     <div class="m-2 mb-3 sm:px-0">
-      <%= link_to program_path(program), data: { "turbo-frame": "_top" } do %>
         <div class="text-xs  font-bold hover:underline">
           <%= link_to program_path(program), data: { "turbo-frame": "_top" } do %>
             <h3>
@@ -18,7 +17,6 @@
         <p class="body-md-bold-text pt-4">
           Instructor - <%= program.instructor.uniqname%>
         </p>
-      <% end %>
     </div>
     <div class="pb-2">
       <% if current_user %>

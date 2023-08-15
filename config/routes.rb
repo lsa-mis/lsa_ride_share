@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   end
   get '/faculty_surveys/survey/:faculty_survey_id', to: 'faculty_surveys/config_questions#survey', as: :survey
   post '/faculty_surveys/survey/:faculty_survey_id', to: 'faculty_surveys/config_questions#save_survey'
+  get '/faculty_surveys/send_faculty_survey_email/:id', to: 'faculty_surveys#send_faculty_survey_email', as: :send_faculty_survey_email
 
   resources :units
 
@@ -24,13 +25,18 @@ Rails.application.routes.draw do
   resources :vehicle_reports do
     resources :notes, module: :vehicle_reports
   end
-  # get '/vehicle_reports/:reports_ids', to: 'vehicle_reports#index', as: 'vehicle_reports'
+  
+  post 'vehicle_reports/upload_image/:id', to: 'vehicle_reports#upload_image', as: :upload_image
+  post 'vehicle_reports/upload_damage_images/:id', to: 'vehicle_reports#upload_damage_images', as: :upload_damage_images
+  get 'vehicle_reports/delete_image/:id/:image_id/:image_field_name', to: 'vehicle_reports#delete_image', as: :delete_image, defaults: { format: :turbo_stream }
 
+  get '/reservations/new_long', to: 'reservations#new_long', as: :new_long_reservation
   get '/reservations/week_calendar/', to: 'reservations#week_calendar', as: 'week_calendar'
   resources :reservations do
     resources :vehicle_reports, module: :reservations
   end
   get '/reservations/get_available_cars/:unit_id/:day_start/:number/:start_time/:end_time', to: 'reservations#get_available_cars'
+  get '/reservations/get_available_cars_long/:unit_id/:day_start/:day_end/:number', to: 'reservations#get_available_cars_long'
   get '/reservations/no_car_all_times/:unit_id/:day_start', to: 'reservations#no_car_all_times'
   get '/reservations/edit_change_day/:unit_id/:day_start', to: 'reservations#edit_change_day'
   patch '/reservations/add_non_uofm_passengers/:reservation_id', to: 'reservations#add_non_uofm_passengers', as: :add_non_uofm_passengers
@@ -40,10 +46,12 @@ Rails.application.routes.draw do
   get '/reservations/add_drivers/:id', to: 'reservations#add_drivers', as: :add_drivers
   delete 'reservations/:reservation_id/:student_id', to: 'reservations/passengers#remove_passenger', as: :remove_passenger
   get '/reservations/day_reservations/:date', to: 'reservations#day_reservations', as: :day_reservations
+  get '/reservations/:id/add_drivers_later', to: 'reservations#add_drivers_later', as: :add_drivers_later
   get '/reservations/:id/finish_reservation', to: 'reservations#finish_reservation', as: :finish_reservation
   get '/reservations/:id/update_passengers/', to: 'reservations#update_passengers', as: :update_passengers
+  post '/reservations/cancel_recurring_reservation/:id', to: 'reservations#cancel_recurring_reservation', as: :cancel_recurring_reservation
 
-  get 'send_reservation_updated_email/:id', to: 'reservations#send_reservation_updated_email', as: :send_reservation_updated_email
+  get '/send_reservation_updated_email/:id', to: 'reservations#send_reservation_updated_email', as: :send_reservation_updated_email
 
   resources :cars do
     resources :notes, module: :cars
@@ -64,6 +72,11 @@ Rails.application.routes.draw do
   resources :programs do
     resources :managers, module: :programs, only: [ :new, :create ]
   end
+
+  resources :managers
+  get '/managers/update_managers_mvr_status/:id', to: 'managers#update_managers_mvr_status', as: :update_managers_mvr_status, defaults: { format: :turbo_stream }
+
+
   get '/programs/managers/edit_program_managers/:program_id', to: 'programs/managers#edit_program_managers', as: :edit_program_managers
   delete 'programs/managers/remove_manager/:program_id/:id', to: 'programs/managers#remove_manager_from_program', as: :remove_manager_from_program
 
@@ -98,6 +111,7 @@ Rails.application.routes.draw do
   resources :notes
 
   get 'welcome_pages/student'
+  get 'welcome_pages/manager'
   
   get 'static_pages/home'
 

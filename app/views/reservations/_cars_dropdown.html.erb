@@ -3,7 +3,7 @@
     <div class="mb-4">
       <%= label_tag 'Car *', nil, class: "fancy_label" %>
       <%= select_tag "car_id", options_from_collection_for_select(@cars, :id, :car_number, selected: @car_id), include_blank: "Select Car ...", class: "input_text_field",
-      "data-reservation-target": "car" %>
+      "data-reservation-target": "car", "data-longreservation-target": "car" %>
     </div>
   
     <div class="error_text mb-2" id="car_field"></div>

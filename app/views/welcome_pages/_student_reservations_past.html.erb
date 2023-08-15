@@ -1,7 +1,7 @@
 <%= turbo_frame_tag 'student_reservations' do %>
   <h3 class="my-2">Past Reservations</h3>
   <div class="min-w-full">
-    <table class="mi_table">
+    <table class="mi_table" id="desk-table">
       <thead class="border border-l-0 border-r-0 border-gray-um60">
         <tr>
           <th class="header_th">Reservation</th>
@@ -56,12 +56,80 @@
                   <%= link_to 'Vehicle report', vehicle_report_path(reservation.vehicle_report), class: "link_to" %>
                 <% end %>
               <% else %>
-                <%= link_to 'New vehicle report', new_reservation_vehicle_report_path(reservation), class: "link_to" %>
+                <%= link_to 'New vehicle report', new_reservation_vehicle_report_path(reservation), class: "link_to" if reservation.car.present? %>
               <% end %>
             </td>
           </tr>
         <% end %>
       </tbody>
+    </table>
+    <table id="phone-table">
+      <% @reservations_past.each do |reservation| %>
+        <tr class="mi_tbody_tr">
+        <th class="header_mobile">Reservation</th>
+          <% if reservation.driver == @student %>
+            <td class="mi_tbody_td">
+              <%= link_to 'Driver', reservation_path(reservation), class: "link_to" %>
+            </td>
+          <% elsif reservation.backup_driver == @student %>
+            <td class="mi_tbody_td">
+              <%= link_to 'Backup Driver', reservation_path(reservation), class: "link_to" %>
+            </td>
+          <% else %>
+            <td class="mi_tbody_td">
+              <%= link_to 'Passenger', reservation_path(reservation), class: "link_to" %>
+            </td>
+          <% end %>
+        </tr>
+        <tr class="mi_tbody_tr">
+          <th class="header_mobile">Approved</th>
+          <td class="mi_tbody_td">
+            <% if reservation.approved %>
+              <i class="fa-solid fa-check"></i>
+            <% end %>
+          </td>
+        </tr>
+        <tr class="mi_tbody_tr">
+          <th class="header_mobile">Pick-up</th>
+          <td class="mi_tbody_td">
+            <%= show_date_time(reservation.start_time + 15.minute) %>
+          </td>
+        </tr>
+        <tr class="mi_tbody_tr">
+          <th class="header_mobile">Drop-off</th>
+          <td class="mi_tbody_td">
+            <%= show_date_time(reservation.end_time - 15.minute) %>
+          </td>
+        </tr>
+        <tr class="mi_tbody_tr">
+          <th class="header_mobile">Site</th>
+          <td class="mi_tbody_td">
+            <%= reservation.site.title %>
+          </td>
+        </tr>
+        <tr class="mi_tbody_tr">
+          <th class="header_mobile">Car</th>
+          <td class="mi_tbody_td">
+            <%= show_car(reservation) %>
+          </td>
+        </tr>
+        <tr class="mobile_tr">
+          <th class="header_mobile">Vehicle Report</th>
+          <td class="mi_tbody_td">
+            <% if reservation.vehicle_report.present? %>
+              <% if reservation.vehicle_report.approved %>
+                Approved by admin
+              <% elsif reservation.vehicle_report.student_status %>
+                Completed
+              <% else %>
+                <%= link_to 'Vehicle report', vehicle_report_path(reservation.vehicle_report), class: "link_to" %>
+              <% end %>
+            <% else %>
+              <%= link_to 'New vehicle report', new_reservation_vehicle_report_path(reservation), class: "link_to" if reservation.car.present? %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
     </table>
   </div>
 <% end %>

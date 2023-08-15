@@ -223,7 +223,16 @@ from https://tailwindcss.com/docs/adding-custom-styles
     @apply text-blue-umlink hover:underline;
   }
 
+  .link_to_white {
+    @apply text-gray-50 hover:underline;
+  }
+
   .input_text_field {
+    @apply w-full text-lg font-medium text-gray-900 bg-white border border-gray-600 rounded block p-2 focus:ring-blue-500 focus:border-blue-500 
+    placeholder:font-montserrat placeholder:font-medium placeholder:leading-7 placeholder:text-sm placeholder:text-gray-um60;
+  }
+
+  .recurring_select {
     @apply w-full text-lg font-medium text-gray-900 bg-white border border-gray-600 rounded block p-2 focus:ring-blue-500 focus:border-blue-500 
     placeholder:font-montserrat placeholder:font-medium placeholder:leading-7 placeholder:text-sm placeholder:text-gray-um60;
   }
@@ -258,8 +267,16 @@ from https://tailwindcss.com/docs/adding-custom-styles
     @apply p-2 text-base font-semibold leading-5 font-montserrat lg:table-cell text-left;
   }
 
+  .header_mobile {
+    @apply p-2 text-base font-semibold leading-5 font-montserrat lg:table-cell text-left;
+  }
+
   .mi_tbody_tr {
     @apply relative sm:pl-2 bg-white border border-l-0 border-r-0 border-t-0 border-gray-um20;
+  }
+
+  .mobile_tr {
+    @apply relative sm:pl-2 bg-white border border-l-0 border-r-0 border-t-0 border-b-2 border-gray-um50;
   }
 
   .mi_tbody_td {

@@ -20,6 +20,7 @@ class Reservations::PassengersController < ApplicationController
   def remove_passenger
     authorize([@reservation, Student])
     @reservation.passengers.delete(Student.find(params[:student_id]))
+    ReservationMailer.with(reservation: @reservation).car_reservation_remove_passenger(Student.find(params[:student_id]), current_user).deliver_now
     add_passengers
   end
 
