@@ -85,13 +85,6 @@
     <%= form.label :comment, class: "fancy_label"  %>
     <%= form.rich_text_area :comment, class: "input_text_field" %>
   </div>
-
-  <% if is_admin?(current_user) %>
-    <div class="my-5">
-      <%= form.label :admin_comment, class: "fancy_label"  %>
-      <%= form.rich_text_area :admin_comment, class: "input_text_field" %>
-    </div>
-  <% end %>
   
   <% if action_name == "new" %>
     <%= form.hidden_field :created_by, value: current_user.id %>
