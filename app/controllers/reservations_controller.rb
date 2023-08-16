@@ -66,6 +66,7 @@ class ReservationsController < ApplicationController
       @sites = @program.sites
       @cars = @cars.where(unit_id: @unit_id).order(:car_number)
       @min_date = default_reservation_for_students(@unit_id)
+      @max_date = max_day_for_reservation(@program)
     elsif is_manager?(current_user)
       @program = Program.find(params[:program_id])
       @unit_id = @program.unit_id
@@ -73,9 +74,10 @@ class ReservationsController < ApplicationController
       @sites = @program.sites
       @cars = @cars.where(unit_id: @unit_id).order(:car_number)
       @min_date = default_reservation_for_students(@unit_id)
+      @max_date = max_day_for_reservation(@program)
     elsif params[:unit_id].present?
       @unit_id = params[:unit_id]
-      @min_date =  DateTime.now
+      @min_date = DateTime.now
     else
       flash.now[:alert] = 'You must select a unit first.'
       render turbo_stream: turbo_stream.update("flash", partial: "layouts/notification")
@@ -112,6 +114,7 @@ class ReservationsController < ApplicationController
       @sites = @program.sites
       @cars = @cars.where(unit_id: @unit_id).order(:car_number)
       @min_date = default_reservation_for_students(@unit_id)
+      @max_date = max_day_for_reservation(@program)
     elsif is_manager?(current_user)
       @program = Program.find(params[:program_id])
       @unit_id = @program.unit_id
@@ -119,6 +122,7 @@ class ReservationsController < ApplicationController
       @sites = @program.sites
       @cars = @cars.where(unit_id: @unit_id).order(:car_number)
       @min_date = default_reservation_for_students(@unit_id)
+      @max_date = max_day_for_reservation(@program)
     elsif params[:unit_id].present?
       @unit_id = params[:unit_id]
       @min_date =  DateTime.now

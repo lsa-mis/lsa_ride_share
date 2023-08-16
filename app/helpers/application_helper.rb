@@ -468,6 +468,10 @@ module ApplicationHelper
     return day
   end
 
+  def max_day_for_reservation(program)
+    program.term.classes_end_date
+  end
+
   def contact_phone(reservation)
     reservation.program.unit.unit_preferences.find_by(name: "contact_phone").value.presence || ""
   end 
