@@ -62,7 +62,8 @@
             data: {
             controller: "flatpickr",
             flatpickr_date_format: "Y-m-d",
-            flatpickr_min_date: @min_date
+            flatpickr_min_date: @min_date,
+            flatpickr_max_date: @max_date
             }, "data-longreservation-target": "day_start", "data-action": "change->longreservation#availableCars",
             class: "input_text_field"
           %>
@@ -73,7 +74,8 @@
           data: {
           controller: "flatpickr",
           flatpickr_date_format: "Y-m-d",
-          flatpickr_min_date: @min_date
+          flatpickr_min_date: @min_date,
+          flatpickr_max_date: @max_date
           }, "data-longreservation-target": "day_end", "data-action": "change->longreservation#availableCars",
           class: "input_text_field"
         %>
@@ -94,7 +96,8 @@
           data: {
           controller: "flatpickr",
           flatpickr_date_format: "Y-m-d",
-          flatpickr_min_date: @min_date
+          flatpickr_min_date: @min_date,
+          flatpickr_max_date: @max_date
           },
           class: "input_text_field"
         %>
