@@ -484,9 +484,11 @@ class ReservationsController < ApplicationController
       end
     end
     if note == ""
-      note = "All Recurring Reservations were approved." 
+      note = "All recurring reservations were approved."
+      redirect_to reservation_path(@reservation), notice: note
+    else
+      redirect_to reservation_path(@reservation), alert: note
     end
-    redirect_to reservation_path(@reservation), alert: note
   end
 
   private
