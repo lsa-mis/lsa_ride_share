@@ -54,6 +54,7 @@ class Reservation < ApplicationRecord
   validate :driver_student_or_manager, on: :update
   validate :check_drivers, on: :update
   validate :check_diff_time
+  validate :approve_requires_car, on: :update
 
   scope :with_passengers, -> { Reservation.includes(:passengers) }
 
@@ -171,6 +172,12 @@ class Reservation < ApplicationRecord
   def check_diff_time
     if ((self.end_time - self.start_time) / 1.minute).to_i < 46
       errors.add(:end_time, " is too close to Start Time")
+    end
+  end
+
+  def approve_requires_car
+    if self.approved
+      errors.add(:base, " can't approve without a car") unless self.car_id.present?
     end
   end
 

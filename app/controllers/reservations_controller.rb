@@ -1,7 +1,7 @@
 class ReservationsController < ApplicationController
   before_action :auth_user
   before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger 
-    finish_reservation update_passengers send_reservation_updated_email cancel_recurring_reservation add_drivers_later ]
+    finish_reservation update_passengers send_reservation_updated_email cancel_recurring_reservation add_drivers_later approve_all_recurring ]
   before_action :set_terms_and_units
   before_action :set_programs
   before_action :set_cars, only: %i[ new new_long get_available_cars get_available_cars_long ]
@@ -302,6 +302,7 @@ class ReservationsController < ApplicationController
       else
         flash.now[:alert] = 'Error approving the reservation'
         render turbo_stream: turbo_stream.update("flash", partial: "layouts/notification")
+        return
       end
     end
     if params[:reservation][:driver_id].present? || params[:reservation][:driver_manager_id].present?
@@ -445,21 +446,21 @@ class ReservationsController < ApplicationController
       recurring_reservation =  RecurringReservation.new(@reservation)
       case cancel_type
       when "one"
-        result = recurring_reservation.delete_one
+        result = recurring_reservation.get_one
       when "following"
-        result = recurring_reservation.delete_following
+        result = recurring_reservation.get_following
       when "all"
-        result = recurring_reservation.delete_all
+        result = recurring_reservation.get_all_reservations
       end
       authorize @reservation
       respond_to do |format|
         if Reservation.where(id: result).destroy_all
           if is_admin?(current_user)
-            format.turbo_stream { redirect_to reservations_url, notice: "Selected Reservation(s) were canceled."  }
+            format.turbo_stream { redirect_to reservations_url, notice: "Selected Reservation(s) were canceled." }
           elsif is_student?(current_user)
-            format.turbo_stream { redirect_to welcome_pages_student_url, notice: "Selected Reservation(s) were canceled."  }
+            format.turbo_stream { redirect_to welcome_pages_student_url, notice: "Selected Reservation(s) were canceled." }
           elsif is_manager?(current_user)
-            format.turbo_stream { redirect_to welcome_pages_manager_url, notice: "Selected Reservation(s) were canceled."  }
+            format.turbo_stream { redirect_to welcome_pages_manager_url, notice: "Selected Reservation(s) were canceled." }
           end
         else
           render :show, status: :unprocessable_entity
@@ -469,6 +470,23 @@ class ReservationsController < ApplicationController
       flash.now[:alert] = 'The reservation is approved. To cancel, please contact your administrator'
       render turbo_stream: turbo_stream.update("flash", partial: "layouts/notification")
     end
+  end
+
+  def approve_all_recurring
+    recurring_reservation =  RecurringReservation.new(@reservation)
+    result = recurring_reservation.get_all_reservations
+    note = ""
+    result.each do |id|
+      if Reservation.find(id).update(approved: true)
+        ReservationMailer.with(reservation: Reservation.find(id)).car_reservation_approved(current_user).deliver_now
+      else
+        note += "Reservation #{id} was not approved. "
+      end
+    end
+    if note == ""
+      note = "All Recurring Reservations were approved." 
+    end
+    redirect_to reservation_path(@reservation), alert: note
   end
 
   private

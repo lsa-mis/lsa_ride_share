@@ -48,6 +48,9 @@
                 <%= select_tag :cancel_type, options_for_select(cancel_types), include_blank: "Select to Cancel ...", class: "filter_select",
                 "data-approve-target": "cancel_type", "data-action": "change->approve#cancelReservation" %>
               </div>
+              <div>
+                <%= link_to 'Approve All Recurring Reservations', approve_all_recurring_path(@reservation), class: "secondary_blue_button" %>
+              </div>
             <% end %>
           <% else %>
             <%= link_to reservation_path(@reservation), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete} do %>
