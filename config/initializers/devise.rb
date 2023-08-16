@@ -13,7 +13,6 @@ Devise.setup do |config|
   idp_login_url = Rails.application.credentials.staging_idp_sso_target_url
   idp_logout_url = Rails.application.credentials.staging_idp_slo_target_url
   idp_fingerprint = Rails.application.credentials.staging_idp_cert_fingerprint
-
   consumer_service_url = Rails.application.credentials.dev_assertion_consumer_service_url
   entity_id = Rails.application.credentials.dev_entity_id
 
@@ -28,6 +27,14 @@ Devise.setup do |config|
     idp_fingerprint = Rails.application.credentials.psych_pilot_idp_cert_fingerprint
     consumer_service_url = Rails.application.credentials.psych_pilot_assertion_consumer_service_url
     entity_id = Rails.application.credentials.psych_pilot_entity_id
+  end
+
+  if Rails.env.production?
+    idp_login_url = Rails.application.credentials.production_idp_sso_target_url
+    idp_logout_url = Rails.application.credentials.production_idp_slo_target_url
+    idp_fingerprint = Rails.application.credentials.production_idp_cert_fingerprint
+    consumer_service_url = Rails.application.credentials.production_assertion_consumer_service_url
+    entity_id = Rails.application.credentials.production_entity_id
   end
 
   config.omniauth :saml,

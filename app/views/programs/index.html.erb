@@ -1,14 +1,14 @@
 
 <div class="container px-1 mb-20" data-controller='autosubmit'>
-  <div class="flex justify-between pb-4">
-    <h1>Programs</h1>
+  <div class="md:flex justify-between pb-4">
+    <h1 class="mb-2">Programs</h1>
     <div class="self-end">
       <%= link_to 'Create a Program', new_program_path, class: "secondary_blue_button" %>
     </div>
   </div>
   <div>
     <%= form_with url: programs_path, method: :get, class: "", data: { autosubmit_target: "form", turbo_frame: "turbo-programs" } do |form| %>
-      <div class="flex gap-2">
+      <div class="md:flex gap-2">
         <div class="">
           <% if Term.current.present? %>
             <label for="term_id" class="fancy_label">Select a Term</label>
@@ -35,7 +35,7 @@
         <div class="mb-10" id="programs_listing">
           <% if @terms.current.present? %>
             <% if @programs.present? %>
-              <ul role="list" class="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-4 mt-4">
+              <ul role="list" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mt-4">
                 <% @programs.each do |program| %>
                   <li class="card_area">
                     <%= render 'program_card', program: program %>

@@ -45,19 +45,48 @@
         <% reservations.each do |reservation| %>
           <div class="body-sm-text">
             <% if reservation.car_id.present? %>
-              <%= link_to reservation.display_name, reservation_path(reservation.id), class: "link_to" %>
+              <% if recurring?(reservation) %>
+                <%= link_to reservation_path(reservation.id), class: "link_to" do %>
+                  <span">
+                    <%= reservation.display_name %>
+                    <% if reservation.approved %>
+                      <i class="fa-solid fa-circle-check" style="color:#024794"></i>
+                    <% end %>
+                    <i class="fa fa-repeat" aria-hidden="true" style="color:#024794"></i>
+                  </span>
+                <% end %>
+              <% else %>
+                <%= link_to reservation_path(reservation.id), class: "link_to" do %>
+                  <span">
+                    <%= reservation.display_name %>
+                    <% if reservation.approved %>
+                      <i class="fa-solid fa-circle-check" style="color:#024794"></i>
+                    <% end %>
+                  </span>
+                <% end %>
+              <% end %>
             <% else %>
-              <%= link_to reservation_path(reservation.id), class: "link_to" do %>
-                <span>
-                  <%= reservation.display_name %>
-                  <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
-                </span>
+              <% if recurring?(reservation)  %>
+                <%= link_to reservation_path(reservation.id), class: "link_to" do %>
+                  <span">
+                    <%= reservation.display_name %>
+                    <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
+                    <i class="fa fa-repeat" aria-hidden="true" style="color:#024794"></i>
+                  </span>
+                <% end %>
+              <% else %>
+                <%= link_to reservation_path(reservation.id), class: "link_to" do %>
+                  <span">
+                    <%= reservation.display_name %>
+                    <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
+                  </span>
+                <% end %>
               <% end %>
             <% end %>
             <p>
-              <%= show_time(reservation.start_time + 15.minute) %>
+              <%= show_reservation_start_time(reservation, date) %>
               -
-              <%= show_time(reservation.end_time - 15.minute) %>
+              <%= show_reservation_end_time(reservation, date) %>
             </p>
           </div>
         <% end %>

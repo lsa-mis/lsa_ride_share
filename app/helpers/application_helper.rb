@@ -32,6 +32,30 @@ module ApplicationHelper
     field.strftime("%I:%M%p") unless field.blank?
   end
 
+  def show_reservation_start_time(reservation, date)
+    if reservation.start_time.to_date == reservation.end_time.to_date 
+      (reservation.start_time + 15.minute).strftime("%I:%M%p")
+    else
+      if date == reservation.start_time.to_date
+        (reservation.start_time + 15.minute).strftime("%I:%M%p")
+      else
+        ""
+      end
+    end
+  end
+
+  def show_reservation_end_time(reservation, date)
+    if reservation.start_time.to_date == reservation.end_time.to_date 
+      (reservation.end_time - 15.minute).strftime("%I:%M%p")
+    else
+      if date == reservation.end_time.to_date
+        (reservation.end_time - 15.minute).strftime("%I:%M%p")
+      else
+        ""
+      end
+    end
+  end
+
   def show_user_name_by_id(id)
     User.find(id).display_name_email
   end
@@ -540,6 +564,22 @@ module ApplicationHelper
     time_list = ["12:00AM"] + (1..11).map {|h| "#{h}:00AM"}.to_a + ["12:00PM"] + (1..11).map {|h| "#{h}:00PM"}.to_a
     time_list.shift
     return time_list
+  end
+
+  def cancel_types
+    [
+      ["This Reservation", "one"],
+      ["This and Following Reservations", "following"],
+      ["All Reservations", "all"]
+    ]
+  end
+
+  def recurring?(reservation)
+    reservation.prev.present? || reservation.next.present? || reservation.recurring.present?
+  end
+
+  def reservation_color 
+    {false => "bg-red-900", true => "bg-green-900"}
   end
 
 end

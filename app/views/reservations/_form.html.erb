@@ -71,6 +71,25 @@
     <%= render 'start_end_time' %>
   </div>
 
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+    <div>
+      <%= form.label :recurring, class: "fancy_label" %>
+      <%= form.select_recurring :recurring, nil, allow_blank: true, class: "recurring_select" %>
+    </div>
+
+    <div>
+      <%= form.label :until_date, "Until Date", class: "fancy_label" %>
+      <%= form.text_field :until_date, value: @until_date,
+        data: {
+        controller: "flatpickr",
+        flatpickr_date_format: "Y-m-d",
+        flatpickr_min_date: @min_date
+        },
+        class: "input_text_field"
+      %>
+    </div>
+  </div>
+
   <div class="mb-4">
     <% if UnitPreference.find_by(unit_id: @unit_id, name: "no_car_reservations").on_off %>
       <%= label_tag("no_car", nil, class: "hidden") %>

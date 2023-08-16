@@ -7,6 +7,7 @@
         </p>
       <% end %>
     </div>
+
     <div class="py-2">
       <label class="body-lg-bold-text">
         Car:
@@ -48,6 +49,18 @@
         <%= show_date_time(reservation.end_time - 15.minute) %>
       </p>
     </div>
+
+    <% if recurring?(@reservation) %>
+      <div class="pt-2 pb-8">
+        <% recurring_reservation = RecurringReservation.new(@reservation) %>
+        <label class="body-lg-bold-text">
+          Recurring:
+        </label>
+        <p class="body-lg-text ml-2 inline-block">
+          <%= recurring_reservation.first_reservation.rule.to_s %>
+        </p>
+      </div>
+    <% end %>
 
     <div class="md:flex items-end gap-2 whitespace-nowrap">
       <div class="py-2">

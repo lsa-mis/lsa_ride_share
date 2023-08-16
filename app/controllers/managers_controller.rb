@@ -5,17 +5,7 @@ class ManagersController < ApplicationController
   include StudentApi
 
   def index
-    if params[:unit_id].present?
-      unit_ids =  [params[:unit_id]].to_a
-    else
-      unit_ids = current_user.unit_ids
-    end
-    p = Program.where(unit_id: unit_ids)
-    i_ids = p.pluck(:instructor_id).uniq
-    instructors = Manager.where(id: i_ids)
-    p_ids = Program.where(unit_id: 3).pluck(:id)
-    managers = Manager.joins(:programs).where('managers_programs.program_id IN (?)', p_ids)
-    @managers = (instructors + managers).uniq.sort_by(&:uniqname)
+    @managers = Manager.all.order(:uniqname)
     authorize Manager
   end
 

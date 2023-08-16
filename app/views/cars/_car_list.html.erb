@@ -1,6 +1,6 @@
 <%= turbo_frame_tag 'cars' do %>
   <div class="min-w-full">
-    <table class="mi_table">
+    <table class="mi_table" id="desk-table">
       <thead class="border border-l-0 border-r-0 border-gray-um60">
         <tr>
           <th class="header_th">Car Number</th>
@@ -51,6 +51,62 @@
           </tr>
         <% end %>
       </tbody>
+    </table>
+    <table id="phone-table">
+      <% @cars.each do |car| %>
+        <tr class="mi_tbody_tr">
+          <th class="header_mobile">Car Number</th>
+          <td class="mi_tbody_td">
+            <%= link_to car.car_number, car_path(car), class: "link_to" %>
+          </td>
+        </tr>
+        <tr class="mi_tbody_tr">
+          <th class="header_mobile">Make</th>
+          <td class="mi_tbody_td">
+            <%= car.make %>
+          </td>
+        </tr>
+        <tr class="mi_tbody_tr">
+          <th class="header_mobile">Model</th>
+          <td class="mi_tbody_td">
+            <%= car.model %>
+          </td>
+        </tr>
+        <tr class="mi_tbody_tr">
+          <th class="header_mobile">Color</th>
+          <td class="mi_tbody_td">
+            <%= car.color %>
+          </td>
+        </tr>
+        <tr class="mi_tbody_tr">
+          <th class="header_mobile">Number of Seats</th>
+          <td class="mi_tbody_td">
+            <%= car.number_of_seats %>
+          </td>
+        </tr>
+        <tr class="mi_tbody_tr">
+          <th class="header_mobile">Last Vehicle Report Date</th>
+          <td class="mi_tbody_td">
+            <% if car.vehicle_reports_ids.present? %>
+              <%= show_date(car.last_vehicle_report.updated_at) %>
+            <% end %>
+          </td>
+        </tr>
+        <tr class="mi_tbody_tr">
+          <th class="header_mobile">Vehicle Reports</th>
+          <td class="mi_tbody_td">
+            <% if car.vehicle_reports_ids.present? %>
+              <%= link_to 'Vehicle Reports', vehicle_reports_path(car_id: car.id), class: 'link_to' %>
+            <% end %>
+          </td>
+        </tr>
+        <tr class="mobile_tr">
+          <th class="header_mobile">Car Status</th>
+          <td class="mi_tbody_td <%= "#{car.status}" %>">
+            <%= car.status.titleize %>
+          </td>
+        </tr>
+      <% end %>
     </table>
   </div>
 <% end %>

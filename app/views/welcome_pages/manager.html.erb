@@ -4,13 +4,13 @@
     <div class="col-span-3">
       <div>
         <p class="body-sm-text mx-2">
-          To see all your programs click on Programs link in the header
+          To see all your programs, click on <span class="body-sm-bold-text">Programs</span> link in the header.
         </p>
         <p class="body-sm-text mx-2">
-          To look at your surveys click on Program Survey link in the header
+          To look at your surveys click on <span class="body-sm-bold-text">Program Survey</span> link in the header
         </p>
         <p class="body-sm-text mx-2">
-          You can reserve cars you have to finish all steps listed in the Status Card
+          You can reserve cars once you finish all the steps listed in the Status Card on the right.
         </p>
       </div>
       <div class="my-4">
@@ -27,7 +27,7 @@
         <% end %>
       </div>
 
-      <div class="my-8">
+      <div class="my-8 whitespace-nowrap">
         <% if @program.present? %>
           <%= link_to "One Day Reservation", new_reservation_path(:program_id => @program.id), class: "secondary_blue_button" if @manager.can_reserve_car? %>
           <%= link_to "Multiple Day Reservation", new_long_reservation_path(:program_id => @program.id), class: "secondary_blue_button" if @manager.can_reserve_car? %>

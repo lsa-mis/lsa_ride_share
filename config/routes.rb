@@ -38,7 +38,7 @@ Rails.application.routes.draw do
   get '/reservations/get_available_cars/:unit_id/:day_start/:number/:start_time/:end_time', to: 'reservations#get_available_cars'
   get '/reservations/get_available_cars_long/:unit_id/:day_start/:day_end/:number', to: 'reservations#get_available_cars_long'
   get '/reservations/no_car_all_times/:unit_id/:day_start', to: 'reservations#no_car_all_times'
-  get '/reservations/edit_change_day/:unit_id/:day_start', to: 'reservations#edit_change_day'
+  get '/reservations/edit_change_day/:unit_id/:day_start/:start_time/:end_time', to: 'reservations#edit_change_day'
   patch '/reservations/add_non_uofm_passengers/:reservation_id', to: 'reservations#add_non_uofm_passengers', as: :add_non_uofm_passengers
   get '/reservations/add_passengers/:reservation_id', to: 'reservations/passengers#add_passengers', as: :add_passengers
   get '/reservations/add_passenger/:reservation_id', to: 'reservations/passengers#add_passenger', as: :add_passenger
@@ -46,10 +46,12 @@ Rails.application.routes.draw do
   get '/reservations/add_drivers/:id', to: 'reservations#add_drivers', as: :add_drivers
   delete 'reservations/:reservation_id/:student_id', to: 'reservations/passengers#remove_passenger', as: :remove_passenger
   get '/reservations/day_reservations/:date', to: 'reservations#day_reservations', as: :day_reservations
+  get '/reservations/:id/add_drivers_later', to: 'reservations#add_drivers_later', as: :add_drivers_later
   get '/reservations/:id/finish_reservation', to: 'reservations#finish_reservation', as: :finish_reservation
   get '/reservations/:id/update_passengers/', to: 'reservations#update_passengers', as: :update_passengers
-
-  get 'send_reservation_updated_email/:id', to: 'reservations#send_reservation_updated_email', as: :send_reservation_updated_email
+  post '/reservations/cancel_recurring_reservation/:id', to: 'reservations#cancel_recurring_reservation', as: :cancel_recurring_reservation
+  get '/send_reservation_updated_email/:id', to: 'reservations#send_reservation_updated_email', as: :send_reservation_updated_email
+  get '/approve_all_recurring/:id', to: 'reservations#approve_all_recurring', as: :approve_all_recurring
 
   resources :cars do
     resources :notes, module: :cars
