@@ -90,6 +90,10 @@ class ReservationPolicy < ApplicationPolicy
     user_in_access_group? || is_reservation_driver?
   end
 
+  def approve_all_recurring?
+    user_in_access_group?
+  end
+
   def is_reservation_student?
     student = Student.find_by(program_id: @record.program, uniqname: @user.uniqname)
     @record.driver == student || @record.backup_driver == student || @record.passengers.include?(student)

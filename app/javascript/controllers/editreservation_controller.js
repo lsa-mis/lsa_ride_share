@@ -12,8 +12,10 @@ export default class extends Controller {
   changeDay(){
     let unit_id = this.unitTarget.value
     let day_start = this.day_startTarget.value
+    let start_time = this.start_timeTarget.value
+    let end_time = this.end_timeTarget.value
 
-    get(`/reservations/edit_change_day/${unit_id}/${day_start}`, {
+    get(`/reservations/edit_change_day/${unit_id}/${day_start}/${start_time}/${end_time}`, {
       responseKind: "turbo-stream"
     })
   }

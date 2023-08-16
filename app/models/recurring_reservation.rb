@@ -72,7 +72,7 @@ class RecurringReservation
     end
   end
 
-  def delete_one
+  def get_one
     if prev_reservation && next_reservation
       next_reservation.update(prev: prev_reservation.id)
       prev_reservation.update(next: next_reservation.id)
@@ -84,7 +84,7 @@ class RecurringReservation
     return Array(@reservation.id)
   end
 
-  def delete_following
+  def get_following
     list = Array(@reservation.id)
     if prev_reservation
       prev_reservation.update(next: nil)
@@ -98,7 +98,7 @@ class RecurringReservation
     return list
   end
 
-  def delete_all
+  def get_all_reservations
     list = Array(first_reservation.id)
     next_id = first_reservation.next
     until next_id.nil? do
