@@ -422,11 +422,11 @@ class ReservationsController < ApplicationController
           if is_admin?(current_user)
             format.html { redirect_to reservations_url, notice: "Reservation was canceled." }
             format.json { head :no_content }
-          elsif is_student?(current_user)
-            format.html { redirect_to welcome_pages_student_url, notice: "Reservation was canceled." }
-            format.json { head :no_content }
           elsif is_manager?(current_user)
             format.html { redirect_to welcome_pages_manager_url, notice: "Reservation was canceled." }
+            format.json { head :no_content }
+          elsif is_student?(current_user)
+            format.html { redirect_to welcome_pages_student_url, notice: "Reservation was canceled." }
             format.json { head :no_content }
           end
         else
