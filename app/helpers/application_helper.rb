@@ -414,11 +414,12 @@ module ApplicationHelper
   def allow_manager_to_edit_reservation?(reservation)
     return false unless is_manager?(current_user)
     manager = Manager.find_by(uniqname: current_user.uniqname)
-    if reservation.driver_manager_id.present?
-      return false unless Manager.find(reservation.driver_manager_id).uniqname == current_user.uniqname
-    else 
-      return false
-    end
+    return true if reservation.reserved_by = current_user.id
+    # if reservation.driver_manager_id.present?
+    #   return false unless Manager.find(reservation.driver_manager_id).uniqname == current_user.uniqname
+    # else 
+    #   return false
+    # end
     if ((reservation.start_time - DateTime.now.beginning_of_day)/3600).round > minimum_hours_before_reservation(reservation.program.unit)
       return true
     else
