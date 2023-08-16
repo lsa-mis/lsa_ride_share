@@ -45,7 +45,7 @@ class SystemReportsController < ApplicationController
     if params[:format] == "csv"
 
       sql = "SELECT vehicle_reports.id, title AS program, code AS term, terms.name AS term_name, reservation_id, start_time, end_time, 
-      (SELECT TO_CHAR(AGE(end_time, start_time), 'HH \"Hours\" MI \"Minutes\"')) AS total_trip_time,
+      (SELECT TO_CHAR(AGE(end_time, start_time), 'DD \"Days\" HH \"Hours\" MI \"Minutes\"')) AS total_trip_time,
       car.car_number, 
       (SELECT students.first_name || ' ' || students.last_name FROM students WHERE res.driver_id = students.id ) AS driver_name,
       (SELECT students.uniqname FROM students WHERE res.driver_id = students.id ) AS driver_uniqname, 
