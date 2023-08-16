@@ -120,10 +120,24 @@
       <%= form.submit class: "primary_button" %>
     </div>
 
-    <%= link_to reservations_path do %>
-      <span class="tertiary_button">Cancel
-      <i class="fa fa-times" aria-hidden="true"></i>
-      </span>
+    <% if is_admin?(current_user) %>
+      <%= link_to reservations_path do %>
+        <span class="tertiary_button">Cancel
+        <i class="fa fa-times" aria-hidden="true"></i>
+        </span>
+      <% end %>
+    <% elsif is_manager?(current_user) %>
+      <%= link_to welcome_pages_manager_path do %>
+        <span class="tertiary_button">Cancel
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </span>
+      <% end %>
+    <% elsif is_student?(current_user) %>
+      <%= link_to welcome_pages_student_path do %>
+        <span class="tertiary_button">Cancel
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </span>
+      <% end %>
     <% end %>
   <% end %>
 </div>

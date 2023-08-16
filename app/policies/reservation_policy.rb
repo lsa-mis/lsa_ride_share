@@ -105,7 +105,7 @@ class ReservationPolicy < ApplicationPolicy
       return @record.driver == student || @record.backup_driver == student
     elsif is_manager?
       manager = Manager.find_by(uniqname: @user.uniqname)
-      return @record.driver_manager == manager
+      return @record.driver_manager == manager || is_reserved_by?
     end
     return false
   end
