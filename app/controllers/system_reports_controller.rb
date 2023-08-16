@@ -38,48 +38,38 @@ class SystemReportsController < ApplicationController
 
     # TODO - above query not working correctly - FALL 2023 shows an item but date is in JUNE
 
-    @has_damage = false
-
-    #if @vehicle_reports.image_damages.attached?
-      #how to get at image_damages
-    #end
-
-
     @params_exist = false
 
     @title = "LSA Rideshare System Report"
 
     if params[:format] == "csv"
 
-      sql = " SELECT vehicle_reports.id, title AS program, code AS term, terms.name AS term_name, reservation_id, start_time, end_time, car.car_number, 
+      sql = "SELECT vehicle_reports.id, title AS program, code AS term, terms.name AS term_name, reservation_id, start_time, end_time, car.car_number, 
       (SELECT students.first_name || ' ' || students.last_name FROM students WHERE res.driver_id = students.id ) AS driver_name,
       (SELECT students.uniqname FROM students WHERE res.driver_id = students.id ) AS driver_uniqname, 
       driver_phone, 
       (SELECT students.first_name || ' ' || students.last_name FROM students WHERE res.backup_driver_id = students.id ) AS backup_driver_name,
       (SELECT students.uniqname FROM students WHERE res.backup_driver_id = students.id ) AS backup_driver_uniqname, 
       backup_driver_phone,
+      (SELECT STRING_AGG(uniqname, ',') FROM students JOIN reservation_passengers ON reservation_passengers.student_id = students.id AND reservation_passengers.reservation_id = vehicle_reports.reservation_id) AS passengers,
+      mileage_start, 
+      mileage_end,
 
 
-
-     --(SELECT reservation_passengers.student_id FROM reservation_passengers WHERE res.student_id = reservation_passengers.student_id),
-
+--(SUM(mileage_end) - SUM(mileage_start)) AS mileage_total,
 
 
-      (SELECT sites.title FROM sites WHERE res.site_id = sites.id) AS site,
-      mileage_start, mileage_end, 
-
-
-      --(SUM(mileage_end) - SUM(mileage_start)) AS mileage_total,
-
-
-      gas_start, gas_end, vehicle_reports.parking_spot, parking_spot_return, vehicle_reports.status, student_status AS student_status_completed, vehicle_reports.approved AS admin_approved, 
+      gas_start, gas_end, vehicle_reports.parking_spot, parking_spot_return, vehicle_reports.status, student_status AS student_status_completed, vehicle_reports.approved AS admin_approved,
+      (SELECT exists(SELECT 1 from active_storage_attachments where record_type = 'VehicleReport' and name = 'image_damages' and record_id = vehicle_reports.id)) AS car_damage,
       (SELECT email FROM users WHERE vehicle_reports.updated_by = users.id) AS last_updated_by FROM vehicle_reports
       LEFT JOIN reservations AS res ON res.id = vehicle_reports.reservation_id 
       LEFT JOIN cars AS car ON car.id = res.car_id
       RIGHT JOIN programs ON res.program_id = programs.id
       LEFT JOIN terms ON terms.id = programs.term_id
-      LEFT JOIN units ON programs.unit_id = units.id"
+      LEFT JOIN units ON programs.unit_id = units.id" 
 
+ 
+       
       if params[:program_id].present?
         sql = sql + " WHERE programs.id = " + @program_id_select 
         @params_exist = true
