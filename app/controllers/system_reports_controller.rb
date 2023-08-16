@@ -45,10 +45,7 @@ class SystemReportsController < ApplicationController
     if params[:format] == "csv"
 
       sql = "SELECT vehicle_reports.id, title AS program, code AS term, terms.name AS term_name, reservation_id, start_time, end_time, 
-
-
-      (SELECT AGE(end_time, start_time)) AS total_trip_time,
-
+      (SELECT TO_CHAR(AGE(end_time, start_time), 'HH \"Hours\" MI \"Minutes\"')) AS total_trip_time,
       car.car_number, 
       (SELECT students.first_name || ' ' || students.last_name FROM students WHERE res.driver_id = students.id ) AS driver_name,
       (SELECT students.uniqname FROM students WHERE res.driver_id = students.id ) AS driver_uniqname, 
@@ -136,33 +133,6 @@ class SystemReportsController < ApplicationController
     def set_programs
       @programs = Program.where(unit_id: current_user.unit_ids)
     end
-
-    # def image_damages=(attachables)
-    #   attachables = Array(attachables).compact_blank
-    #   if attachables.any?
-    #     return true
-    #   end
-    # end
-
-    # def rails_data_to_csv(result)
-    #   headers = ["id", "Reservation id", "Mileage start", "Mileage end", "Fuel % (depart)", "Fuel % (return)", "Parking spot (depart)", "Created by", "Updated by", "Admin Status", "Created", "Last Updated", "Student Status Completed", "Admin Approved", "Parking Spot (return)"]
-
-    #   CSV.generate(headers: true) do |csv|
-    #     csv << headers
-      
-    #     convert_admin_approved = { "TRUE" => "Approved", "FALSE" => "Not approved" }
-
-    #     result.each do |row|
-
-    #       row["created_by"] = "person" #WORKING ON - not working with strings
-
-    #       record_id = a.attributes.values_at(key_id)[0]
-
-    #       csv << row.attributes.values
-    #     end
-    #   end
-    # end
-
 
   def data_to_csv(result, title)
     CSV.generate(headers: true) do |csv|
