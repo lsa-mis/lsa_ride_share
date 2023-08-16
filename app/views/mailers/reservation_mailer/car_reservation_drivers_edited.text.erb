@@ -4,7 +4,11 @@ Drivers for the transportation reservation have been edited.
 Reservation for:  <%= link_to "#{@reservation.display_name}", reservation_url(@reservation) %>
 ================================================================================================
 DATE: <%= "#{@start_time} - #{@end_time}" %>
-VEHICLE #: <%= link_to @reservation.car.car_number, car_url(@reservation.car) %>
+<% if @reservation.car.present? %>
+  VEHICLE #: <%= link_to @reservation.car.car_number, car_url(@reservation.car) %>
+<% else %>
+  VEHICLE #: No car selected
+<% end %>
 SITE: <%= link_to @reservation.site.title, site_url(@reservation.site) %>
 PROGRAM: <%= link_to @reservation.program.title, program_url(@reservation.program) %>
 DRIVER: <%= @driver_name %>
