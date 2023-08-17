@@ -1,17 +1,23 @@
 class SystemReportsController < ApplicationController
   before_action :auth_user
-  before_action :set_units, :set_terms, :set_programs
 
   def index
+    @units = Unit.where(id: current_user.unit_ids).order(:name)
+    # @terms = Term.current_and_future
+    @terms = Term.all
     @vehicle_reports = []
-
+    if params[:unit_id].present?
+      @programs = Program.where(unit_id: params[:unit_id])
+    else
+      @programs = Program.where(unit_id: current_user.unit_ids)
+    end
+    @programs = @programs.data(params[:term_id])
     authorize :system_report
   end
 
   def run_report
 
     @vehicle_reports = VehicleReport.all
-
     if params[:unit_id].present?
       car_ids = Car.where(unit_id: params[:unit_id]).pluck(:id)
       reservation_ids = Reservation.where(car_id: car_ids)
@@ -35,18 +41,15 @@ class SystemReportsController < ApplicationController
       @program_id_select = params[:program_id]
     end
 
-
     # TODO - above query not working correctly - FALL 2023 shows an item but date is in JUNE
-
-    @params_exist = false
 
     @title = "LSA Rideshare System Report"
 
-    if params[:format] == "csv"
+    # if params[:format] == "csv"
 
-      sql = "SELECT vehicle_reports.id, title AS program, code AS term, terms.name AS term_name, reservation_id, start_time, end_time, 
+      sql = "SELECT DISTINCT(vehicle_reports.id), (SELECT programs.title from programs WHERE res.program_id = programs.id) AS program, code AS term, terms.name AS term_name, reservation_id, start_time, end_time, 
       (SELECT TO_CHAR(AGE(end_time, start_time), 'DD \"Days\" HH \"Hours\" MI \"Minutes\"')) AS total_trip_time,
-      car.car_number, 
+      cars.car_number, 
       (SELECT students.first_name || ' ' || students.last_name FROM students WHERE res.driver_id = students.id ) AS driver_name,
       (SELECT students.uniqname FROM students WHERE res.driver_id = students.id ) AS driver_uniqname, 
       driver_phone, 
@@ -60,103 +63,61 @@ class SystemReportsController < ApplicationController
       gas_start, gas_end, vehicle_reports.parking_spot, parking_spot_return, vehicle_reports.status, student_status AS student_status_completed, vehicle_reports.approved AS admin_approved,
       (SELECT exists(SELECT 1 from active_storage_attachments where record_type = 'VehicleReport' and name = 'image_damages' and record_id = vehicle_reports.id)) AS car_damage,
       (SELECT email FROM users WHERE vehicle_reports.updated_by = users.id) AS last_updated_by FROM vehicle_reports
-      LEFT JOIN reservations AS res ON res.id = vehicle_reports.reservation_id 
-      LEFT JOIN cars AS car ON car.id = res.car_id
-      RIGHT JOIN programs ON res.program_id = programs.id
-      LEFT JOIN terms ON terms.id = programs.term_id
-      LEFT JOIN units ON programs.unit_id = units.id" 
+      JOIN reservations AS res ON res.id = vehicle_reports.reservation_id 
+      JOIN cars ON cars.id = res.car_id
+      JOIN programs ON programs.id = res.program_id
+      JOIN terms ON terms.id = programs.term_id
+      JOIN units ON units.id = programs.unit_id" 
 
-       
+      where = " WHERE terms.id = " + @term_id_select +  " AND  units.id = " + @unit_id_select
       if params[:program_id].present?
-        sql = sql + " WHERE programs.id = " + @program_id_select 
-        @params_exist = true
+        where += " programs.id = " + @program_id_select
       end
-      if params[:term_id].present?
-        if @params_exist
-          sql = sql + " AND "
-        else
-          sql = sql + " WHERE "
-        end
-        sql = sql + " terms.id = " + @term_id_select 
-        @params_exist = true
-      end
-      if params[:unit_id].present?
-        if @params_exist
-          sql = sql + " AND "
-        else
-          sql = sql + " WHERE "
-        end
-        sql = sql + " units.id = " + @unit_id_select
-      end
-
-      sql = sql + ";"
+      sql += where
 
       records_array = ActiveRecord::Base.connection.exec_query(sql)
 
       @result = []
       @result.push({"table" => "vehicle_report", "total" => records_array.count, "header" => records_array.columns, "rows" => records_array.rows})
 
+    if params[:format] == "csv"
+        data = data_to_csv(@result, @title)
 
-      data = data_to_csv(@result, @title)
-
-      respond_to do |format|
-        format.html
-        format.csv { send_data data, filename: "LSARideShare-report-#{DateTime.now.strftime('%-d-%-m-%Y at %I-%M%p')}.csv" }
+        respond_to do |format|
+          format.html
+          format.csv { send_data data, filename: "LSARideShare-report-#{DateTime.now.strftime('%-d-%-m-%Y at %I-%M%p')}.csv" }
         end
     else
       render turbo_stream: turbo_stream.replace(
         :reportListing,
         partial: "system_reports/listing")
     end
-
     authorize :system_report
   end
 
-
   private
 
-    def set_units
-      if is_admin?(current_user)
-      @units = Unit.where(id: current_user.unit_ids).order(:name)
-      elsif is_manager?(current_user)
-        manager = Manager.find_by(uniqname: current_user.uniqname)
-        @units = Unit.where(id: manager.programs.pluck(:unit_id).uniq).order(:name)
-      else
-        @units = Unit.all
-      end
-    end
+    def data_to_csv(result, title)
+      CSV.generate(headers: true) do |csv|
+        csv << Array(title)
 
-    def set_terms
-      @terms = Term.current_and_future
-    end
+        result.each do |res|
+          line =[]
+          line << res['table'].titleize.upcase
+          line << "Total number of records: " + res['total'].to_s
+          csv << line
+          header = res['header'].map! { |e| e.titleize.upcase }
+          csv << header
 
-    def set_programs
-      @programs = Program.where(unit_id: current_user.unit_ids)
-    end
+          res['rows'].each do |h|
+            h[0] = request.host + "/" + res['table'] + "/" + h[0].to_s
 
-  def data_to_csv(result, title)
-    CSV.generate(headers: true) do |csv|
-      csv << Array(title)
-
-      result.each do |res|
-        line =[]
-        line << res['table'].titleize.upcase
-        line << "Total number of records: " + res['total'].to_s
-        csv << line
-        header = res['header'].map! { |e| e.titleize.upcase }
-        csv << header
-
-        res['rows'].each do |h|
-          h[0] = "https://rideshare.lsa.umich.edu/" + res['table'] + "/" + h[0].to_s
-
-          h[4] = "https://rideshare.lsa.umich.edu/reservations/" + h[4].to_s
-          csv << h
-
-          
+            h[4] = request.host + "/reservations/" + h[4].to_s
+            csv << h
+          end
+          csv << Array('')
         end
-
-        csv << Array('')
       end
     end
-  end
+
 end
