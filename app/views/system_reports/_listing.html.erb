@@ -2,7 +2,10 @@
   <div class="overflow-x-auto w-full">
     <% if @result.present? %>
       <% @result.each do |data| %>
-        <h1><%= data['table'].titleize %></h1>Total number of records: <%= "#{data['total']}" %>
+        <h2><%= data['report_name'].titleize %></h2>
+        <p class="body-md-text my-2">
+          Total number of records: <%= "#{data['total']}" %>
+        </p>
         <table class="report_table">
           <thead class="border border-l-0 border-r-0 border-gray-um60">
             <tr>
