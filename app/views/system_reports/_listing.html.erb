@@ -23,7 +23,7 @@
                       <%= link_to row[0], vehicle_report_path(VehicleReport.find(row[0])), class: "link_to" %>
                     </td>
                     <% row.shift(1) %>
-                    <% row.each do |item| %>
+                    <% row.each do |item, index| %>
                       <td class="mi_tbody_td"><%= item %></td>
                     <% end %>
                   </tr>

@@ -59,7 +59,7 @@ class SystemReportsController < ApplicationController
     records_array = ActiveRecord::Base.connection.exec_query(sql)
 
     @result = []
-    @result.push({"report_name" => "vehicle_repors for #{unit} #{term}", "total" => records_array.count, "header" => records_array.columns, "rows" => records_array.rows})
+    @result.push({"report_name" => "vehicle_reports for #{unit} #{term}", "total" => records_array.count, "header" => records_array.columns, "rows" => records_array.rows})
 
     if params[:format] == "csv"
         data = data_to_csv(@result, @title)
