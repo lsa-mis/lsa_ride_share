@@ -1,41 +1,42 @@
-<div data-controller="systemreport">
+<div>
   <h1 class="font-bold text-4xl">System Reports</h1>
-    <%= form_with(url: "run_report", method: :get ) do |f| %>
-      <div class="flex gap-2">
-        <div class="">
-          <% if Term.current.present? %>
-            <label for="term_id" class="fancy_label">Select a Term</label>
-            <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: params[:term_id]), include_blank: "Current Term", class: "filter_select w-48",  "data-systemreport-target": "term" %>
-          <% else %>
-            <label for="term_id" class="fancy_label">Select a Term</label>
-            <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: params[:term_id]), include_blank: "Select ...", class: "filter_select w-48", "data-systemreport-target": "term" %>
-          <% end %>
-        </div>
-
+    <%= form_for :run_report, url: run_report_url, method: :get,
+      data: { controller: "systemreport", systemreport_target: "form", action: "submit->systemreport#submitForm" } do |f| %>
+      <div class="md:flex gap-2">
         <% if current_user.unit_ids.count > 1 %>
           <div class="">
-            <label for="unit_id" class="fancy_label">Select a Unit</label>
+            <label for="unit_id" class="fancy_label">Select a Unit *</label>
             <%= select_tag "unit_id", options_from_collection_for_select(@units, :id, :name, selected: params[:unit_id]), include_blank: "All Units", class: "filter_select w-48", "data-systemreport-target": "unit" %>
           </div>
+        <% else %>
+          <input type="hidden" id="unit_id" name="unit_id" value=<%= @unit_id %> data-systemreport-target="unit">
         <% end %>
 
         <div class="">
-          <label for="program_id" class="fancy_label">Select a Program</label>
-          <%= select_tag "program_id", options_from_collection_for_select(@programs, :id, :title, selected: params[:program_id]), include_blank: "All Programs", class: "filter_select w-48", "data-systemreport-target": "program" %>
+          <label for="term_id" class="fancy_label">Select a Term *</label>
+          <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: params[:term_id]), include_blank: "Select ...", class: "filter_select w-48", "data-systemreport-target": "term", "data-action": "change->systemreport#changePrograms" %>
         </div>
 
+        <div class="">
+          <label for="program_id" class="fancy_label">Select a Program</label>
+          <%= select_tag "program_id", options_from_collection_for_select(@programs, :id, :title, selected: params[:program_id]), include_blank: "All Programs", class: "filter_select w-96", "data-systemreport-target": "program" %>
+        </div>
       </div>
+      <div id="error_text" class="error_text mt-2"></div>
+
 
       <div class="mt-2">
-        <%= label_tag "Select a report type" %>
-        <%= select_tag :format, options_for_select({"Display in a browser" => "html", "Export to CSV" => "csv"}, "Display in a browser"), required: true,  :"data-action" => "change->systemreport#saveLink", "data-systemreport-target": "format" %>
+        <label for="format" class="fancy_label">Select a report type</label>
+        <%= select_tag :format, options_for_select({"Display in a browser" => "html", "Export to CSV" => "csv"}, "Display in a browser"), required: true, class: "filter_select w-48", :"data-action" => "change->systemreport#saveLink", "data-systemreport-target": "format" %>
       </div>
 
-      <div class="my-2" data-systemreport-target="runreportbutton">
+      <div class="my-2 fields--display" data-systemreport-target="run_report_button">
         <%= f.submit "Run report", data: { disable_with: false }, method: :get, class: "primary_button" %>
       </div>
 
-      <a id="csv_link" href="" style="display: none">Download report</a>
+      <div class="fields--hide my-4" data-systemreport-target="download_report_button">
+        <a id="csv_link" href="" class="primary_button">Download report</a>
+      </div>
 
     <% end %>
     
