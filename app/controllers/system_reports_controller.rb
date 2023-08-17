@@ -29,8 +29,10 @@ class SystemReportsController < ApplicationController
     @title = "LSA Rideshare System Report"
 
     sql = "SELECT DISTINCT(vehicle_reports.id), (SELECT programs.title from programs WHERE res.program_id = programs.id) AS program, code AS term, terms.name AS term_name, reservation_id, start_time, end_time, 
-    (SELECT TO_CHAR(AGE(end_time, start_time), 'DD \"Days\" HH \"Hours\" MI \"Minutes\"')) AS total_trip_time,
+    (SELECT TO_CHAR(AGE(end_time, start_time), 'DD \"Days\" HH24 \"Hours\" MI \"Minutes\"')) AS total_trip_time,
+    (SELECT EXTRACT(EPOCH FROM (end_time - start_time)::INTERVAL)/60) AS total_trip_minues,
     cars.car_number, 
+    (SELECT sites.title FROM sites WHERE res.site_id = sites.id) AS site,
     (SELECT students.first_name || ' ' || students.last_name FROM students WHERE res.driver_id = students.id ) AS driver_name,
     (SELECT students.uniqname FROM students WHERE res.driver_id = students.id ) AS driver_uniqname, 
     driver_phone, 
@@ -38,10 +40,11 @@ class SystemReportsController < ApplicationController
     (SELECT students.uniqname FROM students WHERE res.backup_driver_id = students.id ) AS backup_driver_uniqname, 
     backup_driver_phone,
     (SELECT STRING_AGG(first_name || ' ' || last_name || ' (' || uniqname || ')', ', ' ) FROM students JOIN reservation_passengers ON reservation_passengers.student_id = students.id AND reservation_passengers.reservation_id = vehicle_reports.reservation_id) AS passengers,
+    number_of_people_on_trip,
     mileage_start, 
     mileage_end,
-    (SELECT mileage_end - mileage_start) AS mileage_total,
-    gas_start, gas_end, vehicle_reports.parking_spot, parking_spot_return, vehicle_reports.status, student_status AS student_status_completed, vehicle_reports.approved AS admin_approved,
+    (SELECT ROUND((mileage_end - mileage_start)::numeric, 2)) AS mileage_total,
+    gas_start, gas_end, vehicle_reports.parking_spot, parking_spot_return, vehicle_reports.status, student_status AS student_completed_report, vehicle_reports.approved AS admin_approved,
     (SELECT exists(SELECT 1 from active_storage_attachments where record_type = 'VehicleReport' and name = 'image_damages' and record_id = vehicle_reports.id)) AS car_damage,
     (SELECT email FROM users WHERE vehicle_reports.updated_by = users.id) AS last_updated_by FROM vehicle_reports
     JOIN reservations AS res ON res.id = vehicle_reports.reservation_id 
