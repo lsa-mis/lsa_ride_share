@@ -49,8 +49,9 @@ class VehicleReport < ApplicationRecord
    attachable.variant :thumb, resize_to_limit: [150, 150]
   end
 
+  has_one_attached :damage_form
+
   has_rich_text :comment
-  has_rich_text :admin_comment
   has_many :notes, as: :noteable
   before_save :set_student_status
   before_save :set_admin_status
@@ -65,8 +66,7 @@ class VehicleReport < ApplicationRecord
 
   validates_presence_of :reservation_id, :mileage_start, :gas_start
   validate :acceptable_images
-  # validate :check_mileage_end
-  # validate :check_mileage_start
+  validate :acceptable_damage_form
   validates :reservation_id, uniqueness: true
 
   scope :data, ->(reports_ids) { reports_ids.present? ? where(id: reports_ids.split(",").map(&:to_i)) : all }
@@ -173,6 +173,13 @@ class VehicleReport < ApplicationRecord
       unless acceptable_types.include?(image.content_type)
         errors.add(:base, "An image must be an acceptable file type (jpg, png)")
       end
+    end
+  end
+
+  def acceptable_damage_form
+    return unless damage_form.attached?
+    unless damage_form.content_type == "application/pdf"
+      errors.add(:damage_form, "must be a pdf file")
     end
   end
 

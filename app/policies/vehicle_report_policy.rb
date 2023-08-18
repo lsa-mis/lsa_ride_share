@@ -30,16 +30,28 @@ class VehicleReportPolicy < ApplicationPolicy
     update?
   end
 
-  def upload_damage_images?
-    update?
-  end
-
   def delete_image?
     update?
   end
 
   def destroy?
     update?
+  end
+
+  def upload_damage_images?
+    update?
+  end
+
+  def upload_damage_form?
+    user_in_access_group?
+  end
+
+  def delete_damage_form?
+    user_in_access_group?
+  end
+
+  def download_vehicle_damage_form?
+    user_in_access_group?
   end
 
   def can_student_create_report?

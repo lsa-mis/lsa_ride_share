@@ -1,0 +1,34 @@
+<div>
+  <p class="body-md-bold-text my-2">
+    Fleet Services Damage Form
+  </p>
+  <div class="md:grid grid-cols-3">
+    <div>
+      <% if @vehicle_report.damage_form.attached? %>
+        <%= link_to url_for(@vehicle_report.damage_form), target: "_blank" do %>
+          <%= image_tag(@vehicle_report.damage_form.representation(resize_to_limit: [150, 150]), class: "pr-2", alt: "" ) if @vehicle_report.damage_form.representable? %>
+        <% end %>
+        <%= link_to delete_damage_form_path(@vehicle_report, @vehicle_report.damage_form.id), data: { turbo_method: :get, turbo_confirm: 'Are you sure?' } do %>
+          <span class="tertiary_button">Remove
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </span>
+        <% end %>
+      <% end %>
+    </div>
+    <div>
+      <% if @vehicle_report.damage_form.attached? %>
+        <span class="body-sm-text">Replace form:</span>
+      <% else %>
+        <span class="body-sm-text">Upload form:</span>
+      <% end %>
+      <%= form_with(model: @vehicle_report, url: upload_damage_form_path, method: :post, html: { class: "sm:flex sm:items-center" }) do |form| %>
+        <div class="my-2">
+          <%= form.label :damage_form, class: "hidden"  %>
+          <%= form.file_field :damage_form, class: "body-sm-text" %>
+        </div>
+        <%= form.submit 'Save', class: "secondary_blue_button" %>
+      </div>
+    <% end %>
+  </div>
+  <%= render 'image_errors', image_field_name: 'damage_form' %>
+</div>
