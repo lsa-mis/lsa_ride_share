@@ -47,6 +47,8 @@
   <% end %>
   <%= render 'image_errors', image_field_name: 'image_damages' %>
 <% end %>
-<%= turbo_frame_tag "damage_form_frame" do %>
-  <%= render 'damage_form' %>
+<% if @vehicle_report.image_damages.attached? %>
+  <%= turbo_frame_tag "damage_form_frame" do %>
+    <%= render 'damage_form' %>
+  <% end %>
 <% end %>
