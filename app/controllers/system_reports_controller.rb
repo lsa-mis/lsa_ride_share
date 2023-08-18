@@ -113,7 +113,7 @@ class SystemReportsController < ApplicationController
           csv << header
 
           res['rows'].each do |h|
-            h[0] = request.host + "/" + res['report_name'] + "/" + h[0].to_s
+            h[0] = request.host + "/vehicle_reports/" + h[0].to_s
 
             #h[4] = request.host + "/reservations/" + h[4].to_s
             csv << h
