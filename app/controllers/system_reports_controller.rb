@@ -26,11 +26,11 @@ class SystemReportsController < ApplicationController
       term = Term.find(term_id).name
     end
 
-    reporttype = params[:reporttype]
+    report_type = params[:report_type]
   
     @title = "LSA Rideshare System Report"
 
-    if reporttype == 'totals_programs'
+    if report_type == 'totals_programs'
       sql = "SELECT program_id, (SELECT programs.title FROM programs WHERE res.program_id = programs.id) AS program, count(res.id) AS number_of_trips, sum(number_of_people_on_trip) AS number_of_students_on_trips, sum(vr.mileage_end - vr.mileage_start) AS mileage 
       FROM reservations AS res 
       join vehicle_reports AS vr on vr.reservation_id = res.id 
@@ -74,7 +74,7 @@ class SystemReportsController < ApplicationController
 
     sql += where
 
-    if reporttype == 'totals_programs'
+    if report_type == 'totals_programs'
       sql += " GROUP BY program_id "
     end
 
