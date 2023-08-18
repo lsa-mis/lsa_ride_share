@@ -30,7 +30,7 @@ class SystemReportsController < ApplicationController
 
     sql = "SELECT DISTINCT(vehicle_reports.id), (SELECT programs.title from programs WHERE res.program_id = programs.id) AS program, code AS term, terms.name AS term_name, reservation_id, start_time, end_time, 
     (SELECT TO_CHAR(AGE(end_time, start_time), 'DD \"Days\" HH24 \"Hours\" MI \"Minutes\"')) AS total_trip_time,
-    (SELECT EXTRACT(EPOCH FROM (end_time - start_time)::INTERVAL)/60) AS total_trip_minues,
+    (SELECT EXTRACT(EPOCH FROM (end_time - start_time)::INTERVAL)/60) AS total_trip_minutes,
     cars.car_number, 
     (SELECT sites.title FROM sites WHERE res.site_id = sites.id) AS site,
     (SELECT students.first_name || ' ' || students.last_name FROM students WHERE res.driver_id = students.id ) AS driver_name,
@@ -44,8 +44,11 @@ class SystemReportsController < ApplicationController
     mileage_start, 
     mileage_end,
     (SELECT ROUND((mileage_end - mileage_start)::numeric, 2)) AS mileage_total,
-    gas_start, gas_end, vehicle_reports.parking_spot, parking_spot_return, vehicle_reports.status, student_status AS student_completed_report, vehicle_reports.approved AS admin_approved,
-    (SELECT exists(SELECT 1 from active_storage_attachments where record_type = 'VehicleReport' and name = 'image_damages' and record_id = vehicle_reports.id)) AS car_damage,
+    gas_start, gas_end, vehicle_reports.parking_spot, parking_spot_return, vehicle_reports.status,
+    (SELECT (CASE WHEN student_status = true THEN 'Completed' ELSE 'Not Completed' END)) AS student_completed_report,
+    (SELECT (CASE WHEN vehicle_reports.approved  = true THEN 'Approved' ELSE 'Pending' END)) AS admin_approved,
+    (CASE WHEN (SELECT exists(SELECT 1 from active_storage_attachments where record_type = 'VehicleReport' and name = 'image_damages' and record_id = vehicle_reports.id)) = true
+      THEN 'Yes' ELSE 'No' END) AS car_damage,
     (SELECT email FROM users WHERE vehicle_reports.updated_by = users.id) AS last_updated_by FROM vehicle_reports
     JOIN reservations AS res ON res.id = vehicle_reports.reservation_id 
     JOIN cars ON cars.id = res.car_id
