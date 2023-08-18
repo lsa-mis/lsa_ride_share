@@ -259,6 +259,10 @@ from https://tailwindcss.com/docs/adding-custom-styles
     @apply px-2 min-w-full divide-y;
   }
 
+  .report_table {
+    @apply p-2 min-w-full divide-y;
+  }
+
   .mi_thead {
     @apply border border-l-0 border-r-0 border-gray-um60;
   }

@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   get 'system_reports/', to: 'system_reports#index'
-  get 'system_reports/run_report', to: 'system_reports#run_report', as: :run_report
+  get 'system_reports/run_report/', to: 'system_reports#run_report', as: :run_report
  
   root to: "static_pages#home", as: :all_root
 
