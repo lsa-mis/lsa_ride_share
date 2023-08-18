@@ -58,6 +58,9 @@
                 <%= link_to "Program Survey", faculty_index_path, class: "#{class_names(active: current_page?(faculty_surveys_path))}" %>
               </div>
             <% end %>
+            <div class="header_link">
+              <%= link_to "System Reports", system_reports_path, class: "#{class_names(active: current_page?(system_reports_path))}" if is_admin?(current_user) %>
+            </div>
           <% end %>
         </div>
       </div>
