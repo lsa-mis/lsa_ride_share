@@ -56,13 +56,18 @@ class VehicleReportsController < ApplicationController
 
   # GET /vehicle_reports/1/edit
   def edit
-    @reservation = @vehicle_report.reservation
-    if @reservation.program.pictures_required_start
-      @pictures_start_required = true
-    end 
-    if @reservation.program.pictures_required_end
-     @pictures_end_required = true
-   end 
+    unless @vehicle_report.approved
+      @reservation = @vehicle_report.reservation
+      if @reservation.program.pictures_required_start
+        @pictures_start_required = true
+      end 
+      if @reservation.program.pictures_required_end
+        @pictures_end_required = true
+      end
+    else
+      flash.now[:alert] = 'The vehicle report is approved. Please reload the page. To edit, please contact your administrator'
+      render turbo_stream: turbo_stream.update("flash", partial: "layouts/notification")
+    end
   end
 
   # POST /vehicle_reports or /vehicle_reports.json
@@ -153,7 +158,7 @@ class VehicleReportsController < ApplicationController
         end
       end
     else
-      flash.now[:alert] = 'The vehicle report is approved. To cancel, please contact your administrator'
+      flash.now[:alert] = 'The vehicle report is approved. Please reload the page. To cancel, please contact your administrator'
       render turbo_stream: turbo_stream.update("flash", partial: "layouts/notification")
     end
   end
