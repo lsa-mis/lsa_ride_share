@@ -587,4 +587,8 @@ module ApplicationHelper
     {false => "bg-red-900", true => "bg-green-900"}
   end
 
+  def report_types
+    {"Vehicle Reports" => "vehicle_reports_all", "Totals by Program " => "totals_programs"}
+  end
+
 end

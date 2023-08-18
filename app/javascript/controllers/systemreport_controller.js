@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["form", "format", "unit", "term", "program",
-  "run_report_button", "download_report_button", "reporttype"]
+  "run_report_button", "download_report_button", "report_type"]
 
   connect() {
     console.log("connect - system report")
@@ -68,7 +68,7 @@ export default class extends Controller {
     var unit = this.unitTarget.value
     var term = this.termTarget.value
     var program = this.programTarget.value
-    var reporttype = this.reporttypeTarget.value
+    var report_type = this.report_typeTarget.value
 
     var needsAmp = false
 
@@ -104,7 +104,7 @@ export default class extends Controller {
       needsAmp = false
     }
 
-    a.href += "reporttype=" + reporttype + "&"
+    a.href += "report_type=" + report_type + "&"
 
     a.href = a.href + "format=csv&commit=Run+report"
 

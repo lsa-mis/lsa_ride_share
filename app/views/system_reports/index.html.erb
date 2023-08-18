@@ -27,8 +27,8 @@
 
       <div class="md:flex gap-2">
         <div class="">
-          <label for="reporttype" class="fancy_label">Select a report type</label>
-          <%= select_tag :reporttype, options_for_select({"Vehicle Reports" => "all", "Totals by Program " => "totals_programs"}, "Vehicle Reports"), required: true, class: "filter_select w-48", "data-systemreport-target": "reporttype" %>
+          <label for="report_type" class="fancy_label">Select a report type</label>
+          <%= select_tag :report_type, options_for_select(report_types, "Vehicle Reports"), required: true, class: "filter_select w-48", "data-systemreport-target": "report_type" %>
         </div>
 
         <div class="">

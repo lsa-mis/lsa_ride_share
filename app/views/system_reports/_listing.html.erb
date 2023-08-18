@@ -20,7 +20,11 @@
                 <% data['rows'].each do |row| %>
                   <tr class="mi_tbody_tr">
                     <td class="mi_tbody_td">
-                      <%= link_to row[0], vehicle_report_path(VehicleReport.find(row[0])), class: "link_to" %>
+                      <% if @link %>
+                        <a class="link_to" href=<%= "/#{@path}/#{row[0]}" %>><%= row[0] %></a>
+                      <% else %>
+                        <%= row[0] %>
+                      <% end %>
                     </td>
                     <% row.shift(1) %>
                     <% row.each do |item, index| %>
