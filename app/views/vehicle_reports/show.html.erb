@@ -23,23 +23,27 @@
     </div>
     <div class="lg:grid lg:justify-items-end">
       <% unless @vehicle_report.approved %>
-        <div>
-          <%= link_to 'Edit Vehicle Report', edit_vehicle_report_path(@vehicle_report), class: "primary_button" %>
-        </div>
         <div class="my-2">
           <%= link_to vehicle_report_path(@vehicle_report), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete} do %>
-            <span class="secondary_blue_button my-2">
-              <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
-              Cancel Vehicle Report
+            <span class="tertiary_button">Cancel Vehicle Report
+              <i class="fa fa-times" aria-hidden="true"></i>
             </span>
           <% end %>
         </div>
+        <div>
+          <%= link_to 'Edit Vehicle Report', edit_vehicle_report_path(@vehicle_report), class: "primary_button" %>
+        </div>
       <% end %>
+      <div class="mt-2">
+        <% if is_admin?(current_user) && @vehicle_report.image_damages.attached? %>
+          <%= link_to "Download Fleet Services Damage Form", download_vehicle_damage_form_url, class: "secondary_blue_button" %>
+        <% end %>
+      </div>
     </div>
   </div>
   <div class="grid grid-cols-1 lg:grid-cols-2">
     <div class="grid lg:col-span-2">
-         <%= render @vehicle_report %>
+      <%= render @vehicle_report %>
     </div>
   </div>
 

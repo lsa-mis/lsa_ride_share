@@ -22,13 +22,16 @@ Rails.application.routes.draw do
   resources :unit_preferences
 
   resources :terms
+
+  get "vehicle_reports/download_vehicle_damage_form/", to: 'vehicle_reports#download_vehicle_damage_form', as: :download_vehicle_damage_form
   resources :vehicle_reports do
     resources :notes, module: :vehicle_reports
   end
-  
   post 'vehicle_reports/upload_image/:id', to: 'vehicle_reports#upload_image', as: :upload_image
   post 'vehicle_reports/upload_damage_images/:id', to: 'vehicle_reports#upload_damage_images', as: :upload_damage_images
+  post 'vehicle_reports/upload_damage_form/:id', to: 'vehicle_reports#upload_damage_form', as: :upload_damage_form
   get 'vehicle_reports/delete_image/:id/:image_id/:image_field_name', to: 'vehicle_reports#delete_image', as: :delete_image, defaults: { format: :turbo_stream }
+  get 'vehicle_reports/delete_damage_form/:id/:image_id/', to: 'vehicle_reports#delete_damage_form', as: :delete_damage_form, defaults: { format: :turbo_stream }
 
   get '/reservations/new_long', to: 'reservations#new_long', as: :new_long_reservation
   get '/reservations/week_calendar/', to: 'reservations#week_calendar', as: 'week_calendar'
