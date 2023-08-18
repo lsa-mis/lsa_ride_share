@@ -121,7 +121,6 @@ class SystemReportsController < ApplicationController
           csv << line
           header = res['header'].map! { |e| e.titleize.upcase }
           csv << header
-
           res['rows'].each do |h|
             if link
               h[0] = "https://" + request.host + "/" + path + "/" + h[0].to_s
