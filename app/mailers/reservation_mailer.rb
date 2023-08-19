@@ -164,14 +164,6 @@ class ReservationMailer < ApplicationMailer
     end
   end
 
-  def set_unit_email_message
-    if UnitPreference.find_by(name: "unit_email_message", unit_id: @reservation.program.unit_id).present?
-      @unit_email_message = UnitPreference.find_by(name: "unit_email_message", unit_id: @reservation.program.unit_id).value
-    else
-      @unit_email_message = ""
-    end
-  end
-
   def get_unit_email_message(reservation)
     if UnitPreference.find_by(name: "unit_email_message", unit_id: reservation.program.unit_id).present?
       unit_email_message = UnitPreference.find_by(name: "unit_email_message", unit_id: reservation.program.unit_id).value
