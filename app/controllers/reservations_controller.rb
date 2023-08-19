@@ -246,8 +246,9 @@ class ReservationsController < ApplicationController
     if params[:day_start].present?
       @day_start = params[:day_start].to_date
     end
-    @start_time = nil
-    @end_time = nil
+    @day_start = params[:day_start].to_date
+    @start_time = @day_start + Time.parse(params[:start_time]).seconds_since_midnight.seconds
+    @end_time = @day_start + Time.parse(params[:end_time]).seconds_since_midnight.seconds
     @cars = []
     authorize Reservation
   end
