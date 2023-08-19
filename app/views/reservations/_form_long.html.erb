@@ -91,7 +91,7 @@
       </div>
 
       <div>
-        <%= form.label :until_date, "Until Date", class: "fancy_label" %>
+        <%= form.label :until_date, "Recurring Until", class: "fancy_label" %>
         <%= form.text_field :until_date, value: @until_date,
           data: {
           controller: "flatpickr",
@@ -104,7 +104,7 @@
       </div>
     </div>
 
-    <div class="mb-4">
+    <div class="my-4">
       <% if UnitPreference.find_by(unit_id: @unit_id, name: "no_car_reservations").on_off %>
         <%= label_tag("no_car", nil, class: "hidden") %>
         <%= check_box_tag "no_car", 1, nil, class: "check_box", "data-longreservation-target": "no_car", "data-action": "longreservation#hideCarSelection" %>

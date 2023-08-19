@@ -17,9 +17,11 @@
       <div class="my-2">
         <%= link_to 'Update MVR Status', update_mvr_status_path(@student_program), class: "secondary_blue_button" %>
       </div>
-      <div class="my-2">
-        <%= link_to 'Update Canvas Status', canvas_results_path(@student_program), class: "secondary_blue_button" %>
-      </div>
+      <% if false %>
+        <div class="my-2">
+          <%= link_to 'Update Canvas Status', canvas_results_path(@student_program), class: "secondary_blue_button" %>
+        </div>
+      <% end %>
     </div>
   </div>
 
