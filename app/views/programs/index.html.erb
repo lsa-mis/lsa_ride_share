@@ -33,7 +33,7 @@
       <%= turbo_frame_tag "turbo-programs" do %>
         <div id="maincontent"></div>
         <div class="mb-10" id="programs_listing">
-          <% if @terms.current.present? %>
+          <% if @terms.current.present? || params[:term_id].present?%>
             <% if @programs.present? %>
               <ul role="list" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mt-4">
                 <% @programs.each do |program| %>

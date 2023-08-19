@@ -2,6 +2,9 @@
 Your transportation reservation has been approved.
 
 Reservation for:  <%= link_to "#{@reservation.display_name}", reservation_url(@reservation) %>
+
+<%= @unit_email_message %>
+
 ================================================================================================
 DATE: <%= "#{@start_time} - #{@end_time}" %>
 <% if @reservation.car.present? %>
