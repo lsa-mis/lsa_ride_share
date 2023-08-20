@@ -23,8 +23,6 @@ export default class extends Controller {
   }
 
   submitForm(event) {
-    let car = this.carTarget.value
-
     let start_time = this.start_timeTarget.value
     let end_time = this.end_timeTarget.value
     let start_time_format = new Date(start_time)
@@ -32,15 +30,7 @@ export default class extends Controller {
     let diff_time = parseInt(end_time_format - start_time_format)/60000;
     
     let time_field_error = document.getElementById('time_field')
-    let car_field_error = document.getElementById('car_field')
     let submitForm = true
-
-    if (car == "") {
-      car_field_error.innerHTML = "Please select a car"
-      submitForm = false
-    } else {
-      car_field_error.innerHTML = ''
-    }
 
     if (diff_time < 31) {
       time_field_error.innerHTML = "End time is too close to the start time"
