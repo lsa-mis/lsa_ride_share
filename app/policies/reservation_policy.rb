@@ -58,6 +58,10 @@ class ReservationPolicy < ApplicationPolicy
     create?
   end
 
+  def change_start_end_day?
+    create?
+  end
+
   def add_drivers?
     user_in_access_group? || is_reserved_by?
   end

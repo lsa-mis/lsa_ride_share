@@ -1,4 +1,4 @@
-<div data-controller="longreservation">
+<div data-controller="editlongreservation">
   <%= form_with model: reservation,
       data: { controller: "reservation", reservation_target: "form", action: "submit->reservation#submitForm" } do |form| %>
     <% if reservation.errors.any? %>
@@ -47,14 +47,13 @@
         <%= @number_of_people_on_trip %>
       </p>
     </div>
-    <input type="hidden" id="reservation_unit_id" name="reservation[unit_id]" value=<%= @unit_id %> data-editreservation-target="unit">
+    <input type="hidden" id="reservation_unit_id" name="reservation[unit_id]" value=<%= @unit_id %> data-editlongreservation-target="unit">
  
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
 
       <div>
         <%= form.label :number_of_people_on_trip, 'Number of People on Trip *', class: "fancy_label" %>
-        <%= select_tag :number_of_people_on_trip, options_for_select(@number_of_seats, @number_of_people_on_trip), class: "input_text_field",
-          "data-longreservation-target": "number", "data-action": "change->longreservation#availableCars" %>
+        <%= select_tag :number_of_people_on_trip, options_for_select(@number_of_seats, @number_of_people_on_trip), class: "input_text_field" %>
       </div>
       <div></div>
       <div>
@@ -65,7 +64,7 @@
             flatpickr_date_format: "Y-m-d",
             flatpickr_min_date: @min_date,
             flatpickr_max_date: @max_date
-            }, "data-longreservation-target": "day_start", "data-action": "change->longreservation#availableCars",
+            }, "data-editlongreservation-target": "day_start", "data-action": "change->editlongreservation#changeStartEndDay",
             class: "input_text_field"
           %>
       </div>
@@ -77,7 +76,7 @@
           flatpickr_date_format: "Y-m-d",
           flatpickr_min_date: @min_date,
           flatpickr_max_date: @max_date
-          }, "data-longreservation-target": "day_end", "data-action": "change->longreservation#availableCars",
+          }, "data-editlongreservation-target": "day_end", "data-action": "change->editlongreservation#changeStartEndDay",
           class: "input_text_field"
         %>
       </div>
@@ -119,7 +118,7 @@
     <div class="mb-4">
       <%= label_tag 'Car *', nil, class: "fancy_label" %>
       <%= select_tag "car_id", options_from_collection_for_select(@cars, :id, :car_number, selected: @car_id), include_blank: "Select Car ...", class: "input_text_field",
-      "data-editreservation-target": "car" %>
+      "data-editlongreservation-target": "car" %>
     </div>
 
     <div class="error_text mb-2" id="car_field"></div>
