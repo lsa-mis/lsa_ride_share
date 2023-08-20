@@ -10,7 +10,7 @@
       <% end %>
       <%= link_to new_long_reservation_path(:unit_id => @unit_id, :day_start => Date.today) do %>
         <span class="primary_button">
-          New Long Reservation
+          New Multiple Days Reservation
         </span>
       <% end %>
     </div>
@@ -103,7 +103,7 @@
             <%= link_to new_long_reservation_path(:unit_id => @unit_id, :day_start => date) do %>
               <i class="fa fa-plus" aria-hidden="true"></i>
               <span class="tertiary_button -m-4">
-                Long Reservation
+                Multiple Days Reservation
               </span>
             <% end %>
           <% end %>
