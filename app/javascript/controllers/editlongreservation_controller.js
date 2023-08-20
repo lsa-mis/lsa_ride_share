@@ -3,19 +3,21 @@ import { get } from "@rails/request.js"
 
 export default class extends Controller {
   static targets = ['form','unit',
-    'day_start', 'number', 'start_time', 'end_time', 'selected_time_error', 'car', 'car_field']
+    'day_start', 'day_end', 'number', 'start_time', 'end_time', 'selected_time_error', 'car', 'car_field']
 
   connect() {
     console.log("connect - edit reservation")
   }
 
-  changeDay(){
+  changeStartEndDay(){
+    console.log("here)")
     let unit_id = this.unitTarget.value
     let day_start = this.day_startTarget.value
+    let day_end = this.day_endTarget.value
     let start_time = this.start_timeTarget.value
     let end_time = this.end_timeTarget.value
 
-    get(`/reservations/edit_change_day/${unit_id}/${day_start}/${start_time}/${end_time}`, {
+    get(`/reservations/change_start_end_day/${unit_id}/${day_start}/${day_end}/${start_time}/${end_time}`, {
       responseKind: "turbo-stream"
     })
   }

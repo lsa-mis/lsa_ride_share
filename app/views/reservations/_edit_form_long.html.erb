@@ -1,6 +1,6 @@
-<div data-controller="editlongreservation">
+<div>
   <%= form_with model: reservation,
-      data: { controller: "reservation", reservation_target: "form", action: "submit->reservation#submitForm" } do |form| %>
+      data: { controller: "editlongreservation", editlongreservation_target: "form", action: "submit->editlongreservation#submitForm" } do |form| %>
     <% if reservation.errors.any? %>
       <div id="error_explanation" class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-lg mt-3">
         <h2><%= pluralize(reservation.errors.count, "error") %> prohibited this reservation from being saved:</h2>
