@@ -16,8 +16,9 @@
 
     </thead>
     <tbody>
-    <tr class="mi_tbody_tr border-b border-gray-900">
+      <tr class="">
         <td colspan="2"></td>
+      </tr>
       <% date_range.slice(0, 7).each do |day| %>
         <tr class="mi_tbody_tr border">
           <th scope="row" colspan="2" class="header_th border">
@@ -29,18 +30,13 @@
             </th>
           <% end %>
         </tr>
-
         <% if @reservations.where(car_id: nil).where("(start_time BETWEEN ? AND ?) OR (start_time < ? AND end_time > ?)",
-        day.beginning_of_day, day.end_of_day, day.beginning_of_day, day.beginning_of_day) %>
-
+          day.beginning_of_day, day.end_of_day, day.beginning_of_day, day.beginning_of_day).present? %>
           <%= render 'simple_calendar/week_calendar_no_car_tr', day: day %>
         <% end %>
         <% @cars.each do |car| %>
           <%= render 'simple_calendar/week_calendar_car_tr', car: car, day: day %>
         <% end %>
-
-
-
       <% end %>
     </tbody>
   </table>
