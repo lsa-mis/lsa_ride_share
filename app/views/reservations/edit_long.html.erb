@@ -1,0 +1,9 @@
+<div class="mx-auto w-full">
+  <h1>Editing reservation</h1>
+  <%= render "edit_form_long", reservation: @reservation %>
+  <div>
+    <%= turbo_frame_tag "available_cars" do %>
+      <%= render "available_cars_long_edit" %>
+    <% end %>
+  </div>
+</div>
