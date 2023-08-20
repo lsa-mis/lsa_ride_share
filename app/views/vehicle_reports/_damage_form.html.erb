@@ -6,7 +6,7 @@
     <div>
       <% if @vehicle_report.damage_form.attached? %>
         <%= link_to url_for(@vehicle_report.damage_form), target: "_blank" do %>
-          <%= image_tag(@vehicle_report.damage_form.representation(resize_to_limit: [150, 150]), class: "pr-2", alt: "" ) if @vehicle_report.damage_form.representable? %>
+          <%= image_tag(@vehicle_report.damage_form.representation(resize_to_limit: [150, 150]), class: "pr-2", alt: "damage_form" ) if @vehicle_report.damage_form.representable? %>
         <% end %>
         <%= link_to delete_damage_form_path(@vehicle_report, @vehicle_report.damage_form.id), data: { turbo_method: :get, turbo_confirm: 'Are you sure?' } do %>
           <span class="tertiary_button">Remove
