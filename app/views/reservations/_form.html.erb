@@ -62,7 +62,7 @@
         %>
     </div>
     <div>
-      <%= label_tag 'number_of_people_on_trip', 'CNumber of People on Trip *', class: "fancy_label" %>
+      <%= label_tag 'number_of_people_on_trip', 'Number of People on Trip *', class: "fancy_label" %>
       <%= select_tag :number_of_people_on_trip, options_for_select(@number_of_seats, @number_of_people_on_trip), class: "input_text_field",
         "data-reservation-target": "number", "data-action": "change->reservation#availableCars" %>
     </div>
