@@ -1,11 +1,11 @@
 class ReservationsController < ApplicationController
   before_action :auth_user
   before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger 
-    finish_reservation update_passengers send_reservation_updated_email cancel_recurring_reservation add_drivers_later approve_all_recurring ]
+    finish_reservation update_passengers send_reservation_updated_email cancel_recurring_reservation add_drivers_later approve_all_recurring edit_long ]
   before_action :set_terms_and_units
   before_action :set_programs
   before_action :set_cars, only: %i[ new new_long get_available_cars get_available_cars_long ]
-  before_action :set_number_of_seats, only: %i[ new new_long create edit ]
+  before_action :set_number_of_seats, only: %i[ new new_long create edit edit_long ]
 
   # GET /reservations or /reservations.json
   def index
@@ -160,6 +160,18 @@ class ReservationsController < ApplicationController
   # GET /reservations/1/edit
   def edit
     @day_start = @reservation.start_time.to_date
+    @unit_id = @reservation.program.unit.id
+    @term_id = @reservation.program.term.id
+    @car_id = @reservation.car_id
+    @start_time = (@reservation.start_time + 15.minute).to_s
+    @end_time = (@reservation.end_time - 15.minute).to_s
+    @number_of_people_on_trip = @reservation.number_of_people_on_trip
+    @cars = Car.available.where(unit_id: @unit_id).order(:car_number)
+  end
+
+  def edit_long
+    @day_start = @reservation.start_time.to_date
+    @day_end = @reservation.end_time.to_date
     @unit_id = @reservation.program.unit.id
     @term_id = @reservation.program.term.id
     @car_id = @reservation.car_id

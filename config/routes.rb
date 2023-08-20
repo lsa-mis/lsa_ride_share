@@ -34,6 +34,7 @@ Rails.application.routes.draw do
   get 'vehicle_reports/delete_damage_form/:id/:image_id/', to: 'vehicle_reports#delete_damage_form', as: :delete_damage_form, defaults: { format: :turbo_stream }
 
   get '/reservations/new_long', to: 'reservations#new_long', as: :new_long_reservation
+  get '/reservations/edit_long/:id', to: 'reservations#edit_long', as: :edit_long_reservation
   get '/reservations/week_calendar/', to: 'reservations#week_calendar', as: 'week_calendar'
   resources :reservations do
     resources :vehicle_reports, module: :reservations
