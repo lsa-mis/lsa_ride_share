@@ -94,46 +94,12 @@ class ReservationsController < ApplicationController
   end
 
   def new_long
-    session[:return_to] = request.referer
-    @reservation = Reservation.new
-    authorize @reservation
-    if is_student?(current_user)
-      @program = Student.find(params[:student_id]).program
-      get_data_for_program(@program)
-    elsif is_manager?(current_user)
-      @program = Program.find(params[:program_id])
-      get_data_for_program(@program)
-    elsif params[:unit_id].present?
-      @unit_id = params[:unit_id]
-      @min_date =  DateTime.now
-    else
-      flash.now[:alert] = 'You must select a unit first.'
-      render turbo_stream: turbo_stream.update("flash", partial: "layouts/notification")
-    end
-    if params[:day_start].present?
-      @day_start = params[:day_start].to_date
-    else
-      @day_start = default_reservation_for_students(@unit_id)
-    end
+    new
     if params[:day_end].present?
       @day_end = params[:day_end].to_date
     else
       @day_end = @day_start
     end
-    if params[:term_id].present?
-      @term_id = params[:term_id]
-    end
-    if params[:car_id].present?
-      @car_id = params[:car_id]
-    end
-    if params[:start_time].present?
-      @start_time = params[:start_time]
-    end
-    if is_admin?(current_user)
-      @sites = []
-    end
-    @until_date = Term.current.pluck(:classes_end_date).min
-    @reservation.start_time = @day_start
     @reservation.end_time = @day_end
   end
 
@@ -150,15 +116,8 @@ class ReservationsController < ApplicationController
   end
 
   def edit_long
-    @day_start = @reservation.start_time.to_date
+    edit
     @day_end = @reservation.end_time.to_date
-    @unit_id = @reservation.program.unit.id
-    @term_id = @reservation.program.term.id
-    @car_id = @reservation.car_id
-    @start_time = (@reservation.start_time + 15.minute).to_s
-    @end_time = (@reservation.end_time - 15.minute).to_s
-    @number_of_people_on_trip = @reservation.number_of_people_on_trip
-    @cars = Car.available.where(unit_id: @unit_id).order(:car_number)
   end
 
   def get_available_cars
@@ -286,6 +245,22 @@ class ReservationsController < ApplicationController
       @end_time = @day_start + Time.parse(params[:end_time]).seconds_since_midnight.seconds
     end
     @cars = Car.available.where(unit_id: @unit_id).order(:car_number)
+    authorize Reservation
+  end
+
+  def change_start_end_day
+    if params[:unit_id].present?
+      @unit_id = params[:unit_id]
+    end
+    if params[:day_start].present?
+      @day_start = params[:day_start].to_date
+      @start_time = @day_start + Time.parse(params[:start_time]).seconds_since_midnight.seconds
+    end
+    if params[:day_end].present?
+      @day_end = params[:day_end].to_date
+      @end_time = @day_end + Time.parse(params[:end_time]).seconds_since_midnight.seconds
+    end
+    # @cars = Car.available.where(unit_id: @unit_id).order(:car_number)
     authorize Reservation
   end
 
