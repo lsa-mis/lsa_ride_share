@@ -61,20 +61,10 @@ class ReservationsController < ApplicationController
     authorize @reservation
     if is_student?(current_user)
       @program = Student.find(params[:student_id]).program
-      @unit_id = @program.unit_id
-      @term_id = @program.term.id
-      @sites = @program.sites
-      @cars = @cars.where(unit_id: @unit_id).order(:car_number)
-      @min_date = default_reservation_for_students(@unit_id)
-      @max_date = max_day_for_reservation(@program)
+      get_data_for_program(@program)
     elsif is_manager?(current_user)
       @program = Program.find(params[:program_id])
-      @unit_id = @program.unit_id
-      @term_id = @program.term.id
-      @sites = @program.sites
-      @cars = @cars.where(unit_id: @unit_id).order(:car_number)
-      @min_date = default_reservation_for_students(@unit_id)
-      @max_date = max_day_for_reservation(@program)
+      get_data_for_program(@program)
     elsif params[:unit_id].present?
       @unit_id = params[:unit_id]
       @min_date = DateTime.now
@@ -109,20 +99,10 @@ class ReservationsController < ApplicationController
     authorize @reservation
     if is_student?(current_user)
       @program = Student.find(params[:student_id]).program
-      @unit_id = @program.unit_id
-      @term_id = @program.term.id
-      @sites = @program.sites
-      @cars = @cars.where(unit_id: @unit_id).order(:car_number)
-      @min_date = default_reservation_for_students(@unit_id)
-      @max_date = max_day_for_reservation(@program)
+      get_data_for_program(@program)
     elsif is_manager?(current_user)
       @program = Program.find(params[:program_id])
-      @unit_id = @program.unit_id
-      @term_id = @program.term.id
-      @sites = @program.sites
-      @cars = @cars.where(unit_id: @unit_id).order(:car_number)
-      @min_date = default_reservation_for_students(@unit_id)
-      @max_date = max_day_for_reservation(@program)
+      get_data_for_program(@program)
     elsif params[:unit_id].present?
       @unit_id = params[:unit_id]
       @min_date =  DateTime.now
@@ -530,6 +510,15 @@ class ReservationsController < ApplicationController
 
     def set_number_of_seats
       @number_of_seats = 1..Car.available.maximum(:number_of_seats)
+    end
+
+    def get_data_for_program(program)
+      @unit_id = program.unit_id
+      @term_id = program.term.id
+      @sites = program.sites
+      @cars = @cars.where(unit_id: @unit_id).order(:car_number)
+      @min_date = default_reservation_for_students(@unit_id)
+      @max_date = max_day_for_reservation(program)
     end
 
     # Only allow a list of trusted parameters through.
