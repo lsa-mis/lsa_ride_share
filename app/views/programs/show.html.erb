@@ -7,9 +7,11 @@
       </div>
       <div class="lg:flex lg:flex-col">
         <div class="lg:grid lg:justify-items-end">
-          <div class="py-2">
-            <%= link_to 'Edit Program', program_data_path(@program), class: "primary_button" %>
-          </div>
+          <% if Term.current_and_future.include?(@program.term) %>
+            <div class="py-2">
+              <%= link_to 'Edit Program', program_data_path(@program), class: "primary_button" %>
+            </div>
+          <% end %>
           <% if policy(Student).update_student_list? %>
             <div class="py-2">
               <%= link_to 'Students List', program_students_path(@program), class: "secondary_blue_button" %>

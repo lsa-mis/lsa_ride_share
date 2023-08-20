@@ -34,7 +34,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
   <% else %>
     <div>
-      <%= form.label :term_id, 'Term *', class: "fancy_label" %>
+      <%= label_tag 'term_id', 'Term *', class: "fancy_label" %>
       <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: @term_id), include_blank: "Select Term ...", class: "input_text_field",
         "data-reservation-target": "term", "data-action": "change->reservation#changePrograms" %>
     </div>
@@ -50,7 +50,7 @@
       </div>
   <% end %>
     <div>
-        <%= form.label :day_start, "Choose a Start Date", class: "fancy_label" %>
+        <%= label_tag 'day_start', 'Choose a Start Date', class: "fancy_label" %>
         <%= text_field_tag :day_start, @day_start,
           data: {
           controller: "flatpickr",
@@ -62,7 +62,7 @@
         %>
     </div>
     <div>
-      <%= form.label :number_of_people_on_trip, 'Number of People on Trip *', class: "fancy_label" %>
+      <%= label_tag 'number_of_people_on_trip', 'Number of People on Trip *', class: "fancy_label" %>
       <%= select_tag :number_of_people_on_trip, options_for_select(@number_of_seats, @number_of_people_on_trip), class: "input_text_field",
         "data-reservation-target": "number", "data-action": "change->reservation#availableCars" %>
     </div>

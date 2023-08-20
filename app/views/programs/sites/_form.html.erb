@@ -42,7 +42,7 @@
       </div>
 
       <div class="">
-        <label for="state" class="fancy_label">State *</label>
+        <label for="site_state" class="fancy_label">State *</label>
         <%= form.select(:state, options_for_select(us_states, us_states.rassoc(params[:site].present? ? params[:site][:state] : "")), { include_blank: "Select State" }, { class: "input_text_field" }) %>
       </div>
 

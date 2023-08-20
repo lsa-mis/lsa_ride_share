@@ -4,23 +4,25 @@
       <h1>Student List</h1>
     </div>
     <div class="lg:flex flex-row justify-between gap-2 whitespace-nowrap">
-      <div class="my-2">
-        <% if policy(Student).update_student_list? %>
-          <% if @student_program.not_course %>
-            <%= link_to 'Add Students', add_students_path(@student_program), class: "secondary_blue_button" %>
-          <% else %>
-            <%= link_to 'Refresh Student List', update_student_list_path(@student_program), class: "secondary_blue_button" %>
-            <%= link_to 'Add Students', add_students_path(@student_program), class: "secondary_blue_button" %>
-          <% end %>
-        <% end %>
-      </div>
-      <div class="my-2">
-        <%= link_to 'Update MVR Status', update_mvr_status_path(@student_program), class: "secondary_blue_button" %>
-      </div>
-      <% if false %>
+      <% if Term.current_and_future.include?(@student_program.term) %>
         <div class="my-2">
-          <%= link_to 'Update Canvas Status', canvas_results_path(@student_program), class: "secondary_blue_button" %>
+          <% if policy(Student).update_student_list? %>
+            <% if @student_program.not_course %>
+              <%= link_to 'Add Students', add_students_path(@student_program), class: "secondary_blue_button" %>
+            <% else %>
+              <%= link_to 'Refresh Student List', update_student_list_path(@student_program), class: "secondary_blue_button" %>
+              <%= link_to 'Add Students', add_students_path(@student_program), class: "secondary_blue_button" %>
+            <% end %>
+          <% end %>
         </div>
+        <div class="my-2">
+          <%= link_to 'Update MVR Status', update_mvr_status_path(@student_program), class: "secondary_blue_button" %>
+        </div>
+        <% if false %>
+          <div class="my-2">
+            <%= link_to 'Update Canvas Status', canvas_results_path(@student_program), class: "secondary_blue_button" %>
+          </div>
+        <% end %>
       <% end %>
     </div>
   </div>
