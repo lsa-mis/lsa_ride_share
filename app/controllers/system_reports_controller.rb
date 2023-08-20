@@ -3,7 +3,7 @@ class SystemReportsController < ApplicationController
 
   def index
     @units = Unit.where(id: current_user.unit_ids).order(:name)
-    @terms = Term.all
+    @terms = Term.sorted
     @vehicle_reports = []
     if params[:unit_id].present?
       @programs = Program.where(unit_id: params[:unit_id])
