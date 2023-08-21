@@ -25,9 +25,16 @@
       <div id="error_text" class="error_text mt-2"></div>
 
 
-      <div class="mt-2">
-        <label for="format" class="fancy_label">Select a report type</label>
-        <%= select_tag :format, options_for_select({"Display in a browser" => "html", "Export to CSV" => "csv"}, "Display in a browser"), required: true, class: "filter_select w-48", :"data-action" => "change->systemreport#saveLink", "data-systemreport-target": "format" %>
+      <div class="md:flex gap-2">
+        <div class="">
+          <label for="report_type" class="fancy_label">Select a report type</label>
+          <%= select_tag :report_type, options_for_select(report_types, "Vehicle Reports"), required: true, class: "filter_select w-48", "data-systemreport-target": "report_type" %>
+        </div>
+
+        <div class="">
+          <label for="format" class="fancy_label">Select display type</label>
+          <%= select_tag :format, options_for_select({"Display in a browser" => "html", "Export to CSV" => "csv"}, "Display in a browser"), required: true, class: "filter_select w-48", :"data-action" => "change->systemreport#saveLink", "data-systemreport-target": "format" %>
+        </div>
       </div>
 
       <div class="my-2 fields--display" data-systemreport-target="run_report_button">

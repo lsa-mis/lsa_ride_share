@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["form", "format", "unit", "term", "program",
-  "run_report_button", "download_report_button"]
+  "run_report_button", "download_report_button", "report_type"]
 
   connect() {
     console.log("connect - system report")
@@ -68,13 +68,10 @@ export default class extends Controller {
     var unit = this.unitTarget.value
     var term = this.termTarget.value
     var program = this.programTarget.value
+    var report_type = this.report_typeTarget.value
 
     var needsAmp = false
-
-    console.log(format)
-
     var a = document.getElementById('csv_link'); 
-
     a.href = "/system_reports/run_report?"
 
     if(term != "") {
@@ -97,12 +94,12 @@ export default class extends Controller {
       a.href = a.href + "program_id=" + program
       needsAmp = true
     }
-
     if(needsAmp == true) {
       a.href = a.href + "&"
       needsAmp = false
     }
 
+    a.href += "report_type=" + report_type + "&"
     a.href = a.href + "format=csv&commit=Run+report"
 
     if(format == "csv") {
@@ -117,18 +114,12 @@ export default class extends Controller {
       this.run_report_buttonTarget.classList.remove("fields--hide")
       this.run_report_buttonTarget.classList.add("fields--display")
     }
-
   }
 
   submitForm(event) {
-    console.log("connect - submitForm system report")
-
     let term = this.termTarget.value
     let unit = this.unitTarget.value
     let error_text = document.getElementById('error_text')
-    console.log(term)
-    console.log(unit)
-
 
     if(term == "" || unit == "") {
       console.log("hell")
@@ -140,6 +131,5 @@ export default class extends Controller {
       error_text.innerHTML = ""
     }
   }
-
 
 }
