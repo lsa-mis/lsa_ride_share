@@ -4,13 +4,11 @@ class SystemReportsController < ApplicationController
   def index
     @units = Unit.where(id: current_user.unit_ids).order(:name)
     @terms = Term.sorted
-    @vehicle_reports = []
+    @programs = []
     if params[:unit_id].present?
       @programs = Program.where(unit_id: params[:unit_id])
-    else
-      @programs = Program.where(unit_id: current_user.unit_ids)
+      @programs = @programs.data(params[:term_id])
     end
-    @programs = @programs.data(params[:term_id])
     authorize :system_report
   end
 
