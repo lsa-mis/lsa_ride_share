@@ -49,6 +49,7 @@
                   <%= link_to "Manager Survey", faculty_index_path, class: "nav-sub-link" if faculty_has_survey?(current_user) %>
                   <%= link_to "Cars", cars_path, class: "nav-sub-link" if policy(Car).index? %>
                   <%= link_to "System Reports", system_reports_path, class: "nav-sub-link" if is_admin?(current_user) %>
+                  <%= link_to "Docs", "https://docs.google.com/document/d/e/2PACX-1vRSWQUpQqq7m4yBgevco9dXqZ-JKTFnwzxBQYQYQDUBnIXm9YNzruT1308qhzCT-C3-NJnvlh83jK61/pub", target: "_blank", class: "nav-sub-link" if policy(Unit).index? %>
                 </div>
               </div>
             </div>
@@ -164,6 +165,7 @@
               <%= link_to "Manager Survey", faculty_index_path, class: "nav-sub-link-mobile" if faculty_has_survey?(current_user) %>
               <%= link_to "Cars", cars_path, class: "nav-sub-link-mobile" if policy(Car).index? %>
               <%= link_to "System Reports", system_reports_path, class: "nav-sub-link-mobile" if is_admin?(current_user) %>
+              <%= link_to "Docs", "https://docs.google.com/document/d/e/2PACX-1vRSWQUpQqq7m4yBgevco9dXqZ-JKTFnwzxBQYQYQDUBnIXm9YNzruT1308qhzCT-C3-NJnvlh83jK61/pub", target: "_blank", class: "nav-sub-link-mobile" if policy(Unit).index? %>
             </div>
           </div>
         </div>
