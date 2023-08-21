@@ -45,7 +45,7 @@ module ApplicationHelper
   end
 
   def show_reservation_end_time(reservation, date)
-    if reservation.start_time.to_date == reservation.end_time.to_date 
+    if reservation.start_time.to_date == reservation.end_time.to_date
       (reservation.end_time - 15.minute).strftime("%I:%M%p")
     else
       if date == reservation.end_time.to_date
@@ -267,6 +267,15 @@ module ApplicationHelper
     car_available = available_ranges(car, day, unit_id)
     r = reservation.start_time..reservation.end_time
     car_available << show_time_range(r, true)
+    return car_available
+  end
+
+  def available_ranges_long_edit(car, day_start, day_end, unit_id, reservation)
+    # time renges when the car is available on the day including time for reservation that student is editing
+    # example: ["04:30PM - 05:00PM", "08:00AM - 11:00AM", "11:00AM - 04:30PM - current"]
+    car_available = available_ranges_long(car, day_start, day_end, unit_id)
+    r = reservation.start_time..reservation.end_time
+    car_available << show_time_range_long(r, true)
     return car_available
   end
 

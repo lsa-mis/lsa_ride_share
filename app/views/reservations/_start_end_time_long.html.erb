@@ -3,12 +3,12 @@
     <div>
       <%= label_tag :start_time, 'Start Time long *', class: "fancy_label" %>
       <%= select_tag "start_time", options_for_select(all_day_available_time(@day_start, @unit_id)[:begin], @start_time), class: "input_text_field",
-      "data-reservation-target": "start_time", "data-longreservation-target": "start_time" %>
+      "data-reservation-target": "start_time", "data-longreservation-target": "start_time", "data-editlongreservation-target": "start_time" %>
     </div>
     <div>
       <%= label_tag :end_time, 'End Time long *', class: "fancy_label" %>
       <%= select_tag "end_time", options_for_select(all_day_available_time(@day_end, @unit_id)[:end], @end_time), class: "input_text_field",
-      "data-reservation-target": "end_time", "data-longreservation-target": "end_time" %>
+      "data-reservation-target": "end_time", "data-longreservation-target": "end_time", "data-editlongreservation-target": "end_time" %>
     </div>
     <div>
       </div>

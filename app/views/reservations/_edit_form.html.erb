@@ -39,13 +39,13 @@
   </div>
 
   <div class="py-2">
-  <label class="body-lg-bold-text">
-    Number of People on Trip:
-  </label>
-  <p class="body-lg-text ml-2 inline-block">
-    <%= @number_of_people_on_trip %>
-  </p>
-</div>
+    <label class="body-lg-bold-text">
+      Number of People on Trip:
+    </label>
+    <p class="body-lg-text ml-2 inline-block">
+      <%= @number_of_people_on_trip %>
+    </p>
+  </div>
   <input type="hidden" id="reservation_unit_id" name="reservation[unit_id]" value=<%= @unit_id %> data-editreservation-target="unit">
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
     <div>
@@ -99,12 +99,12 @@
   </div>
 
   <div class="mb-4">
-      <%= label_tag 'Car *', nil, class: "fancy_label" %>
-      <%= select_tag "car_id", options_from_collection_for_select(@cars, :id, :car_number, selected: @car_id), include_blank: "Select Car ...", class: "input_text_field",
-      "data-editreservation-target": "car" %>
-    </div>
-  
-    <div class="error_text mb-2" id="car_field"></div>
+    <%= label_tag 'Car *', nil, class: "fancy_label" %>
+    <%= select_tag "car_id", options_from_collection_for_select(@cars, :id, :car_number, selected: @car_id), include_blank: "Select Car ...", class: "input_text_field",
+    "data-editreservation-target": "car" %>
+  </div>
+
+  <div class="error_text mb-2" id="car_field"></div>
 
   <div class="inline">
     <%= form.submit class: "primary_button" %>

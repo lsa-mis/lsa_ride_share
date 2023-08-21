@@ -34,6 +34,7 @@ Rails.application.routes.draw do
   get 'vehicle_reports/delete_damage_form/:id/:image_id/', to: 'vehicle_reports#delete_damage_form', as: :delete_damage_form, defaults: { format: :turbo_stream }
 
   get '/reservations/new_long', to: 'reservations#new_long', as: :new_long_reservation
+  get '/reservations/edit_long/:id', to: 'reservations#edit_long', as: :edit_long_reservation
   get '/reservations/week_calendar/', to: 'reservations#week_calendar', as: 'week_calendar'
   resources :reservations do
     resources :vehicle_reports, module: :reservations
@@ -42,6 +43,8 @@ Rails.application.routes.draw do
   get '/reservations/get_available_cars_long/:unit_id/:day_start/:day_end/:number', to: 'reservations#get_available_cars_long'
   get '/reservations/no_car_all_times/:unit_id/:day_start/:start_time/:end_time', to: 'reservations#no_car_all_times'
   get '/reservations/edit_change_day/:unit_id/:day_start/:start_time/:end_time', to: 'reservations#edit_change_day'
+  get '/reservations/change_start_end_day/:unit_id/:day_start/:day_end/:start_time/:end_time', to: 'reservations#change_start_end_day'
+
   patch '/reservations/add_non_uofm_passengers/:reservation_id', to: 'reservations#add_non_uofm_passengers', as: :add_non_uofm_passengers
   get '/reservations/add_passengers/:reservation_id', to: 'reservations/passengers#add_passengers', as: :add_passengers
   get '/reservations/add_passenger/:reservation_id', to: 'reservations/passengers#add_passenger', as: :add_passenger
