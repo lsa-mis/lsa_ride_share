@@ -6,7 +6,7 @@
         <% if current_user.unit_ids.count > 1 %>
           <div class="">
             <label for="unit_id" class="fancy_label">Select a Unit *</label>
-            <%= select_tag "unit_id", options_from_collection_for_select(@units, :id, :name, selected: params[:unit_id]), include_blank: "All Units", class: "filter_select w-48", "data-systemreport-target": "unit" %>
+            <%= select_tag "unit_id", options_from_collection_for_select(@units, :id, :name, selected: params[:unit_id]), include_blank: "Select...", class: "filter_select w-48", "data-systemreport-target": "unit" %>
           </div>
         <% else %>
           <input type="hidden" id="unit_id" name="unit_id" value=<%= current_user.unit_ids.first %> data-systemreport-target="unit">
