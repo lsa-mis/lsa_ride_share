@@ -1,18 +1,18 @@
 <div id="<%= dom_id site %>">
 
   <div class="py-2">
-    <label class="body-lg-medium-text">
+    <p class="body-lg-medium-text">
       Address:
-    </label>
+    </p>
     <div class="body-lg-text inline-block">
       <%= site.address %>
     </div>
   </div>
   <div class="flex items-center gap-2">
     <div class="py-2">
-      <label class="body-lg-medium-text">
+      <p class="body-lg-medium-text">
         Contacts:
-      </label>
+      </p>
       <div class="body-lg-text ml-2">
         <% @contacts.each do |contact| %>
           <div>
@@ -29,9 +29,9 @@
   </div>
 
   <div class="py-2">
-    <label class="body-lg-medium-text">
+    <p class="body-lg-medium-text">
       Programs:
-    </label>
+    </p>
     <div class="body-lg-text ml-2">
       <% @programs.each do |program| %>
         <div>

@@ -29,81 +29,81 @@
     <% end %>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text">
         Mileage start:
-      </label>
+      </p>
       <p class="body-lg-text inline-block">
         <%= vehicle_report.mileage_start %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text">
         Mileage end:
-      </label>
+      </p>
       <p class="body-lg-text inline-block">
         <%= vehicle_report.mileage_end %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text">
         Trip mileage total:
-      </label>
+      </p>
       <p class="body-lg-text inline-block">
         <%= calculate_mileage(vehicle_report) %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text">
         Fuel % (departure):
-      </label>
+      </p>
       <p class="body-lg-text inline-block">
         <%= show_percentage(vehicle_report.gas_start) %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text">
         Fuel % (return):
-      </label>
+      </p>
       <p class="body-lg-text inline-block">
         <%= show_percentage(vehicle_report.gas_end) %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text">
         Parking spot (depart):
-      </label>
+      </p>
       <p class="body-lg-text inline-block">
         <%= vehicle_report.parking_spot %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text">
         Parking spot (return):
-      </label>
+      </p>
       <p class="body-lg-text inline-block">
         <%= vehicle_report.parking_spot_return %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text">
         Comment:
-      </label>
+      </p>
       <p class="body-lg-text inline-block">
         <%= vehicle_report.comment %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text">
         Created by:
-      </label>
+      </p>
       <p class="body-lg-text inline-block">
         <%= User.find(vehicle_report.created_by).display_name %>
       </p>

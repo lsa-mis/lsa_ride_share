@@ -45,16 +45,16 @@
     <div class="py-2">
       <% if @student.mvr_status.present? %>
         <i class="fa-solid fa-check"></i>
-        <label class="body-sm-semibold-text ml-2">
+        <p class="body-sm-semibold-text ml-2">
             MVR Status:
-        </label>
+        </p>
         <p class="body-sm-text ml-2">
           <%= @student.mvr_status %>
         </p>
       <% else %>
-        <label class="body-sm-semibold-text ml-2">
+        <p class="body-sm-semibold-text ml-2">
             MVR Status:
-        </label>
+        </p>
         <p class="body-sm-text ml-2">
           Get your <%= link_to 'license approved', 'https://ltp.fo.umich.edu/mvr/index.php', class: "link_to" %> 
         </p>
@@ -64,16 +64,16 @@
     <div class="py-2">
       <% if @student.canvas_course_complete_date.present? %>
         <i class="fa-solid fa-check"></i>
-        <label class="body-sm-semibold-text ml-2">
+        <p class="body-sm-semibold-text ml-2">
           Canvas Course Completion Date:
-        </label>
+        </p>
         <p class="body-sm-text ml-2">
           <%= show_date(@student.canvas_course_complete_date) %>
         </p>
       <% else %>
-        <label class="body-sm-semibold-text ml-2">
+        <p class="body-sm-semibold-text ml-2">
           Canvas Course Completion Date:
-        </label>
+        </p>
         <p class="body-sm-text ml-2">
           Not completed<br>
           Take <%= link_to 'Canvas Course', @student.program.canvas_link, :target => "_blank", class: "link_to" %>
@@ -84,16 +84,16 @@
     <div class="py-2">
       <% if @student.meeting_with_admin_date.present? %>
         <i class="fa-solid fa-check"></i>
-        <label class="body-sm-semibold-text ml-2">
+        <p class="body-sm-semibold-text ml-2">
           In Person Orientation:
-        </label>
+        </p>
         <p class="body-sm-text ml-2">
           Completed on <%= show_date(@student.meeting_with_admin_date) %>
         </p>
       <% else %>
-        <label class="body-sm-semibold-text ml-2">
+        <p class="body-sm-semibold-text ml-2">
           In Person Orientation:
-        </label>
+        </p>
         <p class="body-sm-text ml-2">
          Not completed
         </p>

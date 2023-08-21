@@ -4,72 +4,72 @@
   </p>
 
   <div class="py-2">
-    <label class="body-lg-bold-text">
+    <p class="body-lg-bold-text">
       Unit:
-    </label>
+    </p>
     <p class="body-lg-text ml-2 inline-block">
       <%= program.unit.name %>
     </p>
   </div>
 
   <div class="py-2">
-    <label class="body-lg-bold-text">
+    <p class="body-lg-bold-text">
       Term:
-    </label>
+    </p>
     <p class="body-lg-text ml-2 inline-block">
       <%= program.term.name %>
     </p>
   </div>
 
   <div class="py-2">
-    <label class="body-lg-bold-text">
+    <p class="body-lg-bold-text">
       Instructor:
-    </label>
+    </p>
     <p class="body-lg-text ml-2 inline-block">
       <%= program.instructor.display_name %>
     </p>
   </div>
 
   <div class="py-2">
-    <label class="body-lg-bold-text">
+    <p class="body-lg-bold-text">
       Number of students:
-    </label>
+    </p>
     <p class="body-lg-text ml-2 inline-block">
       <%= number_of_students(program) %>
     </p>
   </div>
 
   <div class="py-2">
-    <label class="body-lg-bold-text">
+    <p class="body-lg-bold-text">
       Number of students using ride share:
-    </label>
+    </p>
     <p class="body-lg-text ml-2 inline-block">
       <%= number_of_students_using_ride_share(program) %>
     </p>
   </div>
 
   <div class="py-2">
-    <label class="body-lg-bold-text">
+    <p class="body-lg-bold-text">
       MVR link:
-    </label>
+    </p>
     <p class="body-lg-text ml-2 inline-block">
       <%= program.mvr_link %>
     </p>
   </div>
 
   <div class="py-2">
-    <label class="body-lg-bold-text">
+    <p class="body-lg-bold-text">
       Canvas course link:
-    </label>
+    </p>
     <p class="body-lg-text ml-2 inline-block">
       <%= program.canvas_link %>
     </p>
   </div>
   <% if program.additional_options.present? %>
     <div class="pt-2">
-      <label class="body-lg-bold-text flex-none">
+      <p class="body-lg-bold-text flex-none">
         Additional options:
-      </label>
+      </p>
       <p class="body-lg-text ml-2">
         <%= sanitize program.additional_options %>
       </p>

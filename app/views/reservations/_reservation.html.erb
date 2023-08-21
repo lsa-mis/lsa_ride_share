@@ -9,9 +9,9 @@
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text">
         Car:
-      </label>
+      </p>
       <p id="car" class="body-lg-text ml-2 inline-block">
         <% if reservation.car.present? %>
           <%= link_to show_car(reservation), car_path(reservation.car), class: "link_to" %>
@@ -24,27 +24,27 @@
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text">
         Site:
-      </label>
+      </p>
       <p class="body-lg-text ml-2 inline-block">
         <%= reservation.site.title %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text">
         Start time:
-      </label>
+      </p>
       <p class="body-lg-text ml-2 inline-block">
         <%= show_date_time(reservation.start_time + 15.minute) %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text">
         End time:
-      </label>
+      </p>
       <p class="body-lg-text ml-2 inline-block">
         <%= show_date_time(reservation.end_time - 15.minute) %>
       </p>
@@ -53,9 +53,9 @@
     <% if recurring?(@reservation) %>
       <div class="pt-2 pb-8">
         <% recurring_reservation = RecurringReservation.new(@reservation) %>
-        <label class="body-lg-bold-text">
+        <p class="body-lg-bold-text">
           Recurring:
-        </label>
+        </p>
         <p class="body-lg-text ml-2 inline-block">
           <%= recurring_reservation.first_reservation.rule.to_s %>
         </p>
@@ -64,9 +64,9 @@
 
     <div class="lg:flex items-end gap-2">
       <div class="py-2">
-        <label class="body-lg-bold-text">
+        <p class="body-lg-bold-text">
           Driver:
-        </label>
+        </p>
         <p id="driver" class="body-lg-text ml-2 inline-block">
           <%= show_driver(reservation) %>
         </p>
@@ -84,36 +84,36 @@
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text">
         Driver phone:
-      </label>
+      </p>
       <p class="body-lg-text ml-2 inline-block">
         <%= reservation.driver_phone %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text">
         Backup Driver:
-      </label>
+      </p>
       <p class="body-lg-text ml-2 inline-block">
         <%= show_backup_driver(reservation) %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text">
         Backup driver phone:
-      </label>
+      </p>
       <p class="body-lg-text ml-2 inline-block">
         <%= reservation.backup_driver_phone %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text">
         Number of people on trip:
-      </label>
+      </p>
       <p class="body-lg-text ml-2 inline-block">
         <%= reservation.number_of_people_on_trip %>
       </p>
@@ -121,9 +121,9 @@
   </div>
   <div>
     <div class="flex items-end gap-2 py-2 whitespace-nowrap">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text">
         Passengers (<%= @reservation.passengers.count %>):
-      </label>
+      </p>
       <% if (is_admin?(current_user) || allow_student_to_edit_reservation?(@reservation) || allow_manager_to_edit_reservation?(@reservation)) && future_reservation?(@reservation) && !@reservation.approved %>
         <div class="py-2">
           <%= link_to add_passengers_path(@reservation, :edit => true) do %>
@@ -146,9 +146,9 @@
     <% end %>
     <div class="mt-2">
       <% if @reservation.program.non_uofm_passengers && @reservation.non_uofm_passengers.present? %>
-        <label class="body-lg-bold-text">
+        <p class="body-lg-bold-text">
           Non UofM Passengers (<%= @reservation.number_of_non_uofm_passengers %>):
-        </label>
+        </p>
         <p class="body-lg-text ml-2">
           <%= @reservation.non_uofm_passengers %>
         </p>
