@@ -19,35 +19,36 @@
             <div class="flex space-x-4">
               <div class="group relative cursor-pointer">
                 <div class="flex items-center justify-between">
-                  <%= content_tag :span, "Programs", class: "rounded-md px-3 py-2 nav-text xl:nav-lg-text text-white hover:text-yellow-ummaze" if policy(Program).index? || policy(Site).index? || policy(Manager).index? %>
+                  <%= content_tag :span, "Programs", class: "nav-top-link" if policy(Program).index? || policy(Site).index? || policy(Manager).index? %>
                 </div>
                 <div class="invisible absolute z-50 flex w-full flex-col bg-blue-umblue py-1 group-hover:visible" onClick="">
-                  <%= link_to "All Programs", programs_path, class: "my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" %>
-                  <%= link_to "Sites", sites_path, class: "my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" if policy(Site).index? %>
-                  <%= link_to "Managers", managers_path, class: "my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" if policy(Manager).index? %>
+                  <%= link_to "All Programs", programs_path, class: "nav-sub-link" if policy(Program).index? %>
+                  <%= link_to "Sites", sites_path, class: "nav-sub-link" if policy(Site).index? %>
+                  <%= link_to "Managers", managers_path, class: "nav-sub-link" if policy(Manager).index? %>
                 </div>
               </div>
               <div class="group relative cursor-pointer">
                 <div class="flex items-center justify-between">
-                  <%= content_tag :span, "Reservations", class: "rounded-md px-3 py-2 nav-text xl:nav-lg-text text-white hover:text-yellow-ummaze" if policy(Reservation).index? || policy(VehicleReport).index? || policy(Manager).index? %>
+                  <%= content_tag :span, "Reservations", class: "nav-top-link" if policy(Reservation).index? || policy(VehicleReport).index? || policy(Manager).index? %>
                 </div>
                 <div class="invisible absolute z-50 flex w-full flex-col bg-blue-umblue py-1 group-hover:visible" onClick="">
-                  <%= link_to "Reservations", reservations_path, class:"my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" if policy(Reservation).index? %>
-                  <%= link_to "Manager Reservations", welcome_pages_manager_path, class: "my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" if is_manager?(current_user) %>
-                  <%= link_to "Vehicle Reports", vehicle_reports_path, class: "my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" if policy(VehicleReport).index? %>
+                  <%= link_to "Reservations", reservations_path, class:"nav-sub-link" if policy(Reservation).index? %>
+                  <%= link_to "Manager Reservations", welcome_pages_manager_path, class: "nav-sub-link" if is_manager?(current_user) %>
+                  <%= link_to "Vehicle Reports", vehicle_reports_path, class: "nav-sub-link" if policy(VehicleReport).index? %>
                 </div>
               </div>
               <div class="group relative cursor-pointer">
                 <div class="flex items-center justify-between">
-                  <%= content_tag :span, "Unit Options", class: "rounded-md px-3 py-2 nav-text xl:nav-lg-text text-white hover:text-yellow-ummaze" if policy(Unit).index? || policy(Term).index? || unit_use_faculty_survey?(current_user.unit_ids) || policy(Car).index? %>
+                  <%= content_tag :span, "Unit Options", class: "nav-top-link" if policy(Unit).index? || policy(Term).index? || unit_use_faculty_survey?(current_user.unit_ids) || policy(Car).index? %>
                 </div>
                 <div class="invisible absolute z-50 flex w-full flex-col bg-blue-umblue py-1 group-hover:visible" onClick="">
-                  <%= link_to "All Units", units_path, class: "my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" if policy(Unit).index? %>
-                  <%= link_to "Unit Preferences", unit_prefs_path, class: "my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" %>
-                  <%= link_to "View Terms", terms_path, class: "my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" if policy(Term).index? %>
-                  <%= link_to "Program Surveys", faculty_surveys_path, class: "my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" if unit_use_faculty_survey?(current_user.unit_ids) %>
-                  <%= link_to "Manager Survey", faculty_index_path, class: "#{class_names(active: current_page?(faculty_surveys_path))}" if faculty_has_survey?(current_user) %>
-                  <%= link_to "Cars", cars_path, class: "my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" if policy(Car).index? %>
+                  <%= link_to "All Units", units_path, class: "nav-sub-link" if policy(Unit).index? %>
+                  <%= link_to "Unit Preferences", unit_prefs_path, class: "nav-sub-link" %>
+                  <%= link_to "View Terms", terms_path, class: "nav-sub-link" if policy(Term).index? %>
+                  <%= link_to "Program Surveys", faculty_surveys_path, class: "nav-sub-link" if unit_use_faculty_survey?(current_user.unit_ids) %>
+                  <%= link_to "Manager Survey", faculty_index_path, class: "nav-sub-link" if faculty_has_survey?(current_user) %>
+                  <%= link_to "Cars", cars_path, class: "nav-sub-link" if policy(Car).index? %>
+                  <%= link_to "System Reports", system_reports_path, class: "nav-sub-link" if is_admin?(current_user) %>
                 </div>
               </div>
             </div>
@@ -73,6 +74,8 @@
           <% end %>
         </div>
       </div>
+
+      <%# Mobile Nav button %>
       <div class="-mr-2 flex lg:hidden">
         <!-- Mobile menu button -->
         <button data-action="click->navbar#toggle" type="button" class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
@@ -96,14 +99,20 @@
           </svg>
         </button>
       </div>
+      <%# end Mobile Nav button %>
+
     </div>
   </div>
+
+
     <!-- Mobile menu, show/hide based on menu state. -->
   <div class= "lg:hidden">
-    <div data-navbar-target="toggleable" class="hidden " id="mobile-menu">
+
+    <div data-navbar-target="toggleable" class="hidden flex-col" id="mobile-menu">
+
       <div class="border-t border-gray-700">
-        <div class="flex justify-end">
-          <div class= "flex flex-row pr-1 z-50">
+        <div class="flex justify-center">
+          <div class= "flex flex-col pr-1 z-50">
             <% if user_signed_in? %>
               <div class="text-white body-text pr-2">Welcome <%= current_user.display_name.split[0] %></div>
               <%= button_to destroy_user_session_path, method: :delete, data: {turbo: "false"} do %>
@@ -119,40 +128,48 @@
           </div>
         </div>
       </div>
+
       <% if user_signed_in? %>
-        <div class="pb-3 -mt-10">
+
+        <div class="pb-3">
           <div class="w-full flex flex-col">
             <div>
-              <%= content_tag :span, "Programs", class: "rounded-md py-2 nav-text xl:nav-lg-text text-white" if policy(Program).index? || policy(Site).index? %>
+              <%= content_tag :span, "Programs", class: "nav-top-link-mobile" if policy(Program).index? || policy(Site).index? %>
             </div>
             <div class="cursor-pointer flex flex-row justify-start ml-4 bg-blue-umblue py-1" onClick="">
-              <%= link_to "All Programs", programs_path, class: "mx-2 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" %>
-              <%= link_to "Sites", sites_path, class: "mx-2 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" if policy(Site).index? %>
+              <%= link_to "All Programs", programs_path, class: "nav-sub-link-mobile" if policy(Program).index? %>
+              <%= link_to "Sites", sites_path, class: "nav-sub-link-mobile" if policy(Site).index? %>
+              <%= link_to "Managers", managers_path, class: "nav-sub-link-mobile" if policy(Manager).index? %>
             </div>
           </div>
           <div class="w-full flex flex-col">
             <div>
-              <%= content_tag :span, "Reservations", class: "rounded-md py-2 nav-text xl:nav-lg-text text-white" if policy(Reservation).index? || policy(VehicleReport).index? %>
+              <%= content_tag :span, "Reservations", class: "nav-top-link-mobile" if policy(Reservation).index? || policy(VehicleReport).index? %>
             </div>
             <div class="cursor-pointer  flex flex-row justify-start ml-4 bg-blue-umblue py-1">
-              <%= link_to "Reservations", reservations_path, class:"no-underline mx-2 block nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" %>
-              <%= link_to "Vehicle Reports", vehicle_reports_path, class: "mx-2 block nav-sm-text text-white hover:text-yellow-ummaze md:mx-2" if policy(VehicleReport).index? %>
+              <%= link_to "Reservations", reservations_path, class:"nav-sub-link-mobile" if policy(Reservation).index? %>
+              <%= link_to "Manager Reservations", welcome_pages_manager_path, class: "nav-sub-link-mobile" if is_manager?(current_user) %>
+              <%= link_to "Vehicle Reports", vehicle_reports_path, class: "nav-sub-link-mobile" if policy(VehicleReport).index? %>
             </div>
           </div>
           <div class="relative w-full flex flex-col">
             <div>
-              <%= content_tag :span, "Unit Options", class: "rounded-md py-2 nav-text xl:nav-lg-text text-white" if policy(Unit).index? || policy(Term).index? || unit_use_faculty_survey?(current_user.unit_ids) || policy(Car).index? %>
+              <%= content_tag :span, "Unit Options", class: "nav-top-link-mobile" if policy(Unit).index? || policy(Term).index? || unit_use_faculty_survey?(current_user.unit_ids) || policy(Car).index? %>
             </div>
             <div class=" cursor-pointer flex flex-row justify-start ml-4 bg-blue-umblue py-1">
-              <%= link_to "All Units", units_path, class: "mx-2 block py-1 nav-sm-text text-white md:mx-2 hover:text-yellow-ummaze" %>
-              <%= link_to "Unit Preferences", unit_prefs_path, class: "mx-2 block py-1 nav-sm-text text-white md:mx-2 hover:text-yellow-ummaze" %>
-              <%= link_to "View Terms", terms_path, class: "mx-2 block py-1 nav-sm-text text-white md:mx-2 hover:text-yellow-ummaze" if policy(Term).index? %>
-              <%= link_to "Faculty Surveys", faculty_surveys_path, class: "mx-2 block py-1 nav-sm-text text-white md:mx-2 hover:text-yellow-ummaze" if unit_use_faculty_survey?(current_user.unit_ids) %>
-              <%= link_to "Cars", cars_path, class: "mx-2 block py-1 nav-sm-text text-white md:mx-2 hover:text-yellow-ummaze" if policy(Car).index? %>
+              <%= link_to "All Units", units_path, class: "nav-sub-link-mobile" if policy(Unit).index? %>
+              <%= link_to "Unit Preferences", unit_prefs_path, class: "nav-sub-link-mobile" %>
+              <%= link_to "View Terms", terms_path, class: "nav-sub-link-mobile" if policy(Term).index? %>
+              <%= link_to "Program Surveys", faculty_surveys_path, class: "nav-sub-link-mobile" if unit_use_faculty_survey?(current_user.unit_ids) %>
+              <%= link_to "Manager Survey", faculty_index_path, class: "nav-sub-link-mobile" if faculty_has_survey?(current_user) %>
+              <%= link_to "Cars", cars_path, class: "nav-sub-link-mobile" if policy(Car).index? %>
+              <%= link_to "System Reports", system_reports_path, class: "nav-sub-link-mobile" if is_admin?(current_user) %>
             </div>
           </div>
         </div>
+
       <% end %>
     </div>
+
   </div>
 </nav>
