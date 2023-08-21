@@ -66,7 +66,7 @@
 
   <div class="my-5" id="instructor">
     <%= form.fields_for :instructor, @instructor do |instructor_attributes| %>
-      <%= form.label :uniqname, "Instructor's uniqname *", class: "fancy_label" %>
+      <%= form.label :instructor_attributes_uniqname, "Instructor's uniqname *", class: "fancy_label" %>
       <%= instructor_attributes.text_field :uniqname, required: true, placeholder: "Uniqname", class: "input_text_field" %>
     <% end %>
   </div>

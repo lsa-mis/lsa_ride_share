@@ -30,6 +30,8 @@ class ReservationMailer < ApplicationMailer
     recipients << email_address(@reservation.backup_driver) if @reservation.backup_driver.present?
     recipients << @passengers_emails if @passengers_emails.present?
     @recipients = recipients.join(", ")
+    @unit_email_message = get_unit_email_message(@reservation)
+
     mail(to: @recipients, subject: "Reservation approved for program: #{@reservation.program.display_name}" )
     EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "approved",
       sent_to: @recipients, sent_by: user.id, sent_at: DateTime.now)
@@ -77,6 +79,7 @@ class ReservationMailer < ApplicationMailer
 
   def car_reservation_drivers_edited(drivers_reservation, drivers_emails, reserved_by)
     @reservation = drivers_reservation
+    @unit_email_message = get_unit_email_message(@reservation)
     set_reservation_data(@reservation)
     recipients = drivers_emails
     recipients << User.find(reserved_by).principal_name.presence
@@ -159,6 +162,15 @@ class ReservationMailer < ApplicationMailer
     if @reservation.program.non_uofm_passengers && @reservation.non_uofm_passengers.present? 
       @non_uofm_passengers = @reservation.non_uofm_passengers
     end
+  end
+
+  def get_unit_email_message(reservation)
+    if UnitPreference.find_by(name: "unit_email_message", unit_id: reservation.program.unit_id).present?
+      unit_email_message = UnitPreference.find_by(name: "unit_email_message", unit_id: reservation.program.unit_id).value
+    else
+      unit_email_message = ""
+    end
+    return unit_email_message
   end
 
 end

@@ -22,9 +22,11 @@
       <% if current_user %>
         <div class="flex flex-row justify-between">
           <div class="tertiary_button">
-            <%= link_to program_data_path(program), data: { "turbo-frame": "_top" } do %>
-              Edit
-              <i class="fa-solid fa-pen"></i>
+            <% if Term.current_and_future.include?(program.term) %>
+              <%= link_to program_data_path(program), data: { "turbo-frame": "_top" } do %>
+                Edit
+                <i class="fa-solid fa-pen"></i>
+              <% end %>
             <% end %>
           </div>
           <% if is_admin?(current_user) %>

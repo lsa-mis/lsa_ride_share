@@ -115,16 +115,6 @@
       </p>
     </div>
 
-    <% if is_admin?(current_user) %>
-      <div class="py-2">
-        <label class="body-lg-bold-text">
-          Admin Comment:
-        </label>
-        <p class="body-lg-text inline-block">
-          <%= vehicle_report.admin_comment %>
-        </p>
-      </div>
-    <% end %>
   </div>
   
   <div>
@@ -159,5 +149,11 @@
     <% end %>
 
     <%= render 'images_damage' %>
+
+    <% if is_admin?(current_user) && @vehicle_report.image_damages.attached? %>
+      <%= turbo_frame_tag "damage_form_frame" do %>
+        <%= render 'damage_form' %>
+      <% end %>
+    <% end %>
   </div>
 </div>

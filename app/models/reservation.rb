@@ -148,6 +148,11 @@ class Reservation < ApplicationRecord
         drivers_emails << email_address(Student.find(self.driver_id_change[1]))
       end
     end
+    if self.driver_manager_id.present? && self.driver_manager_changed?
+      if self.driver_manager_id_change[1].present? && self.driver_manager_id_change[0].nil?
+        return
+      end
+    end
     if self.driver_manager_changed?
       if self.driver_manager_id_change[0].present?
         drivers_emails << email_address(Manager.find(self.driver_manager_id_change[0]))

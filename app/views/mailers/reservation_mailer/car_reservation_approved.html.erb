@@ -7,11 +7,17 @@
   <h3>Your transportation reservation has been approved.</h3>
     <h4> Reservation for:  <%= link_to "#{@reservation.display_name}", reservation_url(@reservation) %> </h4>
     <p>
+      <%= @unit_email_message %>
+    </p>
+    <p>
      Reservation Summary:
       <ul>
         <li>DATE: <%= "#{@start_time} - #{@end_time}" %></li>
-        <li>VEHICLE #: <%= link_to @reservation.car.car_number, car_url(@reservation.car) %></li>
-        
+        <% if @reservation.car.present? %>
+          <li>VEHICLE #: <%= link_to @reservation.car.car_number, car_url(@reservation.car) %></li>
+        <% else %>
+          <li>VEHICLE #: No car selected</li>
+        <% end %>
         <li>SITE: <%= link_to @reservation.site.title, site_url(@reservation.site) %> </li>
         <li>PROGRAM: <%= link_to @reservation.program.title, program_url(@reservation.program) %></li>
         <li>DRIVER: <%= @driver_name %> </li>

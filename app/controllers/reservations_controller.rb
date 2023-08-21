@@ -1,11 +1,11 @@
 class ReservationsController < ApplicationController
   before_action :auth_user
   before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger 
-    finish_reservation update_passengers send_reservation_updated_email cancel_recurring_reservation add_drivers_later approve_all_recurring ]
+    finish_reservation update_passengers send_reservation_updated_email cancel_recurring_reservation add_drivers_later approve_all_recurring edit_long ]
   before_action :set_terms_and_units
   before_action :set_programs
   before_action :set_cars, only: %i[ new new_long get_available_cars get_available_cars_long ]
-  before_action :set_number_of_seats, only: %i[ new new_long create edit ]
+  before_action :set_number_of_seats, only: %i[ new new_long create edit edit_long ]
 
   # GET /reservations or /reservations.json
   def index
@@ -61,21 +61,13 @@ class ReservationsController < ApplicationController
     authorize @reservation
     if is_student?(current_user)
       @program = Student.find(params[:student_id]).program
-      @unit_id = @program.unit_id
-      @term_id = @program.term.id
-      @sites = @program.sites
-      @cars = @cars.where(unit_id: @unit_id).order(:car_number)
-      @min_date = default_reservation_for_students(@unit_id)
+      get_data_for_program(@program)
     elsif is_manager?(current_user)
       @program = Program.find(params[:program_id])
-      @unit_id = @program.unit_id
-      @term_id = @program.term.id
-      @sites = @program.sites
-      @cars = @cars.where(unit_id: @unit_id).order(:car_number)
-      @min_date = default_reservation_for_students(@unit_id)
+      get_data_for_program(@program)
     elsif params[:unit_id].present?
       @unit_id = params[:unit_id]
-      @min_date =  DateTime.now
+      @min_date = DateTime.now
     else
       flash.now[:alert] = 'You must select a unit first.'
       render turbo_stream: turbo_stream.update("flash", partial: "layouts/notification")
@@ -102,54 +94,12 @@ class ReservationsController < ApplicationController
   end
 
   def new_long
-    session[:return_to] = request.referer
-    @reservation = Reservation.new
-    authorize @reservation
-    if is_student?(current_user)
-      @program = Student.find(params[:student_id]).program
-      @unit_id = @program.unit_id
-      @term_id = @program.term.id
-      @sites = @program.sites
-      @cars = @cars.where(unit_id: @unit_id).order(:car_number)
-      @min_date = default_reservation_for_students(@unit_id)
-    elsif is_manager?(current_user)
-      @program = Program.find(params[:program_id])
-      @unit_id = @program.unit_id
-      @term_id = @program.term.id
-      @sites = @program.sites
-      @cars = @cars.where(unit_id: @unit_id).order(:car_number)
-      @min_date = default_reservation_for_students(@unit_id)
-    elsif params[:unit_id].present?
-      @unit_id = params[:unit_id]
-      @min_date =  DateTime.now
-    else
-      flash.now[:alert] = 'You must select a unit first.'
-      render turbo_stream: turbo_stream.update("flash", partial: "layouts/notification")
-    end
-    if params[:day_start].present?
-      @day_start = params[:day_start].to_date
-    else
-      @day_start = default_reservation_for_students(@unit_id)
-    end
+    new
     if params[:day_end].present?
       @day_end = params[:day_end].to_date
     else
       @day_end = @day_start
     end
-    if params[:term_id].present?
-      @term_id = params[:term_id]
-    end
-    if params[:car_id].present?
-      @car_id = params[:car_id]
-    end
-    if params[:start_time].present?
-      @start_time = params[:start_time]
-    end
-    if is_admin?(current_user)
-      @sites = []
-    end
-    @until_date = Term.current.pluck(:classes_end_date).min
-    @reservation.start_time = @day_start
     @reservation.end_time = @day_end
   end
 
@@ -163,6 +113,11 @@ class ReservationsController < ApplicationController
     @end_time = (@reservation.end_time - 15.minute).to_s
     @number_of_people_on_trip = @reservation.number_of_people_on_trip
     @cars = Car.available.where(unit_id: @unit_id).order(:car_number)
+  end
+
+  def edit_long
+    edit
+    @day_end = @reservation.end_time.to_date
   end
 
   def get_available_cars
@@ -242,8 +197,9 @@ class ReservationsController < ApplicationController
     if params[:day_start].present?
       @day_start = params[:day_start].to_date
     end
-    @start_time = nil
-    @end_time = nil
+    @day_start = params[:day_start].to_date
+    @start_time = @day_start + Time.parse(params[:start_time]).seconds_since_midnight.seconds
+    @end_time = @day_start + Time.parse(params[:end_time]).seconds_since_midnight.seconds
     @cars = []
     authorize Reservation
   end
@@ -289,6 +245,22 @@ class ReservationsController < ApplicationController
       @end_time = @day_start + Time.parse(params[:end_time]).seconds_since_midnight.seconds
     end
     @cars = Car.available.where(unit_id: @unit_id).order(:car_number)
+    authorize Reservation
+  end
+
+  def change_start_end_day
+    if params[:unit_id].present?
+      @unit_id = params[:unit_id]
+    end
+    if params[:day_start].present?
+      @day_start = params[:day_start].to_date
+      @start_time = @day_start + Time.parse(params[:start_time]).seconds_since_midnight.seconds
+    end
+    if params[:day_end].present?
+      @day_end = params[:day_end].to_date
+      @end_time = @day_end + Time.parse(params[:end_time]).seconds_since_midnight.seconds
+    end
+    # @cars = Car.available.where(unit_id: @unit_id).order(:car_number)
     authorize Reservation
   end
 
@@ -422,11 +394,11 @@ class ReservationsController < ApplicationController
           if is_admin?(current_user)
             format.html { redirect_to reservations_url, notice: "Reservation was canceled." }
             format.json { head :no_content }
-          elsif is_student?(current_user)
-            format.html { redirect_to welcome_pages_student_url, notice: "Reservation was canceled." }
-            format.json { head :no_content }
           elsif is_manager?(current_user)
             format.html { redirect_to welcome_pages_manager_url, notice: "Reservation was canceled." }
+            format.json { head :no_content }
+          elsif is_student?(current_user)
+            format.html { redirect_to welcome_pages_student_url, notice: "Reservation was canceled." }
             format.json { head :no_content }
           end
         else
@@ -513,6 +485,15 @@ class ReservationsController < ApplicationController
 
     def set_number_of_seats
       @number_of_seats = 1..Car.available.maximum(:number_of_seats)
+    end
+
+    def get_data_for_program(program)
+      @unit_id = program.unit_id
+      @term_id = program.term.id
+      @sites = program.sites
+      @cars = @cars.where(unit_id: @unit_id).order(:car_number)
+      @min_date = default_reservation_for_students(@unit_id)
+      @max_date = max_day_for_reservation(program)
     end
 
     # Only allow a list of trusted parameters through.

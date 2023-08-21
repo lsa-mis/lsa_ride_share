@@ -45,7 +45,7 @@ module ApplicationHelper
   end
 
   def show_reservation_end_time(reservation, date)
-    if reservation.start_time.to_date == reservation.end_time.to_date 
+    if reservation.start_time.to_date == reservation.end_time.to_date
       (reservation.end_time - 15.minute).strftime("%I:%M%p")
     else
       if date == reservation.end_time.to_date
@@ -270,6 +270,15 @@ module ApplicationHelper
     return car_available
   end
 
+  def available_ranges_long_edit(car, day_start, day_end, unit_id, reservation)
+    # time renges when the car is available on the day including time for reservation that student is editing
+    # example: ["04:30PM - 05:00PM", "08:00AM - 11:00AM", "11:00AM - 04:30PM - current"]
+    car_available = available_ranges_long(car, day_start, day_end, unit_id)
+    r = reservation.start_time..reservation.end_time
+    car_available << show_time_range_long(r, true)
+    return car_available
+  end
+
   def unit_begining_of_day(day, unit_id)
     t_begin = UnitPreference.find_by(name: "reservation_time_begin", unit_id: unit_id).value
     t_begin = Time.parse(t_begin).strftime("%H").to_i
@@ -414,11 +423,12 @@ module ApplicationHelper
   def allow_manager_to_edit_reservation?(reservation)
     return false unless is_manager?(current_user)
     manager = Manager.find_by(uniqname: current_user.uniqname)
-    if reservation.driver_manager_id.present?
-      return false unless Manager.find(reservation.driver_manager_id).uniqname == current_user.uniqname
-    else 
-      return false
-    end
+    return true if reservation.reserved_by = current_user.id
+    # if reservation.driver_manager_id.present?
+    #   return false unless Manager.find(reservation.driver_manager_id).uniqname == current_user.uniqname
+    # else 
+    #   return false
+    # end
     if ((reservation.start_time - DateTime.now.beginning_of_day)/3600).round > minimum_hours_before_reservation(reservation.program.unit)
       return true
     else
@@ -465,6 +475,10 @@ module ApplicationHelper
     return day + 48.hours if day.saturday?
     return day + 24.hours if day.sunday?
     return day
+  end
+
+  def max_day_for_reservation(program)
+    program.term.classes_end_date
   end
 
   def contact_phone(reservation)
@@ -580,6 +594,10 @@ module ApplicationHelper
 
   def reservation_color 
     {false => "bg-red-900", true => "bg-green-900"}
+  end
+
+  def report_types
+    {"Vehicle Reports" => "vehicle_reports_all", "Totals by Program " => "totals_programs"}
   end
 
 end

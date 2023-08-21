@@ -1,4 +1,4 @@
-<div class="grid grid-cols-1 sm:grid-cols-2">
+<div class="grid grid-cols-1 lg:grid-cols-2">
   <div>
     <div class="">
       <% if is_student?(current_user) && @reservation.approved %>
@@ -62,7 +62,7 @@
       </div>
     <% end %>
 
-    <div class="md:flex items-end gap-2 whitespace-nowrap">
+    <div class="lg:flex items-end gap-2">
       <div class="py-2">
         <label class="body-lg-bold-text">
           Driver:
@@ -72,7 +72,7 @@
         </p>
       </div>
       <% if (is_admin?(current_user) || allow_student_to_edit_reservation?(@reservation) || allow_manager_to_edit_reservation?(@reservation)) && future_reservation?(@reservation) && !@reservation.approved %>
-        <div class="py-2">
+        <div class="py-2 whitespace-nowrap">
           <%= link_to add_drivers_path(@reservation, :edit => true) do %>
             <span class="tertiary_button"> 
               Edit Drivers
