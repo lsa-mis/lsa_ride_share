@@ -60,7 +60,7 @@
             <div>
               <div class="text-white body-text pb-1">Welcome <%= current_user.display_name.split[0] %></div>
               <%= button_to destroy_user_session_path, method: :delete, data: {turbo: "false"} do %>
-                <span class="sign_button body-md-text">Sign Out</span>
+                <span class="sign_button body-md-text">Log Out</span>
               <% end %>
             </div>
           <% else %> 
@@ -107,7 +107,7 @@
             <% if user_signed_in? %>
               <div class="text-white body-text pr-2">Welcome <%= current_user.display_name.split[0] %></div>
               <%= button_to destroy_user_session_path, method: :delete, data: {turbo: "false"} do %>
-                <div class="sign_button mt-1">Sign Out</div>
+                <div class="sign_button mt-1">Log Out</div>
               <% end %>
             <% else %> 
               <div>
