@@ -140,6 +140,22 @@ from https://tailwindcss.com/docs/adding-custom-styles
     @apply text-4xl font-normal font-anektamil;
   }
 
+  .nav-top-link {
+    @apply rounded-md px-3 py-2 nav-text xl:nav-lg-text text-white hover:text-yellow-ummaze;
+  }
+
+  .nav-sub-link {
+    @apply my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2
+  }
+
+  .nav-top-link-mobile {
+    @apply rounded-md py-2 nav-text xl:nav-lg-text text-yellow-ummaze
+  }
+  
+  .nav-sub-link-mobile {
+    @apply mx-2 block py-1 nav-sm-text text-white md:mx-2
+  }
+
   .button_label {
     @apply text-sm font-medium leading-4 text-gray-550 font-montserrat;
   }
