@@ -9,10 +9,10 @@
     </div>
 
     <div class="py-2">
-      <p class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Car:
       </p>
-      <p id="car" class="body-lg-text ml-2 inline-block">
+      <p id="car" class="body-lg-text ml-2 inline">
         <% if reservation.car.present? %>
           <%= link_to show_car(reservation), car_path(reservation.car), class: "link_to" %>
         <% else %>
@@ -24,28 +24,28 @@
     </div>
 
     <div class="py-2">
-      <p class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Site:
       </p>
-      <p class="body-lg-text ml-2 inline-block">
+      <p class="body-lg-text ml-2 inline">
         <%= reservation.site.title %>
       </p>
     </div>
 
     <div class="py-2">
-      <p class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Start time:
       </p>
-      <p class="body-lg-text ml-2 inline-block">
+      <p class="body-lg-text ml-2 inline">
         <%= show_date_time(reservation.start_time + 15.minute) %>
       </p>
     </div>
 
     <div class="py-2">
-      <p class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         End time:
       </p>
-      <p class="body-lg-text ml-2 inline-block">
+      <p class="body-lg-text ml-2 inline">
         <%= show_date_time(reservation.end_time - 15.minute) %>
       </p>
     </div>
@@ -53,10 +53,10 @@
     <% if recurring?(@reservation) %>
       <div class="pt-2 pb-8">
         <% recurring_reservation = RecurringReservation.new(@reservation) %>
-        <p class="body-lg-bold-text">
+        <p class="body-lg-bold-text inline">
           Recurring:
         </p>
-        <p class="body-lg-text ml-2 inline-block">
+        <p class="body-lg-text ml-2 inline">
           <%= recurring_reservation.first_reservation.rule.to_s %>
         </p>
       </div>
@@ -64,10 +64,10 @@
 
     <div class="lg:flex items-end gap-2">
       <div class="py-2">
-        <p class="body-lg-bold-text">
+        <p class="body-lg-bold-text inline">
           Driver:
         </p>
-        <p id="driver" class="body-lg-text ml-2 inline-block">
+        <p id="driver" class="body-lg-text ml-2 inline">
           <%= show_driver(reservation) %>
         </p>
       </div>
@@ -84,37 +84,37 @@
     </div>
 
     <div class="py-2">
-      <p class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Driver phone:
       </p>
-      <p class="body-lg-text ml-2 inline-block">
+      <p class="body-lg-text ml-2 inline">
         <%= reservation.driver_phone %>
       </p>
     </div>
 
     <div class="py-2">
-      <p class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Backup Driver:
       </p>
-      <p class="body-lg-text ml-2 inline-block">
+      <p class="body-lg-text ml-2 inline">
         <%= show_backup_driver(reservation) %>
       </p>
     </div>
 
     <div class="py-2">
-      <p class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Backup driver phone:
       </p>
-      <p class="body-lg-text ml-2 inline-block">
+      <p class="body-lg-text ml-2 inline">
         <%= reservation.backup_driver_phone %>
       </p>
     </div>
 
     <div class="py-2">
-      <p class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Number of people on trip:
       </p>
-      <p class="body-lg-text ml-2 inline-block">
+      <p class="body-lg-text ml-2 inline">
         <%= reservation.number_of_people_on_trip %>
       </p>
     </div>

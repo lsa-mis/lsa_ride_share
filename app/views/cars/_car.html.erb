@@ -5,82 +5,82 @@
     </p>
 
     <div class="py-2">
-      <p class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Unit:
       </p>
-      <p class="body-lg-text inline-block">
+      <p class="body-lg-text pl-2 inline">
         <%= car.unit.name %>
       </p>
     </div>
 
     <div class="py-2">
-      <p class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Make:
       </p>
-      <p class="body-lg-text inline-block">
+      <p class="body-lg-text pl-2 inline">
         <%= car.make %>
       </p>
     </div>
 
     <div class="py-2">
-      <p class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Model:
       </p>
-      <p class="body-lg-text inline-block">
+      <p class="body-lg-text pl-2 inline">
         <%= car.model %>
       </p>
     </div>
 
     <div class="py-2">
-      <p class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Color:
       </p>
-      <p class="body-lg-text inline-block">
+      <p class="body-lg-text pl-2 inline">
         <%= car.color %>
       </p>
     </div>
 
     <div class="py-2">
-      <p class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Number of Seats:
       </p>
-      <p class="body-lg-text inline-block">
+      <p class="body-lg-text pl-2 inline">
         <%= car.number_of_seats %>
       </p>
     </div>
 
     <div class="py-2">
-      <p class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Mileage:
       </p>
-      <p class="body-lg-text inline-block">
+      <p class="body-lg-text pl-2 inline">
         <%= car.mileage %>
       </p>
     </div>
 
     <div class="py-2">
-      <p class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
       Fuel %:
       </p>
-      <p class="body-lg-text inline-block">
+      <p class="body-lg-text pl-2 inline">
         <%= show_percentage(car.gas) %>
       </p>
     </div>
 
     <div class="py-2">
-      <p class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Parking Spot:
       </p>
-      <p class="body-lg-text inline-block">
+      <p class="body-lg-text pl-2 inline">
         <%= car.parking_spot %>
       </p>
     </div>
 
     <div class="py-2">
-      <p class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Last Driver:
       </p>
-      <p class="body-lg-text inline-block">
+      <p class="body-lg-text pl-2 inline">
         <% if car.last_driver_id.present? %>
           <%= car.last_driver_id %>
         <% end %>
@@ -88,10 +88,10 @@
     </div>
 
     <div class="py-2">
-      <p class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Last Used:
       </p>
-      <p class="body-lg-text inline-block">
+      <p class="body-lg-text pl-2 inline">
         <%= show_date(car.last_used) %>
       </p>
     </div>
