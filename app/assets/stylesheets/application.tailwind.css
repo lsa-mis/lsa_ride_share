@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Oswald:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Oswald:wght@400;500;600&family=Anek+Tamil:wght@100;200;300&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -23,6 +23,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   .active {
     @apply text-yellow-500;
   }
+
   .unavailable {
     @apply text-red-umred
   }
@@ -56,18 +57,14 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   hr {
-    @apply border-gray-um50 border my-2;
+    @apply border-gray-um50 border m-2;
   }
 
   .body-sm-text {
     @apply text-sm font-normal font-montserrat;
   }
 
-  .body-sm-semibold-text {
-    @apply text-sm font-semibold text-gray-900
-  }
-
-  .body-sm-bold-text {
+  .body-bold-text {
     @apply text-sm font-bold font-montserrat;
   }
 
@@ -75,7 +72,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
     @apply text-base font-normal font-montserrat;
   }
 
-  .body-md-semibold-text {
+  .body-md-medium-text {
     @apply text-base font-medium font-montserrat;
   }
 
@@ -95,6 +92,70 @@ from https://tailwindcss.com/docs/adding-custom-styles
     @apply text-lg font-bold font-montserrat;
   }
 
+  .body-sm-semibold-text {
+    @apply text-sm font-semibold text-gray-900
+  }
+
+  .nav-sm-text {
+    @apply text-sm font-normal font-montserrat;
+  }
+
+  .nav-sm-medium-text {
+    @apply text-sm font-medium font-montserrat;
+  }
+
+  .nav-sm-bold-text {
+    @apply text-sm font-bold font-montserrat;
+  }
+
+  .nav-text {
+    @apply text-base font-normal font-montserrat;
+  }
+
+  .nav-medium-text {
+    @apply text-base font-medium font-montserrat;
+  }
+
+  .nav-bold-text {
+    @apply text-base font-bold font-montserrat;
+  }
+
+  .nav-lg-text {
+    @apply text-2xl font-normal font-montserrat;
+  }
+
+  .nav-lg-medium-text {
+    @apply text-2xl font-medium font-montserrat;
+  }
+
+  .nav-bold-text {
+    @apply text-2xl font-bold font-montserrat;
+  }
+
+  .navlogo-text {
+    @apply text-5xl font-normal font-anektamil;
+  }
+
+  .navlogo-sm-text {
+    @apply text-4xl font-normal font-anektamil;
+  }
+
+  .nav-top-link {
+    @apply rounded-md px-3 py-2 nav-text xl:nav-lg-text text-white hover:text-yellow-ummaze;
+  }
+
+  .nav-sub-link {
+    @apply my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2
+  }
+
+  .nav-top-link-mobile {
+    @apply rounded-md py-2 nav-text xl:nav-lg-text text-yellow-ummaze
+  }
+  
+  .nav-sub-link-mobile {
+    @apply mx-2 block py-1 nav-sm-text text-white md:mx-2
+  }
+
   .button_label {
     @apply text-sm font-medium leading-4 text-gray-550 font-montserrat;
   }
@@ -109,6 +170,10 @@ from https://tailwindcss.com/docs/adding-custom-styles
 
   .text_field_label {
     @apply text-base font-semibold leading-4 text-gray-900 font-montserrat mb-2;
+  }
+
+  .text_small {
+    @apply ml-2 text-sm text-gray-700;
   }
 
   .check_box {
@@ -158,7 +223,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   .secondary_yellow_button:disabled {
     @apply opacity-50 bg-black pointer-events-none text-white;
   }
-  
+
   .secondary_blue_button {
     @apply py-2 px-4 font-montserrat font-medium leading-7 text-xs border rounded-md text-white bg-blue-750;
   }
@@ -200,11 +265,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .sign_button {
-    @apply px-1 ml-2 shadow-sm font-medium rounded text-blue-900 bg-yellow-550 hover:bg-yellow-500 flex-1 hover:underline;
-  }
-
-  .uniqname_text {
-    @apply leading-tight text-sm font-medium text-white
+    @apply  h-6 px-4 py-1 text-sm shadow-sm rounded text-blue-umblue bg-yellow-ummaze hover:bg-gray-700 hover:text-blue-300;
   }
 
   .edit_button {
@@ -228,8 +289,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .input_text_field {
-    @apply w-full text-lg font-medium text-gray-900 bg-white border border-gray-600 rounded block p-2 focus:ring-blue-500 focus:border-blue-500 
-    placeholder:font-montserrat placeholder:font-medium placeholder:leading-7 placeholder:text-sm placeholder:text-gray-um60;
+    @apply w-full text-lg font-medium text-gray-900 bg-white border border-gray-600 rounded block p-2 focus:ring-blue-500 placeholder:font-montserrat placeholder:font-medium placeholder:leading-7 placeholder:text-sm placeholder:text-gray-um60;
   }
 
   .recurring_select {
@@ -242,7 +302,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .filter_select {
-    @apply text-sm font-medium leading-4 text-blue-umblue bg-white border border-gray-600 rounded block p-2 focus:ring-blue-500 focus:border-blue-500 font-montserrat;
+    @apply text-sm font-medium leading-4 text-blue-umblue bg-white border border-gray-600 rounded block p-2 focus:ring-blue-500 font-montserrat;
   }
 
   .file-upload {
@@ -250,7 +310,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .card_area {
-    @apply col-span-1 bg-white rounded-lg shadow-md px-2 place-items-stretch bg-white border border-gray-300 rounded-l
+    @apply col-span-1 bg-white rounded-lg shadow-md divide-y divide-gray-400 px-2 place-items-stretch bg-white border border-gray-300 rounded-l
   }
 
   /* table */
@@ -306,6 +366,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   .error_text {
     @apply text-red-umred text-sm font-normal font-montserrat;
   }
+
   /* ... */
 }
 
@@ -333,16 +394,20 @@ from https://tailwindcss.com/docs/adding-custom-styles
     color: white;
     background: RoyalBlue;
   }
+
   .switches li {
     position: relative;
     counter-increment: switchCounter;
   }
+
   .switches li:not(:last-child) {
     border-bottom: 1px solid gray;
   }
+
   .switches .label-text {
     padding-right: 2px;
   }
+
   .switches label {
     cursor: pointer;
     display: flex;
@@ -350,6 +415,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
     justify-content: space-between;
     padding: 8px 10px 8px 10px;
   }
+
   .switches span:last-child {
     position: relative;
     width: 50px;
@@ -359,10 +425,13 @@ from https://tailwindcss.com/docs/adding-custom-styles
     background: gray;
     transition: all 0.3s;
   }
-  .switches span:last-child::before, .switches span:last-child::after {
+
+  .switches span:last-child::before,
+  .switches span:last-child::after {
     content: "";
     position: absolute;
   }
+
   .switches span:last-child::before {
     left: 4px;
     top: 4px;
@@ -373,6 +442,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
     z-index: 1;
     transition: transform 0.3s;
   }
+
   .switches span:last-child::after {
     top: 50%;
     right: 8px;
@@ -382,25 +452,29 @@ from https://tailwindcss.com/docs/adding-custom-styles
     background: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/162656/uncheck-switcher.svg);
     background-size: 12px 12px;
   }
-  .switches [type="checkbox"]:checked + label span:last-child {
+
+  .switches [type="checkbox"]:checked+label span:last-child {
     background: green;
   }
-  .switches [type="checkbox"]:checked + label span:last-child::before {
+
+  .switches [type="checkbox"]:checked+label span:last-child::before {
     transform: translateX(24px);
   }
-  .switches [type="checkbox"]:checked + label span:last-child::after {
+
+  .switches [type="checkbox"]:checked+label span:last-child::after {
     width: 14px;
     height: 14px;
     left: 8px;
     background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/162656/checkmark-switcher.svg);
     background-size: 14px 14px;
   }
+
   @media screen and (max-width: 600px) {
     .switches li::before {
       display: none;
     }
   }
-  
+
 }
 
 @layer utilities {

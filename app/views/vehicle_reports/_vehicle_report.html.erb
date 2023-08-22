@@ -130,7 +130,7 @@
       </p>
     <% end %>
     <% if @reservation.program.pictures_required_start %>
-      <p class="body-md-semibold-text my-2">
+      <p class="body-md-medium-text my-2">
         Start of Reservation Images
       </p>
       <%= render 'image_name', image_name: @vehicle_report.image_front_start, image_field_name: 'image_front_start' %>
@@ -139,7 +139,7 @@
       <%= render 'image_name', image_name: @vehicle_report.image_back_start, image_field_name: 'image_back_start' %>
     <% end %>
     <% if @reservation.program.pictures_required_end %>
-      <p class="body-md-semibold-text my-2">
+      <p class="body-md-medium-text my-2">
         End of Reservation Images
       </p>
       <%= render 'image_name', image_name: @vehicle_report.image_front_end, image_field_name: 'image_front_end' %>
