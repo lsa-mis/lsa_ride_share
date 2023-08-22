@@ -17,41 +17,61 @@
         <% if user_signed_in? %>
           <div class="hidden lg:ml-6 lg:block">
             <div class="flex space-x-4">
-              <div class="group relative cursor-pointer">
-                <div class="flex items-center justify-between">
-                  <%= content_tag :span, "Programs", class: "nav-top-link" if policy(Program).index? || policy(Site).index? || policy(Manager).index? %>
+              <% if is_admin?(current_user) %>
+                <div class="group relative cursor-pointer">
+                  <div class="flex items-center justify-between">
+                    <%= content_tag :span, "Programs", class: "nav-top-link" if policy(Program).index? || policy(Site).index? || policy(Manager).index? %>
+                  </div>
+                  <div class="invisible absolute z-50 flex w-full flex-col bg-blue-umblue py-1 group-hover:visible" onClick="">
+                    <%= link_to "All Programs", programs_path, class: "nav-sub-link" if policy(Program).index? %>
+                    <%= link_to "Sites", sites_path, class: "nav-sub-link" if policy(Site).index? %>
+                    <%= link_to "Managers", managers_path, class: "nav-sub-link" if policy(Manager).index? %>
+                  </div>
                 </div>
-                <div class="invisible absolute z-50 flex w-full flex-col bg-blue-umblue py-1 group-hover:visible" onClick="">
-                  <%= link_to "All Programs", programs_path, class: "nav-sub-link" if policy(Program).index? %>
-                  <%= link_to "Sites", sites_path, class: "nav-sub-link" if policy(Site).index? %>
-                  <%= link_to "Managers", managers_path, class: "nav-sub-link" if policy(Manager).index? %>
+              <% end %>
+              <% if is_manager?(current_user) %>
+                <div class="header_link">
+                  <%= link_to "Programs", programs_path, class: "#{class_names(active: current_page?(programs_path))}" if policy(Program).index? %>
                 </div>
-              </div>
-              <div class="group relative cursor-pointer">
-                <div class="flex items-center justify-between">
-                  <%= content_tag :span, "Reservations", class: "nav-top-link" if policy(Reservation).index? || policy(VehicleReport).index? || policy(Manager).index? %>
+              <% end %>
+              <% if is_admin?(current_user) %>
+                <div class="group relative cursor-pointer">
+                  <div class="flex items-center justify-between">
+                    <%= content_tag :span, "Reservations", class: "nav-top-link" if policy(Reservation).index? || policy(VehicleReport).index? || policy(Manager).index? %>
+                  </div>
+                  <div class="invisible absolute z-50 flex w-full flex-col bg-blue-umblue py-1 group-hover:visible" onClick="">
+                    <%= link_to "Reservations", reservations_path, class:"nav-sub-link" if policy(Reservation).index? %>
+                    <%= link_to "Manager Reservations", welcome_pages_manager_path, class: "nav-sub-link" if is_manager?(current_user) %>
+                    <%= link_to "Vehicle Reports", vehicle_reports_path, class: "nav-sub-link" if policy(VehicleReport).index? %>
+                  </div>
                 </div>
-                <div class="invisible absolute z-50 flex w-full flex-col bg-blue-umblue py-1 group-hover:visible" onClick="">
-                  <%= link_to "Reservations", reservations_path, class:"nav-sub-link" if policy(Reservation).index? %>
-                  <%= link_to "Manager Reservations", welcome_pages_manager_path, class: "nav-sub-link" if is_manager?(current_user) %>
-                  <%= link_to "Vehicle Reports", vehicle_reports_path, class: "nav-sub-link" if policy(VehicleReport).index? %>
+              <% end %>
+              <% if is_manager?(current_user) %>
+                <div class="header_link">
+                  <%= link_to "Reservations", welcome_pages_manager_path, class: "#{class_names(active: current_page?(welcome_pages_manager_path))}" %>
                 </div>
-              </div>
-              <div class="group relative cursor-pointer">
-                <div class="flex items-center justify-between">
-                  <%= content_tag :span, "Unit Options", class: "nav-top-link" if policy(Unit).index? || policy(Term).index? || unit_use_faculty_survey?(current_user.unit_ids) || policy(Car).index? %>
+              <% end %>
+              <% if is_admin?(current_user) %>
+                <div class="group relative cursor-pointer">
+                  <div class="flex items-center justify-between">
+                    <%= content_tag :span, "Unit Options", class: "nav-top-link" %>
+                  </div>
+                  <div class="invisible absolute z-50 flex w-full flex-col bg-blue-umblue py-1 group-hover:visible" onClick="">
+                    <%= link_to "All Units", units_path, class: "nav-sub-link" if policy(Unit).index? %>
+                    <%= link_to "Cars", cars_path, class: "nav-sub-link" %>
+                    <%= link_to "Program Surveys", faculty_surveys_path, class: "nav-sub-link" if unit_use_faculty_survey?(current_user.unit_ids) %>
+                    <%= link_to "System Reports", system_reports_path, class: "nav-sub-link" %>
+                    <%= link_to "View Terms", terms_path, class: "nav-sub-link" %>
+                    <%= link_to "Unit Preferences", unit_prefs_path, class: "nav-sub-link" %>
+                    <%= link_to "Docs", "https://docs.google.com/document/d/e/2PACX-1vRSWQUpQqq7m4yBgevco9dXqZ-JKTFnwzxBQYQYQDUBnIXm9YNzruT1308qhzCT-C3-NJnvlh83jK61/pub", target: "_blank", class: "nav-sub-link" %>
+                  </div>
                 </div>
-                <div class="invisible absolute z-50 flex w-full flex-col bg-blue-umblue py-1 group-hover:visible" onClick="">
-                  <%= link_to "All Units", units_path, class: "nav-sub-link" if policy(Unit).index? %>
-                  <%= link_to "Unit Preferences", unit_prefs_path, class: "nav-sub-link" %>
-                  <%= link_to "View Terms", terms_path, class: "nav-sub-link" if policy(Term).index? %>
-                  <%= link_to "Program Surveys", faculty_surveys_path, class: "nav-sub-link" if unit_use_faculty_survey?(current_user.unit_ids) %>
-                  <%= link_to "Manager Survey", faculty_index_path, class: "nav-sub-link" if faculty_has_survey?(current_user) %>
-                  <%= link_to "Cars", cars_path, class: "nav-sub-link" if policy(Car).index? %>
-                  <%= link_to "System Reports", system_reports_path, class: "nav-sub-link" if is_admin?(current_user) %>
-                  <%= link_to "Docs", "https://docs.google.com/document/d/e/2PACX-1vRSWQUpQqq7m4yBgevco9dXqZ-JKTFnwzxBQYQYQDUBnIXm9YNzruT1308qhzCT-C3-NJnvlh83jK61/pub", target: "_blank", class: "nav-sub-link" if policy(Unit).index? %>
+              <% end %>
+              <% if is_manager?(current_user) %>
+                <div class="header_link">
+                  <%= link_to "Program Surveys", faculty_index_path, class: "#{class_names(active: current_page?(faculty_index_path))}" if faculty_has_survey?(current_user) %>
                 </div>
-              </div>
+              <% end %>
             </div>
           </div>
         <% end %>
@@ -132,41 +152,61 @@
 
       <% if user_signed_in? %>
 
-        <div class="pb-3">
+        <div class="pb-3 pl-2">
           <div class="w-full flex flex-col">
-            <div>
-              <%= content_tag :span, "Programs", class: "nav-top-link-mobile" if policy(Program).index? || policy(Site).index? %>
-            </div>
-            <div class="cursor-pointer flex flex-row justify-start ml-4 bg-blue-umblue py-1" onClick="">
-              <%= link_to "All Programs", programs_path, class: "nav-sub-link-mobile" if policy(Program).index? %>
-              <%= link_to "Sites", sites_path, class: "nav-sub-link-mobile" if policy(Site).index? %>
-              <%= link_to "Managers", managers_path, class: "nav-sub-link-mobile" if policy(Manager).index? %>
-            </div>
+            <% if is_admin?(current_user) %>
+              <div>
+                <%= content_tag :span, "Programs", class: "nav-top-link-mobile" if policy(Program).index? || policy(Site).index? %>
+              </div>
+              <div class="cursor-pointer flex flex-row justify-start ml-4 bg-blue-umblue py-1" onClick="">
+                <%= link_to "All Programs", programs_path, class: "nav-sub-link-mobile" if policy(Program).index? %>
+                <%= link_to "Sites", sites_path, class: "nav-sub-link-mobile" if policy(Site).index? %>
+                <%= link_to "Managers", managers_path, class: "nav-sub-link-mobile" if policy(Manager).index? %>
+              </div>
+            <% end %>
+            <% if is_manager?(current_user) %>
+              <div class="header_link">
+                <%= link_to "Programs", programs_path, class: "#{class_names(active: current_page?(programs_path))}" if policy(Program).index? %>
+              </div>
+            <% end %>
           </div>
           <div class="w-full flex flex-col">
-            <div>
-              <%= content_tag :span, "Reservations", class: "nav-top-link-mobile" if policy(Reservation).index? || policy(VehicleReport).index? %>
-            </div>
-            <div class="cursor-pointer  flex flex-row justify-start ml-4 bg-blue-umblue py-1">
-              <%= link_to "Reservations", reservations_path, class:"nav-sub-link-mobile" if policy(Reservation).index? %>
-              <%= link_to "Manager Reservations", welcome_pages_manager_path, class: "nav-sub-link-mobile" if is_manager?(current_user) %>
-              <%= link_to "Vehicle Reports", vehicle_reports_path, class: "nav-sub-link-mobile" if policy(VehicleReport).index? %>
-            </div>
+            <% if is_admin?(current_user) %>
+              <div>
+                <%= content_tag :span, "Reservations", class: "nav-top-link-mobile" if policy(Reservation).index? || policy(VehicleReport).index? %>
+              </div>
+              <div class="cursor-pointer  flex flex-row justify-start ml-4 bg-blue-umblue py-1">
+                <%= link_to "Reservations", reservations_path, class:"nav-sub-link-mobile" if policy(Reservation).index? %>
+                <%= link_to "Manager Reservations", welcome_pages_manager_path, class: "nav-sub-link-mobile" if is_manager?(current_user) %>
+                <%= link_to "Vehicle Reports", vehicle_reports_path, class: "nav-sub-link-mobile" if policy(VehicleReport).index? %>
+              </div>
+            <% end %>
+            <% if is_manager?(current_user) %>
+              <div class="header_link">
+                <%= link_to "Reservations", welcome_pages_manager_path, class: "#{class_names(active: current_page?(welcome_pages_manager_path))}" %>
+              </div>
+            <% end %>
           </div>
           <div class="relative w-full flex flex-col">
-            <div>
-              <%= content_tag :span, "Unit Options", class: "nav-top-link-mobile" if policy(Unit).index? || policy(Term).index? || unit_use_faculty_survey?(current_user.unit_ids) || policy(Car).index? %>
-            </div>
-            <div class=" cursor-pointer flex flex-row justify-start ml-4 bg-blue-umblue py-1">
-              <%= link_to "All Units", units_path, class: "nav-sub-link-mobile" if policy(Unit).index? %>
-              <%= link_to "Unit Preferences", unit_prefs_path, class: "nav-sub-link-mobile" %>
-              <%= link_to "View Terms", terms_path, class: "nav-sub-link-mobile" if policy(Term).index? %>
-              <%= link_to "Program Surveys", faculty_surveys_path, class: "nav-sub-link-mobile" if unit_use_faculty_survey?(current_user.unit_ids) %>
-              <%= link_to "Manager Survey", faculty_index_path, class: "nav-sub-link-mobile" if faculty_has_survey?(current_user) %>
-              <%= link_to "Cars", cars_path, class: "nav-sub-link-mobile" if policy(Car).index? %>
-              <%= link_to "System Reports", system_reports_path, class: "nav-sub-link-mobile" if is_admin?(current_user) %>
-              <%= link_to "Docs", "https://docs.google.com/document/d/e/2PACX-1vRSWQUpQqq7m4yBgevco9dXqZ-JKTFnwzxBQYQYQDUBnIXm9YNzruT1308qhzCT-C3-NJnvlh83jK61/pub", target: "_blank", class: "nav-sub-link-mobile" if policy(Unit).index? %>
-            </div>
+            <% if is_admin?(current_user) %>
+              <div>
+                <%= content_tag :span, "Unit Options", class: "nav-top-link-mobile" %>
+              </div>
+              <div class=" cursor-pointer flex flex-row justify-start ml-4 bg-blue-umblue py-1">
+                <%= link_to "All Units", units_path, class: "nav-sub-link-mobile" if policy(Unit).index? %>
+                <%= link_to "Cars", cars_path, class: "nav-sub-link-mobile" %>
+                <%= link_to "Program Surveys", faculty_surveys_path, class: "nav-sub-link-mobile" if unit_use_faculty_survey?(current_user.unit_ids) %>
+                <%= link_to "System Reports", system_reports_path, class: "nav-sub-link-mobile" %>
+                <%= link_to "View Terms", terms_path, class: "nav-sub-link-mobile" if policy(Term).index? %>
+                <%= link_to "Unit Preferences", unit_prefs_path, class: "nav-sub-link-mobile" %>
+                <%= link_to "Docs", "https://docs.google.com/document/d/e/2PACX-1vRSWQUpQqq7m4yBgevco9dXqZ-JKTFnwzxBQYQYQDUBnIXm9YNzruT1308qhzCT-C3-NJnvlh83jK61/pub", target: "_blank", class: "nav-sub-link-mobile" %>
+              </div>
+            <% end %>
+            <% if is_manager?(current_user) %>
+              <div class="header_link">
+                <%= link_to "Program Surveys", faculty_index_path, class: "#{class_names(active: current_page?(faculty_index_path))}" if faculty_has_survey?(current_user) %>
+              </div>
+            <% end %>
           </div>
         </div>
 

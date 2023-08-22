@@ -17,7 +17,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
 
 @layer base {
   .header_link {
-    @apply border-transparent text-blue-50 inline-flex items-center pr-1 pt-1 border-b-2 text-base font-normal hover:border-blue-300 text-white;
+    @apply border-transparent text-blue-50 inline-flex items-center pr-1 pt-1 border-b-2 text-xl font-normal hover:border-blue-300 text-white;
   }
 
   .active {
