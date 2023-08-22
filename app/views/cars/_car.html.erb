@@ -5,82 +5,82 @@
     </p>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Unit:
-      </label>
-      <p class="body-lg-text inline-block">
+      </p>
+      <p class="body-lg-text pl-2 inline">
         <%= car.unit.name %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Make:
-      </label>
-      <p class="body-lg-text inline-block">
+      </p>
+      <p class="body-lg-text pl-2 inline">
         <%= car.make %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Model:
-      </label>
-      <p class="body-lg-text inline-block">
+      </p>
+      <p class="body-lg-text pl-2 inline">
         <%= car.model %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Color:
-      </label>
-      <p class="body-lg-text inline-block">
+      </p>
+      <p class="body-lg-text pl-2 inline">
         <%= car.color %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Number of Seats:
-      </label>
-      <p class="body-lg-text inline-block">
+      </p>
+      <p class="body-lg-text pl-2 inline">
         <%= car.number_of_seats %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Mileage:
-      </label>
-      <p class="body-lg-text inline-block">
+      </p>
+      <p class="body-lg-text pl-2 inline">
         <%= car.mileage %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
       Fuel %:
-      </label>
-      <p class="body-lg-text inline-block">
+      </p>
+      <p class="body-lg-text pl-2 inline">
         <%= show_percentage(car.gas) %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Parking Spot:
-      </label>
-      <p class="body-lg-text inline-block">
+      </p>
+      <p class="body-lg-text pl-2 inline">
         <%= car.parking_spot %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Last Driver:
-      </label>
-      <p class="body-lg-text inline-block">
+      </p>
+      <p class="body-lg-text pl-2 inline">
         <% if car.last_driver_id.present? %>
           <%= car.last_driver_id %>
         <% end %>
@@ -88,10 +88,10 @@
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Last Used:
-      </label>
-      <p class="body-lg-text inline-block">
+      </p>
+      <p class="body-lg-text pl-2 inline">
         <%= show_date(car.last_used) %>
       </p>
     </div>

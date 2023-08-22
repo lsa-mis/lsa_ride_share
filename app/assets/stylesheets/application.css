@@ -31,6 +31,25 @@
   color: #00743C
 }
 
+.mi_tbody_tr {
+  position: relative; 
+  border-width: 1px; 
+  border-top-width: 0; 
+  border-right-width: 0; 
+  border-left-width: 0; 
+  border-color: #CCCCCC; 
+}
+
+.mobile_tr {
+  position: relative; 
+  border-width: 1px; 
+  border-top-width: 0; 
+  border-right-width: 0; 
+  border-bottom-width: 2px; 
+  border-left-width: 0; 
+  border-color: #7F7F7F; 
+}
+
 /*normal mode*/
 #desk-table {
   display: table;

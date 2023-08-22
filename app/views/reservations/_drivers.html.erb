@@ -42,10 +42,10 @@
   <% else %>
     <% if @reservation.driver_manager.present? %>
       <div class="mt-2">
-        <label class="body-lg-bold-text">
+        <p class="body-lg-bold-text inline">
           Driver:
-        </label>
-        <p class="body-lg-text ml-2 inline-block">
+        </p>
+        <p class="body-lg-text ml-2 inline">
           <%= @reservation.driver_manager.display_name + " (manager)" %>
         </p>
       </div>

@@ -60,6 +60,10 @@ from https://tailwindcss.com/docs/adding-custom-styles
     @apply border-gray-um50 border m-2;
   }
 
+  .card-title {
+    @apply text-xl font-medium leading-8 font-oswald;
+  }
+
   .body-sm-text {
     @apply text-sm font-normal font-montserrat;
   }
@@ -333,14 +337,6 @@ from https://tailwindcss.com/docs/adding-custom-styles
 
   .header_mobile {
     @apply p-2 text-base font-semibold leading-5 font-montserrat lg:table-cell text-left;
-  }
-
-  .mi_tbody_tr {
-    @apply relative sm:pl-2 bg-white border border-l-0 border-r-0 border-t-0 border-gray-um20;
-  }
-
-  .mobile_tr {
-    @apply relative sm:pl-2 bg-white border border-l-0 border-r-0 border-t-0 border-b-2 border-gray-um50;
   }
 
   .mi_tbody_td {

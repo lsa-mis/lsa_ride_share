@@ -24,16 +24,16 @@
   <div class="py-2">
     <% if @manager.mvr_status.present? %>
       <i class="fa-solid fa-check"></i>
-      <label class="body-sm-semibold-text ml-2">
+      <p class="body-sm-semibold-text ml-2">
           MVR Status:
-      </label>
+      </p>
       <p class="body-sm-text ml-2">
         <%= @manager.mvr_status %>
       </p>
     <% else %>
-      <label class="body-sm-semibold-text ml-2">
+      <p class="body-sm-semibold-text ml-2">
           MVR Status:
-      </label>
+      </p>
       <p class="body-sm-text ml-2">
         Get your <%= link_to 'license approved', 'https://ltp.fo.umich.edu/mvr/index.php', class: "link_to" %> 
       </p>
@@ -43,16 +43,16 @@
   <div class="py-2">
     <% if @manager.canvas_course_complete_date.present? %>
       <i class="fa-solid fa-check"></i>
-      <label class="body-sm-semibold-text ml-2">
+      <p class="body-sm-semibold-text ml-2">
         Canvas Course Completion Date:
-      </label>
+      </p>
       <p class="body-sm-text ml-2">
         <%= show_date(@manager.canvas_course_complete_date) %>
       </p>
     <% else %>
-      <label class="body-sm-semibold-text ml-2">
+      <p class="body-sm-semibold-text ml-2">
         Canvas Course Completion Date:
-      </label>
+      </p>
       <% if @program.present? %>
         <p class="body-sm-text ml-2">
           Not completed<br>
@@ -69,16 +69,16 @@
   <div class="py-2">
     <% if @manager.meeting_with_admin_date.present? %>
       <i class="fa-solid fa-check"></i>
-      <label class="body-sm-semibold-text ml-2">
+      <p class="body-sm-semibold-text ml-2">
         In Person Orientation:
-      </label>
+      </p>
       <p class="body-sm-text ml-2">
         Completed on <%= show_date(@manager.meeting_with_admin_date) %>
       </p>
     <% else %>
-      <label class="body-sm-semibold-text ml-2">
+      <p class="body-sm-semibold-text ml-2">
         In Person Orientation:
-      </label>
+      </p>
       <p class="body-sm-text ml-2">
         Not completed
       </p>
