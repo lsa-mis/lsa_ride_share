@@ -28,7 +28,6 @@ class ProgramsController < ApplicationController
 
   def duplicate
     @duplicate_program_id = @program.id
-    @terms.delete(@program.term)
     @program = @program.dup
     render :new
   end
