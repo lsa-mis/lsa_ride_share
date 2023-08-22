@@ -136,12 +136,8 @@ from https://tailwindcss.com/docs/adding-custom-styles
     @apply text-2xl font-bold font-montserrat;
   }
 
-  .navlogo-text {
-    @apply text-5xl font-normal font-anektamil;
-  }
-
   .navlogo-sm-text {
-    @apply text-4xl font-normal font-anektamil;
+    @apply text-4xl font-normal font-montserrat;
   }
 
   .nav-top-link {
