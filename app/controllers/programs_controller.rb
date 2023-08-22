@@ -153,7 +153,7 @@ class ProgramsController < ApplicationController
   end
 
   def get_programs_list
-    render json: Program.where(unit_id: params[:unit_id], term: params[:term_id])
+    render json: Program.where(unit_id: params[:unit_id], term: params[:term_id]).order(:title)
     authorize Program
   end
 
@@ -163,7 +163,7 @@ class ProgramsController < ApplicationController
   end
 
   def get_sites_list
-    render json: Program.find(params[:program_id]).sites
+    render json: Program.find(params[:program_id]).sites.order(:title)
     authorize Program
   end
 

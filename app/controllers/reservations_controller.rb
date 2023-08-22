@@ -222,7 +222,7 @@ class ReservationsController < ApplicationController
     else
       @program = Program.find(params[:reservation][:program_id])
       @term_id = params[:term_id]
-      @sites = @program.sites
+      @sites = @program.sites.order(:title)
       @number_of_people_on_trip = params[:number_of_people_on_trip]
       
       @day_start = params[:day_start].to_date
@@ -490,7 +490,7 @@ class ReservationsController < ApplicationController
     def get_data_for_program(program)
       @unit_id = program.unit_id
       @term_id = program.term.id
-      @sites = program.sites
+      @sites = program.sites.order(:title)
       @cars = @cars.where(unit_id: @unit_id).order(:car_number)
       @min_date = default_reservation_for_students(@unit_id)
       @max_date = max_day_for_reservation(program)

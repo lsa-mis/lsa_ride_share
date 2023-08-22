@@ -6,9 +6,9 @@ class SitesController < ApplicationController
   # GET /sites or /sites.json
   def index
     if params[:unit_id].present?
-      @sites = Site.where(unit_id: params[:unit_id])
+      @sites = Site.where(unit_id: params[:unit_id]).order(:title)
     else
-      @sites = Site.where(unit_id: current_user.unit_ids)
+      @sites = Site.where(unit_id: current_user.unit_ids).order(:title)
     end
     authorize @sites
   end
