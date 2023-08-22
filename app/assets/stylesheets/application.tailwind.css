@@ -25,11 +25,11 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .unavailable {
-    @apply text-red-700
+    @apply text-red-umred
   }
 
   .available {
-    @apply text-green-700
+    @apply text-green-umgreen
   }
 
   h1 {
@@ -57,10 +57,10 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   hr {
-    @apply border-blue-900 border m-4;
+    @apply border-gray-um50 border m-2;
   }
 
-  .body-text {
+  .body-sm-text {
     @apply text-sm font-normal font-montserrat;
   }
 
@@ -289,7 +289,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .input_text_field {
-    @apply w-full text-lg font-medium text-gray-900 bg-white border border-gray-600 rounded block p-2 focus:ring-blue-500 placeholder:font-montserrat placeholder:font-medium placeholder:leading-7 placeholder:text-sm placeholder:text-black;
+    @apply w-full text-lg font-medium text-gray-900 bg-white border border-gray-600 rounded block p-2 focus:ring-blue-500 placeholder:font-montserrat placeholder:font-medium placeholder:leading-7 placeholder:text-sm placeholder:text-gray-um60;
   }
 
   .recurring_select {
@@ -298,7 +298,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .fancy_label {
-    @apply text-sm font-semibold text-gray-900 bg-white relative px-1 top-2 left-3 w-auto group-focus-within:text-red-600;
+    @apply text-sm font-semibold text-gray-900 bg-white relative px-1 top-2 left-3 w-auto group-focus-within:text-red-umred;
   }
 
   .filter_select {
@@ -348,11 +348,11 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .alert {
-    @apply text-red-500 text-sm font-normal font-montserrat;
+    @apply text-red-umred text-sm font-normal font-montserrat;
   }
 
   .notice {
-    @apply text-green-500;
+    @apply text-green-umgreen text-sm font-normal font-montserrat;
   }
 
   .fields--hide {
@@ -364,7 +364,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .error_text {
-    @apply text-red-500
+    @apply text-red-umred text-sm font-normal font-montserrat;
   }
 
   /* ... */
