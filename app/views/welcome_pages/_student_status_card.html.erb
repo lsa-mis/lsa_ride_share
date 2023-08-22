@@ -45,7 +45,7 @@
     <div class="py-2">
       <% if @student.mvr_status.present? %>
         <i class="fa-solid fa-check"></i>
-        <p class="body-sm-semibold-text ml-2">
+        <p class="body-sm-semibold-text ml-2 inline">
             MVR Status:
         </p>
         <p class="body-sm-text ml-2">
@@ -64,7 +64,7 @@
     <div class="py-2">
       <% if @student.canvas_course_complete_date.present? %>
         <i class="fa-solid fa-check"></i>
-        <p class="body-sm-semibold-text ml-2">
+        <p class="body-sm-semibold-text ml-2 inline">
           Canvas Course Completion Date:
         </p>
         <p class="body-sm-text ml-2">
@@ -84,7 +84,7 @@
     <div class="py-2">
       <% if @student.meeting_with_admin_date.present? %>
         <i class="fa-solid fa-check"></i>
-        <p class="body-sm-semibold-text ml-2">
+        <p class="body-sm-semibold-text ml-2 inline">
           In Person Orientation:
         </p>
         <p class="body-sm-text ml-2">
