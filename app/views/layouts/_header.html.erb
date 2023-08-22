@@ -192,7 +192,7 @@
               <div>
                 <%= content_tag :span, "Unit Options", class: "nav-top-link-mobile" %>
               </div>
-              <div class=" cursor-pointer flex flex-row justify-start ml-4 bg-blue-umblue py-1">
+              <div class=" cursor-pointer flex flex-row flex-wrap justify-start ml-4 bg-blue-umblue py-1">
                 <%= link_to "All Units", units_path, class: "nav-sub-link-mobile" if policy(Unit).index? %>
                 <%= link_to "Cars", cars_path, class: "nav-sub-link-mobile" %>
                 <%= link_to "Program Surveys", faculty_surveys_path, class: "nav-sub-link-mobile" if unit_use_faculty_survey?(current_user.unit_ids) %>
