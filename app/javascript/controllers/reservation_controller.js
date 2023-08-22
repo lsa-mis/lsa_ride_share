@@ -144,13 +144,15 @@ export default class extends Controller {
   hideCarSelection() {
     let unit_id = this.unitTarget.value
     let day_start = this.day_startTarget.value
+    let start_time = this.start_timeTarget.value
+    let end_time = this.end_timeTarget.value
     var hide = document.getElementById("no_car").checked
     if (hide) {
       this.carTarget.value = ""
       this.car_selectionTarget.classList.add("fields--hide")
       this.car_selectionTarget.classList.remove("fields--display")
 
-      get(`/reservations/no_car_all_times/${unit_id}/${day_start}`, {
+      get(`/reservations/no_car_all_times/${unit_id}/${day_start}/${start_time}/${end_time}`, {
         responseKind: "turbo-stream"
       })
     }

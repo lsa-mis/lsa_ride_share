@@ -1,7 +1,7 @@
 class VehicleReportsController < ApplicationController
   before_action :auth_user
   before_action :set_units
-  before_action :set_vehicle_report, only: %i[ show edit update destroy upload_image upload_damage_images ]
+  before_action :set_vehicle_report, only: %i[ show edit update destroy upload_image upload_damage_images upload_damage_form ]
 
   # GET /vehicle_reports or /vehicle_reports.json
   def index
@@ -56,13 +56,18 @@ class VehicleReportsController < ApplicationController
 
   # GET /vehicle_reports/1/edit
   def edit
-    @reservation = @vehicle_report.reservation
-    if @reservation.program.pictures_required_start
-      @pictures_start_required = true
-    end 
-    if @reservation.program.pictures_required_end
-     @pictures_end_required = true
-   end 
+    unless @vehicle_report.approved
+      @reservation = @vehicle_report.reservation
+      if @reservation.program.pictures_required_start
+        @pictures_start_required = true
+      end 
+      if @reservation.program.pictures_required_end
+        @pictures_end_required = true
+      end
+    else
+      flash.now[:alert] = 'The vehicle report is approved. Please reload the page. To edit, please contact your administrator'
+      render turbo_stream: turbo_stream.update("flash", partial: "layouts/notification")
+    end
   end
 
   # POST /vehicle_reports or /vehicle_reports.json
@@ -130,6 +135,9 @@ class VehicleReportsController < ApplicationController
     @vehicle_report.update(student_status: false)
     @image_field_name = params[:image_field_name]
     @image_name = @vehicle_report.send(params[:image_field_name].to_sym)
+    if @image_field_name = "damage_image"
+      redirect vehicle_report_path(@vehicle_report)
+    end
     authorize @vehicle_report
   end
 
@@ -150,9 +158,28 @@ class VehicleReportsController < ApplicationController
         end
       end
     else
-      flash.now[:alert] = 'The vehicle report is approved. To cancel, please contact your administrator'
+      flash.now[:alert] = 'The vehicle report is approved. Please reload the page. To cancel, please contact your administrator'
       render turbo_stream: turbo_stream.update("flash", partial: "layouts/notification")
     end
+  end
+
+  def download_vehicle_damage_form
+    send_file Rails.root.join("public", "vehicle_damage.pdf"), :type=>"application/pdf", :x_sendfile=>true
+    authorize VehicleReport
+  end
+
+  def upload_damage_form
+    if @vehicle_report.update(vehicle_report_params)
+    else
+      render turbo_stream: turbo_stream.update("image_errors_damage_form", partial: "image_errors", locals: { image_field_name: 'damage_form' })
+    end
+  end
+
+  def delete_damage_form
+    delete_file = ActiveStorage::Attachment.find(params[:image_id])
+    delete_file.purge
+    @vehicle_report = VehicleReport.find(params[:id])
+    authorize @vehicle_report
   end
 
   private
@@ -172,6 +199,6 @@ class VehicleReportsController < ApplicationController
                     :gas_start, :gas_end, :parking_spot, :parking_spot_return, :image_front_start, :image_driver_start, 
                     :image_passenger_start, :image_back_start, :image_front_end, :image_driver_end, 
                     :image_passenger_end, :image_back_end, :created_by, :updated_by, :status, :comment,
-                    :admin_comment, :approved, image_damages: [] )
+                    :approved, :damage_form, image_damages: [] )
     end
 end

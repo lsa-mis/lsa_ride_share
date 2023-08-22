@@ -7,13 +7,19 @@
   <h3>Drivers for the transportation reservation have been edited.</h3>
     <h4> Reservation for:  <%= link_to "#{@reservation.display_name}", reservation_url(@reservation) %> </h4>
     <p>
+      <%= @unit_email_message %>
+    </p>
+    <p>
      Reservation Summary:
       <ul>
         <li>DATE: <%= "#{@start_time} - #{@end_time}" %></li>
-        <li>VEHICLE #: <%= link_to @reservation.car.car_number, car_url(@reservation.car) %></li>
-        
-        <li>SITE: <%= link_to @reservation.site.title, site_url(@reservation.site) %> </li>
-        <li>PROGRAM: <%= link_to @reservation.program.title, program_url(@reservation.program) %></li>
+        <% if @reservation.car.present? %>
+          <li>VEHICLE #: <%= @reservation.car.car_number %></li>
+        <% else %>
+          <li>VEHICLE #: No car selected</li>
+        <% end %>
+        <li>SITE: <%= @reservation.site.title %> </li>
+        <li>PROGRAM: <%= @reservation.program.title %></li>
         <li>DRIVER: <%= @driver_name %> </li>
         <li>BACKUP DRIVER: <%= @backup_driver_name %> </li>
       </ul>
@@ -35,7 +41,7 @@
     </p>
     <p>
       To view/modify/cancel reservations, click here
-      <%= link_to "LSA Ride Share", welcome_pages_student_url %>
+      <%= link_to "LSA RideShare", welcome_pages_student_url %>
     </p>
   </body>
 </html>

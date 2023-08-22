@@ -3,9 +3,9 @@
     <div class="m-2 mb-3 sm:px-0">
         <div class="text-xs  font-bold hover:underline">
           <%= link_to program_path(program), data: { "turbo-frame": "_top" } do %>
-            <h3>
+            <p class="card-title">
               <%= program.title %>
-            </h3>
+            </p>
             <p class="body-lg-medium-text">
               <%= program.unit.name %>
             </p>
@@ -22,9 +22,11 @@
       <% if current_user %>
         <div class="flex flex-row justify-between">
           <div class="tertiary_button">
-            <%= link_to program_data_path(program), data: { "turbo-frame": "_top" } do %>
-              Edit
-              <i class="fa-solid fa-pen"></i>
+            <% if Term.current_and_future.include?(program.term) %>
+              <%= link_to program_data_path(program), data: { "turbo-frame": "_top" } do %>
+                Edit
+                <i class="fa-solid fa-pen"></i>
+              <% end %>
             <% end %>
           </div>
           <% if is_admin?(current_user) %>

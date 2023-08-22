@@ -1,27 +1,27 @@
 <div id="<%= dom_id term %>">
   <div class="py-2">
-    <label class="body-lg-bold-text">
+    <p class="body-lg-bold-text inline">
       Code:
-    </label>
-    <p class="body-lg-text inline-block">
+    </p>
+    <p class="body-lg-text inline">
       <%= term.code %>
     </p>
   </div>
 
   <div class="py-2">
-    <label class="body-lg-bold-text">
+    <p class="body-lg-bold-text inline">
       Classes Begin Date:
-    </label>
-    <p class="body-lg-text inline-block">
+    </p>
+    <p class="body-lg-text inline">
       <%= show_date(term.classes_begin_date) %>
     </p>
   </div>
 
   <div class="py-2">
-    <label class="body-lg-bold-text">
+    <p class="body-lg-bold-text inline">
       Classes End Date:
-    </label>
-    <p class="body-lg-text inline-block">
+    </p>
+    <p class="body-lg-text inline">
       <%= show_date(term.classes_end_date) %>
     </p>
   </div>

@@ -62,7 +62,7 @@ class ProgramsController < ApplicationController
       @program.instructor_id = result['instructor_id']
       note = result['note']
     else
-      flash.now[:alert] = "The '#{uniqname}' uniqname is not valid."
+      flash.now[:alert] = result['note']
       return
     end
     if @program.save
@@ -71,6 +71,8 @@ class ProgramsController < ApplicationController
         @program.sites << Program.find(params[:program][:duplicate_program_id]).sites
       end
       redirect_to program_data_path(@program), notice: "Program was successfully created." + note
+    else 
+      render :new, status: :unprocessable_entity
     end
   end
 
@@ -92,6 +94,8 @@ class ProgramsController < ApplicationController
     end
     if @program.save
       redirect_to program_data_path(@program), notice: "Program was successfully updated." + note
+    else 
+      render :edit, status: :unprocessable_entity
     end
   end
 

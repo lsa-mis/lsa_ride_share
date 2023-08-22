@@ -18,7 +18,8 @@ class ApplicationController < ActionController::Base
 
   def auth_user
     unless user_signed_in?
-      redirect_to root_path, notice: 'You must sign in first!'
+      $baseURL = request.fullpath
+      redirect_post(user_saml_omniauth_authorize_path, options: {authenticity_token: :auto})
     end
   end
 
@@ -36,7 +37,9 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
-    if session[:user_memberships].present?
+    if $baseURL.present?
+      $baseURL
+    elsif session[:user_memberships].present?
       programs_path
     elsif is_manager?(resource)
       welcome_pages_manager_path

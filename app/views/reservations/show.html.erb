@@ -37,7 +37,42 @@
     </div>
     <div class="order-first md:order-last">
       <div class="lg:flex lg:flex-col place-items-end whitespace-nowrap">
-        <% if (is_admin?(current_user) || allow_student_to_edit_reservation?(@reservation) || allow_manager_to_edit_reservation?(@reservation)) && !@reservation.approved %>
+        <% if is_admin?(current_user) && !@reservation.approved %>
+          <% if recurring?(@reservation) %>
+            <%= form_tag cancel_recurring_reservation_url, method: :post, local: true,
+              data: {
+                  approve_target: "form1"
+                } do |form| %>
+              <div class="my-2">
+                <label for="cancel_type" class="fancy_label">Cancel Recurring Reservation</label>
+                <%= select_tag :cancel_type, options_for_select(cancel_types), include_blank: "Select to Cancel ...", class: "filter_select",
+                "data-approve-target": "cancel_type", "data-action": "change->approve#cancelReservation" %>
+              </div>
+              <div>
+                <%= link_to 'Approve All Recurring Reservations', approve_all_recurring_path(@reservation), class: "secondary_blue_button" %>
+              </div>
+            <% end %>
+          <% else %>
+            <%= link_to reservation_path(@reservation), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete} do %>
+              <span class="tertiary_button">Cancel Reservation
+                <i class="fa fa-times" aria-hidden="true"></i>
+              </span>
+            <% end %>
+          <% end %>
+        <% end %>
+        <% if (is_admin?(current_user)) && @reservation.end_time > DateTime.now %>
+          <div class="my-2">
+            <% if @reservation.start_time.to_date == @reservation.end_time.to_date %>
+              <%= link_to 'Edit Reservation', edit_reservation_path(@reservation), class: "primary_button" if policy(@reservation).edit? %>
+            <% else %>
+              <%= link_to 'Edit Reservation', edit_long_reservation_path(@reservation), class: "primary_button" if policy(@reservation).edit? %>
+            <% end %>
+          </div>
+          <div>
+            <%= link_to 'Send Reservation Update', send_reservation_updated_email_path(@reservation), class: "secondary_yellow_button w-1", data: { turbo_confirm: 'Are you sure?', turbo_method: :get} if policy(@reservation).edit? %>
+          </div>
+        <% end %>
+        <% if (is_student?(current_user) && allow_student_to_edit_reservation?(@reservation) || is_manager?(current_user) && allow_manager_to_edit_reservation?(@reservation)) && !@reservation.approved %>
           <% if recurring?(@reservation) %>
             <%= form_tag cancel_recurring_reservation_url, method: :post, local: true,
               data: {
@@ -57,13 +92,6 @@
             <% end %>
           <% end %>
         <% end %>
-        <% if (is_admin?(current_user)) %>
-          <% if future_reservation?(@reservation) && !@reservation.approved %>
-            <div class="my-2">
-              <%= link_to 'Edit Reservation', edit_reservation_path(@reservation), class: "primary_button" if policy(@reservation).edit? %>
-            </div>
-          <% end %>
-        <% end %>
         <div class="my-2">
           <% unless is_manager?(current_user) %>
             <% if @reservation.vehicle_report.present? %>
@@ -73,13 +101,6 @@
             <% end %>
           <% end %>
         </div>
-        <% if (is_admin?(current_user)) %>
-          <% if future_reservation?(@reservation) && !@reservation.approved %>
-            <div>
-            <%= link_to 'Send Reservation Update', send_reservation_updated_email_path(@reservation), class: "secondary_yellow_button w-1", data: { turbo_confirm: 'Are you sure?', turbo_method: :get} if policy(@reservation).edit? %>
-          </div>
-          <% end %>
-        <% end %>
       </div>
     </div>
   </div>

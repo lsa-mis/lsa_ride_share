@@ -29,82 +29,82 @@
     <% end %>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Mileage start:
-      </label>
-      <p class="body-lg-text inline-block">
+      </p>
+      <p class="body-lg-text ml-2 inline">
         <%= vehicle_report.mileage_start %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Mileage end:
-      </label>
-      <p class="body-lg-text inline-block">
+      </p>
+      <p class="body-lg-text ml-2 inline">
         <%= vehicle_report.mileage_end %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Trip mileage total:
-      </label>
-      <p class="body-lg-text inline-block">
+      </p>
+      <p class="body-lg-text ml-2 inline">
         <%= calculate_mileage(vehicle_report) %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Fuel % (departure):
-      </label>
-      <p class="body-lg-text inline-block">
+      </p>
+      <p class="body-lg-text ml-2 inline">
         <%= show_percentage(vehicle_report.gas_start) %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Fuel % (return):
-      </label>
-      <p class="body-lg-text inline-block">
+      </p>
+      <p class="body-lg-text ml-2 inline">
         <%= show_percentage(vehicle_report.gas_end) %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Parking spot (depart):
-      </label>
-      <p class="body-lg-text inline-block">
+      </p>
+      <p class="body-lg-text ml-2 inline">
         <%= vehicle_report.parking_spot %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Parking spot (return):
-      </label>
-      <p class="body-lg-text inline-block">
+      </p>
+      <p class="body-lg-text ml-2 inline">
         <%= vehicle_report.parking_spot_return %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Comment:
-      </label>
-      <p class="body-lg-text inline-block">
+      </p>
+      <p class="body-lg-text ml-2 inline">
         <%= vehicle_report.comment %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Created by:
-      </label>
-      <p class="body-lg-text inline-block">
+      </p>
+      <p class="body-lg-text ml-2 inline">
         <%= User.find(vehicle_report.created_by).display_name %>
       </p>
     </div>
@@ -115,16 +115,6 @@
       </p>
     </div>
 
-    <% if is_admin?(current_user) %>
-      <div class="py-2">
-        <label class="body-lg-bold-text">
-          Admin Comment:
-        </label>
-        <p class="body-lg-text inline-block">
-          <%= vehicle_report.admin_comment %>
-        </p>
-      </div>
-    <% end %>
   </div>
   
   <div>
@@ -140,7 +130,7 @@
       </p>
     <% end %>
     <% if @reservation.program.pictures_required_start %>
-      <p class="body-md-semibold-text my-2">
+      <p class="body-md-medium-text my-2">
         Start of Reservation Images
       </p>
       <%= render 'image_name', image_name: @vehicle_report.image_front_start, image_field_name: 'image_front_start' %>
@@ -149,7 +139,7 @@
       <%= render 'image_name', image_name: @vehicle_report.image_back_start, image_field_name: 'image_back_start' %>
     <% end %>
     <% if @reservation.program.pictures_required_end %>
-      <p class="body-md-semibold-text my-2">
+      <p class="body-md-medium-text my-2">
         End of Reservation Images
       </p>
       <%= render 'image_name', image_name: @vehicle_report.image_front_end, image_field_name: 'image_front_end' %>
@@ -159,5 +149,11 @@
     <% end %>
 
     <%= render 'images_damage' %>
+
+    <% if is_admin?(current_user) && @vehicle_report.image_damages.attached? %>
+      <%= turbo_frame_tag "damage_form_frame" do %>
+        <%= render 'damage_form' %>
+      <% end %>
+    <% end %>
   </div>
 </div>

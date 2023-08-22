@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   get 'system_reports/', to: 'system_reports#index'
-  get 'system_reports/run_report', to: 'system_reports#run_report', as: :run_report
+  get 'system_reports/run_report/', to: 'system_reports#run_report', as: :run_report
  
   root to: "static_pages#home", as: :all_root
 
@@ -22,23 +22,29 @@ Rails.application.routes.draw do
   resources :unit_preferences
 
   resources :terms
+
+  get "vehicle_reports/download_vehicle_damage_form/", to: 'vehicle_reports#download_vehicle_damage_form', as: :download_vehicle_damage_form
   resources :vehicle_reports do
     resources :notes, module: :vehicle_reports
   end
-  
   post 'vehicle_reports/upload_image/:id', to: 'vehicle_reports#upload_image', as: :upload_image
   post 'vehicle_reports/upload_damage_images/:id', to: 'vehicle_reports#upload_damage_images', as: :upload_damage_images
+  post 'vehicle_reports/upload_damage_form/:id', to: 'vehicle_reports#upload_damage_form', as: :upload_damage_form
   get 'vehicle_reports/delete_image/:id/:image_id/:image_field_name', to: 'vehicle_reports#delete_image', as: :delete_image, defaults: { format: :turbo_stream }
+  get 'vehicle_reports/delete_damage_form/:id/:image_id/', to: 'vehicle_reports#delete_damage_form', as: :delete_damage_form, defaults: { format: :turbo_stream }
 
   get '/reservations/new_long', to: 'reservations#new_long', as: :new_long_reservation
+  get '/reservations/edit_long/:id', to: 'reservations#edit_long', as: :edit_long_reservation
   get '/reservations/week_calendar/', to: 'reservations#week_calendar', as: 'week_calendar'
   resources :reservations do
     resources :vehicle_reports, module: :reservations
   end
   get '/reservations/get_available_cars/:unit_id/:day_start/:number/:start_time/:end_time', to: 'reservations#get_available_cars'
   get '/reservations/get_available_cars_long/:unit_id/:day_start/:day_end/:number', to: 'reservations#get_available_cars_long'
-  get '/reservations/no_car_all_times/:unit_id/:day_start', to: 'reservations#no_car_all_times'
-  get '/reservations/edit_change_day/:unit_id/:day_start', to: 'reservations#edit_change_day'
+  get '/reservations/no_car_all_times/:unit_id/:day_start/:start_time/:end_time', to: 'reservations#no_car_all_times'
+  get '/reservations/edit_change_day/:unit_id/:day_start/:start_time/:end_time', to: 'reservations#edit_change_day'
+  get '/reservations/change_start_end_day/:unit_id/:day_start/:day_end/:start_time/:end_time', to: 'reservations#change_start_end_day'
+
   patch '/reservations/add_non_uofm_passengers/:reservation_id', to: 'reservations#add_non_uofm_passengers', as: :add_non_uofm_passengers
   get '/reservations/add_passengers/:reservation_id', to: 'reservations/passengers#add_passengers', as: :add_passengers
   get '/reservations/add_passenger/:reservation_id', to: 'reservations/passengers#add_passenger', as: :add_passenger
@@ -50,8 +56,8 @@ Rails.application.routes.draw do
   get '/reservations/:id/finish_reservation', to: 'reservations#finish_reservation', as: :finish_reservation
   get '/reservations/:id/update_passengers/', to: 'reservations#update_passengers', as: :update_passengers
   post '/reservations/cancel_recurring_reservation/:id', to: 'reservations#cancel_recurring_reservation', as: :cancel_recurring_reservation
-
   get '/send_reservation_updated_email/:id', to: 'reservations#send_reservation_updated_email', as: :send_reservation_updated_email
+  get '/approve_all_recurring/:id', to: 'reservations#approve_all_recurring', as: :approve_all_recurring
 
   resources :cars do
     resources :notes, module: :cars

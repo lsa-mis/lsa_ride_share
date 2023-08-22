@@ -5,7 +5,7 @@
   </head>
   <body>
     <p>
-      Ride Share program: 
+      RideShare program: 
       the program <%= link_to "#{Program.find(@faculty_survey.program_id).display_name_with_title}", program_url(Program.find(@faculty_survey.program_id)) %>
       was created after instructor <%= @faculty_survey.instructor %> filled out the servey
       <%= link_to "#{@faculty_survey.title}", survey_url(@faculty_survey), class: "link_to" %>. 

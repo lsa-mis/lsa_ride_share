@@ -1,7 +1,7 @@
 const defaultTheme = require('tailwindcss/defaultTheme')
 
 module.exports = {
-  mode: 'jit',
+  // mode: 'jit',
   // These paths are just examples, customize them to match your project structure
   content: [
     './public/*.html',
@@ -16,6 +16,7 @@ module.exports = {
         sans: ['Inter var'],
         oswald: ['Oswald', 'sans-serif'],
         montserrat: ['Montserrat', 'sans-serif'],
+        anektamil: ['Anek Tamil', 'sans-serif'],
       },
     },
     colors: {

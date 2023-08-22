@@ -24,7 +24,7 @@
             <li class="relative">
               <div class="flex flex-col">
                 <%= link_to url_for(image), target: "_blank" do %>
-                  <%= image_tag image.variant(:thumb), class: "object-cover group-hover:opacity-75" %>
+                  <%= image_tag image.variant(:thumb), alt: "image_damages_#{image.id}", class: "object-cover group-hover:opacity-75" %>
                 <% end %>
                 <p class="body-sm-text pt-2">
                   Uploaded on <%= show_date_time(image.created_at) %>
@@ -47,3 +47,4 @@
   <% end %>
   <%= render 'image_errors', image_field_name: 'image_damages' %>
 <% end %>
+

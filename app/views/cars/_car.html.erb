@@ -5,82 +5,82 @@
     </p>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Unit:
-      </label>
-      <p class="body-lg-text inline-block">
+      </p>
+      <p class="body-lg-text pl-2 inline">
         <%= car.unit.name %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Make:
-      </label>
-      <p class="body-lg-text inline-block">
+      </p>
+      <p class="body-lg-text pl-2 inline">
         <%= car.make %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Model:
-      </label>
-      <p class="body-lg-text inline-block">
+      </p>
+      <p class="body-lg-text pl-2 inline">
         <%= car.model %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Color:
-      </label>
-      <p class="body-lg-text inline-block">
+      </p>
+      <p class="body-lg-text pl-2 inline">
         <%= car.color %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Number of Seats:
-      </label>
-      <p class="body-lg-text inline-block">
+      </p>
+      <p class="body-lg-text pl-2 inline">
         <%= car.number_of_seats %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Mileage:
-      </label>
-      <p class="body-lg-text inline-block">
+      </p>
+      <p class="body-lg-text pl-2 inline">
         <%= car.mileage %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
       Fuel %:
-      </label>
-      <p class="body-lg-text inline-block">
+      </p>
+      <p class="body-lg-text pl-2 inline">
         <%= show_percentage(car.gas) %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Parking Spot:
-      </label>
-      <p class="body-lg-text inline-block">
+      </p>
+      <p class="body-lg-text pl-2 inline">
         <%= car.parking_spot %>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Last Driver:
-      </label>
-      <p class="body-lg-text inline-block">
+      </p>
+      <p class="body-lg-text pl-2 inline">
         <% if car.last_driver_id.present? %>
           <%= car.last_driver_id %>
         <% end %>
@@ -88,10 +88,10 @@
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text inline">
         Last Used:
-      </label>
-      <p class="body-lg-text inline-block">
+      </p>
+      <p class="body-lg-text pl-2 inline">
         <%= show_date(car.last_used) %>
       </p>
     </div>
@@ -104,7 +104,7 @@
           <li class="relative">
             <div class="flex flex-col">
               <div class="group block w-full h-40 rounded-lg bg-gray-100 focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 focus-within:ring-indigo-500 overflow-hidden">
-                <%= image_tag image.variant(:thumb), class: "object-cover h-full w-full group-hover:opacity-75" %>
+                <%= image_tag image.variant(:thumb), alt: "initial_damage_#{image.id}", class: "object-cover h-full w-full group-hover:opacity-75" %>
               </div>
               <p alertclass="body-sm-text pt-2">
                 Uploaded on <%= show_date_time(image.created_at) %>

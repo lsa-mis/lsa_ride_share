@@ -62,7 +62,8 @@
             data: {
             controller: "flatpickr",
             flatpickr_date_format: "Y-m-d",
-            flatpickr_min_date: @min_date
+            flatpickr_min_date: @min_date,
+            flatpickr_max_date: @max_date
             }, "data-longreservation-target": "day_start", "data-action": "change->longreservation#availableCars",
             class: "input_text_field"
           %>
@@ -73,7 +74,8 @@
           data: {
           controller: "flatpickr",
           flatpickr_date_format: "Y-m-d",
-          flatpickr_min_date: @min_date
+          flatpickr_min_date: @min_date,
+          flatpickr_max_date: @max_date
           }, "data-longreservation-target": "day_end", "data-action": "change->longreservation#availableCars",
           class: "input_text_field"
         %>
@@ -89,19 +91,20 @@
       </div>
 
       <div>
-        <%= form.label :until_date, "Until Date", class: "fancy_label" %>
+        <%= form.label :until_date, "Recurring Until", class: "fancy_label" %>
         <%= form.text_field :until_date, value: @until_date,
           data: {
           controller: "flatpickr",
           flatpickr_date_format: "Y-m-d",
-          flatpickr_min_date: @min_date
+          flatpickr_min_date: @min_date,
+          flatpickr_max_date: @max_date
           },
           class: "input_text_field"
         %>
       </div>
     </div>
 
-    <div class="mb-4">
+    <div class="my-4">
       <% if UnitPreference.find_by(unit_id: @unit_id, name: "no_car_reservations").on_off %>
         <%= label_tag("no_car", nil, class: "hidden") %>
         <%= check_box_tag "no_car", 1, nil, class: "check_box", "data-longreservation-target": "no_car", "data-action": "longreservation#hideCarSelection" %>
@@ -120,10 +123,24 @@
       <%= form.submit class: "primary_button" %>
     </div>
 
-    <%= link_to reservations_path do %>
-      <span class="tertiary_button">Cancel
-      <i class="fa fa-times" aria-hidden="true"></i>
-      </span>
+    <% if is_admin?(current_user) %>
+      <%= link_to reservations_path do %>
+        <span class="tertiary_button">Cancel
+        <i class="fa fa-times" aria-hidden="true"></i>
+        </span>
+      <% end %>
+    <% elsif is_manager?(current_user) %>
+      <%= link_to welcome_pages_manager_path do %>
+        <span class="tertiary_button">Cancel
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </span>
+      <% end %>
+    <% elsif is_student?(current_user) %>
+      <%= link_to welcome_pages_student_path do %>
+        <span class="tertiary_button">Cancel
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </span>
+      <% end %>
     <% end %>
   <% end %>
 </div>

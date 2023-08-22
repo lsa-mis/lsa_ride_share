@@ -1,12 +1,12 @@
 <%= turbo_frame_tag "#{image_field_name}" do %>
   <p class="body-sm-bold-text">
   <%= show_image_name(image_field_name) %>
-  </>
+  </p>
   <div class="md:grid grid-cols-3">
     <div>
       <% if image_name.id.present? %>
         <%= link_to url_for(image_name), target: "_blank" do %>
-          <%= image_tag image_name.variant(:thumb), alt: '#{image_field_name.titleize}', class: "object-cover group-hover:opacity-75" %>
+          <%= image_tag image_name.variant(:thumb), alt: "#{image_field_name}", class: "object-cover group-hover:opacity-75" %>
         <% end %>
         <% unless @vehicle_report.approved %>
           <%= link_to delete_image_path(@vehicle_report, image_name.id, image_field_name), data: { turbo_method: :get, turbo_confirm: 'Are you sure?' } do %>

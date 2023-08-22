@@ -38,6 +38,10 @@ class ReservationPolicy < ApplicationPolicy
     update?
   end
 
+  def edit_long?
+    update?
+  end
+
   def get_available_cars?
     create?
   end
@@ -51,6 +55,10 @@ class ReservationPolicy < ApplicationPolicy
   end
 
   def edit_change_day?
+    create?
+  end
+
+  def change_start_end_day?
     create?
   end
 
@@ -90,6 +98,10 @@ class ReservationPolicy < ApplicationPolicy
     user_in_access_group? || is_reservation_driver?
   end
 
+  def approve_all_recurring?
+    user_in_access_group?
+  end
+
   def is_reservation_student?
     student = Student.find_by(program_id: @record.program, uniqname: @user.uniqname)
     @record.driver == student || @record.backup_driver == student || @record.passengers.include?(student)
@@ -101,7 +113,7 @@ class ReservationPolicy < ApplicationPolicy
       return @record.driver == student || @record.backup_driver == student
     elsif is_manager?
       manager = Manager.find_by(uniqname: @user.uniqname)
-      return @record.driver_manager == manager
+      return @record.driver_manager == manager || is_reserved_by?
     end
     return false
   end

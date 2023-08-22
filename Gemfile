@@ -17,7 +17,7 @@ gem "pg", "~> 1.1"
 gem 'google-cloud-storage', require: false
 
 # Use the Puma web server [https://github.com/puma/puma]
-gem "puma", "~> 5.0"
+gem "puma", "~> 5.6"
 
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 gem "importmap-rails"
@@ -66,6 +66,7 @@ gem 'pundit', '~> 2.3'
 gem 'simple_calendar', '~> 2.4', '>= 2.4.3'
 gem 'requestjs-rails', '~> 0.0.10'
 gem 'recurring_select', '~> 3.0', '>= 3.0.1'
+gem 'repost'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
