@@ -1,6 +1,5 @@
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   skip_before_action :verify_authenticity_token, only: :saml
-  before_action :store_user_location!
   before_action :set_user
   attr_reader :user, :service
 
@@ -8,13 +7,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     handle_auth "Saml"
   end
 
-  def store_user_location!
-    # :user is the scope we are authenticating
-    store_location_for(:user, $baseURL)
-  end
-
   private
-
 
   def handle_auth(kind)
     if user_signed_in?
@@ -22,6 +15,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       redirect_to edit_user_registration_path
     else
       sign_in_and_redirect user, event: :authentication
+      $baseURL = ''
       set_flash_message :notice, :success, kind: kind
     end
   end
