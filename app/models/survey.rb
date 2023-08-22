@@ -24,7 +24,7 @@ class Survey
               rich_text_value(item.question).include?("subject") ||
               rich_text_value(item.question).include?("catalog") ||
               rich_text_value(item.question).include?("section") ||
-              rich_text_value(item.question).include?("number of students using ride share") 
+              rich_text_value(item.question).include?("number of students using RideShare") 
           survey << item
         end
       end
@@ -126,7 +126,7 @@ class Survey
       if rich_text_value(s.question).include?("section")
         class_section = rich_text_no_tags_value(s.answer)
       end
-      if rich_text_value(s.question).include?("number of students using ride share")
+      if rich_text_value(s.question).include?("number of students using RideShare")
         number_of_students_using_ride_share = rich_text_no_tags_value(s.answer).to_i
       end
     end

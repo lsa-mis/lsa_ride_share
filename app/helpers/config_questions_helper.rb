@@ -6,7 +6,7 @@ module ConfigQuestionsHelper
       "Subject (if exist)",
       "Catalog number (if exist)",
       "Section (if exist)",
-      "Number of students using ride share",
+      "Number of students using RideShare",
       "<div>Type of car reservation&nbsp;</div><ul><li>Recurring</li><li>Sporadic</li><li>Events</li><li>Trips</li><li>Other</li></ul>",
       "Does The Course Have A $50 Lab Fee?",
       "<div>What training option would be best for your course? (~30-minutes needed)&nbsp;</div><ul><li>Whole Class In-Person (Recommended)&nbsp;</li><li>Whole Class Via Zoom (Recommended)&nbsp;</li><li>Small Groups Via Zoom&nbsp;</li><li>Individuals Sign Up Online&nbsp;</li><li>Other</li></ul>",
