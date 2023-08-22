@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "3.1.2"
+ruby "3.0.2"
 
 gem 'devise'
 
@@ -66,6 +66,7 @@ gem 'pundit', '~> 2.3'
 gem 'simple_calendar', '~> 2.4', '>= 2.4.3'
 gem 'requestjs-rails', '~> 0.0.10'
 gem 'recurring_select', '~> 3.0', '>= 3.0.1'
+gem 'repost'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
