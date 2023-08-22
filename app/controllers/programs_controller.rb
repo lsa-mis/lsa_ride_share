@@ -21,6 +21,7 @@ class ProgramsController < ApplicationController
       programs = Manager.find_by(uniqname: current_user.uniqname).all_programs
       @programs = @programs.where(id: programs.map(&:id))
     end
+    @programs = @programs.order(:title)
     authorize @programs
 
   end

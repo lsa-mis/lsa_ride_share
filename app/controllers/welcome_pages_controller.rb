@@ -11,10 +11,10 @@ class WelcomePagesController < ApplicationController
     @unit_names =  Unit.all.pluck(:name).join(", ").reverse.sub(',', ' dna ,').reverse
     if params[:student_id].present?
       @student = Student.find(params[:student_id])
-      @program = @student.program
+      @program = @student.program.sort_by(&:title)
     elsif @students.count == 1
       @student = @students[0]
-      @program = @student.program
+      @program = @student.program.sort_by(&:title)
     end
     if @student.present?
       update_status(@student, @student.program)
@@ -49,7 +49,7 @@ class WelcomePagesController < ApplicationController
     authorize :welcome_page
     @manager = Manager.find_by(uniqname: current_user.uniqname)
     unit_ids = @manager.programs.pluck(:unit_id).uniq
-    @programs = @manager.programs
+    @programs = @manager.programs.sort_by(&:title)
     if @programs.count == 1
       @program = @programs.first
     end

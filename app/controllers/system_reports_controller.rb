@@ -7,7 +7,7 @@ class SystemReportsController < ApplicationController
     @programs = []
     if params[:unit_id].present?
       @programs = Program.where(unit_id: params[:unit_id])
-      @programs = @programs.data(params[:term_id])
+      @programs = @programs.data(params[:term_id]).order(:title)
     end
     authorize :system_report
   end

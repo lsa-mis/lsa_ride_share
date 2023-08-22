@@ -15,7 +15,7 @@ class SitesController < ApplicationController
 
   # GET /sites/1 or /sites/1.json
   def show
-    @programs = @site.programs
+    @programs = @site.programs.order(:title)
     @contacts = @site.contacts
   end
 
