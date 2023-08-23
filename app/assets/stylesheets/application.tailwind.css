@@ -125,7 +125,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .nav-lg-text {
-    @apply text-2xl font-normal font-montserrat;
+    @apply text-lg font-normal font-montserrat;
   }
 
   .nav-lg-medium-text {
@@ -136,16 +136,12 @@ from https://tailwindcss.com/docs/adding-custom-styles
     @apply text-2xl font-bold font-montserrat;
   }
 
-  .navlogo-text {
-    @apply text-5xl font-normal font-anektamil;
-  }
-
   .navlogo-sm-text {
-    @apply text-4xl font-normal font-anektamil;
+    @apply text-4xl font-normal font-montserrat;
   }
 
   .nav-top-link {
-    @apply rounded-md px-3 py-2 nav-text xl:nav-lg-text text-white hover:text-yellow-ummaze;
+    @apply rounded-md px-3 py-2 text-xl font-normal font-montserrat text-white hover:text-yellow-ummaze;
   }
 
   .nav-sub-link {
@@ -153,7 +149,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .nav-top-link-mobile {
-    @apply rounded-md py-2 nav-text xl:nav-lg-text text-yellow-ummaze
+    @apply rounded-md py-2 text-xl font-normal font-montserrat text-yellow-ummaze
   }
   
   .nav-sub-link-mobile {

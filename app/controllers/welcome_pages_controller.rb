@@ -49,7 +49,7 @@ class WelcomePagesController < ApplicationController
     authorize :welcome_page
     @manager = Manager.find_by(uniqname: current_user.uniqname)
     unit_ids = @manager.programs.pluck(:unit_id).uniq
-    @programs = @manager.programs
+    @programs = @manager.programs.sort_by(&:title)
     if @programs.count == 1
       @program = @programs.first
     end

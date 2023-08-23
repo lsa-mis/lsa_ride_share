@@ -36,7 +36,7 @@
       <% end %>
       <div class="mt-2">
         <% if is_admin?(current_user) && @vehicle_report.image_damages.attached? %>
-          <%= link_to "Download Fleet Services Damage Form", download_vehicle_damage_form_url, class: "secondary_blue_button" %>
+          <%= link_to "Download Fleet Services Damage Form (PDF)", download_vehicle_damage_form_url, class: "secondary_blue_button" %>
         <% end %>
       </div>
     </div>

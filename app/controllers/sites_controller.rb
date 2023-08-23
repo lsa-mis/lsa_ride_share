@@ -6,16 +6,16 @@ class SitesController < ApplicationController
   # GET /sites or /sites.json
   def index
     if params[:unit_id].present?
-      @sites = Site.where(unit_id: params[:unit_id])
+      @sites = Site.where(unit_id: params[:unit_id]).order(:title)
     else
-      @sites = Site.where(unit_id: current_user.unit_ids)
+      @sites = Site.where(unit_id: current_user.unit_ids).order(:title)
     end
     authorize @sites
   end
 
   # GET /sites/1 or /sites/1.json
   def show
-    @programs = @site.programs
+    @programs = @site.programs.order(:title, :catalog_number, :class_section)
     @contacts = @site.contacts
   end
 
