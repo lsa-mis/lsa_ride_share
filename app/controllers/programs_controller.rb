@@ -21,7 +21,7 @@ class ProgramsController < ApplicationController
       programs = Manager.find_by(uniqname: current_user.uniqname).all_programs
       @programs = @programs.where(id: programs.map(&:id))
     end
-    @programs = @programs.order(:title)
+    @programs = @programs.order(:title, :catalog_number, :class_section)
     authorize @programs
 
   end
@@ -153,7 +153,7 @@ class ProgramsController < ApplicationController
   end
 
   def get_programs_list
-    render json: Program.where(unit_id: params[:unit_id], term: params[:term_id]).order(:title)
+    render json: Program.where(unit_id: params[:unit_id], term: params[:term_id]).order(:title, :catalog_number, :class_section)
     authorize Program
   end
 

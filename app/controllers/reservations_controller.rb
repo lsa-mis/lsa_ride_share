@@ -307,7 +307,7 @@ class ReservationsController < ApplicationController
         format.html { redirect_to reservation_url(@reservation), notice: "Reservation was successfully updated." }
         format.json { render :show, status: :ok, location: @reservation }
       else
-        @programs = Program.where(unit_id: current_user.unit_ids).order(:title)
+        @programs = Program.where(unit_id: current_user.unit_ids).order(:title, :catalog_number, :class_section)
         @number_of_seats = 1..Car.available.maximum(:number_of_seats)
         @number_of_people_on_trip = Reservation.find(params[:id]).number_of_people_on_trip
         @day_start = params[:day_start].to_date
