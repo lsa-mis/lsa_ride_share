@@ -43,13 +43,6 @@
       To view/modify/cancel reservations, click here
       <%= link_to "LSA RideShare", welcome_pages_student_url %>
     </p>
-
-    <p>
-      <span style="color:red; font-weight:bold">Vehicle problems or breakdowns?</span>
-      <ul>
-        <li>Mon-Fri 7:00am-12:30am call Garage Services at 734-764-2490</li>
-        <li>Weekend or After Hours call Public Safety at 734-763-1131</li>
-      </ul>
-    </p>
+    <%= render 'garage_service' %>
   </body>
 </html>
