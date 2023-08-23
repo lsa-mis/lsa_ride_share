@@ -11,10 +11,10 @@ class WelcomePagesController < ApplicationController
     @unit_names =  Unit.all.pluck(:name).join(", ").reverse.sub(',', ' dna ,').reverse
     if params[:student_id].present?
       @student = Student.find(params[:student_id])
-      @program = @student.program.sort_by(&:title)
+      @program = @student.program
     elsif @students.count == 1
       @student = @students[0]
-      @program = @student.program.sort_by(&:title)
+      @program = @student.program
     end
     if @student.present?
       update_status(@student, @student.program)
