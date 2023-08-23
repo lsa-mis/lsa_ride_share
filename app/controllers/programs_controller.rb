@@ -21,13 +21,13 @@ class ProgramsController < ApplicationController
       programs = Manager.find_by(uniqname: current_user.uniqname).all_programs
       @programs = @programs.where(id: programs.map(&:id))
     end
+    @programs = @programs.order(:title, :catalog_number, :class_section)
     authorize @programs
 
   end
 
   def duplicate
     @duplicate_program_id = @program.id
-    @terms.delete(@program.term)
     @program = @program.dup
     render :new
   end
@@ -153,7 +153,7 @@ class ProgramsController < ApplicationController
   end
 
   def get_programs_list
-    render json: Program.where(unit_id: params[:unit_id], term: params[:term_id])
+    render json: Program.where(unit_id: params[:unit_id], term: params[:term_id]).order(:title, :catalog_number, :class_section)
     authorize Program
   end
 
@@ -163,7 +163,7 @@ class ProgramsController < ApplicationController
   end
 
   def get_sites_list
-    render json: Program.find(params[:program_id]).sites
+    render json: Program.find(params[:program_id]).sites.order(:title)
     authorize Program
   end
 

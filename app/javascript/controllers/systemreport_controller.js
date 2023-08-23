@@ -58,7 +58,7 @@ export default class extends Controller {
     if (program.not_course) {
       var title = program.title + ' - not a course'
     } else {
-      var title = program.title + " - " + program.subject + " " + program.catalog_number
+      var title = program.title + " - " + program.subject + " " + program.catalog_number + " - " + program.class_section
     }
     return title
   }
