@@ -1,5 +1,5 @@
 <%= form_with model: [@manager],
-  data: { controller: "autosubmit", autosubmit_target: "form" } do |form| %>
+  data: { controller: "autosubmit", autosubmit_target: "form", turbo_frame: "_top" } do |form| %>
   <% if @manager.errors.any? %>
     <div id="error_explanation" class="text-red-umred px-3 py-2 font-medium rounded-lg mt-3">
       <h3><%= pluralize(@manager.errors.count, "error") %> prohibited this @manager from being saved:</h3>

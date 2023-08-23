@@ -21,7 +21,7 @@
                   <tr class="mi_tbody_tr">
                     <td class="mi_tbody_td">
                       <% if @link %>
-                        <a class="link_to" href=<%= "/#{@path}/#{row[0]}" %>><%= row[0] %></a>
+                        <a class="link_to" data-turbo-frame="_top" href=<%= "/#{@path}/#{row[0]}" %>><%= row[0] %></a>
                       <% else %>
                         <%= row[0] %>
                       <% end %>
