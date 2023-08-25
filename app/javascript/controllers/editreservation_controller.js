@@ -33,13 +33,6 @@ export default class extends Controller {
     let car_field_error = document.getElementById('car_field')
     let submitForm = true
 
-    if (car == "") {
-      car_field_error.innerHTML = "Please select a car"
-      submitForm = false
-    } else {
-      car_field_error.innerHTML = ''
-    }
-
     if (diff_time < 31) {
       time_field_error.innerHTML = "End time is too close to the start time"
       submitForm = false
