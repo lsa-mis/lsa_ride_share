@@ -53,42 +53,44 @@ class Survey
       if p[0].split("_").first == "item"
         question_number = p[0].split("_").last
         question_id = p[0].split("_").second
-        if question_number == '1' 
-          if strip_tags(p[1]).strip == ''
-            result['success'] = false
-            result['note'] = "The title is required. "
-          else
-            title = strip_tags(p[1]).strip
-            if Program.find_by(title: title, term_id: @faculty_survey.term_id).present?
+        unless @faculty_survey.program_id.present?
+          if question_number == '1' 
+            if strip_tags(p[1]).strip == ''
               result['success'] = false
-              result['note'] = "A program with this title exist for term #{@faculty_survey.term.name}. "
+              result['note'] = "The title is required. "
+            else
+              title = strip_tags(p[1]).strip
+              if Program.find_by(title: title, term_id: @faculty_survey.term_id).present?
+                result['success'] = false
+                result['note'] = "A program with this title exist for term #{@faculty_survey.term.name}. "
+              end
             end
           end
-        end
-        if question_number == '2'
-          if strip_tags(p[1]).strip == ''
-            result['success'] = false
-            result['note'] += "Is the program a course? The answer is required (Yes or No). "
-          elsif p[1].downcase.include?("yes")
-            course = true
-          elsif p[1].downcase.include?("no")
-            course = false
-          else
-            result['success'] = false
-            result['note'] += "Is the program a course? The answer must be Yes or No. "
+          if question_number == '2'
+            if strip_tags(p[1]).strip == ''
+              result['success'] = false
+              result['note'] += "Is the program a course? The answer is required (Yes or No). "
+            elsif p[1].downcase.include?("yes")
+              course = true
+            elsif p[1].downcase.include?("no")
+              course = false
+            else
+              result['success'] = false
+              result['note'] += "Is the program a course? The answer must be Yes or No. "
+            end
           end
-        end
-        if course && strip_tags(p[1]).strip == ''
-          case question_number
-          when '3'
-            result['success'] = false
-            result['note'] += "Subject is required. "
-          when '4'
-            result['success'] = false
-            result['note'] += "Catalog number is required. "
-          when '5'
-            result['success'] = false
-            result['note'] += "Section is required. "
+          if course && strip_tags(p[1]).strip == ''
+            case question_number
+            when '3'
+              result['success'] = false
+              result['note'] += "Subject is required. "
+            when '4'
+              result['success'] = false
+              result['note'] += "Catalog number is required. "
+            when '5'
+              result['success'] = false
+              result['note'] += "Section is required. "
+            end
           end
         end
         unless @survey_to_update.find(question_id).update(answer: p[1])

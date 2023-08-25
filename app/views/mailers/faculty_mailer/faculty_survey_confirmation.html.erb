@@ -12,7 +12,7 @@
       Thank you for submitting the survey.
       The program <%= link_to "#{Program.find(@faculty_survey.program_id).display_name_with_title}", program_url(Program.find(@faculty_survey.program_id)) %>
       was created based on your answers. You can edit the program data and add sites to the program at the above link.
-      You can edit the survey answers here: <%= link_to "#{@faculty_survey.title}", survey_url(@faculty_survey), class: "link_to" %>
+      You can see and edit the survey here: <%= link_to "#{@faculty_survey.title}", faculty_survey_config_questions_url(@faculty_survey), class: "link_to" %>
     </p>
     <p>
       You can email <%= @unit_email %> or call the office at: <%= @contact_phone %> if you have any questions.

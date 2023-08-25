@@ -23,7 +23,7 @@
         <% @vehicle_reports.order(updated_at: :desc).each do |vehicle_report| %>
           <tr class="mi_tbody_tr">
             <td class="mi_tbody_td">
-              <%= link_to vehicle_report.id, vehicle_report_path(vehicle_report), class: "link_to" %>
+              <%= link_to vehicle_report.id, vehicle_report_path(vehicle_report), class: "link_to", data: {turbo_frame: "_top"} %>
             </td>
             <td class="mi_tbody_td">
               <%= link_to show_reservation_date(vehicle_report.reservation), reservation_path(vehicle_report.reservation_id), class: "link_to", data: { "turbo-frame": "_top" } %>

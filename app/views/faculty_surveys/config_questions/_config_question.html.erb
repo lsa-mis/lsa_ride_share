@@ -31,7 +31,7 @@
             </td>
             <td class="mi_tbody_td">
             <% unless email_was_sent?("FacultySurvey", @faculty_survey) %>
-                <%= link_to 'Edit', edit_faculty_survey_config_question_path(@faculty_survey, q), class: "link_to" %>
+                <%= link_to 'Edit', edit_faculty_survey_config_question_path(@faculty_survey, q), class: "link_to", data: {turbo_frame: "_top"} %>
               <% end %>
             </td>
             <td class="mi_tbody_td">

@@ -39,14 +39,14 @@
       </div>
 
       <div class="body-sm-text">
-        <%= link_to "Today List", day_reservations_path(date), class: "link_to" %>
+        <%= link_to "Today List", day_reservations_path(date), class: "link_to", data: {turbo_frame: "_top"} %>
       </div>
       <div class="flex flex-col justify-between">
         <% reservations.each do |reservation| %>
           <div class="body-sm-text">
             <% if reservation.car_id.present? %>
               <% if recurring?(reservation) %>
-                <%= link_to reservation_path(reservation.id), class: "link_to" do %>
+                <%= link_to reservation_path(reservation.id), class: "link_to", data: {turbo_frame: "_top"} do %>
                   <span">
                     <%= reservation.display_name %>
                     <% if reservation.approved %>
@@ -56,7 +56,7 @@
                   </span>
                 <% end %>
               <% else %>
-                <%= link_to reservation_path(reservation.id), class: "link_to" do %>
+                <%= link_to reservation_path(reservation.id), class: "link_to", data: {turbo_frame: "_top"} do %>
                   <span">
                     <%= reservation.display_name %>
                     <% if reservation.approved %>
@@ -67,7 +67,7 @@
               <% end %>
             <% else %>
               <% if recurring?(reservation)  %>
-                <%= link_to reservation_path(reservation.id), class: "link_to" do %>
+                <%= link_to reservation_path(reservation.id), class: "link_to", data: {turbo_frame: "_top"} do %>
                   <span">
                     <%= reservation.display_name %>
                     <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
@@ -75,7 +75,7 @@
                   </span>
                 <% end %>
               <% else %>
-                <%= link_to reservation_path(reservation.id), class: "link_to" do %>
+                <%= link_to reservation_path(reservation.id), class: "link_to", data: {turbo_frame: "_top"} do %>
                   <span">
                     <%= reservation.display_name %>
                     <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
@@ -92,7 +92,7 @@
         <% end %>
         <div class="">
           <% if date >= Date.today %>
-            <%= link_to new_reservation_path(:unit_id => @unit_id, :day_start => date) do %>
+            <%= link_to new_reservation_path(:unit_id => @unit_id, :day_start => date), data: {turbo_frame: "_top"} do %>
               <i class="fa fa-plus" aria-hidden="true"></i>
               <span class="tertiary_button -m-4">
                 One Day Reservation
@@ -100,7 +100,7 @@
             <% end %>
           </div>
           <div>
-            <%= link_to new_long_reservation_path(:unit_id => @unit_id, :day_start => date) do %>
+            <%= link_to new_long_reservation_path(:unit_id => @unit_id, :day_start => date), data: {turbo_frame: "_top"} do %>
               <i class="fa fa-plus" aria-hidden="true"></i>
               <span class="tertiary_button -m-4">
                 Multiple Days Reservation

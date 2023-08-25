@@ -17,11 +17,11 @@
           <tr>
             <% if reservation.driver_manager == @manager %>
               <td class="mi_tbody_td">
-                <%= link_to 'Driver', reservation_path(reservation), class: "link_to" %>
+                <%= link_to 'Driver', reservation_path(reservation), class: "link_to", data: {turbo_frame: "_top"} %>
               </td>
             <% else %>
               <td class="mi_tbody_td">
-                <%= link_to 'Reserved By', reservation_path(reservation), class: "link_to" %>
+                <%= link_to 'Reserved By', reservation_path(reservation), class: "link_to", data: {turbo_frame: "_top"} %>
               </td>
             <% end %>
             <td class="mi_tbody_td">
@@ -51,11 +51,11 @@
         <th class="header_mobile">Reservation</th>
           <% if reservation.driver_manager == @manager %>
             <td class="mi_tbody_td">
-              <%= link_to 'Driver', reservation_path(reservation), class: "link_to" %>
+              <%= link_to 'Driver', reservation_path(reservation), class: "link_to", data: {turbo_frame: "_top"} %>
             </td>
           <% else %>
             <td class="mi_tbody_td">
-              <%= link_to 'Reserved By', reservation_path(reservation), class: "link_to" %>
+              <%= link_to 'Reserved By', reservation_path(reservation), class: "link_to", data: {turbo_frame: "_top"} %>
             </td>
           <% end %>
         </tr>

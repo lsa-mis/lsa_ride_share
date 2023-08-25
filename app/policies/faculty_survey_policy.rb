@@ -6,7 +6,7 @@ class FacultySurveyPolicy < ApplicationPolicy
     user_in_access_group?
   end
 
-  def faculty_index?
+  def surveys_index?
     @user.uniqname == @record[0].uniqname || @user.unit_ids.include?(@record.unit_id)
   end
 

@@ -19,7 +19,7 @@
               <%= unit.ldap_group %>
             </td>
             <td>
-              <%= link_to 'Edit', edit_unit_path(unit), class: "link_to" %>
+              <%= link_to 'Edit', edit_unit_path(unit), class: "link_to", data: {turbo_frame: "_top"} %>
             </td>
             <td>
               <%= link_to 'Delete', unit_path(unit), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete }, class: "link_to" %>

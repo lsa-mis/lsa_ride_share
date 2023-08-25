@@ -68,7 +68,7 @@
               <% end %>
               <% if is_manager?(current_user) %>
                 <div class="header_link">
-                  <%= link_to "Program Surveys", faculty_index_path, class: "#{class_names(active: current_page?(faculty_index_path))}" if faculty_has_survey?(current_user) %>
+                  <%= link_to "Program Surveys", surveys_index_path, class: "#{class_names(active: current_page?(surveys_index_path))}" if faculty_has_survey?(current_user) %>
                 </div>
               <% end %>
             </div>
@@ -202,7 +202,7 @@
             <% end %>
             <% if is_manager?(current_user) %>
               <div class="header_link">
-                <%= link_to "Program Surveys", faculty_index_path, class: "#{class_names(active: current_page?(faculty_index_path))}" if faculty_has_survey?(current_user) %>
+                <%= link_to "Program Surveys", surveys_index_path, class: "#{class_names(active: current_page?(surveys_index_path))}" if faculty_has_survey?(current_user) %>
               </div>
             <% end %>
           </div>

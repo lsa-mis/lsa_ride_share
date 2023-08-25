@@ -32,7 +32,7 @@ class ReservationsController < ApplicationController
       @reservations = Reservation.where(program: Program.where(unit_id: @unit_id))
     else
       authorize Reservation
-      redirect_back_or_default("You must select a unit first.", reservations_url)
+      redirect_back_or_default("You must select a unit first.", reservations_url, true)
       return
     end
     @hour_begin = UnitPreference.find_by(name: "reservation_time_begin", unit_id: @unit_id).value.split(":").first.to_i - 1

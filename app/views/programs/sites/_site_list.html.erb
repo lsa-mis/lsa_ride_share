@@ -19,7 +19,7 @@
               <%= site.address %>
             </td>
             <td>
-              <%= link_to 'Edit', edit_program_site_path(@site_program, site), class: "link_to" %>
+              <%= link_to 'Edit', edit_program_site_path(@site_program, site), class: "link_to", data: {turbo_frame: "_top"} %>
             </td>
             <td>
               <%= link_to 'Remove', remove_site_from_program_path(@site_program, site), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete }, class: "link_to" %>
