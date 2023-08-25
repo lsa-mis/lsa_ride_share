@@ -17,9 +17,9 @@
           <tr class="mi_tbody_tr">
             <td class="mi_tbody_td">
             <% if has_answers?(survey) %>
-              <%= link_to 'Edit the Survey', faculty_survey_config_questions_path(survey), class: "link_to" %>
+              <%= link_to 'Edit the Survey', faculty_survey_config_questions_path(survey), class: "link_to", data: {turbo_frame: "_top"} %>
             <% else %>
-              <%= link_to 'Answer the Survey', survey_path(survey), class: "link_to" %>
+              <%= link_to 'Answer the Survey', survey_path(survey), class: "link_to", data: {turbo_frame: "_top"} %>
             <% end %>
             </td>
             <td class="mi_tbody_td">
@@ -39,7 +39,7 @@
             </td>
             <td class="mi_tbody_td">
               <% if survey.program_id.present? %>
-                <%= link_to Program.find_by(id: survey.program_id).display_name_with_title, program_path(Program.find_by(id: survey.program_id)), class: "link_to" %>
+                <%= link_to Program.find_by(id: survey.program_id).display_name_with_title, program_path(Program.find_by(id: survey.program_id)), class: "link_to", data: {turbo_frame: "_top"} %>
               <% else %>
                 no program for this survey
               <% end %>

@@ -18,15 +18,15 @@
           <tr>
             <% if reservation.driver == @student %>
               <td class="mi_tbody_td">
-                <%= link_to 'Driver', reservation_path(reservation), class: "link_to" %>
+                <%= link_to 'Driver', reservation_path(reservation), class: "link_to", data: {turbo_frame: "_top"} %>
               </td>
             <% elsif reservation.backup_driver == @student %>
               <td class="mi_tbody_td">
-                <%= link_to 'Backup Driver', reservation_path(reservation), class: "link_to" %>
+                <%= link_to 'Backup Driver', reservation_path(reservation), class: "link_to", data: {turbo_frame: "_top"} %>
               </td>
             <% else %>
               <td class="mi_tbody_td">
-                <%= link_to 'Passenger', reservation_path(reservation), class: "link_to" %>
+                <%= link_to 'Passenger', reservation_path(reservation), class: "link_to", data: {turbo_frame: "_top"} %>
               </td>
             <% end %>
             <td class="mi_tbody_td">
@@ -53,10 +53,10 @@
                 <% elsif reservation.vehicle_report.student_status %>
                   Completed
                 <% else %>
-                  <%= link_to 'Vehicle report', vehicle_report_path(reservation.vehicle_report), class: "link_to" %>
+                  <%= link_to 'Vehicle report', vehicle_report_path(reservation.vehicle_report), class: "link_to", data: {turbo_frame: "_top"} %>
                 <% end %>
               <% else %>
-                <%= link_to 'New vehicle report', new_reservation_vehicle_report_path(reservation), class: "link_to" if reservation.car.present? %>
+                <%= link_to 'New vehicle report', new_reservation_vehicle_report_path(reservation), class: "link_to", data: {turbo_frame: "_top"} if reservation.car.present? %>
               <% end %>
             </td>
           </tr>
@@ -69,15 +69,15 @@
         <th class="header_mobile">Reservation</th>
           <% if reservation.driver == @student %>
             <td class="mi_tbody_td">
-              <%= link_to 'Driver', reservation_path(reservation), class: "link_to" %>
+              <%= link_to 'Driver', reservation_path(reservation), class: "link_to", data: {turbo_frame: "_top"} %>
             </td>
           <% elsif reservation.backup_driver == @student %>
             <td class="mi_tbody_td">
-              <%= link_to 'Backup Driver', reservation_path(reservation), class: "link_to" %>
+              <%= link_to 'Backup Driver', reservation_path(reservation), class: "link_to", data: {turbo_frame: "_top"} %>
             </td>
           <% else %>
             <td class="mi_tbody_td">
-              <%= link_to 'Passenger', reservation_path(reservation), class: "link_to" %>
+              <%= link_to 'Passenger', reservation_path(reservation), class: "link_to", data: {turbo_frame: "_top"} %>
             </td>
           <% end %>
         </tr>
@@ -122,10 +122,10 @@
               <% elsif reservation.vehicle_report.student_status %>
                 Completed
               <% else %>
-                <%= link_to 'Vehicle report', vehicle_report_path(reservation.vehicle_report), class: "link_to" %>
+                <%= link_to 'Vehicle report', vehicle_report_path(reservation.vehicle_report), class: "link_to", data: {turbo_frame: "_top"} %>
               <% end %>
             <% else %>
-              <%= link_to 'New vehicle report', new_reservation_vehicle_report_path(reservation), class: "link_to" if reservation.car.present? %>
+              <%= link_to 'New vehicle report', new_reservation_vehicle_report_path(reservation), class: "link_to", data: {turbo_frame: "_top"} if reservation.car.present? %>
             <% end %>
           </td>
         </tr>
