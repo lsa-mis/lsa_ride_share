@@ -6,7 +6,7 @@ Rails.application.routes.draw do
 
   mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development? || Rails.env.staging?
   
-  get 'faculty_surveys/faculty_index', to: 'faculty_surveys#faculty_index', as: :faculty_index
+  get 'program_surveys/surveys_index', to: 'faculty_surveys#surveys_index', as: :surveys_index
   resources :faculty_surveys do
     resources :config_questions, module: :faculty_surveys
   end
