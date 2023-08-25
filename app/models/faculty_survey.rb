@@ -20,6 +20,7 @@ class FacultySurvey < ApplicationRecord
   belongs_to :unit
 
   validates_presence_of :title, :uniqname, :term_id, :unit_id
+  validates :term_id, uniqueness: { scope: [:title], message: "already has survey with this title" }
 
   scope :current_term, -> { where(term_id: Term.current) }
   scope :data, ->(term_id) { term_id.present? ? where(term_id: term_id) : current_term }
