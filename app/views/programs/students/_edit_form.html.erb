@@ -1,5 +1,5 @@
 <%= turbo_frame_tag 'edit_student' do %>
-  <%= form_for [@student_program, student] do |form| %>
+  <%= form_for [@student_program, student], data: {turbo_frame: "_top"} do |form| %>
     <% if student.errors.any? %>
       <div id="error_explanation" class="text-red-umred px-3 py-2 font-medium rounded-lg mt-3">
         <h3><%= pluralize(student.errors.count, "error") %> prohibited this student from being saved:</h3>
@@ -26,7 +26,7 @@
     <div class="inline">
       <%= form.submit class: "secondary_blue_button" %>
     </div>
-    <%= link_to program_student_path(@student_program, student) do %>
+    <%= link_to program_student_path(@student_program, student), data: {turbo_frame: "_top"} do %>
       <span class="tertiary_button">Cancel
         <i class="fa fa-times" aria-hidden="true"></i>
       </span>

@@ -20,7 +20,10 @@ class Reservations::PassengersController < ApplicationController
   def remove_passenger
     authorize([@reservation, Student])
     @reservation.passengers.delete(Student.find(params[:student_id]))
-    ReservationMailer.with(reservation: @reservation).car_reservation_remove_passenger(Student.find(params[:student_id]), current_user).deliver_now
+    # send email only if reservation confirmation email has been sent already; if a passenger is removed for a new reservation - do not sent an email
+    if EmailLog.find_by(email_type: "confirmation", sent_from_model: "Reservation", record_id: @reservation)
+      ReservationMailer.with(reservation: @reservation).car_reservation_remove_passenger(Student.find(params[:student_id]), current_user).deliver_now
+    end
     add_passengers
   end
 

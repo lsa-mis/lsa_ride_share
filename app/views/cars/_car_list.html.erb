@@ -21,7 +21,7 @@
             <tr class="mi_tbody_tr">
           <% end %>
             <td class="mi_tbody_td">
-              <%= link_to car.car_number, car_path(car), class: "link_to" %>
+              <%= link_to car.car_number, car_path(car), class: "link_to", data: {turbo_frame: "_top"} %>
             </td>
             <td class="mi_tbody_td">
               <%= car.make %>
@@ -42,7 +42,7 @@
             </td>
             <td class="mi_tbody_td">
               <% if car.vehicle_reports_ids.present? %>
-                <%= link_to 'Vehicle Reports', vehicle_reports_path(car_id: car.id), class: 'link_to' %>
+                <%= link_to 'Vehicle Reports', vehicle_reports_path(car_id: car.id), class: 'link_to', data: {turbo_frame: "_top"} %>
               <% end %>
             </td>
             <td class="mi_tbody_td <%= "#{car.status}" %>">

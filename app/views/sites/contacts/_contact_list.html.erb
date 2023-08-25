@@ -31,7 +31,7 @@
               <%= contact.email %>
             </td>
             <td class="mi_tbody_td">
-              <%= link_to 'Edit', edit_site_contact_path(@site, contact), class: "link_to" %>
+              <%= link_to 'Edit', edit_site_contact_path(@site, contact), class: "link_to", data: {turbo_frame: "_top"} %>
             </td>
             <td class="mi_tbody_td">
               <%= link_to "Remove", site_contact_path(@site, contact), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete }, class: "link_to" %>

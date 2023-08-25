@@ -30,11 +30,11 @@
           <% @day_reservations.each do |reservation| %>
             <tr>
               <td class="mi_tbody_td">
-                <%= link_to reservation.id, reservation_path(reservation), class: "link_to" %>
+                <%= link_to reservation.id, reservation_path(reservation), class: "link_to", data: {turbo_frame: "_top"} %>
               </td>
               <td class="mi_tbody_td">
                 <% if reservation.car.present? %>
-                  <%= link_to reservation.car.car_number, car_path(reservation.car), class: "link_to"  %>
+                  <%= link_to reservation.car.car_number, car_path(reservation.car), class: "link_to", data: {turbo_frame: "_top"}  %>
                 <% else %>
                   <span class="status-false">
                     <%= reservation.display_name %>

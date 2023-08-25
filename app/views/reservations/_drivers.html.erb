@@ -1,7 +1,8 @@
 <%= form_with model: [@reservation], class: "contents",
   data: { controller: "driver",
           target: "form",
-          action: "submit->driver#submitForm"
+          action: "submit->driver#submitForm",
+          turbo_frame: "_top"
         } do |form| %>
 
   <% if @reservation.errors.any? %>
@@ -112,7 +113,7 @@
         <% end %>
       <% end %>
       <% if is_admin?(current_user) && params["edit"] != "true" %>
-        <%= link_to add_drivers_later_path(@reservation) do %>
+        <%= link_to add_drivers_later_path(@reservation), data: { "turbo-frame": "_top" } do %>
           <span class="tertiary_button">Add Drivers Later
             <i class="fa fa-times" aria-hidden="true"></i>
           </span>

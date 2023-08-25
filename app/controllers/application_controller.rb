@@ -56,8 +56,12 @@ class ApplicationController < ActionController::Base
     redirect_back(fallback_location: request.referer)
   end
   
-  def redirect_back_or_default(notice = '', default = root_url)
-    flash[:alert] = notice
+  def redirect_back_or_default(notice = '', default = root_url, alert = false)
+    if alert
+      flash[:alert] = notice
+    else
+      flash[:notice] = notice
+    end
     url = session[:return_to]
     session[:return_to] = nil
     redirect_to(url, anchor: "top" || default)
