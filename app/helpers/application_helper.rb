@@ -171,6 +171,14 @@ module ApplicationHelper
     end
   end
 
+  def show_last_driver(car)
+    if car.last_driver_id.present?
+      Student.find(car.last_driver_id).display_name
+    else
+      "No last driver"
+    end
+  end
+
   def show_manager(program, user)
     if program.instructor.uniqname == user.uniqname
       return "(instructor)"
