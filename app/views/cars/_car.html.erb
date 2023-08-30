@@ -81,9 +81,7 @@
         Last Driver:
       </p>
       <p class="body-lg-text pl-2 inline">
-        <% if car.last_driver_id.present? %>
-          <%= car.last_driver_id %>
-        <% end %>
+        <%= show_last_driver(car) %>
       </p>
     </div>
 
