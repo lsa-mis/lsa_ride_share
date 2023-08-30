@@ -1,5 +1,9 @@
 <div class="mx-auto w-full">
-  <h1>Add Driver and Backup Driver</h1>
+  <% if params["edit"] %>
+    <h1>Edit Driver and Backup Driver</h1>
+  <% else %>
+    <h1>Add Driver and Backup Driver</h1>
+  <% end %>
   <h2>
     <%= @reservation.program.unit.name %>
     <%= @reservation.program.display_name_with_title %>
