@@ -90,7 +90,9 @@ class VehicleReport < ApplicationRecord
   def acceptable_images
     acceptable_types = [
       "image/jpg", 
-      "image/jpeg", "image/png"
+      "image/jpeg",
+      "image/png",
+      "image/heic"
     ]
 
     if image_front_start.attached?
