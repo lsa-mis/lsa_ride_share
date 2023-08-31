@@ -80,7 +80,7 @@
         <tr class="mi_tbody_tr">
           <th class="header_mobile">Item</th>
           <td class="mi_tbody_td">
-            <%= link_to vehicle_report.id, vehicle_report_path(vehicle_report), class: "link_to" %>
+            <%= link_to vehicle_report.id, vehicle_report_path(vehicle_report), class: "link_to", data: {turbo_frame: "_top"} %>
           </td>
         </tr>
         <tr class="mi_tbody_tr">
