@@ -100,7 +100,7 @@ class VehicleReport < ApplicationRecord
         errors.add(:base, "The image is too big")
       end
       unless acceptable_types.include?(image_front_start.content_type)
-        errors.add(:base, "The image must be an acceptable file type (jpg, png)")
+        errors.add(:base, "The image must be an acceptable file type (jpg, png, heic)")
       end
     end
   
@@ -109,7 +109,7 @@ class VehicleReport < ApplicationRecord
         errors.add(:base, "The image is too big")
       end
       unless acceptable_types.include?(image_driver_start.content_type)
-        errors.add(:base, "The image must be an acceptable file type (jpg, png)")
+        errors.add(:base, "The image must be an acceptable file type (jpg, png, heic)")
       end
     end
 
@@ -118,7 +118,7 @@ class VehicleReport < ApplicationRecord
         errors.add(:base, "The image is too big")
       end
       unless acceptable_types.include?(image_passenger_start.content_type)
-        errors.add(:base, "The image must be an acceptable file type (jpg, png)")
+        errors.add(:base, "The image must be an acceptable file type (jpg, png, heic)")
       end
     end
 
@@ -127,7 +127,7 @@ class VehicleReport < ApplicationRecord
         errors.add(:base, "The image is too big")
       end
       unless acceptable_types.include?(image_back_start.content_type)
-        errors.add(:base, "The image must be an acceptable file type (jpg, png)")
+        errors.add(:base, "The image must be an acceptable file type (jpg, png, heic)")
       end
     end
 
@@ -136,7 +136,7 @@ class VehicleReport < ApplicationRecord
         errors.add(:base, "The image is too big")
       end
       unless acceptable_types.include?(image_front_end.content_type)
-        errors.add(:base, "The image must be an acceptable file type (jpg, png)")
+        errors.add(:base, "The image must be an acceptable file type (jpg, png, heic)")
       end
     end
 
@@ -145,7 +145,7 @@ class VehicleReport < ApplicationRecord
         errors.add(:base, "The image is too big")
         end
       unless acceptable_types.include?(image_driver_end.content_type)
-        errors.add(:base, "The image must be an acceptable file type (jpg, png)")
+        errors.add(:base, "The image must be an acceptable file type (jpg, png, heic)")
       end
     end
 
@@ -154,7 +154,7 @@ class VehicleReport < ApplicationRecord
         errors.add(:base, "The image is too big")
       end
       unless acceptable_types.include?(image_passenger_end.content_type)
-        errors.add(:base, "The image must be an acceptable file type (jpg, png)")
+        errors.add(:base, "The image must be an acceptable file type (jpg, png, heic)")
       end
     end
 
@@ -163,7 +163,7 @@ class VehicleReport < ApplicationRecord
         errors.add(:base, "The image is too big")
       end
       unless acceptable_types.include?(image_back_end.content_type)
-        errors.add(:base, "The image must be an acceptable file type (jpg, png)")
+        errors.add(:base, "The image must be an acceptable file type (jpg, png, heic)")
       end
     end
 
@@ -173,7 +173,7 @@ class VehicleReport < ApplicationRecord
       end
 
       unless acceptable_types.include?(image.content_type)
-        errors.add(:base, "An image must be an acceptable file type (jpg, png)")
+        errors.add(:base, "An image must be an acceptable file type (jpg, png, heic)")
       end
     end
   end
