@@ -12,6 +12,7 @@
           <th class="header_th">MVR Status</th>
           <th class="header_th">Canvas Course Complete Date</th>
           <th class="header_th">In Person Orientation Date</th>
+          <th class="header_th">Notes</th>
         </tr>
       </thead>
       <tbody>
@@ -45,6 +46,9 @@
             </td>
             <td class="mi_tbody_td">
               <%= student.meeting_with_admin_date %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= number_of_notes(student) %>
             </td>
           </tr>
         <% end %>

@@ -512,6 +512,14 @@ module ApplicationHelper
     return ""
   end
 
+  def number_of_notes(student)
+    if student.notes.count > 0
+      student.notes.count
+    else
+      ""
+    end
+  end
+
   def us_states
     [
       ['Alabama', 'AL'],
