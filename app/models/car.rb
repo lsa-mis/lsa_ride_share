@@ -30,7 +30,6 @@ class Car < ApplicationRecord
 
   validates_presence_of :car_number, :make, :model, :color, :number_of_seats, :mileage, :gas, :parking_spot, :status, :updated_by
   validate :acceptable_image
-  validates_numericality_of :gas, greater_than: 0, less_than_or_equal_to: 100, message: 'must be between 0 & 100'
   validates_numericality_of :mileage, greater_than: 0, message: 'must be positive'
   
   enum :status, [:available, :unavailable], prefix: true, scopes: true
@@ -65,15 +64,18 @@ class Car < ApplicationRecord
   def acceptable_image
     return unless initial_damages.attached?
 
-    acceptable_types = ["image/png", "image/jpeg"]
+    acceptable_types = ["image/jpg", 
+    "image/jpeg",
+    "image/png",
+    "image/heic"]
     
     initial_damages.each do |image|
       unless image.blob.byte_size <= 10.megabyte
-        errors.add(image.name, "is too big")
+        errors.add(:base, "the image is too big")
       end
 
       unless acceptable_types.include?(image.content_type)
-        errors.add(image.name, "incorrect file type")
+        errors.add(:base, "the image has incorrect file type")
       end
     end
   end
