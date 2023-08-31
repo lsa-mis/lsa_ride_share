@@ -136,7 +136,7 @@ class VehicleReportsController < ApplicationController
     @image_field_name = params[:image_field_name]
     @image_name = @vehicle_report.send(params[:image_field_name].to_sym)
     if @image_field_name = "damage_image"
-      redirect vehicle_report_path(@vehicle_report)
+      redirect_to vehicle_report_path(@vehicle_report)
     end
     authorize @vehicle_report
   end
