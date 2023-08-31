@@ -1,7 +1,11 @@
 <div class="mx-auto w-full">
   <div class="lg:flex justify-between items-center mb-4">
     <div>
-      <h1>Add Passengers</h1>
+      <% if params["edit"] %>
+        <h1>Edit Passengers</h1>
+      <% else %>
+        <h1>Add Passengers</h1>
+      <% end %>
       <h2>
         <%= @reservation.program.display_name_with_title %>
       </h2>

@@ -106,7 +106,7 @@
     <% end %>
     <div>
       <% if params["edit"] == "true" %>
-        <%= link_to reservation_path(@reservation) do %>
+        <%= link_to reservation_path(@reservation), data: { "turbo-frame": "_top" } do %>
           <span class="tertiary_button">Cancel
             <i class="fa fa-times" aria-hidden="true"></i>
           </span>

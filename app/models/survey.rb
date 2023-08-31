@@ -114,18 +114,18 @@ class Survey
       if rich_text_value(s.question).include?("title")
         title = rich_text_no_tags_value(s.answer)
       end
-      if rich_text_value(s.question).include?("a course")
+      if rich_text_value(s.question).include?("is this program a course?")
         if rich_text_value(s.answer).downcase.include?("no")
           not_course = true 
         end
       end
-      if rich_text_value(s.question).include?("subject")
+      if rich_text_value(s.question).include?("subject (if exist)")
         subject = rich_text_no_tags_value(s.answer)
       end
-      if rich_text_value(s.question).include?("catalog")
+      if rich_text_value(s.question).include?("catalog number (if exist)")
         catalog_number = rich_text_no_tags_value(s.answer)
       end
-      if rich_text_value(s.question).include?("section")
+      if rich_text_value(s.question).include?("section (if exist)")
         class_section = rich_text_no_tags_value(s.answer)
       end
       if rich_text_value(s.question).include?("number of students using RideShare")
@@ -137,10 +137,10 @@ class Survey
     else
       instructor = Manager.create(uniqname: @faculty_survey.uniqname, first_name: @faculty_survey.first_name, last_name: @faculty_survey.last_name)
     end
-    program = Program.new(title: title, not_course: not_course, 
-                subject: subject, catalog_number: catalog_number, class_section: class_section, 
-                instructor_id: instructor.id, 
-                term_id: @faculty_survey.term_id, unit_id: @faculty_survey.unit_id, updated_by: current_user.id, 
+    program = Program.new(title: title, not_course: not_course,
+                subject: subject, catalog_number: catalog_number, class_section: class_section,
+                instructor_id: instructor.id,
+                term_id: @faculty_survey.term_id, unit_id: @faculty_survey.unit_id, updated_by: current_user.id,
                 number_of_students_using_ride_share: number_of_students_using_ride_share,
                 mvr_link: "https://ltp.umich.edu/fleet/vehicle-use/")
     if program.save(validate: false)
