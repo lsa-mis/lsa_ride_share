@@ -33,7 +33,6 @@ class VehicleReportsController < ApplicationController
   def show
     @reservation = @vehicle_report.reservation
   end
-  
 
   # GET /vehicle_reports/new
   def new
@@ -126,12 +125,9 @@ class VehicleReportsController < ApplicationController
   def delete_image
     delete_file = ActiveStorage::Attachment.find(params[:image_id])
     delete_file.purge
-
-
     @vehicle_report = VehicleReport.find(params[:id])
     @vehicle_report.update(student_status: false)
     @image_field_name = params[:image_field_name]
-    
     @image_name = @vehicle_report.send(params[:image_field_name].to_sym)
     authorize @vehicle_report
   end
