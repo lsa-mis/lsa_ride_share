@@ -25,8 +25,6 @@ class SystemReportsController < ApplicationController
 
     @title = "LSA Rideshare System Report"
     report_type = params[:report_type]
-    
-    # sql = create_query(report_type)
     @result = get_result(report_type)
 
     if report_type == "vehicle_reports_all"
@@ -61,21 +59,28 @@ class SystemReportsController < ApplicationController
         rows2 = records_array2.rows
         
         records_array1.rows.each do |row1|
-          # , "rows" => records_array.rows}
           program_id1 = row1[0]
+          # remove program_id from result
           row1.shift
           row2 = rows2[0]
           program_id2 = row2[0]
           while program_id1 < program_id2 do
+            # go to the next row in rows2
             rows2.shift
           end
+          # remove program_id form the result (it exists in row1)
           row2.shift
-          rows << row1 + row2
+          # remove duplicated uniqnames from string
+          row2_edited = row2[0].split.reverse.uniq.reverse.join(' ')
+          # count number of uniqnames in string
+          n = row2_edited.split.size
+          rows << row1 + [row2_edited] + [n]
           rows2.shift
         end
         records_array1.columns.shift
         records_array2.columns.shift
-        result.push({"report_name" => "#{report_type}.titleize for #{@unit} #{@term}", "total" => records_array1.count, "header" => records_array1.columns + records_array2.columns, "rows" => rows})
+        columns = records_array1.columns + records_array2.columns + ["number_of_students_using_RideShare"]
+        result.push({"report_name" => "#{report_type}.titleize for #{@unit} #{@term}", "total" => records_array1.count, "header" => columns, "rows" => rows})
         return result
       end
       if report_type == 'vehicle_reports_all'
@@ -87,7 +92,7 @@ class SystemReportsController < ApplicationController
     def create_query(report_type)
       if report_type == 'totals_programs'
         sql = "SELECT program_id, (SELECT programs.title FROM programs WHERE res.program_id = programs.id) AS program,
-            count(res.id) AS number_of_trips, sum(number_of_people_on_trip) AS number_of_students_on_trips, sum(vr.mileage_end - vr.mileage_start) AS mileage
+            count(res.id) AS number_of_trips, sum(number_of_people_on_trip) AS total_number_of_students_on_trips, sum(vr.mileage_end - vr.mileage_start) AS mileage
           FROM reservations AS res
           join vehicle_reports AS vr on vr.reservation_id = res.id
           JOIN programs ON programs.id = res.program_id
@@ -97,12 +102,12 @@ class SystemReportsController < ApplicationController
       if report_type == 'programs_unique_students'
         sql = "SELECT  program_id,
           (SELECT STRING_AGG(
-            CONCAT((SELECT students.uniqname FROM students WHERE res.driver_id = students.id ), ', ', 
-              (SELECT students.uniqname FROM students WHERE res.backup_driver_id = students.id ), ', ', 
-              (SELECT STRING_AGG(uniqname, ', ' )
+            CONCAT((SELECT students.uniqname FROM students WHERE res.driver_id = students.id ), ' ', 
+              (SELECT students.uniqname FROM students WHERE res.backup_driver_id = students.id ), ' ', 
+              (SELECT STRING_AGG(uniqname, ' ' )
                 FROM students
-                JOIN reservation_passengers ON reservation_passengers.student_id = students.id AND reservation_passengers.reservation_id = vehicle_reports.reservation_id)),  ', ' )
-                AS people)
+                JOIN reservation_passengers ON reservation_passengers.student_id = students.id AND reservation_passengers.reservation_id = vehicle_reports.reservation_id)),  ' ' )
+                AS students_on_trips)
           FROM vehicle_reports
           JOIN reservations AS res ON res.id = vehicle_reports.reservation_id
           JOIN cars ON cars.id = res.car_id
