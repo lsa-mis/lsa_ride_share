@@ -54,7 +54,7 @@
             </td>
             <td class="mi_tbody_td">
               <% if vehicle_report.image_damages.attached? %>
-                <%= link_to vehicle_report_path(vehicle_report), class: "link_to" do %>
+                <%= link_to vehicle_report_path(vehicle_report), class: "link_to", data: { "turbo-frame": "_top" } do %>
                   <p class="hidden">report</p>
                   <i class="fa-solid fa-check"></i>
                 <% end %>
@@ -141,7 +141,7 @@
           <th class="header_mobile">Damage</th>
           <td class="mi_tbody_td">
             <% if vehicle_report.image_damages.attached? %>
-              <%= link_to vehicle_report_path(vehicle_report), class: "link_to" do %>
+              <%= link_to vehicle_report_path(vehicle_report), class: "link_to", data: { "turbo-frame": "_top" } do %>
                 <p class="hidden">report</p>
                 <i class="fa-solid fa-check"></i>
               <% end %>
