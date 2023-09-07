@@ -48,7 +48,7 @@
               <%= student.meeting_with_admin_date %>
             </td>
             <td class="mi_tbody_td">
-              <%= number_of_notes(student) %>
+              <%= link_to number_of_notes(student), program_student_path(@student_program, student), class: "link_to", data: {turbo_frame: "_top"} %>
             </td>
           </tr>
         <% end %>
