@@ -79,8 +79,8 @@ class SystemReportsController < ApplicationController
         end
         records_array1.columns.shift
         records_array2.columns.shift
-        columns = records_array1.columns + records_array2.columns + ["number_of_students_using_RideShare"]
-        result.push({"report_name" => "#{report_type}.titleize for #{@unit} #{@term}", "total" => records_array1.count, "header" => columns, "rows" => rows})
+        columns = records_array1.columns + records_array2.columns + ["unique_users"]
+        result.push({"report_name" => "#{report_type} for #{@unit} #{@term}", "total" => records_array1.count, "header" => columns, "rows" => rows})
         return result
       end
       if report_type == 'vehicle_reports_all'
@@ -92,7 +92,7 @@ class SystemReportsController < ApplicationController
     def create_query(report_type)
       if report_type == 'totals_programs'
         sql = "SELECT program_id, (SELECT programs.title FROM programs WHERE res.program_id = programs.id) AS program,
-            count(res.id) AS number_of_trips, sum(number_of_people_on_trip) AS total_number_of_students_on_trips, sum(vr.mileage_end - vr.mileage_start) AS mileage
+            count(res.id) AS number_of_trips, sum(vr.mileage_end - vr.mileage_start) AS mileage, sum(number_of_people_on_trip) AS total_people_on_trips
           FROM reservations AS res
           join vehicle_reports AS vr on vr.reservation_id = res.id
           JOIN programs ON programs.id = res.program_id
@@ -102,12 +102,18 @@ class SystemReportsController < ApplicationController
       if report_type == 'programs_unique_students'
         sql = "SELECT  program_id,
           (SELECT STRING_AGG(
-            CONCAT((SELECT students.uniqname FROM students WHERE res.driver_id = students.id ), ' ', 
-              (SELECT students.uniqname FROM students WHERE res.backup_driver_id = students.id ), ' ', 
-              (SELECT STRING_AGG(uniqname, ' ' )
+            CONCAT((SELECT students.uniqname FROM students WHERE res.driver_id = students.id), ' ',
+              ((CASE 
+                WHEN res.driver_id IS NULL
+                THEN
+                (SELECT managers.uniqname FROM managers WHERE res.driver_manager_id = managers.id)
+                ELSE
+                (SELECT students.uniqname FROM students WHERE res.driver_id = students.id)
+                END)), ' ',
+              (SELECT STRING_AGG(uniqname, ' ')
                 FROM students
-                JOIN reservation_passengers ON reservation_passengers.student_id = students.id AND reservation_passengers.reservation_id = vehicle_reports.reservation_id)),  ' ' )
-                AS students_on_trips)
+                JOIN reservation_passengers ON reservation_passengers.student_id = students.id AND reservation_passengers.reservation_id = vehicle_reports.reservation_id)),  ' ')
+                AS uniqnames)
           FROM vehicle_reports
           JOIN reservations AS res ON res.id = vehicle_reports.reservation_id
           JOIN cars ON cars.id = res.car_id
@@ -121,13 +127,25 @@ class SystemReportsController < ApplicationController
           (SELECT TO_CHAR(AGE(end_time, start_time), 'DD \"Days\" HH24 \"Hours\" MI \"Minutes\"')) AS total_trip_time,
           (SELECT EXTRACT(EPOCH FROM (end_time - start_time)::INTERVAL)/60) AS total_trip_minutes, cars.car_number,
           (SELECT sites.title FROM sites WHERE res.site_id = sites.id) AS site,
-          (SELECT students.first_name || ' ' || students.last_name FROM students WHERE res.driver_id = students.id ) AS driver_name,
-          (SELECT students.uniqname FROM students WHERE res.driver_id = students.id ) AS driver_uniqname,
+          (CASE 
+          WHEN res.driver_id IS NULL
+          THEN
+          (SELECT managers.first_name || ' ' || managers.last_name FROM managers WHERE res.driver_manager_id = managers.id)
+          ELSE
+          (SELECT students.first_name || ' ' || students.last_name FROM students WHERE res.driver_id = students.id)
+          END) AS driver_name,
+          (CASE 
+            WHEN res.driver_id IS NULL
+            THEN
+            (SELECT managers.uniqname FROM managers WHERE res.driver_manager_id = managers.id)
+            ELSE
+            (SELECT students.uniqname FROM students WHERE res.driver_id = students.id)
+            END) AS driver_uniqname,
           driver_phone,
           (SELECT students.first_name || ' ' || students.last_name FROM students WHERE res.backup_driver_id = students.id ) AS backup_driver_name,
           (SELECT students.uniqname FROM students WHERE res.backup_driver_id = students.id ) AS backup_driver_uniqname,
           backup_driver_phone,
-          (SELECT STRING_AGG(first_name || ' ' || last_name || ' (' || uniqname || ')', ', ' )
+          (SELECT STRING_AGG(first_name || ' ' || last_name || ' (' || uniqname || ')', ', ')
           FROM students
           JOIN reservation_passengers ON reservation_passengers.student_id = students.id AND reservation_passengers.reservation_id = vehicle_reports.reservation_id)
           AS passengers,
