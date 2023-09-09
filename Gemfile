@@ -61,7 +61,7 @@ gem 'letter_opener_web'
 # Use OmniAuth gems to implement Shibboleth SAML authentication
 gem 'omniauth-saml', '~> 2.1'
 gem "omniauth-rails_csrf_protection"
-gem 'ldap_lookup', '~> 0.1.6'
+gem 'ldap_lookup', path: "/Users/brita/lsa_ride_share/ldap_lookup-0.1.7"
 gem 'pundit', '~> 2.3'
 gem 'simple_calendar', '~> 2.4', '>= 2.4.3'
 gem 'requestjs-rails', '~> 0.0.10'
