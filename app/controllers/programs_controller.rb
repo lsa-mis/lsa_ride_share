@@ -118,8 +118,8 @@ class ProgramsController < ApplicationController
           result['note'] = "#{uniqname} is an admin - a member of #{ldap_group} group. Admins can't be instructors."
           return result
         end
-        if name == "no displayname"
-          result['note'] = " Mcommunity returns no name for '#{uniqname}' uniqname."
+        if name.nil?
+          result['note'] = "Mcommunity returns no name for '#{uniqname}' uniqname."
           @instructor.first_name = ''
           @instructor.last_name = ''
         else
