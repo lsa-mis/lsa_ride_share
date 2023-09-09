@@ -177,7 +177,7 @@ module StudentApi
       result['note'] = "The '#{uniqname}' uniqname is not valid."
     else
       result['valid'] =  true
-      if name.nil?
+      if name == "no displayname"
         result['note'] = "Mcommunity returns no name for '#{uniqname}' uniqname."
       else
         result['first_name'] = name.split(" ").first
