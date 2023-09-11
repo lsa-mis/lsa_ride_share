@@ -12,6 +12,7 @@
           <th class="header_th">MVR Status</th>
           <th class="header_th">Canvas Course Complete Date</th>
           <th class="header_th">In Person Orientation Date</th>
+          <th class="header_th">Notes</th>
         </tr>
       </thead>
       <tbody>
@@ -45,6 +46,13 @@
             </td>
             <td class="mi_tbody_td">
               <%= student.meeting_with_admin_date %>
+            </td>
+            <td class="mi_tbody_td">
+              <% if student.notes.present? %>
+                <%= link_to program_student_path(@student_program, student), class: "link_to", data: {turbo_frame: "_top"} do %>
+                  <%= student.notes.count %>
+                <% end %>
+              <% end %>
             </td>
           </tr>
         <% end %>
