@@ -3,9 +3,24 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static targets = ['form', 'number_of_people_on_trip', 'number_of_passengers',
     'driver', 'driver_phone',
-    'backup_driver', 'backup_driver_phone']
+    'backup_driver', 'backup_driver_phone', 'backup_driver_phone_data']
   connect() {
     console.log("connect - driver")
+
+  }
+
+  hideBackupDriverPhoneField() {
+    var backup_driver_selected = this.backup_driverTarget.value
+
+    if (backup_driver_selected) {
+      this.backup_driver_phone_dataTarget.classList.add("fields--display")
+      this.backup_driver_phone_dataTarget.classList.remove("fields--hide")
+    }
+    else {
+      this.backup_driver_phoneTarget.value = ""
+      this.backup_driver_phone_dataTarget.classList.add("fields--hide")
+      this.backup_driver_phone_dataTarget.classList.remove("fields--display")
+    }
   }
 
   submitForm(event) {
