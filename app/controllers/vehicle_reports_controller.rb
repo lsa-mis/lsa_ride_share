@@ -5,23 +5,24 @@ class VehicleReportsController < ApplicationController
 
   # GET /vehicle_reports or /vehicle_reports.json
   def index
+    @terms = Term.sorted
     if params[:unit_id].present?
       @cars = Car.where(unit_id: params[:unit_id]).order(:car_number)
     else
       @cars = Car.where(unit_id: current_user.unit_ids).order(:car_number)
     end
-    @terms = Term.sorted
-    @vehicle_reports = VehicleReport.all
-    if params[:unit_id].present?
-      car_ids = Car.where(unit_id: params[:unit_id]).pluck(:id)
-      reservation_ids = Reservation.where(car_id: car_ids)
-      @vehicle_reports = VehicleReport.where(reservation_id: reservation_ids)
-    end
+    car_ids = @cars.pluck(:id)
+    reservation_ids = Reservation.where(car_id: car_ids)
+    @vehicle_reports = VehicleReport.where(reservation_id: reservation_ids)
+
     if params[:term_id].present?
       program_ids = Program.where(term_id: params[:term_id]).pluck(:id)
-      reservation_ids = Reservation.where(program_id: program_ids)
-      @vehicle_reports =  @vehicle_reports.where(reservation_id: reservation_ids)
+    else
+      program_ids = Program.current_term.pluck(:id)
     end
+    reservation_ids = Reservation.where(program_id: program_ids)
+    @vehicle_reports =  @vehicle_reports.where(reservation_id: reservation_ids)
+
     if params[:car_id].present?
       ids = Reservation.where(car_id: params[:car_id]).pluck(:id)
       @vehicle_reports = @vehicle_reports.where(reservation_id: ids)
