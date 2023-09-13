@@ -11,6 +11,7 @@ export default class extends Controller {
 
   hideBackupDriverPhoneField() {
     var backup_driver_selected = this.backup_driverTarget.value
+    var backup_driver_error_place = document.getElementById('backup_driver_error')
 
     if (backup_driver_selected) {
       this.backup_driver_phone_dataTarget.classList.add("fields--display")
@@ -18,6 +19,7 @@ export default class extends Controller {
     }
     else {
       this.backup_driver_phoneTarget.value = ""
+      backup_driver_error_place.innerHTML = ''
       this.backup_driver_phone_dataTarget.classList.add("fields--hide")
       this.backup_driver_phone_dataTarget.classList.remove("fields--display")
     }
