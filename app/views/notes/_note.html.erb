@@ -9,21 +9,19 @@
       <div class="flex items-center">
         <p class="body-sm-text my-2">
           Updated on 
-          <%= note.updated_at.strftime('%m/%d/%Y') %>
+          <%=  show_date_time(note.updated_at) %>
           by
           <%= note.user.display_name %>
         </p>
-        <% if session["user_memberships"].present? %>
-          <%= link_to edit_note_path(note) do %>
-            <span class="tertiary_button">Edit
-              <i class="fa-solid fa-pen"></i>
-            </span>
-          <% end %>
-          <%= link_to note_path(note), data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' } do %>
-            <span class="tertiary_button">Delete
-              <i class="fa fa-times" aria-hidden="true"></i>
-            </span>
-          <% end %>
+        <%= link_to edit_note_path(note) do %>
+          <span class="tertiary_button">Edit
+            <i class="fa-solid fa-pen"></i>
+          </span>
+        <% end %>
+        <%= link_to note_path(note), data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' } do %>
+          <span class="tertiary_button">Delete
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </span>
         <% end %>
       </div>
     </div>
