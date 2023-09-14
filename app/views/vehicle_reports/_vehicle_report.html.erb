@@ -21,7 +21,7 @@
     <%= render 'student_status', vehicle_report: vehicle_report %>
 
     <% if vehicle_report.gas_end.present?  %>
-      <% if vehicle_report.gas_end <= 50 %>
+      <% if vehicle_report.gas_end < 50 %>
         <div class="error_text" data-vehiclereport-target="gas_error">
           <span>The fuel level should be at least 50%. Please refuel.</span>
         </div>
