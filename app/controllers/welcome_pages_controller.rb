@@ -18,6 +18,7 @@ class WelcomePagesController < ApplicationController
     end
     if @student.present?
       update_status(@student, @student.program)
+      @reservations_current = @student.reservations_current.sort_by(&:start_time)
       @reservations_past = @student.reservations_past.sort_by(&:start_time).reverse
       @reservations_future = @student.reservations_future.sort_by(&:start_time)
       unit_ids = [@program.unit_id]
@@ -60,6 +61,7 @@ class WelcomePagesController < ApplicationController
     @contact_data = UnitPreference.select(:unit_id, :name, :value).where(unit_id: unit_ids).where("name = 'unit_office' OR name = 'contact_phone'").group_by(&:unit_id).to_a
     if @program.present?
       update_status(@manager, @program)
+      @reservations_current = @manager.reservations_current.sort_by(&:start_time)
       @reservations_past = @manager.reservations_past.where(program_id: @program.id).sort_by(&:start_time).reverse
       @reservations_future = @manager.reservations_future.where(program_id: @program.id).sort_by(&:start_time)
       unit_ids = [@program.unit_id]
