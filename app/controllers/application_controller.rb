@@ -99,7 +99,7 @@ class ApplicationController < ActionController::Base
     access_groups = Unit.pluck(:ldap_group) + ['lsa-was-rails-devs']
     ldap_group = false
     access_groups.each do |group|
-      if  LdapLookup.is_member_of_group?(uniqname, group)
+      if LdapLookup.is_member_of_group?(uniqname, group)
         ldap_group = group
       end
     end
@@ -108,23 +108,24 @@ class ApplicationController < ActionController::Base
 
   def get_faculty_name_for_survey(uniqname)
     result = {'valid' => false, 'note' => '', 'last_name' => '', 'first_name' => ''}
-    name = LdapLookup.get_simple_name(uniqname)
-    if name == "No such user"
-      result['note'] = "The '#{uniqname}' uniqname is not valid."
-    else
+    valid = LdapLookup.uid_exist?(uniqname)
+    if valid
+      name = LdapLookup.get_simple_name(uniqname)
       result['valid'] =  true
       ldap_group = is_member_of_admin_groups?(uniqname)
-        if ldap_group
-          result['valid'] = false
-          result['note'] = "#{uniqname} is an admin - a member of #{ldap_group} group. Admins can't be instructors."
-          return result
-        end
-      if name.nil?
-        result['note'] = "Mcommunity returns no name for '#{uniqname}' uniqname."
+      if ldap_group
+        result['valid'] = false
+        result['note'] = "#{uniqname} is an admin - a member of #{ldap_group} group. Admins can't be instructors."
+        return result
+      end
+      if name.include?("No displayname")
+        result['note'] = " Mcommunity returns no name for '#{uniqname}' uniqname."
       else
         result['first_name'] = name.split(" ").first
         result['last_name'] = name.split(" ").last
       end
+    else
+      result['note'] = "The '#{uniqname}' uniqname is not valid."
     end
     return result
   end

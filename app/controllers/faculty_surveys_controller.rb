@@ -51,7 +51,11 @@ class FacultySurveysController < ApplicationController
     end
     if @faculty_survey.save
       add_config_questions(@faculty_survey)
-      redirect_to faculty_survey_config_questions_path(@faculty_survey), notice: "Faculty survey was successfully created." + result['note'] + " You can edit the questions and send an email to the instructor."
+      if result['note'].include?("Mcommunity returns no name")
+        redirect_to edit_faculty_survey_path(@faculty_survey), notice: "Faculty survey was successfully created." + result['note'] + " Add first and last name manually."
+      else
+        redirect_to faculty_survey_config_questions_path(@faculty_survey), notice: "Faculty survey was successfully created." + result['note'] + " You can edit the questions and send an email to the instructor."
+      end
     else
       render :new, status: :unprocessable_entity
     end
@@ -71,7 +75,7 @@ class FacultySurveysController < ApplicationController
       end
     end
     if @faculty_survey.save
-      redirect_to faculty_surveys_path(:term_id => @faculty_survey.term_id), notice: "Faculty survey was successfully updated."
+      redirect_to faculty_surveys_path(:term_id => @faculty_survey.term_id), notice: "Faculty survey was successfully updated. Click on Survey Questions to edit questions and send email to instructor."
     else
       render :edit, status: :unprocessable_entity
     end
