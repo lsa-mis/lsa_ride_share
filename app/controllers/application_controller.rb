@@ -69,14 +69,11 @@ class ApplicationController < ActionController::Base
 
   def get_manager_name(uniqname, program)
     result = {'valid' => false, 'note' => '', 'last_name' => '', 'first_name' => ''}
-    name = LdapLookup.get_simple_name(uniqname)
-    if name == "No such user"
-      result['note'] = "The '#{uniqname}' uniqname is not valid."
-    else
+    valid = LdapLookup.uid_exist?(uniqname)
+    if valid
       if program.instructor.uniqname == uniqname
         result['note'] = "#{uniqname} is instructor's uniqname"
       else
-        result['valid'] =  true
         # check if uniqname is an admin uniqname
         ldap_group = is_member_of_admin_groups?(uniqname)
         if ldap_group
@@ -84,13 +81,17 @@ class ApplicationController < ActionController::Base
           result['note'] = "#{uniqname} is an admin - a member of #{ldap_group} group. Admins can't be managers."
           return result
         end
-        if name.nil?
-          result['note'] = "Mcommunity returns no name for '#{uniqname}' uniqname."
+        name = LdapLookup.get_simple_name(uniqname)
+        result['valid'] =  true
+        if name.include?("No displayname")
+          result['note'] = " Mcommunity returns no name for '#{uniqname}' uniqname. Please go to Programs->Managers and add first and last names manualy."
         else
           result['first_name'] = name.split(" ").first
           result['last_name'] = name.split(" ").last
         end
       end
+    else
+      result['note'] = "The '#{uniqname}' uniqname is not valid."
     end
     return result
   end
@@ -110,14 +111,15 @@ class ApplicationController < ActionController::Base
     result = {'valid' => false, 'note' => '', 'last_name' => '', 'first_name' => ''}
     valid = LdapLookup.uid_exist?(uniqname)
     if valid
-      name = LdapLookup.get_simple_name(uniqname)
-      result['valid'] =  true
+      # check if uniqname is an admin uniqname
       ldap_group = is_member_of_admin_groups?(uniqname)
       if ldap_group
         result['valid'] = false
         result['note'] = "#{uniqname} is an admin - a member of #{ldap_group} group. Admins can't be instructors."
         return result
       end
+      name = LdapLookup.get_simple_name(uniqname)
+      result['valid'] =  true
       if name.include?("No displayname")
         result['note'] = " Mcommunity returns no name for '#{uniqname}' uniqname."
       else
