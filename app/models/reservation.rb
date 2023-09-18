@@ -57,6 +57,14 @@ class Reservation < ApplicationRecord
   validate :approve_requires_car, on: :update
 
   scope :with_passengers, -> { Reservation.includes(:passengers) }
+  scope :include_vehicle_reports, -> { Reservation.includes(:vehicle_report) }
+  scope :current_term, -> { include_vehicle_reports.where(program_id: Program.current_term.ids)}
+  scope :current_past, -> { current_term.where("(end_time < ?) OR (start_time < ? AND end_time > ?)",
+    Date.today.end_of_day, Date.today.end_of_day, Date.today.beginning_of_day) }
+  scope :with_no_vehicle_reports, -> { current_past.where(vehicle_report: {id: nil}) }
+  scope :with_not_complete_vehicle_reports, -> { current_past.where(vehicle_report: {student_status: false}) }
+  scope :no_or_not_complete_vehicle_reports, -> { Reservation.with_not_complete_vehicle_reports.or(Reservation.with_no_vehicle_reports) }
+  scope :complete_vehicle_reports, -> { current_term.where(vehicle_report: {student_status: true}) }
 
   def reservation_date
     start_d = start_time.present? ? start_time.strftime("%m/%d/%Y %I:%M%p") : ''

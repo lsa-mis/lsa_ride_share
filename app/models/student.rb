@@ -26,28 +26,45 @@ class Student < ApplicationRecord
   scope :registered, -> { where(registered: true) }
   scope :added_manually, -> { where(registered: false) }
 
-  def driver_past
-    Reservation.where('driver_id = ? AND start_time <= ?', self, DateTime.now)
+
+  def driver_current
+    Reservation.no_or_not_complete_vehicle_reports.where(driver_id: self)
   end
 
-  def driver_future
-    Reservation.where('driver_id = ? AND start_time > ?', self, DateTime.now)
+  def backup_driver_current
+    Reservation.no_or_not_complete_vehicle_reports.where(backup_driver_id: self)
+  end
+
+  def passenger_current
+    Reservation.no_or_not_complete_vehicle_reports.joins(:passengers).where("reservation_passengers.student_id = ?", self)
+  end
+
+  def driver_past
+    Reservation.complete_vehicle_reports.where(driver_id: self)
   end
 
   def backup_driver_past
-    Reservation.where('backup_driver_id = ? AND start_time <= ?', self, DateTime.now)
-  end
-
-  def backup_driver_future
-    Reservation.where('backup_driver_id = ? AND start_time > ?', self, DateTime.now)
+    Reservation.complete_vehicle_reports.where(backup_driver_id: self)
   end
 
   def passenger_past
-    Reservation.joins(:passengers).where('reservation_passengers.student_id = ? AND start_time <= ?', self, DateTime.now)
+    Reservation.complete_vehicle_reports.joins(:passengers).where("reservation_passengers.student_id = ?", self)
+  end
+
+  def driver_future
+    Reservation.where("driver_id = ? AND date_trunc('day', start_time) > ?", self, Date.today)
+  end
+
+  def backup_driver_future
+    Reservation.where("backup_driver_id = ? AND date_trunc('day', start_time) > ?", self, Date.today)
   end
 
   def passenger_future
-    Reservation.joins(:passengers).where('reservation_passengers.student_id = ? AND start_time > ?', self, DateTime.now)
+    Reservation.joins(:passengers).where("reservation_passengers.student_id = ? AND date_trunc('day', start_time) > ?", self, Date.today)
+  end
+
+  def reservations_current
+    driver_current + backup_driver_current + passenger_current
   end
 
   def reservations_past
