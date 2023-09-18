@@ -107,9 +107,7 @@ class ProgramsController < ApplicationController
     else
       @instructor = Manager.new(uniqname: uniqname)
       valid = LdapLookup.uid_exist?(uniqname)
-      name = LdapLookup.get_simple_name(uniqname)
       if valid
-        result['valid'] =  true
         # check if uniqname is an admin uniqname
         ldap_group = is_member_of_admin_groups?(uniqname)
         if ldap_group
@@ -117,6 +115,8 @@ class ProgramsController < ApplicationController
           result['note'] = "#{uniqname} is an admin - a member of #{ldap_group} group. Admins can't be instructors."
           return result
         end
+        name = LdapLookup.get_simple_name(uniqname)
+        result['valid'] =  true
         if name.include?("No displayname")
           result['note'] = " Mcommunity returns no name for '#{uniqname}' uniqname. Please go to Programs->Managers and add first and last names manualy."
           @instructor.first_name = ''
