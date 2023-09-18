@@ -75,7 +75,7 @@ class FacultySurveysController < ApplicationController
       end
     end
     if @faculty_survey.save
-      redirect_to faculty_surveys_path(:term_id => @faculty_survey.term_id), notice: "Faculty survey was successfully updated. Click on Survey Questions to edit questions and send email to instructor."
+      redirect_to faculty_surveys_path(:term_id => @faculty_survey.term_id), notice: "Faculty survey was successfully updated. Click on Survey Questions to edit the questions and send an email to instructor."
     else
       render :edit, status: :unprocessable_entity
     end
