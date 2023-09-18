@@ -62,11 +62,11 @@ class Manager < ApplicationRecord
   end
 
   def reservations_past
-    Reservation.current_term.where('reserved_by = ? AND end_time < ?', User.find_by(uniqname: self.uniqname), Date.beginning_of_day)
+    Reservation.current_term.where('reserved_by = ? AND end_time < ?', User.find_by(uniqname: self.uniqname), Date.today.beginning_of_day)
   end
 
   def reservations_future
-    Reservation.current_term.where('reserved_by = ? AND start_time > ?', User.find_by(uniqname: self.uniqname), Date.end_of_day)
+    Reservation.current_term.where('reserved_by = ? AND start_time > ?', User.find_by(uniqname: self.uniqname), Date.today.end_of_day)
   end
 
   def display_name
