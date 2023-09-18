@@ -58,15 +58,15 @@ class Manager < ApplicationRecord
 
   def reservations_current
     Reservation.current_term.where(reserved_by: User.find_by(uniqname: self.uniqname)).where("(start_time BETWEEN ? AND ?) OR (start_time < ? AND end_time > ?)",
-    Date.today.beginning_of_day, Date.today.end_of_day, Date.today.beginning_of_day, Date.today.beginning_of_day)
+    Date.today.beginning_of_day, Date.today.end_of_day, Date.today.end_of_day, Date.today.beginning_of_day)
   end
 
   def reservations_past
-    Reservation.current_term.where('reserved_by = ? AND end_time <= ?', User.find_by(uniqname: self.uniqname), DateTime.now)
+    Reservation.current_term.where('reserved_by = ? AND end_time < ?', User.find_by(uniqname: self.uniqname), Date.beginning_of_day)
   end
 
   def reservations_future
-    Reservation.current_term.where('reserved_by = ? AND start_time > ?', User.find_by(uniqname: self.uniqname), DateTime.now)
+    Reservation.current_term.where('reserved_by = ? AND start_time > ?', User.find_by(uniqname: self.uniqname), Date.end_of_day)
   end
 
   def display_name
