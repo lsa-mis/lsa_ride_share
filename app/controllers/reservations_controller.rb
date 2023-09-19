@@ -44,8 +44,9 @@ class ReservationsController < ApplicationController
   end
 
   def day_reservations
+    @reservations = Reservation.where(program: Program.where(unit_id: current_user.unit_ids))
     @day = params[:date].to_date
-    @day_reservations = Reservation.where("start_time BETWEEN ? AND ?", @day.beginning_of_day, @day.end_of_day).order(:start_time)
+    @day_reservations = @reservations.where("(start_time BETWEEN ? AND ?) OR (start_time < ? AND end_time > ?)", @day.beginning_of_day, @day.end_of_day, @day.end_of_day, @day.beginning_of_day).order(:start_time)
     authorize @day_reservations
   end
 
