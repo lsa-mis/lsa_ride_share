@@ -32,7 +32,6 @@ class Programs::ManagersController < ApplicationController
         end
       else
         flash.now[:alert] = result['note']
-        @manager = Manager.new
         return
       end
     end
