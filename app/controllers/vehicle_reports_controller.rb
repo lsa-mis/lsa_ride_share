@@ -13,7 +13,7 @@ class VehicleReportsController < ApplicationController
     end
     car_ids = @cars.pluck(:id)
     reservation_ids = Reservation.where(car_id: car_ids)
-    @vehicle_reports = VehicleReport.where(reservation_id: reservation_ids)
+    @vehicle_reports = VehicleReport.where(reservation_id: reservation_ids).order(:updated_at)
 
     if params[:term_id].present?
       program_ids = Program.where(term_id: params[:term_id]).pluck(:id)
