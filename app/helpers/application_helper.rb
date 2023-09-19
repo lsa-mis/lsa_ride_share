@@ -192,6 +192,14 @@ module ApplicationHelper
   def show_reservation_date(reservation)
     show_date_time(reservation.start_time) + " - " +  show_date_time(reservation.end_time)
   end
+
+  def show_day_reservation_time(reservation)
+    if reservation.start_time.to_date == reservation.end_time.to_date 
+      show_time(reservation.start_time) + " - " +  show_time(reservation.end_time)
+    else
+      show_date_time(reservation.start_time) + " - " +  show_date_time(reservation.end_time)
+    end
+  end
   
   def show_reserved_by_in_week_calendar(reservation)
     User.find(reservation.reserved_by).display_name
