@@ -39,6 +39,11 @@
           <p class="body-md-text"><%= show_manager(@program, current_user) %></p>
         <% end %>
         <div>
+          <% if @reservations_current.present? %>
+            <%= render 'manager_reservations_current' %>
+          <% end %>
+        </div>
+        <div>
           <% if @reservations_future.present? %>
             <%= render 'manager_reservations_future' %>
           <% end %>
