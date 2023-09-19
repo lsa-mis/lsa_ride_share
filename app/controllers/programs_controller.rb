@@ -118,7 +118,7 @@ class ProgramsController < ApplicationController
         name = LdapLookup.get_simple_name(uniqname)
         result['valid'] =  true
         if name.include?("No displayname")
-          result['note'] = " Mcommunity returns no name for '#{uniqname}' uniqname. Please go to Programs->Managers and add first and last names manualy."
+          result['note'] = " Mcommunity returns no name for '#{uniqname}' uniqname. Please go to Programs->Managers and add first and last names manually."
           @instructor.first_name = ''
           @instructor.last_name = ''
         else
