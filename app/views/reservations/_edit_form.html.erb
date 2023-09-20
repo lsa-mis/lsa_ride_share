@@ -19,6 +19,7 @@
       <%= @reservation.program.term.name %>
     </p>
   </div>
+  <input type="hidden" id="reservation_unit_id" name="reservation[unit_id]" value=<%= @unit_id %> data-editreservation-target="unit">
 
   <div class="py-2">
     <label class="body-lg-bold-text">
@@ -29,40 +30,44 @@
     </p>
   </div>
 
-  <div class="py-2">
-    <label class="body-lg-bold-text">
-      Site:
-    </label>
-    <p class="body-lg-text ml-2 inline-block">
-      <%= @reservation.site.title %>
-    </p>
-  </div>
-
-  <div class="py-2">
-    <label class="body-lg-bold-text">
-      Number of People on Trip:
-    </label>
-    <p class="body-lg-text ml-2 inline-block">
-      <%= @number_of_people_on_trip %>
-    </p>
-  </div>
-  <input type="hidden" id="reservation_unit_id" name="reservation[unit_id]" value=<%= @unit_id %> data-editreservation-target="unit">
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+    <div class="py-2">
+      <label class="body-lg-bold-text">
+        Current Site:
+      </label>
+      <p class="body-lg-text ml-2 inline-block">
+        <%= @reservation.site.title %>
+      </p>
+    </div>
     <div>
-        <%= form.label :day_start, "Choose a Start Date", class: "fancy_label" %>
-        <%= text_field_tag :day_start, @day_start,
-          data: {
-          controller: "flatpickr",
-          flatpickr_date_format: "Y-m-d",
-          flatpickr_min_date: @min_date
-          }, "data-editreservation-target": "day_start", "data-action": "change->editreservation#changeDay",
-          class: "input_text_field"
-        %>
+      <label class="body-lg-bold-text">
+        Current Number of People on Trip:
+      </label>
+      <p class="body-lg-text ml-2 inline-block">
+        <%= @number_of_people_on_trip %>
+      </p>
+    </div>
+    <div>
+      <%= form.label :site_id, 'Site *', class: "fancy_label" %>
+      <%= form.collection_select :site_id, @sites, :id, :title, { include_blank: "Select Site ..." }, { "data-reservation-target": "site", class: "input_text_field" } %>
     </div>
     <div>
       <%= form.label :number_of_people_on_trip, 'Number of People on Trip *', class: "fancy_label" %>
       <%= select_tag :number_of_people_on_trip, options_for_select(@number_of_seats, @number_of_people_on_trip), class: "input_text_field" %>
     </div>
+    <div>
+      <%= form.label :day_start, "Choose a Start Date", class: "fancy_label" %>
+      <%= text_field_tag :day_start, @day_start,
+        data: {
+        controller: "flatpickr",
+        flatpickr_date_format: "Y-m-d",
+        flatpickr_min_date: @min_date
+        }, "data-editreservation-target": "day_start", "data-action": "change->editreservation#changeDay",
+        class: "input_text_field"
+      %>
+    </div>
+    <div></div>
+
     <div class="py-2">
       <label class="body-lg-bold-text">
         Current Start Time:
@@ -80,13 +85,13 @@
       </p>
     </div>
 
-    <div class="col-span-2">
-      <p class="body-sm-text mb-2">
-        Select new start and end time if you want to change it
-      </p>
-    </div>
   </div>
 
+  <div class="col-span-2">
+    <p class="body-sm-text mb-2">
+      Select new start and end time if you want to change it
+    </p>
+  </div>
   <%= render 'start_end_time_edit' %>
 
   <div class="py-2">

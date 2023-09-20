@@ -113,6 +113,7 @@ class ReservationsController < ApplicationController
     @end_time = (@reservation.end_time - 15.minute).to_s
     @number_of_people_on_trip = @reservation.number_of_people_on_trip
     @cars = Car.available.where(unit_id: @unit_id).order(:car_number)
+    @sites = @reservation.program.sites
   end
 
   def edit_long
