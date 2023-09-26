@@ -43,3 +43,4 @@
 !/app/assets/builds/.keep
 
 /config/skylight.yml
+.DS_Store
