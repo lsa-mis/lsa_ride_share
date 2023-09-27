@@ -88,7 +88,7 @@
                       approve_target: "form1"
                     } do |form| %>
                   <div class="my-2">
-                    <label for="cancel_type" class="fancy_label">Cancel Recurring Reservation</label>
+                    <label for="cancel_type" class="font-semibold text-gray-900 bg-white relative px-1 top-2 w-auto text-base">Cancel Reservation(s)</label>
                     <%= select_tag :cancel_type, options_for_select(cancel_types), include_blank: "Select to Cancel ...", class: "filter_select",
                     "data-approve-target": "cancel_type", "data-action": "change->approve#cancelReservation" %>
                   </div>
