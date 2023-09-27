@@ -1,4 +1,7 @@
 <h1>Edit Manager</h1>
+<p class="body-sm-bold-text mt-2">
+    Uniqname: <%= @manager.uniqname %>
+  </p>
 
 <%= turbo_frame_tag 'edit_manager' do %>
   <%= render 'form' %>

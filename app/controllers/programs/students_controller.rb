@@ -28,7 +28,6 @@ class Programs::StudentsController < ApplicationController
     @student = Student.new(student_params)
     authorize @student
     result = get_name(uniqname)
-    
     if result['valid']
       @student.first_name = result['first_name']
       @student.last_name = result['last_name']
@@ -48,6 +47,7 @@ class Programs::StudentsController < ApplicationController
   def destroy
     if @student.reservations.present?
       flash.now[:alert] = "Student has reservations and can't be removed."
+      @student = Student.new
       @students = @student_program.students.order(registered: :desc).order(:last_name)
       return
     else
