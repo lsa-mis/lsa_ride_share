@@ -46,18 +46,7 @@
             <td class="mi_tbody_td">
               <%= show_car(reservation) %>
             </td>
-            <td class="mi_tbody_td">
-              <% if reservation.vehicle_report.present? %>
-                <% if reservation.vehicle_report.approved %>
-                  Approved by admin
-                <% elsif reservation.vehicle_report.student_status %>
-                  Completed
-                <% else %>
-                  <%= link_to 'Vehicle report', vehicle_report_path(reservation.vehicle_report), class: "link_to", data: {turbo_frame: "_top"} %>
-                <% end %>
-              <% else %>
-                <%= link_to 'New vehicle report', new_reservation_vehicle_report_path(reservation), class: "link_to", data: {turbo_frame: "_top"} if reservation.car.present? %>
-              <% end %>
+            <td>
             </td>
           </tr>
         <% end %>
@@ -107,26 +96,10 @@
             <%= reservation.site.title %>
           </td>
         </tr>
-        <tr class="mi_tbody_tr">
+        <tr class="mobile_tr">
           <th class="header_mobile">Car</th>
           <td class="mi_tbody_td">
             <%= show_car(reservation) %>
-          </td>
-        </tr>
-        <tr class="mobile_tr">
-          <th class="header_mobile">Vehicle Report</th>
-          <td class="mi_tbody_td">
-            <% if reservation.vehicle_report.present? %>
-              <% if reservation.vehicle_report.approved %>
-                Approved by admin
-              <% elsif reservation.vehicle_report.student_status %>
-                Completed
-              <% else %>
-                <%= link_to 'Vehicle report', vehicle_report_path(reservation.vehicle_report), class: "link_to", data: {turbo_frame: "_top"} %>
-              <% end %>
-            <% else %>
-              <%= link_to 'New vehicle report', new_reservation_vehicle_report_path(reservation), class: "link_to", data: {turbo_frame: "_top"} if reservation.car.present? %>
-            <% end %>
           </td>
         </tr>
       <% end %>
