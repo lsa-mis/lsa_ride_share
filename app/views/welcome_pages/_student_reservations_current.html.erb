@@ -53,10 +53,10 @@
                 <% elsif reservation.vehicle_report.student_status %>
                   Completed
                 <% else %>
-                  <%= link_to 'Vehicle report', vehicle_report_path(reservation.vehicle_report), class: "link_to", data: {turbo_frame: "_top"} %>
+                  <%= link_to 'Vehicle report', vehicle_report_path(reservation.vehicle_report), class: "link_to", data: {turbo_frame: "_top"} if reservation.approved %>
                 <% end %>
               <% else %>
-                <%= link_to 'New vehicle report', new_reservation_vehicle_report_path(reservation), class: "link_to", data: {turbo_frame: "_top"} if reservation.car.present? %>
+                <%= link_to 'New vehicle report', new_reservation_vehicle_report_path(reservation), class: "link_to", data: {turbo_frame: "_top"} if reservation.approved %>
               <% end %>
             </td>
           </tr>
