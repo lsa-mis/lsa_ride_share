@@ -172,17 +172,18 @@ module StudentApi
 
   def get_name(uniqname)
     result = {'valid' => false, 'note' => '', 'last_name' => '', 'first_name' => ''}
-    name = LdapLookup.get_simple_name(uniqname)
-    if name == "No such user"
-      result['note'] = "The '#{uniqname}' uniqname is not valid."
-    else
-      result['valid'] =  true
-      if name.nil?
-        result['note'] = "Mcommunity returns no name for '#{uniqname}' uniqname."
+    valid = LdapLookup.uid_exist?(uniqname)
+    if valid
+      result['valid'] = true
+      name = LdapLookup.get_simple_name(uniqname)
+      if name.include?("No displayname")
+        result['note'] = " Mcommunity returns no name for '#{uniqname}' uniqname."
       else
         result['first_name'] = name.split(" ").first
         result['last_name'] = name.split(" ").last
       end
+    else
+      result['note'] = "The '#{uniqname}' uniqname is not valid."
     end
     return result
   end

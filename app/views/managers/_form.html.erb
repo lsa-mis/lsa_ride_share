@@ -12,21 +12,31 @@
   <% end %>
 
   <div class="my-5">
-      <%= form.label :canvas_course_complete_date, class: "fancy_label" %>
-      <%= form.date_field :canvas_course_complete_date, class: "input_text_field" %>
-    </div>
+    <%= form.label :first_name, class: "fancy_label" %>
+    <%= form.text_field :first_name, class: "input_text_field" %>
+  </div>
 
-    <div class="my-5">
-      <%= form.label :meeting_with_admin_date, "In Person Orientation Date:", class: "fancy_label" %>
-      <%= form.date_field :meeting_with_admin_date, class: "input_text_field" %>
-    </div>
+  <div class="my-5">
+    <%= form.label :last_name, class: "fancy_label" %>
+    <%= form.text_field :last_name, class: "input_text_field" %>
+  </div>
 
-    <div class="inline">
-      <%= form.submit class: "secondary_blue_button" %>
-    </div>
-    <%= link_to managers_path(@manager) do %>
-      <span class="tertiary_button">Cancel
-        <i class="fa fa-times" aria-hidden="true"></i>
-      </span>
-    <% end %>
+  <div class="my-5">
+    <%= form.label :canvas_course_complete_date, class: "fancy_label" %>
+    <%= form.date_field :canvas_course_complete_date, class: "input_text_field" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :meeting_with_admin_date, "In Person Orientation Date:", class: "fancy_label" %>
+    <%= form.date_field :meeting_with_admin_date, class: "input_text_field" %>
+  </div>
+
+  <div class="inline">
+    <%= form.submit class: "secondary_blue_button" %>
+  </div>
+  <%= link_to managers_path(@manager) do %>
+    <span class="tertiary_button">Cancel
+      <i class="fa fa-times" aria-hidden="true"></i>
+    </span>
+  <% end %>
 <% end %>
