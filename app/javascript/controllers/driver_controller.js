@@ -106,9 +106,9 @@ export default class extends Controller {
     if(submitForm == false) {
       event.preventDefault()
     }
-    else {
-      Turbo.navigator.submitForm(this.formTarget)
-    }
+    // else {
+    //   Turbo.navigator.submitForm(this.formTarget)
+    // }
   }
 
 }
