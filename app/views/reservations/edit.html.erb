@@ -1,6 +1,23 @@
 <div class="mx-auto w-full">
-  <h1>Editing reservation</h1>
-  <%= render "edit_form", reservation: @reservation %>
+  <% if params[:recurring] == "true" %>
+    <h1>Editing Recurring Reservations</h1>
+    <% if recurring?(@reservation) %>
+      <div class="pt-4 pb-2">
+        <% recurring_reservation = RecurringReservation.new(@reservation) %>
+        <p class="body-lg-bold-text inline">
+          Recurring:
+        </p>
+        <p class="body-lg-text ml-2 inline">
+          Start on <%= show_date(@reservation.start_time) %>
+          <%= recurring_reservation.first_reservation.rule.to_s %>
+        </p>
+      </div>
+    <% end %>
+    <%= render "edit_recurring_form", reservation: @reservation %>
+  <% else %>
+    <h1>Editing Reservation</h1>
+    <%= render "edit_form", reservation: @reservation %>
+  <% end %>
   <div>
     <%= turbo_frame_tag "available_cars" do %>
       <%= render "available_cars_edit" %>

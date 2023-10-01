@@ -49,7 +49,7 @@
                 "data-approve-target": "cancel_type", "data-action": "change->approve#cancelReservation" %>
               </div>
               <div>
-                <%= link_to 'Approve All Recurring Reservations', approve_all_recurring_path(@reservation), class: "secondary_blue_button" %>
+                <%= link_to 'Approve Recurring Reservations', approve_all_recurring_path(@reservation), class: "secondary_blue_button" %>
               </div>
             <% end %>
           <% else %>
@@ -61,6 +61,15 @@
           <% end %>
         <% end %>
         <% if (is_admin?(current_user)) && @reservation.end_time > DateTime.now %>
+          <% if recurring?(@reservation) %>
+            <div class="mt-2">
+              <% if @reservation.start_time.to_date == @reservation.end_time.to_date %>
+                <%= link_to 'Edit Recurring Reservations', edit_reservation_path(@reservation, :recurring => true), class: "primary_button" if policy(@reservation).edit? %>
+              <% else %>
+                <%= link_to 'Edit Recurring Reservations', edit_long_reservation_path(@reservation, :recurring => true), class: "primary_button" if policy(@reservation).edit? %>
+              <% end %>
+            </div>
+          <% end %>
           <div class="my-2">
             <% if @reservation.start_time.to_date == @reservation.end_time.to_date %>
               <%= link_to 'Edit Reservation', edit_reservation_path(@reservation), class: "primary_button" if policy(@reservation).edit? %>

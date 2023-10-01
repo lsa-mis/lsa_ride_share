@@ -280,29 +280,57 @@ class ReservationsController < ApplicationController
       end
     end
 
-    @reservation.attributes = reservation_params
-    @reservation.car_id = params[:car_id]
-    @reservation.start_time = params[:start_time].to_datetime - 15.minute
-    @reservation.end_time = params[:end_time].to_datetime + 15.minute
-    @reservation.number_of_people_on_trip = params[:number_of_people_on_trip]
-
-    respond_to do |format|
-      if @reservation.update(reservation_params)
-        format.html { redirect_to reservation_url(@reservation), notice: "Reservation was successfully updated." }
-        format.json { render :show, status: :ok, location: @reservation }
+    if params[:recurring] == "true"
+      recurring_reservation =  RecurringReservation.new(@reservation)
+      result = recurring_reservation.get_following
+      update_params = {}
+      update_params["site_id"] = reservation_params[:site_id]
+      update_params["car_id"] = params[:car_id]
+      update_params["number_of_people_on_trip"] = params[:number_of_people_on_trip]
+      start_time = params[:start_time].to_datetime - 15.minute
+      end_time = params[:end_time].to_datetime + 15.minute
+      note = ""
+      result.each do |id|
+        reservation = Reservation.find(id)
+        day_start = reservation.start_time.beginning_of_day
+        day_end = reservation.end_time.beginning_of_day
+        update_params["start_time"] = day_start + Time.parse(start_time.strftime("%I:%M%p")).seconds_since_midnight.seconds
+        update_params["end_time"] = day_end + Time.parse(end_time.strftime("%I:%M%p")).seconds_since_midnight.seconds
+        unless reservation.update(update_params)
+          note += "Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". "
+        end
+      end
+      if note == ""
+        note = "This and all following recurring reservations were updated."
+        redirect_to reservation_path(@reservation), notice: note
       else
-        @programs = Program.where(unit_id: current_user.unit_ids).order(:title, :catalog_number, :class_section)
-        @number_of_seats = 1..Car.available.maximum(:number_of_seats)
-        @number_of_people_on_trip = Reservation.find(params[:id]).number_of_people_on_trip
-        @day_start = params[:day_start].to_date
-        @unit_id = params[:reservation][:unit_id]
-        @cars = Car.available.where(unit_id: @unit_id).order(:car_number)
-        @car_id = @reservation.car_id
-        @start_time = params[:start_time]
-        @end_time = params[:end_time]
-        @students = Student.all
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @reservation.errors, status: :unprocessable_entity }
+        redirect_to reservation_path(@reservation), alert: note
+      end
+    else
+      @reservation.attributes = reservation_params
+      @reservation.car_id = params[:car_id]
+      @reservation.start_time = params[:start_time].to_datetime - 15.minute
+      @reservation.end_time = params[:end_time].to_datetime + 15.minute
+      @reservation.number_of_people_on_trip = params[:number_of_people_on_trip]
+
+      respond_to do |format|
+        if @reservation.update(reservation_params)
+          format.html { redirect_to reservation_url(@reservation), notice: "Reservation was successfully updated." }
+          format.json { render :show, status: :ok, location: @reservation }
+        else
+          @programs = Program.where(unit_id: current_user.unit_ids).order(:title, :catalog_number, :class_section)
+          @number_of_seats = 1..Car.available.maximum(:number_of_seats)
+          @number_of_people_on_trip = Reservation.find(params[:id]).number_of_people_on_trip
+          @day_start = params[:day_start].to_date
+          @unit_id = params[:reservation][:unit_id]
+          @cars = Car.available.where(unit_id: @unit_id).order(:car_number)
+          @car_id = @reservation.car_id
+          @start_time = params[:start_time]
+          @end_time = params[:end_time]
+          @students = Student.all
+          format.html { render :edit, status: :unprocessable_entity }
+          format.json { render json: @reservation.errors, status: :unprocessable_entity }
+        end
       end
     end
   end
