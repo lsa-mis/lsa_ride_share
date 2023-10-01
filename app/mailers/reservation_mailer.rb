@@ -64,7 +64,7 @@ class ReservationMailer < ApplicationMailer
       sent_to: @recipients, sent_by: user, sent_at: DateTime.now)
   end
 
-  def car_reservation_updated(user)
+  def car_reservation_updated(user, recurring = false)
     recipients = []
     recipients << User.find(@reservation.reserved_by).principal_name.presence
     recipients << email_address(@reservation.driver) if @reservation.driver.present?
@@ -72,8 +72,17 @@ class ReservationMailer < ApplicationMailer
     recipients << email_address(@reservation.backup_driver) if @reservation.backup_driver.present?
     recipients << @passengers_emails if @passengers_emails.present?
     @recipients = recipients.uniq.join(", ")
-    mail(to: @recipients, subject: "Reservation updated for program: #{@reservation.program.display_name}" )
-    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "updated",
+    if recurring
+      subject =  "Recurring Reservations updated for program: #{@reservation.program.display_name_with_title}"
+      email_type = "recurring_updated"
+      recurring_reservation = RecurringReservation.new(@reservation)
+      @recurring_rule = recurring_reservation.first_reservation.rule.to_s
+    else
+      subject = "Reservation updated for program: #{@reservation.program.display_name_with_title}"
+      email_type = "updated"
+    end
+    mail(to: @recipients, subject: subject)
+    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: email_type,
       sent_to: @recipients, sent_by: user.id, sent_at: DateTime.now)
   end
 

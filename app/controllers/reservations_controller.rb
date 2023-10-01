@@ -377,9 +377,16 @@ class ReservationsController < ApplicationController
 
   def send_reservation_updated_email
     authorize @reservation
-    ReservationMailer.with(reservation: @reservation).car_reservation_updated(current_user).deliver_now
+    if params[:recurring] == "true"
+      recurring = true
+      note = "Email about updating this and following reservations was sent."
+    else
+      recurring = false
+      note = "Email about updating this reservation was sent."
+    end
+    ReservationMailer.with(reservation: @reservation).car_reservation_updated(current_user, recurring).deliver_now
     @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id).order(created_at: :desc)
-    redirect_to reservation_path(@reservation), notice: 'Email was sent'
+    redirect_to reservation_path(@reservation), notice: note
   end
 
   def add_non_uofm_passengers
