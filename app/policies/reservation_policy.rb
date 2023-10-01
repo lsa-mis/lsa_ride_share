@@ -63,11 +63,11 @@ class ReservationPolicy < ApplicationPolicy
   end
 
   def add_drivers?
-    user_in_access_group? || is_reserved_by?
+    user_in_access_group? || is_reserved_by? || is_reservation_driver?
   end
 
   def add_edit_drivers?
-    user_in_access_group? || is_reserved_by?
+    user_in_access_group? || is_reserved_by? || is_reservation_driver?
   end
 
   def add_drivers_later?
