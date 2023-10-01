@@ -87,6 +87,14 @@ class RecurringReservation
     return note
   end
 
+  def add_passenger_following_reservations(student)
+    list = get_following
+    list.each do |id|
+      reservation = Reservation.find(id)
+      reservation.passengers << student
+    end
+  end
+
   def remove_passenger_following_reservations(student)
     list = get_following
     list.each do |id|

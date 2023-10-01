@@ -469,7 +469,14 @@ class ReservationsController < ApplicationController
   end
 
   def update_passengers
-    ReservationMailer.with(reservation: @reservation).car_reservation_update_passengers(current_user).deliver_now
+    if params["recurring"] == "true"
+      recurring = true
+      notice = "Passengers list was updated for this and following recurring reservations."
+    else
+      recurring = false
+      notice = "Passengers list was updated."
+    end
+    ReservationMailer.with(reservation: @reservation).car_reservation_update_passengers(current_user, recurring).deliver_now
     redirect_to reservation_path(@reservation), notice: "Passengers list was updated"
   end
 

@@ -5,14 +5,15 @@
       <legend class="hidden">list of students</legend>
       <% @students.each do |student| %>
         <div>
-          <%= label_tag("reservation_student_id_#{student.id}", nil, class: "hidden") %>
-          <%= check_box_tag "reservation[student_id]", student.id, nil, class: "check_box", id: "reservation_student_id_#{student.id}",
+          <%= label_tag("student_id_#{student.id}", nil, class: "hidden") %>
+          <%= check_box_tag "student_id", student.id, nil, class: "check_box", id: "student_id_#{student.id}",
             disabled: @reservation.added_people == @reservation.number_of_people_on_trip,
             :"data-action" => "change->autosubmit#search" %>
           <span class="check_box_text"><%= student.display_name %></span>
         </div>
       <% end %>
     </fieldset>
-    <input type="hidden" id="reservation_edit" name="reservation[edit]" value=<%= params[:edit] %>>
+    <input type="hidden" id="edit" name="edit" value=<%= params[:edit] %>>
+    <input type="hidden" id="recurring" name="recurring" value=<%= params[:recurring] %>>
   <% end %>
 <% end %>
