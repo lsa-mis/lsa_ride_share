@@ -79,6 +79,16 @@
               <i class="fa-solid fa-pen" aria-hidden="true"></i>
             </span>
           <% end %>
+          <% if recurring?(@reservation) %>
+            <div>
+              <%= link_to add_drivers_path(@reservation, :edit => true, :recurring => true) do %>
+                <span class="tertiary_button"> 
+                  Edit Drivers: This and Following Reservations
+                  <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                </span>
+              <% end %>
+            </div>
+          <% end %>
         </div>
       <% end %>
     </div>

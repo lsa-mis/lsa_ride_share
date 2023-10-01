@@ -336,21 +336,49 @@ class ReservationsController < ApplicationController
   end
 
   def add_edit_drivers
+    success = true
+    recurring = false
     drivers_emails = reservation_drivers_emails
+    if params[:recurring] == "true"
+      recurring_reservation =  RecurringReservation.new(@reservation)
+      recurring = true
+    end
     if @reservation.driver_manager.present? && params[:reservation][:driver_id].present?
-      @reservation.update(driver_manager: nil)
+      if params[:recurring] == "true"
+        Reservation.where(id: reservations_to_update).update_all(driver_manager: nil)
+      else
+        @reservation.update(driver_manager: nil)
+      end
     end
     # check if a new driver is a passenger
-    notice = "Drivers updated."
+    note = ""
     if params[:reservation][:driver_id].present? && @reservation.passengers.include?(Student.find(params[:reservation][:driver_id]))
-      @reservation.passengers.delete(Student.find(params[:reservation][:driver_id]))
-      notice += " Driver was removed from passengers list."
+      if params[:recurring] == "true"
+        recurring_reservation.remove_passenger_following_reservations(Student.find(params[:reservation][:driver_id]))
+      else
+        @reservation.passengers.delete(Student.find(params[:reservation][:driver_id]))
+      end
+      note += " Driver was removed from passengers list."
     end
     if params[:reservation][:backup_driver_id].present? && @reservation.passengers.include?(Student.find(params[:reservation][:backup_driver_id]))
-      @reservation.passengers.delete(Student.find(params[:reservation][:backup_driver_id]))
-      notice += " Backup Driver was removed from passengers list."
+      if params[:recurring] == "true"
+        recurring_reservation.remove_passenger_following_reservations(Student.find(params[:reservation][:backup_driver_id]))
+      else
+        @reservation.passengers.delete(Student.find(params[:reservation][:backup_driver_id]))
+      end
+      note += " Backup Driver was removed from passengers list."
     end
-    if @reservation.update(reservation_params)
+
+    if params[:recurring] == "true"
+      notice = recurring_reservation.update_drivers(reservation_params.to_h) + note
+    else
+      if @reservation.update(reservation_params)
+        notice = "Drivers were updated." + note
+      else
+        success = false
+      end
+    end
+    if success
       if params[:edit] == "true"
         @reservation = Reservation.find(params[:id])
         drivers_emails_new = reservation_drivers_emails
@@ -359,7 +387,7 @@ class ReservationsController < ApplicationController
         else
           drivers_emails << drivers_emails_new
           drivers_emails = drivers_emails.flatten.uniq
-          ReservationMailer.car_reservation_drivers_edited(@reservation, drivers_emails, current_user).deliver_now
+          ReservationMailer.car_reservation_drivers_edited(@reservation, drivers_emails, current_user, recurring).deliver_now
           notice += " Old Drivers were removed from the trip."
         end
         redirect_to reservation_path(@reservation), notice: notice

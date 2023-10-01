@@ -1,6 +1,19 @@
 <div class="mx-auto w-full">
   <% if params["edit"] %>
     <h1>Edit Driver and Backup Driver</h1>
+    <% if params["recurring"] == "true" %>
+      <h2>for This and Following Recurring Reservations</h2>
+      <div class="pt-4 pb-2">
+        <% recurring_reservation = RecurringReservation.new(@reservation) %>
+        <p class="body-lg-bold-text inline">
+          Recurring:
+        </p>
+        <p class="body-lg-text ml-2 inline">
+          Start on <%= show_date(@reservation.start_time) %>
+          <%= recurring_reservation.first_reservation.rule.to_s %>
+        </p>
+      </div>
+    <% end %>
   <% else %>
     <h1>Add Driver and Backup Driver</h1>
   <% end %>
