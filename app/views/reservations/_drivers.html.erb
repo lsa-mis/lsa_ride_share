@@ -1,9 +1,9 @@
-<%= form_with model: [@reservation], class: "contents",
+<%= form_with(model: @reservation, url: add_edit_drivers_path,
   data: { controller: "driver",
           target: "form",
           action: "submit->driver#submitForm",
           turbo_frame: "_top"
-        } do |form| %>
+        }) do |form| %>
 
   <% if @reservation.errors.any? %>
     <div id="error_explanation" class="text-red-umred px-3 py-2 font-medium rounded-lg mt-3">

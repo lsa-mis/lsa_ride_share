@@ -45,7 +45,6 @@ class Reservation < ApplicationRecord
   has_one :vehicle_report, dependent: :destroy
   before_destroy :car_reservation_cancel
   before_update :check_number_of_non_uofm_passengers
-  before_update :send_email_on_drivers_update
   before_create :check_recurring
   
   has_rich_text :note
@@ -141,46 +140,6 @@ class Reservation < ApplicationRecord
     end
   end
 
-  def send_email_on_drivers_update
-    drivers_emails = []
-    if self.driver_id.present? && self.driver_changed?
-      if self.driver_id_change[1].present? && self.driver_id_change[0].nil?
-        return
-      end
-    end
-    if self.driver_changed?
-      if self.driver_id_change[0].present?
-        drivers_emails << email_address(Student.find(self.driver_id_change[0]))
-      end
-      if self.driver_id_change[1].present?
-        drivers_emails << email_address(Student.find(self.driver_id_change[1]))
-      end
-    end
-    if self.driver_manager_id.present? && self.driver_manager_changed?
-      if self.driver_manager_id_change[1].present? && self.driver_manager_id_change[0].nil?
-        return
-      end
-    end
-    if self.driver_manager_changed?
-      if self.driver_manager_id_change[0].present?
-        drivers_emails << email_address(Manager.find(self.driver_manager_id_change[0]))
-      end
-      if self.driver_manager_id_change[1].present?
-        drivers_emails << email_address(Manager.find(self.driver_manager_id_change[1]))
-      end
-    end
-    if self.backup_driver_changed?
-      if self.backup_driver_id_change[0].present?
-        drivers_emails << email_address(Student.find(self.backup_driver_id_change[0]))
-      end
-      if self.backup_driver_id_change[1].present?
-        drivers_emails << email_address(Student.find(self.backup_driver_id_change[1]))
-      end
-    end
-    if drivers_emails.present?
-      ReservationMailer.car_reservation_drivers_edited(self, drivers_emails, self.reserved_by).deliver_now
-    end
-  end
 
   def check_diff_time
     if ((self.end_time - self.start_time) / 1.minute).to_i < 46
