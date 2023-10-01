@@ -77,15 +77,12 @@ class ReservationMailer < ApplicationMailer
       sent_to: @recipients, sent_by: user.id, sent_at: DateTime.now)
   end
 
-  def car_reservation_drivers_edited(drivers_reservation, drivers_emails, reserved_by)
+  def car_reservation_drivers_edited(drivers_reservation, drivers_emails, user)
     @reservation = drivers_reservation
     @unit_email_message = get_unit_email_message(@reservation)
     set_reservation_data(@reservation)
     recipients = drivers_emails
-    recipients << User.find(reserved_by).principal_name.presence
-    recipients << email_address(@reservation.driver) if @reservation.driver.present?
-    recipients << email_address(@reservation.driver_manager) if @reservation.driver_manager.present?
-    recipients << email_address(@reservation.backup_driver) if @reservation.backup_driver.present?
+    recipients << User.find(@reservation.reserved_by).principal_name.presence
     set_passengers
     set_driver_name
     recipients << @passengers_emails if @passengers_emails.present?
@@ -93,7 +90,7 @@ class ReservationMailer < ApplicationMailer
     @recipients = recipients.uniq.join(", ")
     mail(to: @recipients, subject: "Reservation drivers changed for program: #{@reservation.program.display_name}" )
     EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "drivers_edited",
-      sent_to: @recipients, sent_by: reserved_by, sent_at: DateTime.now)
+      sent_to: @recipients, sent_by: user.id, sent_at: DateTime.now)
   end
 
   def car_reservation_remove_passenger(student, user)

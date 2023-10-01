@@ -1,7 +1,7 @@
 class ReservationsController < ApplicationController
   before_action :auth_user
   before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger 
-    finish_reservation update_passengers send_reservation_updated_email cancel_recurring_reservation add_drivers_later approve_all_recurring edit_long ]
+    finish_reservation update_passengers send_reservation_updated_email cancel_recurring_reservation add_drivers_later approve_all_recurring edit_long add_edit_drivers]
   before_action :set_terms_and_units
   before_action :set_programs
   before_action :set_cars, only: %i[ new new_long get_available_cars get_available_cars_long ]
@@ -279,24 +279,6 @@ class ReservationsController < ApplicationController
         return
       end
     end
-    if params[:reservation][:driver_id].present? || params[:reservation][:driver_manager_id].present?
-      if @reservation.driver_manager.present? && params[:reservation][:driver_id].present?
-        @reservation.update(driver_manager: nil)
-      end
-      if @reservation.update(reservation_params)
-        if params[:edit] == "true"
-          redirect_to reservation_path(@reservation), notice: "Drivers were updated."
-          return
-        else
-          redirect_to add_passengers_path(@reservation)
-         return
-        end
-      else
-        @drivers = @reservation.program.students.eligible_drivers
-        render :add_drivers, status: :unprocessable_entity
-        return
-      end
-    end
 
     @reservation.attributes = reservation_params
     @reservation.car_id = params[:car_id]
@@ -322,6 +304,46 @@ class ReservationsController < ApplicationController
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @reservation.errors, status: :unprocessable_entity }
       end
+    end
+  end
+
+  def add_edit_drivers
+    drivers_emails = reservation_drivers_emails
+    if @reservation.driver_manager.present? && params[:reservation][:driver_id].present?
+      @reservation.update(driver_manager: nil)
+    end
+    # check if a new driver is a passenger
+    notice = "Drivers updated."
+    if params[:reservation][:driver_id].present? && @reservation.passengers.include?(Student.find(params[:reservation][:driver_id]))
+      @reservation.passengers.delete(Student.find(params[:reservation][:driver_id]))
+      notice += " Driver was removed from passengers list."
+    end
+    if params[:reservation][:backup_driver_id].present? && @reservation.passengers.include?(Student.find(params[:reservation][:backup_driver_id]))
+      @reservation.passengers.delete(Student.find(params[:reservation][:backup_driver_id]))
+      notice += " Backup Driver was removed from passengers list."
+    end
+    if @reservation.update(reservation_params)
+      if params[:edit] == "true"
+        @reservation = Reservation.find(params[:id])
+        drivers_emails_new = reservation_drivers_emails
+        if drivers_emails == drivers_emails_new
+          notice = "Drivers were not changed"
+        else
+          drivers_emails << drivers_emails_new
+          drivers_emails = drivers_emails.flatten.uniq
+          ReservationMailer.car_reservation_drivers_edited(@reservation, drivers_emails, current_user).deliver_now
+          notice += " Old Drivers were removed from the trip."
+        end
+        redirect_to reservation_path(@reservation), notice: notice
+        return
+      else
+        redirect_to add_passengers_path(@reservation)
+        return
+      end
+    else
+      @drivers = @reservation.program.students.eligible_drivers
+      render :add_drivers, status: :unprocessable_entity
+      return
     end
   end
 
@@ -496,6 +518,20 @@ class ReservationsController < ApplicationController
       @cars = @cars.where(unit_id: @unit_id).order(:car_number)
       @min_date = default_reservation_for_students(@unit_id)
       @max_date = max_day_for_reservation(program)
+    end
+
+    def reservation_drivers_emails
+      drivers_emails = []
+      if @reservation.driver.present?
+        drivers_emails << email_address(@reservation.driver)
+      end
+      if @reservation.backup_driver.present?
+        drivers_emails << email_address(@reservation.backup_driver)
+      end
+      if @reservation.driver_manager.present?
+        drivers_emails << email_address(@reservation.driver_manager)
+      end
+      return drivers_emails
     end
 
     # Only allow a list of trusted parameters through.
