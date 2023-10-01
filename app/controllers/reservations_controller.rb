@@ -308,44 +308,42 @@ class ReservationsController < ApplicationController
   end
 
   def add_edit_drivers
-    if params[:reservation][:driver_id].present? || params[:reservation][:driver_manager_id].present?
-      drivers_emails = reservation_drivers_emails
-      if @reservation.driver_manager.present? && params[:reservation][:driver_id].present?
-        @reservation.update(driver_manager: nil)
-      end
-      # check if a new driver is a passenger
-      notice = "Drivers updated."
-      if params[:reservation][:driver_id].present? && @reservation.passengers.include?(Student.find(params[:reservation][:driver_id]))
-        @reservation.passengers.delete(Student.find(params[:reservation][:driver_id]))
-        notice += " Driver was removed from passengers list."
-      end
-      if params[:reservation][:backup_driver_id].present? && @reservation.passengers.include?(Student.find(params[:reservation][:backup_driver_id]))
-        @reservation.passengers.delete(Student.find(params[:reservation][:backup_driver_id]))
-        notice += " Backup Driver was removed from passengers list."
-      end
-      if @reservation.update(reservation_params)
-        if params[:edit] == "true"
-          @reservation = Reservation.find(params[:id])
-          drivers_emails_new = reservation_drivers_emails
-          if drivers_emails == drivers_emails_new
-            notice = "Drivers were not changed"
-          else
-            drivers_emails << drivers_emails_new
-            drivers_emails = drivers_emails.flatten.uniq
-            ReservationMailer.car_reservation_drivers_edited(@reservation, drivers_emails, current_user).deliver_now
-            notice += " Old Drivers were removed from the trip."
-          end
-          redirect_to reservation_path(@reservation), notice: notice
-          return
+    drivers_emails = reservation_drivers_emails
+    if @reservation.driver_manager.present? && params[:reservation][:driver_id].present?
+      @reservation.update(driver_manager: nil)
+    end
+    # check if a new driver is a passenger
+    notice = "Drivers updated."
+    if params[:reservation][:driver_id].present? && @reservation.passengers.include?(Student.find(params[:reservation][:driver_id]))
+      @reservation.passengers.delete(Student.find(params[:reservation][:driver_id]))
+      notice += " Driver was removed from passengers list."
+    end
+    if params[:reservation][:backup_driver_id].present? && @reservation.passengers.include?(Student.find(params[:reservation][:backup_driver_id]))
+      @reservation.passengers.delete(Student.find(params[:reservation][:backup_driver_id]))
+      notice += " Backup Driver was removed from passengers list."
+    end
+    if @reservation.update(reservation_params)
+      if params[:edit] == "true"
+        @reservation = Reservation.find(params[:id])
+        drivers_emails_new = reservation_drivers_emails
+        if drivers_emails == drivers_emails_new
+          notice = "Drivers were not changed"
         else
-          redirect_to add_passengers_path(@reservation)
-         return
+          drivers_emails << drivers_emails_new
+          drivers_emails = drivers_emails.flatten.uniq
+          ReservationMailer.car_reservation_drivers_edited(@reservation, drivers_emails, current_user).deliver_now
+          notice += " Old Drivers were removed from the trip."
         end
+        redirect_to reservation_path(@reservation), notice: notice
+        return
       else
-        @drivers = @reservation.program.students.eligible_drivers
-        render :add_drivers, status: :unprocessable_entity
+        redirect_to add_passengers_path(@reservation)
         return
       end
+    else
+      @drivers = @reservation.program.students.eligible_drivers
+      render :add_drivers, status: :unprocessable_entity
+      return
     end
   end
 
