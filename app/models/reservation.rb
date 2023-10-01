@@ -51,7 +51,6 @@ class Reservation < ApplicationRecord
 
   validate :check_number_of_people_on_trip, on: :update
   validate :driver_student_or_manager, on: :update
-  validate :check_drivers, on: :update
   validate :check_diff_time
   validate :approve_requires_car, on: :update
 
@@ -130,16 +129,6 @@ class Reservation < ApplicationRecord
       self.driver_manager_id = nil
     end
   end
-
-  def check_drivers
-    if self.passengers.include?(self.driver)
-      errors.add(:base, "remove this driver from the passenger list first.")
-    end
-    if self.passengers.include?(self.backup_driver)
-      errors.add(:base, "remove this backup driver from the passengers list first.")
-    end
-  end
-
 
   def check_diff_time
     if ((self.end_time - self.start_time) / 1.minute).to_i < 46
