@@ -111,11 +111,20 @@ class ReservationMailer < ApplicationMailer
       sent_to: @recipients, sent_by: user.id, sent_at: DateTime.now)
   end
 
-  def car_reservation_remove_passenger(student, user)
+  def car_reservation_remove_passenger(student, user, recurring = false)
     @name = student.name
     @email = email_address(student)
-    mail(to: @email, subject: "Removed from the reservation passagers' list for program: #{@reservation.program.display_name}" )
-    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "passenger_removed",
+    if recurring
+      subject =  "Recurring Reservations - removed from the reservation passagers' list for program: #{@reservation.program.display_name_with_title}"
+      email_type = "recurring_passenger_removed"
+      recurring_reservation = RecurringReservation.new(@reservation)
+      @recurring_rule = recurring_reservation.first_reservation.rule.to_s
+    else
+      subject = "Removed from the reservation passagers' list for program: #{@reservation.program.display_name_with_title}"
+      email_type = "passenger_removed"
+    end
+    mail(to: @email, subject: subject )
+    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: email_type,
       sent_to: @email, sent_by: user.id, sent_at: DateTime.now)
   end
 
