@@ -281,7 +281,7 @@ class ReservationsController < ApplicationController
     end
 
     if params[:recurring] == "true"
-      recurring_reservation =  RecurringReservation.new(@reservation)
+      recurring_reservation = RecurringReservation.new(@reservation)
       result = recurring_reservation.get_following
       update_params = {}
       update_params["site_id"] = reservation_params[:site_id]
@@ -340,11 +340,12 @@ class ReservationsController < ApplicationController
     recurring = false
     drivers_emails = reservation_drivers_emails
     if params[:recurring] == "true"
-      recurring_reservation =  RecurringReservation.new(@reservation)
+      recurring_reservation = RecurringReservation.new(@reservation)
       recurring = true
     end
     if @reservation.driver_manager.present? && params[:reservation][:driver_id].present?
       if params[:recurring] == "true"
+        reservations_to_update = recurring_reservation.get_following
         Reservation.where(id: reservations_to_update).update_all(driver_manager: nil)
       else
         @reservation.update(driver_manager: nil)
@@ -420,15 +421,20 @@ class ReservationsController < ApplicationController
   def add_non_uofm_passengers
     @reservation = Reservation.find(params[:reservation_id])
     authorize @reservation
-    params[:reservation][:non_uofm_passengers].present?
     respond_to do |format|
-      if @reservation.update(reservation_params)
-        @passengers = @reservation.passengers
-        @students = @reservation.program.students.order(:last_name) - @passengers
-        @students.delete(@reservation.driver)
-        @students.delete(@reservation.backup_driver)
-        format.turbo_stream { render :add_non_uofm_passenger }
+      if params[:recurring] == "true"
+        recurring_reservation = RecurringReservation.new(@reservation)
+        reservations_to_update = recurring_reservation.get_following
+        Reservation.where(id: reservations_to_update).update_all(reservation_params.to_h)
+      else
+        @reservation.update(reservation_params)
       end
+      @reservation = Reservation.find(params[:reservation_id])
+      @passengers = @reservation.passengers
+      @students = @reservation.program.students.order(:last_name) - @passengers
+      @students.delete(@reservation.driver)
+      @students.delete(@reservation.backup_driver)
+      format.turbo_stream { render :add_non_uofm_passenger }
     end
   end
 
@@ -509,7 +515,7 @@ class ReservationsController < ApplicationController
   def cancel_recurring_reservation
     unless @reservation.approved
       cancel_type = params[:cancel_type]
-      recurring_reservation =  RecurringReservation.new(@reservation)
+      recurring_reservation = RecurringReservation.new(@reservation)
       case cancel_type
       when "one"
         result = recurring_reservation.get_one
@@ -539,7 +545,7 @@ class ReservationsController < ApplicationController
   end
 
   def approve_all_recurring
-    recurring_reservation =  RecurringReservation.new(@reservation)
+    recurring_reservation = RecurringReservation.new(@reservation)
     result = recurring_reservation.get_all_reservations
     note = ""
     result.each do |id|
