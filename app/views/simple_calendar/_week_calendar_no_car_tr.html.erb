@@ -24,7 +24,7 @@
         <% if list_start.present? %>
           <td class="td-week bg-red-650 border-r border-gray-um90">
             <% list_start.each do |one_reserv| %>
-              <div title="<%= show_reservation(day_reserv.find_by(start_time: step)) %>" class="body-sm-semibold-text">
+              <div class="body-sm-semibold-text div-hover" data-reservation="<%= show_reservation(day_reserv.find_by(start_time: step)) %>">
                 <%= link_to show_reserved_by_in_week_calendar(one_reserv), reservation_path(one_reserv), class: 'link_to_white ml-2' %>
               </div>
               <br>
