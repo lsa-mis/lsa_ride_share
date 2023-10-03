@@ -322,8 +322,9 @@ class ReservationsController < ApplicationController
           @number_of_seats = 1..Car.available.maximum(:number_of_seats)
           @number_of_people_on_trip = Reservation.find(params[:id]).number_of_people_on_trip
           @day_start = params[:day_start].to_date
-          @unit_id = params[:reservation][:unit_id]
+          @unit_id = params[:unit_id]
           @cars = Car.available.where(unit_id: @unit_id).order(:car_number)
+          @sites = @reservation.program.sites
           @car_id = @reservation.car_id
           @start_time = params[:start_time]
           @end_time = params[:end_time]
