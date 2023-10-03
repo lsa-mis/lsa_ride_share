@@ -79,6 +79,16 @@
               <i class="fa-solid fa-pen" aria-hidden="true"></i>
             </span>
           <% end %>
+          <% if recurring?(@reservation) %>
+            <div>
+              <%= link_to add_drivers_path(@reservation, :edit => true, :recurring => true) do %>
+                <span class="tertiary_button"> 
+                  Edit Drivers: This and Following Reservations
+                  <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                </span>
+              <% end %>
+            </div>
+          <% end %>
         </div>
       <% end %>
     </div>
@@ -126,11 +136,23 @@
       </p>
       <% if ((is_admin?(current_user) && @reservation.end_time > DateTime.now) || allow_student_to_edit_reservation?(@reservation) || allow_manager_to_edit_reservation?(@reservation)) %>
         <div class="py-2">
-          <%= link_to add_passengers_path(@reservation, :edit => true) do %>
-            <span class="tertiary_button"> 
-              Edit Passengers
-              <i class="fa-solid fa-pen" aria-hidden="true"></i>
-            </span>
+          <div>
+            <%= link_to add_passengers_path(@reservation, :edit => true) do %>
+              <span class="tertiary_button"> 
+                Edit Passengers
+                <i class="fa-solid fa-pen" aria-hidden="true"></i>
+              </span>
+            <% end %>
+          </div>
+          <% if recurring?(@reservation) %>
+            <div>
+              <%= link_to add_passengers_path(@reservation, :edit => true, :recurring => true) do %>
+                <span class="tertiary_button"> 
+                  Edit Passengers: This and Following Reservations
+                  <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                </span>
+              <% end %>
+            </div>
           <% end %>
         </div>
       <% end %>
