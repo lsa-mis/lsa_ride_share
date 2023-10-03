@@ -484,7 +484,7 @@ class ReservationsController < ApplicationController
       notice = "Passengers list was updated."
     end
     ReservationMailer.with(reservation: @reservation).car_reservation_update_passengers(current_user, recurring).deliver_now
-    redirect_to reservation_path(@reservation), notice: "Passengers list was updated"
+    redirect_to reservation_path(@reservation), notice: notice
   end
 
   # DELETE /reservations/1 or /reservations/1.json
