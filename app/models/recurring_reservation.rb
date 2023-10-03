@@ -117,9 +117,6 @@ class RecurringReservation
 
   def get_following
     list = Array(@reservation.id)
-    if prev_reservation
-      prev_reservation.update(next: nil)
-    end
     next_id = @reservation.next
     until next_id.nil? do
       reserv = Reservation.find(next_id)
