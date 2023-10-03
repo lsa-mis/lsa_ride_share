@@ -83,7 +83,7 @@ class SystemReportsController < ApplicationController
         result.push({"report_name" => "#{report_type} for #{@unit} #{@term}", "total" => records_array1.count, "header" => columns, "rows" => rows})
         return result
       end
-      if report_type == 'vehicle_reports_all'
+      if report_type == 'vehicle_reports_all' || report_type == 'approved_drivers' 
         sql = create_query(report_type)
         return run_query(sql)
       end
@@ -165,9 +165,36 @@ class SystemReportsController < ApplicationController
         JOIN units ON units.id = programs.unit_id"
       end
 
+      if report_type == 'approved_drivers'
+        sql = " SELECT (SELECT students.first_name || ' ' || students.last_name) AS driver_name,
+        (SELECT DISTINCT students.uniqname) as uniqname,
+        students.mvr_status,
+        students.canvas_course_complete_date,
+        students.meeting_with_admin_date,
+        programs.title AS program,
+        terms.name AS term,
+        terms.code AS term_code,
+        (CASE WHEN students.id IS NULL
+          THEN
+            'Manager'
+          ELSE
+            'Student' 
+          END)
+          AS driver_type
+        FROM programs
+        JOIN students ON programs.id = students.program_id
+        JOIN terms ON terms.id = programs.term_id
+        JOIN units ON units.id = programs.unit_id
+        JOIN managers ON programs.id = managers.program_id
+        "
+      end
+
       where = " WHERE terms.id = " + @term_id +  " AND  units.id = " + @unit_id
       if params[:program_id].present?
         where += " AND programs.id = " + params[:program_id]
+      end
+      if report_type == 'approved_drivers'
+        where += " AND students.mvr_status IS NOT NULL AND students.mvr_status != 'Expired' AND students.canvas_course_complete_date IS NOT NULL AND students.meeting_with_admin_date IS NOT NULL "
       end
       sql += where
       if report_type == 'totals_programs' || report_type == 'programs_unique_students'
