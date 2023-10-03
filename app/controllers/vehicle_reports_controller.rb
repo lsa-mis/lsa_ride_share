@@ -40,13 +40,6 @@ class VehicleReportsController < ApplicationController
     @vehicle_report = VehicleReport.new
     @vehicle_report.parking_spot = @reservation.car.parking_spot
     authorize @vehicle_report
-    @pictures_start_required = false
-    if @reservation.program.pictures_required_start
-      @pictures_start_required = true
-    end 
-    if @reservation.program.pictures_required_end
-      @pictures_end_required = true
-    end
   end
 
   # GET /vehicle_reports/1/edit
@@ -72,6 +65,16 @@ class VehicleReportsController < ApplicationController
 
     respond_to do |format|
       if @vehicle_report.save
+        car = @reservation.car
+        if @vehicle_report.mileage_end.present?
+          car.update(mileage: @vehicle_report.mileage_end)
+        end
+        if @vehicle_report.gas_end.present?
+          car.update(gas: @vehicle_report.gas_end)
+        end
+        if @vehicle_report.parking_spot_return.present?
+          car.update(parking_spot: @vehicle_report.parking_spot_return, last_used: DateTime.now, last_driver_id: @reservation.driver_id)
+        end
         format.html { redirect_to vehicle_report_url(@vehicle_report), notice: "Vehicle report was successfully created." }
         format.json { render :show, status: :created, location: @vehicle_report }
       else
