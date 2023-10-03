@@ -72,6 +72,16 @@ class VehicleReportsController < ApplicationController
 
     respond_to do |format|
       if @vehicle_report.save
+        car = @reservation.car
+        if @vehicle_report.mileage_end.present?
+          car.update(mileage: @vehicle_report.mileage_end)
+        end
+        if @vehicle_report.gas_end.present?
+          car.update(gas: @vehicle_report.gas_end)
+        end
+        if @vehicle_report.parking_spot_return.present?
+          car.update(parking_spot: @vehicle_report.parking_spot_return, last_used: DateTime.now, last_driver_id: @reservation.driver_id)
+        end
         format.html { redirect_to vehicle_report_url(@vehicle_report), notice: "Vehicle report was successfully created." }
         format.json { render :show, status: :created, location: @vehicle_report }
       else
