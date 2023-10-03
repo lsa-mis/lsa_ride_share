@@ -202,7 +202,13 @@ module ApplicationHelper
   end
   
   def show_reserved_by_in_week_calendar(reservation)
-    User.find(reservation.reserved_by).display_name
+    if reservation.driver.present?
+      reservation.driver.name
+    elsif reservation.driver_manager.present?
+      reservation.driver_manager.name
+    else
+      User.find(reservation.reserved_by).display_name
+    end
   end
 
   def show_reservation(reservation)
