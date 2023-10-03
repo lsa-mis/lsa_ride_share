@@ -202,7 +202,13 @@ module ApplicationHelper
   end
   
   def show_reserved_by_in_week_calendar(reservation)
-    User.find(reservation.reserved_by).display_name
+    if reservation.driver.present?
+      reservation.driver.name
+    elsif reservation.driver_manager.present?
+      reservation.driver_manager.name
+    else
+      User.find(reservation.reserved_by).display_name
+    end
   end
 
   def show_reservation(reservation)
@@ -212,12 +218,12 @@ module ApplicationHelper
       recurring = "Recurring - no"
     end
     if reservation.driver.present? || reservation.driver_manager.present?
-      driver = "Driver: " + show_driver(reservation) + "(" + reservation.driver_phone + ")"
+      driver = "Driver: " + show_driver(reservation) + " (" + reservation.driver_phone + ")"
     else 
       driver = show_driver(reservation)
     end
     if reservation.backup_driver.present?
-      backup_driver = "Backup Driver: " + show_backup_driver(reservation) + " - " + reservation.backup_driver_phone
+      backup_driver = "Backup Driver: " + show_backup_driver(reservation) + " (" + reservation.backup_driver_phone + ")"
     else
       backup_driver = show_backup_driver(reservation)
     end

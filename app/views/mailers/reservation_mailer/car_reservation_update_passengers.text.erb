@@ -4,10 +4,13 @@ The passengers list for the transportation reservation has been updated.
 Reservation for:  <%= link_to "#{@reservation.display_name}", reservation_url(@reservation) %>
 ================================================================================================
 DATE: <%= "#{@start_time} - #{@end_time}" %>
+<% if @recurring_rule.present? %>
+RECURRING: <%= @recurring_rule %>
+<% end %>
 <% if @reservation.car.present? %>
-  VEHICLE #: <%= @reservation.car.car_number %>
+VEHICLE #: <%= @reservation.car.car_number %>
 <% else %>
-  VEHICLE #: No car selected
+VEHICLE #: No car selected
 <% end %>
 SITE: <%= @reservation.site.title %>
 PROGRAM: <%= @reservation.program.title %>
@@ -18,7 +21,7 @@ Passengers:
   <%= p %>
 <% end %>
 <% if @non_uofm_passengers.present?  %>
-  Non UofM Passengers: <%= @non_uofm_passengers %>
+Non UofM Passengers: <%= @non_uofm_passengers %>
 <% end %>
 
 You can email <%= @unit_email %> or call the office at: <%= @contact_phone %>.

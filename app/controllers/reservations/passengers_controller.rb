@@ -11,18 +11,30 @@ class Reservations::PassengersController < ApplicationController
 
   def add_passenger
     authorize([@reservation, Student])
-    if params[:reservation][:student_id].present?
-      @reservation.passengers << Student.find(params[:reservation][:student_id])
-      redirect_to add_passengers_path(@reservation, :edit => params[:reservation][:edit])
+    if params[:student_id].present?
+      if params[:recurring] == "true"
+        recurring_reservation =  RecurringReservation.new(@reservation)
+        recurring_reservation.add_passenger_following_reservations(Student.find(params[:student_id]))
+      else
+        @reservation.passengers << Student.find(params[:student_id])
+      end
+      redirect_to add_passengers_path(@reservation, :edit => params[:edit], :recurring => params[:recurring])
     end
   end
 
   def remove_passenger
     authorize([@reservation, Student])
-    @reservation.passengers.delete(Student.find(params[:student_id]))
+    recurring = false
+    if params[:recurring] == "true"
+      recurring_reservation =  RecurringReservation.new(@reservation)
+      recurring_reservation.remove_passenger_following_reservations(Student.find(params[:student_id]))
+      recurring = true
+    else
+      @reservation.passengers.delete(Student.find(params[:student_id]))
+    end
     # send email only if reservation confirmation email has been sent already; if a passenger is removed for a new reservation - do not sent an email
     if EmailLog.find_by(email_type: "confirmation", sent_from_model: "Reservation", record_id: @reservation)
-      ReservationMailer.with(reservation: @reservation).car_reservation_remove_passenger(Student.find(params[:student_id]), current_user).deliver_now
+      ReservationMailer.with(reservation: @reservation).car_reservation_remove_passenger(Student.find(params[:student_id]), current_user, recurring).deliver_now
     end
     add_passengers
   end

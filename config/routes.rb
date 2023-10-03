@@ -81,9 +81,8 @@ Rails.application.routes.draw do
     resources :managers, module: :programs, only: [ :new, :create ]
   end
 
+  get '/managers/update_managers_mvr_status', to: 'managers#update_managers_mvr_status', as: :update_managers_mvr_status, defaults: { format: :turbo_stream }
   resources :managers
-  get '/managers/update_managers_mvr_status/:id', to: 'managers#update_managers_mvr_status', as: :update_managers_mvr_status, defaults: { format: :turbo_stream }
-
 
   get '/programs/managers/edit_program_managers/:program_id', to: 'programs/managers#edit_program_managers', as: :edit_program_managers
   delete 'programs/managers/remove_manager/:program_id/:id', to: 'programs/managers#remove_manager_from_program', as: :remove_manager_from_program

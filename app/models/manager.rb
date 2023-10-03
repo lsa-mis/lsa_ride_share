@@ -24,8 +24,16 @@ class Manager < ApplicationRecord
     Program.current_term.where(instructor: self)
   end
 
+  def instructor_all_terms
+    Program.where(instructor: self)
+  end
+
   def manager
     Program.current_term.joins(:managers).where('managers_programs.manager_id = ?', self)
+  end
+
+  def manager_all_terms
+    Program.joins(:managers).where('managers_programs.manager_id = ?', self)
   end
 
   def programs
@@ -72,4 +80,9 @@ class Manager < ApplicationRecord
   def display_name
     "#{self.first_name} #{self.last_name} - #{self.uniqname}" 
   end
+
+  def name
+    "#{self.first_name} #{self.last_name}"
+  end
+
 end
