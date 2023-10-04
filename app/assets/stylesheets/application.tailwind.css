@@ -185,7 +185,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .primary_button {
-    @apply py-2 px-4 font-montserrat font-medium leading-7 text-xs border rounded-md text-white bg-blue-umblue;
+    @apply w-3/4 h-10 mb-2 py-1 px-4 font-montserrat font-medium leading-7 text-xs border rounded-md text-white bg-blue-umblue;
   }
 
   .primary_button:hover {
@@ -205,7 +205,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .secondary_yellow_button {
-    @apply py-2 px-4 font-montserrat font-medium leading-7 text-xs border rounded-md text-blue-umblue bg-yellow-ummaze;
+    @apply w-3/4 h-10 mb-2 py-1 px-4 font-montserrat font-medium leading-7 text-xs border rounded-md text-blue-umblue bg-yellow-ummaze;
   }
 
   .secondary_yellow_button:hover {
@@ -225,7 +225,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .secondary_blue_button {
-    @apply py-2 px-4 font-montserrat font-medium leading-7 text-xs border rounded-md text-white bg-blue-750;
+    @apply w-3/4 h-10 mb-2 py-1 px-4 font-montserrat font-medium leading-7 text-xs border rounded-md text-white bg-blue-750;
   }
 
   .secondary_blue_button:hover {
@@ -245,7 +245,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .tertiary_button {
-    @apply py-2 px-4 font-montserrat font-medium leading-7 text-xs text-blue-umblue;
+    @apply w-3/4 h-10 mb-2 py-1 px-4 font-montserrat font-medium leading-7 text-xs text-blue-umblue;
   }
 
   .tertiary_button:hover {
@@ -302,7 +302,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .filter_select {
-    @apply text-sm font-medium leading-4 text-blue-umblue bg-white border border-gray-600 rounded block p-2 focus:ring-blue-500 font-montserrat;
+    @apply w-full h-10 mb-6 text-sm font-medium leading-4 text-blue-umblue bg-white border border-gray-600 rounded block p-2 focus:ring-blue-500 font-montserrat;
   }
 
   .file-upload {
