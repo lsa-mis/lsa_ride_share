@@ -72,6 +72,37 @@ class RecurringReservation
     end
   end
 
+  def update_drivers(params)
+    list = get_following
+    note = ""
+    list.each do |id|
+      reservation = Reservation.find(id)
+      unless reservation.update(params)
+        note += "Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". "
+      end
+    end
+    if note == ""
+      note = "Drivers were updated for this and following recurring reservations."
+    end
+    return note
+  end
+
+  def add_passenger_following_reservations(student)
+    list = get_following
+    list.each do |id|
+      reservation = Reservation.find(id)
+      reservation.passengers << student
+    end
+  end
+
+  def remove_passenger_following_reservations(student)
+    list = get_following
+    list.each do |id|
+      reservation = Reservation.find(id)
+      reservation.passengers.delete(student)
+    end
+  end
+
   def get_one
     if prev_reservation && next_reservation
       next_reservation.update(prev: prev_reservation.id)
@@ -86,9 +117,6 @@ class RecurringReservation
 
   def get_following
     list = Array(@reservation.id)
-    if prev_reservation
-      prev_reservation.update(next: nil)
-    end
     next_id = @reservation.next
     until next_id.nil? do
       reserv = Reservation.find(next_id)

@@ -3,6 +3,19 @@
     <div>
       <% if params["edit"] %>
         <h1>Edit Passengers</h1>
+        <% if params["all_recurring"] == "true" %>
+          <h2>for All Recurring Reservations</h2>
+          <div class="pt-4 pb-2">
+            <% recurring_reservation = RecurringReservation.new(@reservation) %>
+            <p class="body-lg-bold-text inline">
+              Recurring:
+            </p>
+            <p class="body-lg-text ml-2 inline">
+              Start on <%= show_date(@reservation.start_time) %>
+              <%= recurring_reservation.first_reservation.rule.to_s %>
+            </p>
+          </div>
+        <% end %>
       <% else %>
         <h1>Add Passengers</h1>
       <% end %>
@@ -13,7 +26,7 @@
     <div class="mt-4 whitespace-nowrap">
       <% if params["edit"] == "true" %>
         <div class="lg:flex lg:flex-col place-items-end whitespace-nowrap">
-          <%= link_to "Go Back to Reservation Page", update_passengers_path(@reservation), class: "primary_button mb-4" %>
+          <%= link_to "Go Back to Reservation Page", update_passengers_path(@reservation, :recurring => params[:recurring]), class: "primary_button mb-4" %>
           <%= link_to reservation_path(@reservation) do %>
             <span class="tertiary_button">Cancel
               <i class="fa fa-times" aria-hidden="true"></i>

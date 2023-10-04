@@ -50,6 +50,8 @@ Rails.application.routes.draw do
   get '/reservations/add_passenger/:reservation_id', to: 'reservations/passengers#add_passenger', as: :add_passenger
 
   get '/reservations/add_drivers/:id', to: 'reservations#add_drivers', as: :add_drivers
+  patch '/reservations/add_edit_drivers/:id', to: 'reservations#add_edit_drivers', as: :add_edit_drivers
+
   delete 'reservations/:reservation_id/:student_id', to: 'reservations/passengers#remove_passenger', as: :remove_passenger
   get '/reservations/day_reservations/:date', to: 'reservations#day_reservations', as: :day_reservations
   get '/reservations/:id/add_drivers_later', to: 'reservations#add_drivers_later', as: :add_drivers_later
@@ -79,9 +81,8 @@ Rails.application.routes.draw do
     resources :managers, module: :programs, only: [ :new, :create ]
   end
 
+  get '/managers/update_managers_mvr_status', to: 'managers#update_managers_mvr_status', as: :update_managers_mvr_status, defaults: { format: :turbo_stream }
   resources :managers
-  get '/managers/update_managers_mvr_status/:id', to: 'managers#update_managers_mvr_status', as: :update_managers_mvr_status, defaults: { format: :turbo_stream }
-
 
   get '/programs/managers/edit_program_managers/:program_id', to: 'programs/managers#edit_program_managers', as: :edit_program_managers
   delete 'programs/managers/remove_manager/:program_id/:id', to: 'programs/managers#remove_manager_from_program', as: :remove_manager_from_program

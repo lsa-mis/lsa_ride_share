@@ -24,8 +24,16 @@ class Manager < ApplicationRecord
     Program.current_term.where(instructor: self)
   end
 
+  def instructor_all_terms
+    Program.where(instructor: self)
+  end
+
   def manager
     Program.current_term.joins(:managers).where('managers_programs.manager_id = ?', self)
+  end
+
+  def manager_all_terms
+    Program.joins(:managers).where('managers_programs.manager_id = ?', self)
   end
 
   def programs
@@ -56,15 +64,25 @@ class Manager < ApplicationRecord
     where.not(class_training_date: nil) 
   end
 
+  def reservations_current
+    Reservation.current_term.where(reserved_by: User.find_by(uniqname: self.uniqname)).where("(start_time BETWEEN ? AND ?) OR (start_time < ? AND end_time > ?)",
+    Date.today.beginning_of_day, Date.today.end_of_day, Date.today.end_of_day, Date.today.beginning_of_day)
+  end
+
   def reservations_past
-    Reservation.where('reserved_by = ? AND start_time <= ?', User.find_by(uniqname: self.uniqname), DateTime.now)
+    Reservation.current_term.where('reserved_by = ? AND end_time < ?', User.find_by(uniqname: self.uniqname), Date.today.beginning_of_day)
   end
 
   def reservations_future
-    Reservation.where('reserved_by = ? AND start_time > ?', User.find_by(uniqname: self.uniqname), DateTime.now)
+    Reservation.current_term.where('reserved_by = ? AND start_time > ?', User.find_by(uniqname: self.uniqname), Date.today.end_of_day)
   end
 
   def display_name
     "#{self.first_name} #{self.last_name} - #{self.uniqname}" 
   end
+
+  def name
+    "#{self.first_name} #{self.last_name}"
+  end
+
 end

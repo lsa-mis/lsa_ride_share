@@ -106,11 +106,8 @@ class ProgramsController < ApplicationController
       result['instructor_id'] = Manager.find_by(uniqname: uniqname).id
     else
       @instructor = Manager.new(uniqname: uniqname)
-      name = LdapLookup.get_simple_name(uniqname)
-      if name == "No such user"
-        result['note'] = "The '#{uniqname}' uniqname is not valid."
-      else
-        result['valid'] =  true
+      valid = LdapLookup.uid_exist?(uniqname)
+      if valid
         # check if uniqname is an admin uniqname
         ldap_group = is_member_of_admin_groups?(uniqname)
         if ldap_group
@@ -118,8 +115,10 @@ class ProgramsController < ApplicationController
           result['note'] = "#{uniqname} is an admin - a member of #{ldap_group} group. Admins can't be instructors."
           return result
         end
-        if name.nil?
-          result['note'] = "Mcommunity returns no name for '#{uniqname}' uniqname."
+        name = LdapLookup.get_simple_name(uniqname)
+        result['valid'] =  true
+        if name.include?("No displayname")
+          result['note'] = " Mcommunity returns no name for '#{uniqname}' uniqname. Please go to Programs->Managers and add first and last names manually."
           @instructor.first_name = ''
           @instructor.last_name = ''
         else
@@ -130,8 +129,10 @@ class ProgramsController < ApplicationController
           result['instructor_id'] = @instructor.id
         else 
           result['valid'] =  false
-          result['note'] = 'Error saving instructor record. Please report the issue'
+          result['note'] = 'Error saving instructor record. Please report the issue.'
         end
+      else
+        result['note'] = "The '#{uniqname}' uniqname is not valid."
       end
     end
     return result

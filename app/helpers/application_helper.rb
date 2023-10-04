@@ -192,14 +192,59 @@ module ApplicationHelper
   def show_reservation_date(reservation)
     show_date_time(reservation.start_time) + " - " +  show_date_time(reservation.end_time)
   end
+
+  def show_day_reservation_time(reservation)
+    if reservation.start_time.to_date == reservation.end_time.to_date 
+      show_time(reservation.start_time) + " - " +  show_time(reservation.end_time)
+    else
+      show_date_time(reservation.start_time) + " - " +  show_date_time(reservation.end_time)
+    end
+  end
   
   def show_reserved_by_in_week_calendar(reservation)
-    User.find(reservation.reserved_by).display_name
+    if reservation.driver.present?
+      reservation.driver.name
+    elsif reservation.driver_manager.present?
+      reservation.driver_manager.name
+    else
+      User.find(reservation.reserved_by).display_name
+    end
   end
 
   def show_reservation(reservation)
+    if recurring?(reservation)
+      recurring = "Recurring - yes"
+    else
+      recurring = "Recurring - no"
+    end
+    if reservation.driver.present? || reservation.driver_manager.present?
+      driver = "Driver: " + show_driver(reservation) + " (" + reservation.driver_phone + ")"
+    else 
+      driver = show_driver(reservation)
+    end
+    if reservation.backup_driver.present?
+      backup_driver = "Backup Driver: " + show_backup_driver(reservation) + " (" + reservation.backup_driver_phone + ")"
+    else
+      backup_driver = show_backup_driver(reservation)
+    end
+    if reservation.passengers.present?
+      passengers = "Passengers: "
+      reservation.passengers.each do |passenger|
+        passengers += passenger.display_name + "\n"
+      end
+    else
+      passengers = "No passengerds"
+    end
+    if reservation.program.non_uofm_passengers && reservation.non_uofm_passengers.present?
+      non_uofm_passengers = reservation.number_of_non_uofm_passengers.to_s + " Non UofM Passenge(s): " + reservation.non_uofm_passengers
+    else
+      non_uofm_passengers = ""
+    end
     reservation.program.title + "\n" + reservation.site.title + "\n" +
-    show_date_time(reservation.start_time + 15.minute) + "\n" +  show_date_time(reservation.end_time - 15.minute)
+    "From: " + show_date_time(reservation.start_time + 15.minute) + "\n" +  "To: " + show_date_time(reservation.end_time - 15.minute) + "\n" +
+    recurring + "\n" + driver + "\n" + backup_driver + "\n" +
+    reservation.number_of_people_on_trip.to_s + " people on the trip" + "\n" +
+    passengers + non_uofm_passengers
   end
 
   def show_backup_driver(reservation)

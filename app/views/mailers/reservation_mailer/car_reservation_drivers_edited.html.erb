@@ -13,6 +13,9 @@
      Reservation Summary:
       <ul>
         <li>DATE: <%= "#{@start_time} - #{@end_time}" %></li>
+        <% if @recurring_rule.present? %>
+          <li>RECURRING: <%= @recurring_rule %></li>
+        <% end %>
         <% if @reservation.car.present? %>
           <li>VEHICLE #: <%= @reservation.car.car_number %></li>
         <% else %>

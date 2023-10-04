@@ -39,12 +39,12 @@
               <%= manager.meeting_with_admin_date %>
             </td>
             <td class="mi_tbody_td">
-              <% manager.instructor.each do |program| %>
-                <%= program.title_term %> (instructor)
+              <% manager.instructor_all_terms.each do |program| %>
+                <%= program.display_name_with_title_and_unit %> (instructor)
                 <br>
               <% end %>
-              <% manager.manager.each do |program| %>
-                <%= program.title_term %> (manager)
+              <% manager.manager_all_terms.each do |program| %>
+                <%= program.display_name_with_title_and_unit %> (manager)
                 <br>
               <% end %>
             </td>

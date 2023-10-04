@@ -45,18 +45,24 @@ class Reservation < ApplicationRecord
   has_one :vehicle_report, dependent: :destroy
   before_destroy :car_reservation_cancel
   before_update :check_number_of_non_uofm_passengers
-  before_update :send_email_on_drivers_update
   before_create :check_recurring
   
   has_rich_text :note
 
   validate :check_number_of_people_on_trip, on: :update
   validate :driver_student_or_manager, on: :update
-  validate :check_drivers, on: :update
   validate :check_diff_time
   validate :approve_requires_car, on: :update
 
   scope :with_passengers, -> { Reservation.includes(:passengers) }
+  scope :include_vehicle_reports, -> { Reservation.includes(:vehicle_report) }
+  scope :current_term, -> { include_vehicle_reports.where(program_id: Program.current_term.ids)}
+  scope :current_past, -> { current_term.where("(end_time < ?) OR (start_time < ? AND end_time > ?)",
+    Date.today.end_of_day, Date.today.end_of_day, Date.today.beginning_of_day) }
+  scope :with_no_vehicle_reports, -> { current_past.where(vehicle_report: {id: nil}) }
+  scope :with_not_complete_vehicle_reports, -> { current_past.where(vehicle_report: {student_status: false}) }
+  scope :no_or_not_complete_vehicle_reports, -> { Reservation.with_not_complete_vehicle_reports.or(Reservation.with_no_vehicle_reports) }
+  scope :complete_vehicle_reports, -> { current_term.where(vehicle_report: {student_status: true}) }
 
   def reservation_date
     start_d = start_time.present? ? start_time.strftime("%m/%d/%Y %I:%M%p") : ''
@@ -121,56 +127,6 @@ class Reservation < ApplicationRecord
   def driver_student_or_manager
     if self.driver_id.present? && self.driver_manager_id.present?
       self.driver_manager_id = nil
-    end
-  end
-
-  def check_drivers
-    if self.passengers.include?(self.driver)
-      errors.add(:base, "remove this driver from the passenger list first.")
-    end
-    if self.passengers.include?(self.backup_driver)
-      errors.add(:base, "remove this backup driver from the passengers list first.")
-    end
-  end
-
-  def send_email_on_drivers_update
-    drivers_emails = []
-    if self.driver_id.present? && self.driver_changed?
-      if self.driver_id_change[1].present? && self.driver_id_change[0].nil?
-        return
-      end
-    end
-    if self.driver_changed?
-      if self.driver_id_change[0].present?
-        drivers_emails << email_address(Student.find(self.driver_id_change[0]))
-      end
-      if self.driver_id_change[1].present?
-        drivers_emails << email_address(Student.find(self.driver_id_change[1]))
-      end
-    end
-    if self.driver_manager_id.present? && self.driver_manager_changed?
-      if self.driver_manager_id_change[1].present? && self.driver_manager_id_change[0].nil?
-        return
-      end
-    end
-    if self.driver_manager_changed?
-      if self.driver_manager_id_change[0].present?
-        drivers_emails << email_address(Manager.find(self.driver_manager_id_change[0]))
-      end
-      if self.driver_manager_id_change[1].present?
-        drivers_emails << email_address(Manager.find(self.driver_manager_id_change[1]))
-      end
-    end
-    if self.backup_driver_changed?
-      if self.backup_driver_id_change[0].present?
-        drivers_emails << email_address(Student.find(self.backup_driver_id_change[0]))
-      end
-      if self.backup_driver_id_change[1].present?
-        drivers_emails << email_address(Student.find(self.backup_driver_id_change[1]))
-      end
-    end
-    if drivers_emails.present?
-      ReservationMailer.car_reservation_drivers_edited(self, drivers_emails, self.reserved_by).deliver_now
     end
   end
 

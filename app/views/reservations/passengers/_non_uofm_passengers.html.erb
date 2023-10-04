@@ -34,6 +34,7 @@
 
       <div class="error_text mb-2" id="error_place"></div>
       <input type="hidden" id="edit" name="edit" value=<%= params[:edit] %>>
+      <input type="hidden" id="recurring" name="recurring" value=<%= params[:recurring] %>>
 
       <div>
           <% if @reservation.number_of_non_uofm_passengers == 0 %>

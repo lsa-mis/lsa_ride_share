@@ -104,17 +104,13 @@
           <% end %>
 
           <% if @reservation.approved %>
-            <div class="grid grid-cols-1 gap-4 place-content-center ">
-              <div class="text-center py-2 h-10 font-montserrat font-medium leading-5 border rounded-md text-white bg-blue-750 hover:underline hover:text-blue-umblue hover:bg-white hover:border-solid hover:border-blue-umblue hover:border-2">
-                <% unless is_manager?(current_user) %>
-                  <% if @reservation.vehicle_report.present? %>
-                    <%= link_to 'Vehicle Report', vehicle_report_path(@reservation.vehicle_report), class: "text-base font-medium" if @reservation.car.present? %>
-                  <% else %>
-                    <%= link_to 'New Vehicle Report', new_reservation_vehicle_report_path(@reservation), class: "text-base font-medium" if @reservation.car.present? %>
-                  <% end %>
-                <% end %>
-              </div>
-            </div>
+            <% unless is_manager?(current_user) %>
+              <% if @reservation.vehicle_report.present? %>
+                <%= link_to 'Vehicle Report', vehicle_report_path(@reservation.vehicle_report), class: "secondary_blue_button" if @reservation.car.present? %>
+              <% else %>
+                <%= link_to 'New Vehicle Report', new_reservation_vehicle_report_path(@reservation), class: "secondary_blue_button" if @reservation.car.present? %>
+              <% end %>
+            <% end %>
           <% end %>
 
       </div>

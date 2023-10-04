@@ -33,13 +33,18 @@
       <div class="my-8 whitespace-nowrap">
         <% if @student.present? && max_day_for_reservation(@student.program) > default_reservation_for_students(@student.program.unit.id) %>
           <%= link_to "One Day Reservation", new_reservation_path(:student_id => @student.id), class: "secondary_blue_button" if @student.can_reserve_car? %>
-          <%= link_to "Multiple Days Reservation", new_long_reservation_path(:student_id => @student.id), class: "secondary_blue_button" if @student.can_reserve_car? %>
+          <%= link_to "Over-Night Reservation", new_long_reservation_path(:student_id => @student.id), class: "secondary_blue_button" if @student.can_reserve_car? %>
         <% end %>
       </div>
       <div class="my-2">
         <% if @program.present? %>
           <h2><%= @program.display_name_with_title_and_unit %></h2>
         <% end %>
+        <div>
+          <% if @reservations_current.present? %>
+            <%= render 'student_reservations_current' %>
+          <% end %>
+        </div>
         <div>
           <% if @reservations_future.present? %>
             <%= render 'student_reservations_future' %>

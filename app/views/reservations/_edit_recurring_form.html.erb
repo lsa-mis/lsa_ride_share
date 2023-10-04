@@ -20,6 +20,7 @@
     </p>
   </div>
   <input type="hidden" id="unit_id" name="unit_id" value=<%= @unit_id %> data-editreservation-target="unit">
+  <input type="hidden" id="recurring" name="recurring" value=<%= params[:recurring] %>>
 
   <div class="py-2">
     <label class="body-lg-bold-text">
@@ -55,18 +56,6 @@
       <%= form.label :number_of_people_on_trip, 'Number of People on Trip *', class: "fancy_label" %>
       <%= select_tag :number_of_people_on_trip, options_for_select(@number_of_seats, @number_of_people_on_trip), class: "input_text_field" %>
     </div>
-    <div>
-      <%= form.label :day_start, "Choose a Start Date", class: "fancy_label" %>
-      <%= text_field_tag :day_start, @day_start,
-        data: {
-        controller: "flatpickr",
-        flatpickr_date_format: "Y-m-d",
-        flatpickr_min_date: @min_date
-        }, "data-editreservation-target": "day_start", "data-action": "change->editreservation#changeDay",
-        class: "input_text_field"
-      %>
-    </div>
-    <div></div>
 
     <div class="py-2">
       <label class="body-lg-bold-text">
