@@ -87,6 +87,7 @@ class SystemReportsController < ApplicationController
         sql = create_query(report_type)
         return run_query(sql)
       end
+
     end
 
     def create_query(report_type)
@@ -174,22 +175,15 @@ class SystemReportsController < ApplicationController
         programs.title AS program,
         terms.name AS term,
         terms.code AS term_code,
-        (CASE WHEN students.id IS NULL
-          THEN
-            'Manager'
-          ELSE
-            'Student' 
-          END)
-          AS driver_type
+        'Student' AS driver_type
         FROM programs
         JOIN students ON programs.id = students.program_id
         JOIN terms ON terms.id = programs.term_id
-        JOIN units ON units.id = programs.unit_id
-        JOIN managers ON programs.id = managers.program_id
-        "
+        JOIN units ON units.id = programs.unit_id"
       end
 
       where = " WHERE terms.id = " + @term_id +  " AND  units.id = " + @unit_id
+
       if params[:program_id].present?
         where += " AND programs.id = " + params[:program_id]
       end
@@ -200,6 +194,25 @@ class SystemReportsController < ApplicationController
       if report_type == 'totals_programs' || report_type == 'programs_unique_students'
         sql += " GROUP BY program_id ORDER BY program_id"
       end
+      
+      if report_type == 'approved_drivers'
+        sql += "UNION
+        SELECT (SELECT managers.first_name || ' ' || managers.last_name) AS driver_name,
+        (SELECT DISTINCT managers.uniqname) as uniqname,
+        managers.mvr_status,
+        managers.canvas_course_complete_date,
+        managers.meeting_with_admin_date,
+        programs.title AS program,
+        terms.name AS term,
+        terms.code AS term_code,
+        'Manager' AS driver_type
+        FROM programs
+        JOIN managers ON programs.id = managers.program_id
+        JOIN terms ON terms.id = programs.term_id
+        JOIN units ON units.id = programs.unit_id"
+        sql += " WHERE terms.id = " + @term_id +  " AND  units.id = " + @unit_id + " AND managers.mvr_status IS NOT NULL AND managers.mvr_status != 'Expired' AND managers.canvas_course_complete_date IS NOT NULL AND managers.meeting_with_admin_date IS NOT NULL ORDER by driver_name"
+      end
+
       return sql
     end
 
