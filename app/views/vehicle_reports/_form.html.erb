@@ -14,6 +14,7 @@
       </ul>
     </div>
   <% end %>
+  <h2>Reservation <%= show_reservation_date(@reservation) %></h2>
   <h2>Car: 
     <%= @reservation.car.car_number + " - " + @reservation.program.title %>
   </h2>
