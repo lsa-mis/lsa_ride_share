@@ -98,7 +98,12 @@ class SystemReportsController < ApplicationController
           join vehicle_reports AS vr on vr.reservation_id = res.id
           JOIN programs ON programs.id = res.program_id
           JOIN terms ON terms.id = programs.term_id
-          JOIN units ON units.id = programs.unit_id"
+          JOIN units ON units.id = programs.unit_id
+          WHERE terms.id = " + @term_id +  " AND  units.id = " + @unit_id
+          if params[:program_id].present?
+            sql += " AND programs.id = " + params[:program_id]
+          end
+          sql += " GROUP BY program_id ORDER BY program_id"
       end
       if report_type == 'programs_unique_students'
         sql = "SELECT  program_id,
@@ -120,7 +125,12 @@ class SystemReportsController < ApplicationController
           JOIN cars ON cars.id = res.car_id
           JOIN programs ON programs.id = res.program_id
           JOIN terms ON terms.id = programs.term_id
-          JOIN units ON units.id = programs.unit_id"
+          JOIN units ON units.id = programs.unit_id
+          WHERE terms.id = " + @term_id +  " AND  units.id = " + @unit_id
+          if params[:program_id].present?
+            sql += " AND programs.id = " + params[:program_id]
+          end
+          sql += " GROUP BY program_id ORDER BY program_id"
       end
       if report_type == 'vehicle_reports_all'
         sql = "SELECT DISTINCT(vehicle_reports.id), (SELECT programs.title from programs WHERE res.program_id = programs.id) AS program,
@@ -163,7 +173,11 @@ class SystemReportsController < ApplicationController
         JOIN cars ON cars.id = res.car_id
         JOIN programs ON programs.id = res.program_id
         JOIN terms ON terms.id = programs.term_id
-        JOIN units ON units.id = programs.unit_id"
+        JOIN units ON units.id = programs.unit_id
+        WHERE terms.id = " + @term_id +  " AND  units.id = " + @unit_id
+        if params[:program_id].present?
+          sql += " AND programs.id = " + params[:program_id]
+        end
       end
 
       if report_type == 'approved_drivers'
@@ -173,44 +187,29 @@ class SystemReportsController < ApplicationController
         students.canvas_course_complete_date,
         students.meeting_with_admin_date,
         programs.title AS program,
-        terms.name AS term,
-        terms.code AS term_code,
+        programs.term_id AS term_code,
         'Student' AS driver_type
         FROM programs
         JOIN students ON programs.id = students.program_id
-        JOIN terms ON terms.id = programs.term_id
-        JOIN units ON units.id = programs.unit_id"
-      end
-
-      where = " WHERE terms.id = " + @term_id +  " AND  units.id = " + @unit_id
-
-      if params[:program_id].present?
-        where += " AND programs.id = " + params[:program_id]
-      end
-      if report_type == 'approved_drivers'
-        where += " AND students.mvr_status IS NOT NULL AND students.mvr_status != 'Expired' AND students.canvas_course_complete_date IS NOT NULL AND students.meeting_with_admin_date IS NOT NULL "
-      end
-      sql += where
-      if report_type == 'totals_programs' || report_type == 'programs_unique_students'
-        sql += " GROUP BY program_id ORDER BY program_id"
-      end
-      
-      if report_type == 'approved_drivers'
-        sql += "UNION
+        WHERE programs.term_id = " + @term_id +  " AND programs.units_id = " + @unit_id + " 
+        AND students.mvr_status IS NOT NULL AND students.mvr_status != 'Expired' AND students.canvas_course_complete_date IS NOT NULL AND students.meeting_with_admin_date IS NOT NULL "
+        if params[:program_id].present?
+          sql += " AND programs.id = " + params[:program_id]
+        end
+        sql += " UNION
         SELECT (SELECT managers.first_name || ' ' || managers.last_name) AS driver_name,
         (SELECT DISTINCT managers.uniqname) as uniqname,
         managers.mvr_status,
         managers.canvas_course_complete_date,
         managers.meeting_with_admin_date,
         programs.title AS program,
-        terms.name AS term,
-        terms.code AS term_code,
+        programs.term_id AS term_code,
         'Manager' AS driver_type
         FROM programs
         JOIN managers ON programs.id = managers.program_id
-        JOIN terms ON terms.id = programs.term_id
-        JOIN units ON units.id = programs.unit_id"
-        sql += " WHERE terms.id = " + @term_id +  " AND  units.id = " + @unit_id + " AND managers.mvr_status IS NOT NULL AND managers.mvr_status != 'Expired' AND managers.canvas_course_complete_date IS NOT NULL AND managers.meeting_with_admin_date IS NOT NULL ORDER by driver_name"
+        WHERE programs.term_id = " + @term_id +  " AND programs.units_id = " + @unit_id + " 
+        AND managers.mvr_status IS NOT NULL AND managers.mvr_status != 'Expired' AND managers.canvas_course_complete_date IS NOT NULL AND managers.meeting_with_admin_date IS NOT NULL 
+        ORDER by driver_name"
       end
 
       return sql
