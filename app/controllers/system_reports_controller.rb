@@ -181,13 +181,14 @@ class SystemReportsController < ApplicationController
       end
 
       if report_type == 'approved_drivers'
-        sql = " SELECT (SELECT students.first_name || ' ' || students.last_name) AS driver_name,
+        sql = " SELECT 
+        programs.title AS program,
+
+        (SELECT students.first_name || ' ' || students.last_name) AS driver_name,
         (SELECT DISTINCT students.uniqname) as uniqname,
         students.mvr_status,
         students.canvas_course_complete_date,
         students.meeting_with_admin_date,
-        programs.title AS program,
-        programs.term_id AS term_code,
         'Student' AS driver_type
         FROM programs
         JOIN students ON programs.id = students.program_id
@@ -197,19 +198,22 @@ class SystemReportsController < ApplicationController
           sql += " AND programs.id = " + params[:program_id]
         end
         sql += " UNION
-        SELECT (SELECT managers.first_name || ' ' || managers.last_name) AS driver_name,
+        SELECT
+        programs.title AS program,
+        (SELECT managers.first_name || ' ' || managers.last_name) AS driver_name,
         (SELECT DISTINCT managers.uniqname) as uniqname,
         managers.mvr_status,
         managers.canvas_course_complete_date,
         managers.meeting_with_admin_date,
-        programs.title AS program,
-        programs.term_id AS term_code,
         'Manager' AS driver_type
         FROM programs
         JOIN managers ON programs.id = managers.program_id
         WHERE programs.term_id = " + @term_id +  " AND programs.unit_id = " + @unit_id + " 
-        AND managers.mvr_status IS NOT NULL AND managers.mvr_status != 'Expired' AND managers.canvas_course_complete_date IS NOT NULL AND managers.meeting_with_admin_date IS NOT NULL 
-        ORDER by driver_name"
+        AND managers.mvr_status IS NOT NULL AND managers.mvr_status != 'Expired' AND managers.canvas_course_complete_date IS NOT NULL AND managers.meeting_with_admin_date IS NOT NULL "
+        if params[:program_id].present?
+          sql += " AND programs.id = " + params[:program_id]
+        end
+        sql += " ORDER by driver_name "
       end
 
       return sql
