@@ -183,7 +183,7 @@ class SystemReportsController < ApplicationController
       if report_type == 'approved_drivers'
         sql = " SELECT 
         programs.title AS program,
-
+        programs.id AS program_id,
         (SELECT students.first_name || ' ' || students.last_name) AS driver_name,
         (SELECT DISTINCT students.uniqname) as uniqname,
         students.mvr_status,
@@ -200,6 +200,7 @@ class SystemReportsController < ApplicationController
         sql += " UNION
         SELECT
         programs.title AS program,
+        programs.id AS program_id,
         (SELECT managers.first_name || ' ' || managers.last_name) AS driver_name,
         (SELECT DISTINCT managers.uniqname) as uniqname,
         managers.mvr_status,
@@ -207,7 +208,7 @@ class SystemReportsController < ApplicationController
         managers.meeting_with_admin_date,
         'Manager' AS driver_type
         FROM programs
-        JOIN managers ON programs.id = managers.program_id
+        JOIN managers ON programs.id = (SELECT DISTINCT managers_programs.program_id FROM managers_programs WHERE managers_programs.manager_id = managers.id)
         WHERE programs.term_id = " + @term_id +  " AND programs.unit_id = " + @unit_id + " 
         AND managers.mvr_status IS NOT NULL AND managers.mvr_status != 'Expired' AND managers.canvas_course_complete_date IS NOT NULL AND managers.meeting_with_admin_date IS NOT NULL "
         if params[:program_id].present?
