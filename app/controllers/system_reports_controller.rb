@@ -85,7 +85,7 @@ class SystemReportsController < ApplicationController
       end
       if report_type == 'vehicle_reports_all' || report_type == 'approved_drivers' 
         sql = create_query(report_type)
-        return run_query(sql)
+        return run_query(sql, report_type)
       end
 
     end
@@ -220,10 +220,10 @@ class SystemReportsController < ApplicationController
       return sql
     end
 
-    def run_query(sql)
+    def run_query(sql, report_type)
       records_array = ActiveRecord::Base.connection.exec_query(sql)
       result = []
-      result.push({"report_name" => "vehicle_reports for #{@unit} #{@term}", "total" => records_array.count, "header" => records_array.columns, "rows" => records_array.rows})
+      result.push({"report_name" => "#{report_type} for #{@unit} #{@term}", "total" => records_array.count, "header" => records_array.columns, "rows" => records_array.rows})
       return result
     end
 
