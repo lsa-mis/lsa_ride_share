@@ -12,7 +12,7 @@
   <h2 class="mb-4">
     <%= @reservation.program.display_name_with_title %>
   </h2>
-  <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+  <div class="grid grid-cols-1 xl:grid-cols-4 gap-4">
     <div class="col-span-3">
       <% if is_admin?(current_user) %>
         <%= form_with model: @reservation, html: { class: "sm:flex sm:items-center" },
