@@ -174,7 +174,7 @@ class SystemReportsController < ApplicationController
         JOIN programs ON programs.id = res.program_id
         JOIN terms ON terms.id = programs.term_id
         JOIN units ON units.id = programs.unit_id
-        WHERE terms.id = " + @term_id +  " AND  units.id = " + @unit_id
+        WHERE terms.id = " + @term_id +  " AND units.id = " + @unit_id
         if params[:program_id].present?
           sql += " AND programs.id = " + params[:program_id]
         end
@@ -191,7 +191,7 @@ class SystemReportsController < ApplicationController
         'Student' AS driver_type
         FROM programs
         JOIN students ON programs.id = students.program_id
-        WHERE programs.term_id = " + @term_id +  " AND programs.units_id = " + @unit_id + " 
+        WHERE programs.term_id = " + @term_id +  " AND programs.unit_id = " + @unit_id + " 
         AND students.mvr_status IS NOT NULL AND students.mvr_status != 'Expired' AND students.canvas_course_complete_date IS NOT NULL AND students.meeting_with_admin_date IS NOT NULL "
         if params[:program_id].present?
           sql += " AND programs.id = " + params[:program_id]
@@ -207,7 +207,7 @@ class SystemReportsController < ApplicationController
         'Manager' AS driver_type
         FROM programs
         JOIN managers ON programs.id = managers.program_id
-        WHERE programs.term_id = " + @term_id +  " AND programs.units_id = " + @unit_id + " 
+        WHERE programs.term_id = " + @term_id +  " AND programs.unit_id = " + @unit_id + " 
         AND managers.mvr_status IS NOT NULL AND managers.mvr_status != 'Expired' AND managers.canvas_course_complete_date IS NOT NULL AND managers.meeting_with_admin_date IS NOT NULL 
         ORDER by driver_name"
       end
