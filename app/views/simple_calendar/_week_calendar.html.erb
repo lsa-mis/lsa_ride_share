@@ -8,7 +8,7 @@
     <% end %>
     <%= link_to t('simple_calendar.next', default: 'Next'), calendar.url_for_next_view %>
 
-    <%= link_to 'Today', week_calendar_path(:unit_id => @unit_id), class: "secondary_yellow_button" %>
+    <%= link_to 'Current Week', week_calendar_path(:unit_id => @unit_id), class: "secondary_yellow_button" %>
   </div>
 
   <table class="table-fixed">
