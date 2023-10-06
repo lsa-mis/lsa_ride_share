@@ -212,6 +212,23 @@ class SystemReportsController < ApplicationController
         if params[:program_id].present?
           sql += " AND programs.id = " + params[:program_id]
         end
+        sql += " UNION
+        SELECT
+        programs.title AS program,
+        (SELECT managers.first_name || ' ' || managers.last_name) AS driver_name,
+        (SELECT DISTINCT managers.uniqname) as uniqname,
+        managers.mvr_status,
+        managers.canvas_course_complete_date,
+        managers.meeting_with_admin_date,
+        'Instructor' AS driver_type
+        FROM programs
+        JOIN managers ON programs.instructor_id = managers.id
+        WHERE programs.term_id = " + @term_id +  " AND programs.unit_id = " + @unit_id + " 
+        AND managers.mvr_status IS NOT NULL AND managers.mvr_status != 'Expired' AND managers.canvas_course_complete_date IS NOT NULL AND managers.meeting_with_admin_date IS NOT NULL "
+        if params[:program_id].present?
+          sql += " AND programs.id = " + params[:program_id]
+        end
+
         sql += " ORDER by driver_name "
       end
 
