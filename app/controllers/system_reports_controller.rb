@@ -183,7 +183,6 @@ class SystemReportsController < ApplicationController
       if report_type == 'approved_drivers'
         sql = " SELECT 
         programs.title AS program,
-        programs.id AS program_id,
         (SELECT students.first_name || ' ' || students.last_name) AS driver_name,
         (SELECT DISTINCT students.uniqname) as uniqname,
         students.mvr_status,
@@ -200,7 +199,6 @@ class SystemReportsController < ApplicationController
         sql += " UNION
         SELECT
         programs.title AS program,
-        programs.id AS program_id,
         (SELECT managers.first_name || ' ' || managers.last_name) AS driver_name,
         (SELECT DISTINCT managers.uniqname) as uniqname,
         managers.mvr_status,
