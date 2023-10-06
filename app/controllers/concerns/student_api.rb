@@ -83,7 +83,14 @@ module StudentApi
         end
         if students_in_db_registered.present?
           # delete students who dropped the course
-          Student.where(uniqname: students_in_db_registered, program_id: @student_program).delete_all
+          students_in_db_registered.each do |uniqname|
+            student = Student.where(uniqname: students_in_db_registered, program_id: @student_program)
+            if student.reservations.present?
+              student.update(registered: false)
+            else
+              student.delete
+            end
+          end
         end
         unless @student_program.update(number_of_students: @student_program.students.count)
           flash.now[:error] = "Error updating number of students."
