@@ -178,60 +178,59 @@ class SystemReportsController < ApplicationController
         if params[:program_id].present?
           sql += " AND programs.id = " + params[:program_id]
         end
+        sql += " ORDER BY program, vehicle_reports.id"
       end
 
       if report_type == 'approved_drivers'
-        sql = " SELECT 
-        programs.title AS program,
-        (SELECT students.first_name || ' ' || students.last_name) AS driver_name,
-        (SELECT DISTINCT students.uniqname) as uniqname,
-        students.mvr_status,
-        students.canvas_course_complete_date,
-        students.meeting_with_admin_date,
-        'Student' AS driver_type
-        FROM programs
-        JOIN students ON programs.id = students.program_id
-        WHERE programs.term_id = " + @term_id +  " AND programs.unit_id = " + @unit_id + " 
-        AND students.mvr_status IS NOT NULL AND students.mvr_status != 'Expired' AND students.canvas_course_complete_date IS NOT NULL AND students.meeting_with_admin_date IS NOT NULL "
+        sql = "SELECT prg.title AS program,
+          st.first_name || ' ' || st.last_name AS driver_name,
+          st.uniqname as uniqname,
+          st.mvr_status,
+          st.canvas_course_complete_date,
+          st.meeting_with_admin_date,
+          'Student' AS driver_type
+        FROM programs AS prg
+        JOIN students AS st ON prg.id = st.program_id
+        WHERE prg.term_id = " + @term_id + " AND prg.unit_id = " + @unit_id + "
+          AND st.mvr_status LIKE 'Approved%' 
+          AND st.canvas_course_complete_date IS NOT NULL AND st.meeting_with_admin_date IS NOT NULL"
         if params[:program_id].present?
           sql += " AND programs.id = " + params[:program_id]
         end
         sql += " UNION
-        SELECT
-        programs.title AS program,
-        (SELECT managers.first_name || ' ' || managers.last_name) AS driver_name,
-        (SELECT DISTINCT managers.uniqname) as uniqname,
-        managers.mvr_status,
-        managers.canvas_course_complete_date,
-        managers.meeting_with_admin_date,
-        'Manager' AS driver_type
-        FROM programs
-        JOIN managers ON programs.id = (SELECT DISTINCT managers_programs.program_id FROM managers_programs WHERE managers_programs.manager_id = managers.id)
-        WHERE programs.term_id = " + @term_id +  " AND programs.unit_id = " + @unit_id + " 
-        AND managers.mvr_status IS NOT NULL AND managers.mvr_status != 'Expired' AND managers.canvas_course_complete_date IS NOT NULL AND managers.meeting_with_admin_date IS NOT NULL "
+          SELECT prg.title AS program,
+            mng.first_name || ' ' || mng.last_name AS driver_name,
+            mng.uniqname as uniqname,
+            mng.mvr_status,
+            mng.canvas_course_complete_date,
+            mng.meeting_with_admin_date,
+            'Instructor' AS driver_type
+          FROM programs prg
+          JOIN managers mng ON prg.instructor_id = mng.id
+          WHERE prg.term_id = " + @term_id + " AND prg.unit_id = " + @unit_id + "
+            AND mng.mvr_status LIKE 'Approved%' 
+            AND mng.canvas_course_complete_date IS NOT NULL AND mng.meeting_with_admin_date IS NOT NULL"
         if params[:program_id].present?
           sql += " AND programs.id = " + params[:program_id]
         end
         sql += " UNION
-        SELECT
-        programs.title AS program,
-        (SELECT managers.first_name || ' ' || managers.last_name) AS driver_name,
-        (SELECT DISTINCT managers.uniqname) as uniqname,
-        managers.mvr_status,
-        managers.canvas_course_complete_date,
-        managers.meeting_with_admin_date,
-        'Instructor' AS driver_type
-        FROM programs
-        JOIN managers ON programs.instructor_id = managers.id
-        WHERE programs.term_id = " + @term_id +  " AND programs.unit_id = " + @unit_id + " 
-        AND managers.mvr_status IS NOT NULL AND managers.mvr_status != 'Expired' AND managers.canvas_course_complete_date IS NOT NULL AND managers.meeting_with_admin_date IS NOT NULL "
+          SELECT prg.title AS program, (mng.first_name || ' ' || mng.last_name) AS driver_name,
+            mng.uniqname as uniqname,
+            mng.mvr_status,
+            mng.canvas_course_complete_date,
+            mng.meeting_with_admin_date,
+            'Manager' AS driver_type
+          FROM programs AS prg
+          JOIN managers_programs ON prg.id = managers_programs.program_id
+          JOIN managers AS mng ON mng.id = managers_programs.manager_id
+          WHERE prg.term_id = " + @term_id + " AND prg.unit_id = " + @unit_id + "
+            AND mng.mvr_status LIKE 'Approved%'
+            AND mng.canvas_course_complete_date IS NOT NULL AND mng.meeting_with_admin_date IS NOT NULL"
         if params[:program_id].present?
           sql += " AND programs.id = " + params[:program_id]
         end
-
-        sql += " ORDER by driver_name "
+        sql += " ORDER BY program, driver_type"
       end
-
       return sql
     end
 
