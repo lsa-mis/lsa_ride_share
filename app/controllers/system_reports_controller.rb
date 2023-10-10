@@ -182,13 +182,12 @@ class SystemReportsController < ApplicationController
       end
 
       if report_type == 'approved_drivers'
-        sql = "SELECT programs.title AS program,
+        sql = "SELECT programs.title AS program, 'Student' AS driver_type,
           students.first_name || ' ' || students.last_name AS driver_name,
           students.uniqname as uniqname,
           students.mvr_status,
           students.canvas_course_complete_date,
-          students.meeting_with_admin_date,
-          'Student' AS driver_type
+          students.meeting_with_admin_date
           FROM programs AS programs
           JOIN students AS students ON programs.id = students.program_id
           WHERE programs.term_id = " + @term_id + " AND programs.unit_id = " + @unit_id + "
@@ -198,13 +197,12 @@ class SystemReportsController < ApplicationController
           sql += " AND programs.id = " + params[:program_id]
         end
         sql += " UNION
-          SELECT programs.title AS program,
+          SELECT programs.title AS program, 'Instructor' AS driver_type,
           managers.first_name || ' ' || managers.last_name AS driver_name,
           managers.uniqname as uniqname,
           managers.mvr_status,
           managers.canvas_course_complete_date,
-          managers.meeting_with_admin_date,
-          'Instructor' AS driver_type
+          managers.meeting_with_admin_date
           FROM programs AS programs
           JOIN managers AS managers ON programs.instructor_id = managers.id
           WHERE programs.term_id = " + @term_id + " AND programs.unit_id = " + @unit_id + "
@@ -214,13 +212,12 @@ class SystemReportsController < ApplicationController
           sql += " AND programs.id = " + params[:program_id]
         end
         sql += " UNION
-          SELECT programs.title AS program, 
+          SELECT programs.title AS program, 'Manager' AS driver_type,
           (managers.first_name || ' ' || managers.last_name) AS driver_name,
           managers.uniqname as uniqname,
           managers.mvr_status,
           managers.canvas_course_complete_date,
-          managers.meeting_with_admin_date,
-          'Manager' AS driver_type
+          managers.meeting_with_admin_date
           FROM programs AS programs
           JOIN managers_programs ON programs.id = managers_programs.program_id
           JOIN managers AS managers ON managers.id = managers_programs.manager_id
