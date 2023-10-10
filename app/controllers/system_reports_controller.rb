@@ -83,10 +83,11 @@ class SystemReportsController < ApplicationController
         result.push({"report_name" => "#{report_type} for #{@unit} #{@term}", "total" => records_array1.count, "header" => columns, "rows" => rows})
         return result
       end
-      if report_type == 'vehicle_reports_all'
+      if report_type == 'vehicle_reports_all' || report_type == 'approved_drivers' 
         sql = create_query(report_type)
-        return run_query(sql)
+        return run_query(sql, report_type)
       end
+
     end
 
     def create_query(report_type)
@@ -97,7 +98,12 @@ class SystemReportsController < ApplicationController
           join vehicle_reports AS vr on vr.reservation_id = res.id
           JOIN programs ON programs.id = res.program_id
           JOIN terms ON terms.id = programs.term_id
-          JOIN units ON units.id = programs.unit_id"
+          JOIN units ON units.id = programs.unit_id
+          WHERE terms.id = " + @term_id +  " AND  units.id = " + @unit_id
+          if params[:program_id].present?
+            sql += " AND programs.id = " + params[:program_id]
+          end
+          sql += " GROUP BY program_id ORDER BY program_id"
       end
       if report_type == 'programs_unique_students'
         sql = "SELECT  program_id,
@@ -119,7 +125,12 @@ class SystemReportsController < ApplicationController
           JOIN cars ON cars.id = res.car_id
           JOIN programs ON programs.id = res.program_id
           JOIN terms ON terms.id = programs.term_id
-          JOIN units ON units.id = programs.unit_id"
+          JOIN units ON units.id = programs.unit_id
+          WHERE terms.id = " + @term_id +  " AND  units.id = " + @unit_id
+          if params[:program_id].present?
+            sql += " AND programs.id = " + params[:program_id]
+          end
+          sql += " GROUP BY program_id ORDER BY program_id"
       end
       if report_type == 'vehicle_reports_all'
         sql = "SELECT DISTINCT(vehicle_reports.id), (SELECT programs.title from programs WHERE res.program_id = programs.id) AS program,
@@ -162,24 +173,69 @@ class SystemReportsController < ApplicationController
         JOIN cars ON cars.id = res.car_id
         JOIN programs ON programs.id = res.program_id
         JOIN terms ON terms.id = programs.term_id
-        JOIN units ON units.id = programs.unit_id"
+        JOIN units ON units.id = programs.unit_id
+        WHERE terms.id = " + @term_id +  " AND units.id = " + @unit_id
+        if params[:program_id].present?
+          sql += " AND programs.id = " + params[:program_id]
+        end
+        sql += " ORDER BY program, vehicle_reports.id"
       end
 
-      where = " WHERE terms.id = " + @term_id +  " AND  units.id = " + @unit_id
-      if params[:program_id].present?
-        where += " AND programs.id = " + params[:program_id]
-      end
-      sql += where
-      if report_type == 'totals_programs' || report_type == 'programs_unique_students'
-        sql += " GROUP BY program_id ORDER BY program_id"
+      if report_type == 'approved_drivers'
+        sql = "SELECT programs.title AS program, 'Student' AS driver_type,
+          students.first_name || ' ' || students.last_name AS driver_name,
+          students.uniqname as uniqname,
+          students.mvr_status,
+          students.canvas_course_complete_date,
+          students.meeting_with_admin_date
+          FROM programs AS programs
+          JOIN students AS students ON programs.id = students.program_id
+          WHERE programs.term_id = " + @term_id + " AND programs.unit_id = " + @unit_id + "
+            AND students.mvr_status LIKE 'Approved%' 
+            AND students.canvas_course_complete_date IS NOT NULL AND students.meeting_with_admin_date IS NOT NULL"
+        if params[:program_id].present?
+          sql += " AND programs.id = " + params[:program_id]
+        end
+        sql += " UNION
+          SELECT programs.title AS program, 'Instructor' AS driver_type,
+          managers.first_name || ' ' || managers.last_name AS driver_name,
+          managers.uniqname as uniqname,
+          managers.mvr_status,
+          managers.canvas_course_complete_date,
+          managers.meeting_with_admin_date
+          FROM programs AS programs
+          JOIN managers AS managers ON programs.instructor_id = managers.id
+          WHERE programs.term_id = " + @term_id + " AND programs.unit_id = " + @unit_id + "
+            AND managers.mvr_status LIKE 'Approved%' 
+            AND managers.canvas_course_complete_date IS NOT NULL AND managers.meeting_with_admin_date IS NOT NULL"
+        if params[:program_id].present?
+          sql += " AND programs.id = " + params[:program_id]
+        end
+        sql += " UNION
+          SELECT programs.title AS program, 'Manager' AS driver_type,
+          (managers.first_name || ' ' || managers.last_name) AS driver_name,
+          managers.uniqname as uniqname,
+          managers.mvr_status,
+          managers.canvas_course_complete_date,
+          managers.meeting_with_admin_date
+          FROM programs AS programs
+          JOIN managers_programs ON programs.id = managers_programs.program_id
+          JOIN managers AS managers ON managers.id = managers_programs.manager_id
+          WHERE programs.term_id = " + @term_id + " AND programs.unit_id = " + @unit_id + "
+            AND managers.mvr_status LIKE 'Approved%'
+            AND managers.canvas_course_complete_date IS NOT NULL AND managers.meeting_with_admin_date IS NOT NULL"
+        if params[:program_id].present?
+          sql += " AND programs.id = " + params[:program_id]
+        end
+        sql += " ORDER BY program, driver_type, driver_name"
       end
       return sql
     end
 
-    def run_query(sql)
+    def run_query(sql, report_type)
       records_array = ActiveRecord::Base.connection.exec_query(sql)
       result = []
-      result.push({"report_name" => "vehicle_reports for #{@unit} #{@term}", "total" => records_array.count, "header" => records_array.columns, "rows" => records_array.rows})
+      result.push({"report_name" => "#{report_type} for #{@unit} #{@term}", "total" => records_array.count, "header" => records_array.columns, "rows" => records_array.rows})
       return result
     end
 
