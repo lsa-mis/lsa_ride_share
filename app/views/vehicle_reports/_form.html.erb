@@ -73,9 +73,31 @@
         <%= form.text_field :parking_spot, placeholder: "Parking Spot (depart)", class: "input_text_field" %>
       </div>
 
-            <div class="my-5">
-        <%= form.label :parking_spot_return, 'Parking Spot (return)', class: "fancy_label"  %>
-        <%= form.text_field :parking_spot_return, placeholder: "Parking Spot (return)", class: "input_text_field" %>
+      <div class="my-5">
+        <% if @parking_locations.present? %>
+          <% if @vehicle_report.persisted? && @current_parking_return.present? %>
+            <div class="py-2">
+              <label class="body-lg-bold-text">
+                Current Parking Spot (return):
+              </label>
+              <p class="body-lg-text ml-2 inline-block">
+                <%= @current_parking_return %>
+              </p>
+            </div>
+          <% end %>
+          <%= label_tag 'Parking Spot (return)', nil, class: "fancy_label" %>
+          <%= select_tag "parking_spot_return_select", options_for_select(@parking_locations, @vehicle_report.parking_spot_return), include_blank: "Select ...", class: "input_text_field",
+            "data-vehiclereport-target": "parking_return", "data-action": "vehiclereport#otherParking" %>
+          <div data-vehiclereport-target="parking_other_div" class="my-5 fields--hide">
+            <%= label_tag 'Other Parking Spot (return)', nil, class: "fancy_label" %>
+            <%= text_field_tag(:parking_spot_return, nil, { class: "input_text_field", "data-vehiclereport-target": "parking_other" }) %>
+          </div>
+          <div class="error_text" id="parking_other_error_place">
+          </div>
+        <% else %>
+          <%= form.label :parking_spot_return, 'Parking Spot (return)', class: "fancy_label"  %>
+          <%= form.text_field :parking_spot_return, placeholder: "Parking Spot (return)", class: "input_text_field" %>
+        <% end %>
       </div>
 
     </div>
