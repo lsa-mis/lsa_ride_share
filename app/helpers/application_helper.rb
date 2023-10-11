@@ -218,14 +218,14 @@ module ApplicationHelper
       recurring = "Recurring - no"
     end
     if reservation.driver.present? || reservation.driver_manager.present?
-      driver = "Driver: " + show_driver(reservation) + " (" + reservation.driver_phone + ")"
+      driver = "Driver: " + show_driver(reservation) + " (" + reservation.driver_phone.to_s + ")"
     else 
-      driver = show_driver(reservation)
+      driver = "No driver selected"
     end
     if reservation.backup_driver.present?
-      backup_driver = "Backup Driver: " + show_backup_driver(reservation) + " (" + reservation.backup_driver_phone + ")"
+      backup_driver = "Backup Driver: " + show_backup_driver(reservation) + " (" + reservation.backup_driver_phone.to_s + ")"
     else
-      backup_driver = show_backup_driver(reservation)
+      backup_driver = "No backup driver selected"
     end
     if reservation.passengers.present?
       passengers = "Passengers: "
