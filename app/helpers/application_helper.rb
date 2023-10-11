@@ -163,9 +163,9 @@ module ApplicationHelper
   def show_driver(reservation)
     if reservation.driver.present?
       reservation.driver.display_name
-    elsif
-      reservation.driver_manager.present?
-      reservation.driver_manager.display_name + " (manager)"
+    elsif reservation.driver_manager.present?
+      uniqname = Manager.find(reservation.driver_manager_id).uniqname
+      reservation.driver_manager.display_name + " " + show_manager(reservation.program, uniqname)
     else
       "No driver selected"
     end
@@ -179,10 +179,10 @@ module ApplicationHelper
     end
   end
 
-  def show_manager(program, user)
-    if program.instructor.uniqname == user.uniqname
+  def show_manager(program, uniqname)
+    if program.instructor.uniqname == uniqname
       return "(instructor)"
-    elsif program.managers.pluck(:uniqname).include?(user.uniqname)
+    elsif program.managers.pluck(:uniqname).include?(uniqname)
       return "(manager)"
     else
       return ""
