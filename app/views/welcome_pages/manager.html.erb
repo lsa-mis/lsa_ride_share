@@ -36,7 +36,7 @@
       <div class="my-2">
         <% if @program.present? %>
           <h2><%= @program.display_name_with_title_and_unit %></h2>
-          <p class="body-md-text"><%= show_manager(@program, current_user) %></p>
+          <p class="body-md-text"><%= show_manager(@program, current_user.uniqname) %></p>
         <% end %>
         <div>
           <% if @reservations_current.present? %>
