@@ -79,6 +79,8 @@ class VehicleReportsController < ApplicationController
     @vehicle_report = VehicleReport.new(vehicle_report_params)
     if params[:parking_spot_return_select].present? && params[:parking_spot_return_select].downcase != "other"
       @vehicle_report.parking_spot_return = params[:parking_spot_return_select]
+    elsif params[:parking_spot_return].present?
+      @vehicle_report.parking_spot_return = params[:parking_spot_return]
     end
     authorize @vehicle_report
     respond_to do |format|
