@@ -84,7 +84,7 @@ module StudentApi
         if students_in_db_registered.present?
           # delete students who dropped the course
           students_in_db_registered.each do |uniqname|
-            student = Student.where(uniqname: students_in_db_registered, program_id: @student_program)
+            student = Student.find_by(uniqname: students_in_db_registered, program_id: @student_program)
             if student.reservations.present?
               student.update(registered: false)
             else
