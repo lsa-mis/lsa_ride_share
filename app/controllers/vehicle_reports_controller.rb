@@ -39,30 +39,50 @@ class VehicleReportsController < ApplicationController
   def new
     @vehicle_report = VehicleReport.new
     @vehicle_report.parking_spot = @reservation.car.parking_spot
+    unit = @reservation.program.unit
+    parking_prefs = UnitPreference.find_by(name: "parking_location", unit_id: unit).value
+    if parking_prefs.present?
+      @parking_locations = parking_prefs.split(',')
+      @parking_locations.each(&:strip!)
+    end
+
     authorize @vehicle_report
   end
 
   # GET /vehicle_reports/1/edit
   def edit
-    unless @vehicle_report.approved
-      @reservation = @vehicle_report.reservation
-      if @reservation.program.pictures_required_start
-        @pictures_start_required = true
-      end 
-      if @reservation.program.pictures_required_end
-        @pictures_end_required = true
-      end
-    else
-      flash.now[:alert] = 'The vehicle report is approved. Please reload the page. To edit, please contact your administrator'
+    if @vehicle_report.approved
+      flash.now[:alert] = 'The vehicle report is approved. Please reload the page. To edit, please contact your administrator.'
       render turbo_stream: turbo_stream.update("flash", partial: "layouts/notification")
+    end
+    @reservation = @vehicle_report.reservation
+    unit = @reservation.program.unit
+    parking_prefs = UnitPreference.find_by(name: "parking_location", unit_id: unit).value
+    if parking_prefs.present?
+      @parking_locations = parking_prefs.split(',')
+      @parking_locations.each(&:strip!)
+      if @parking_locations.map(&:downcase).include?("other")
+        @other = true
+      else 
+        @other = false
+      end
+      if @vehicle_report.parking_spot_return.present? && @parking_locations.exclude?(@vehicle_report.parking_spot_return)
+        @current_parking_return = @vehicle_report.parking_spot_return
+      else
+        @current_parking_return = ""
+      end
     end
   end
 
   # POST /vehicle_reports or /vehicle_reports.json
   def create
     @vehicle_report = VehicleReport.new(vehicle_report_params)
+    if params[:parking_spot_return_select].present? && params[:parking_spot_return_select].downcase != "other"
+      @vehicle_report.parking_spot_return = params[:parking_spot_return_select]
+    elsif params[:parking_spot_return].present?
+      @vehicle_report.parking_spot_return = params[:parking_spot_return]
+    end
     authorize @vehicle_report
-
     respond_to do |format|
       if @vehicle_report.save
         car = @reservation.car
@@ -87,7 +107,12 @@ class VehicleReportsController < ApplicationController
   # PATCH/PUT /vehicle_reports/1 or /vehicle_reports/1.json
   def update
     @reservation = @vehicle_report.reservation
-
+    @vehicle_report.attributes = vehicle_report_params
+    if params[:parking_spot_return_select].present? && params[:parking_spot_return_select].downcase != "other"
+      @vehicle_report.parking_spot_return = params[:parking_spot_return_select]
+    elsif params[:parking_spot_return].present?
+      @vehicle_report.parking_spot_return = params[:parking_spot_return]
+    end
     respond_to do |format|
       if @vehicle_report.update(vehicle_report_params)
         car = @vehicle_report.reservation.car
@@ -191,7 +216,7 @@ class VehicleReportsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def vehicle_report_params
       params.require(:vehicle_report).permit(:reservation_id, :mileage_start, :mileage_end, 
-                    :gas_start, :gas_end, :parking_spot, :parking_spot_return, :image_front_start, :image_driver_start, 
+                    :gas_start, :gas_end, :parking_spot, :parking_spot_return, :parking_spot_return_select, :image_front_start, :image_driver_start, 
                     :image_passenger_start, :image_back_start, :image_front_end, :image_driver_end, 
                     :image_passenger_end, :image_back_end, :created_by, :updated_by, :status, :comment,
                     :approved, :damage_form, image_damages: [] )
