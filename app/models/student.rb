@@ -76,7 +76,7 @@ class Student < ApplicationRecord
   end
 
   def reservations
-    reservations_past + reservations_future
+    reservations_current + reservations_past + reservations_future
   end
 
   def display_name
