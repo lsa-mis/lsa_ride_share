@@ -12,14 +12,14 @@
   <h2 class="mb-4">
     <%= @reservation.program.display_name_with_title %>
   </h2>
-  <div class="grid grid-cols-1 xl:grid-cols-4 gap-4">
-    <div class="col-span-3">
+  <div class="grid grid-cols-1 xl:grid-cols-5 gap-4">
+    <div class="col-span-1 xl:col-span-3">
       <% if is_admin?(current_user) %>
         <%= form_with model: @reservation, html: { class: "sm:flex sm:items-center" },
           data: {
                   approve_target: "form"
                 } do |f| %>
-          <div class="sm:col-span-4">
+          <div class="col-span-2">
             <ol class="switches">
               <li>
                 <%= f.check_box :approved, "data-action": "change->approve#toggleApprove" %>
@@ -35,7 +35,7 @@
       <% end %>
       <%= render @reservation %>
     </div>
-    <div class="col-span-1">
+    <div class="col-span-2">
       <div class="">
         <% if is_admin?(current_user) && !@reservation.approved %>
           <% if recurring?(@reservation) %>

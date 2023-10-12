@@ -62,7 +62,7 @@
       </div>
     <% end %>
 
-    <div class="lg:flex items-end gap-2">
+    <div class="lg:flex-row items-end gap-2">
       <div class="py-2">
         <p class="body-lg-bold-text inline">
           Driver:
@@ -72,7 +72,7 @@
         </p>
       </div>
       <% if ((is_admin?(current_user) && @reservation.end_time > DateTime.now) || allow_student_to_edit_reservation?(@reservation) || allow_manager_to_edit_reservation?(@reservation)) %>
-        <div class="py-2 whitespace-nowrap">
+        <div class=" whitespace-nowrap">
           <%= link_to add_drivers_path(@reservation, :edit => true) do %>
             <span class="tertiary_button"> 
               Edit Drivers
@@ -130,10 +130,12 @@
     </div>
   </div>
   <div>
-    <div class="flex items-end gap-2 py-2 whitespace-nowrap">
-      <p class="body-lg-bold-text">
-        Passengers (<%= @reservation.passengers.count %>):
-      </p>
+    <div class="flex-row items-end gap-2 py-2 whitespace-nowrap">
+      <div>
+        <p class="body-lg-bold-text">
+          Passengers (<%= @reservation.passengers.count %>):
+        </p>
+      </div>
       <% if ((is_admin?(current_user) && @reservation.end_time > DateTime.now) || allow_student_to_edit_reservation?(@reservation) || allow_manager_to_edit_reservation?(@reservation)) %>
         <div class="py-2">
           <div>
