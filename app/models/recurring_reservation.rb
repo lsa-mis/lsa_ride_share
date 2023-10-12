@@ -103,7 +103,7 @@ class RecurringReservation
     end
   end
 
-  def get_one
+  def get_one_to_delete
     if prev_reservation && next_reservation
       next_reservation.update(prev: prev_reservation.id)
       prev_reservation.update(next: next_reservation.id)
@@ -113,6 +113,18 @@ class RecurringReservation
       next_reservation.update(prev: nil)
     end
     return Array(@reservation.id)
+  end
+
+  def get_following_to_delete
+    prev_reservation.update(next: nil)
+    list = Array(@reservation.id)
+    next_id = @reservation.next
+    until next_id.nil? do
+      reserv = Reservation.find(next_id)
+      list << reserv.id
+      next_id = reserv.next
+    end
+    return list
   end
 
   def get_following
