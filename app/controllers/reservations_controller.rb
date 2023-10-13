@@ -519,9 +519,9 @@ class ReservationsController < ApplicationController
       recurring_reservation = RecurringReservation.new(@reservation)
       case cancel_type
       when "one"
-        result = recurring_reservation.get_one
+        result = recurring_reservation.get_one_to_delete
       when "following"
-        result = recurring_reservation.get_following
+        result = recurring_reservation.get_following_to_delete
       when "all"
         result = recurring_reservation.get_all_reservations
       end
