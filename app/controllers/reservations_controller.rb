@@ -312,9 +312,10 @@ class ReservationsController < ApplicationController
         recurring_reservation = RecurringReservation.new(@reservation)
         note = recurring_reservation.remove_from_list
         if note == ""
-          notice = " Reservation was removed fron the list of recurring reservations."
+          notice = " Reservation was removed from the list of recurring reservations."
         else
           redirect_to reservation_path(@reservation), notice: "Reservation was not updated." + note
+          return
         end
       end
       @reservation.attributes = reservation_params
@@ -384,6 +385,16 @@ class ReservationsController < ApplicationController
     if params[:recurring] == "true"
       notice = recurring_reservation.update_drivers(reservation_params.to_h) + note
     else
+      if @reservation.recurring.present?
+        recurring_reservation = RecurringReservation.new(@reservation)
+        result = recurring_reservation.remove_from_list
+        if result == ""
+          note += " Reservation was removed from the list of recurring reservations."
+        else
+          redirect_to add_passengers_path(@reservation), notice: note + result
+          return
+        end
+      end
       if @reservation.update(reservation_params)
         notice = "Drivers were updated." + note
       else
