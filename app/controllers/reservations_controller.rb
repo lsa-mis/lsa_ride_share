@@ -391,7 +391,7 @@ class ReservationsController < ApplicationController
         if result == ""
           note += " Reservation was removed from the list of recurring reservations."
         else
-          redirect_to add_passengers_path(@reservation), notice: note + result
+          redirect_to reservation_path(@reservation), alert: note + result
           return
         end
       end
@@ -503,6 +503,16 @@ class ReservationsController < ApplicationController
     else
       recurring = false
       notice = "Passengers list was updated."
+      if @reservation.recurring.present?
+        recurring_reservation = RecurringReservation.new(@reservation)
+        note = recurring_reservation.remove_from_list
+        if note == ""
+          notice += " Reservation was removed from the list of recurring reservations."
+        else
+          redirect_to reservation_path(@reservation), alert: note
+          return
+        end
+      end
     end
     ReservationMailer.with(reservation: @reservation).car_reservation_update_passengers(current_user, recurring).deliver_now
     redirect_to reservation_path(@reservation), notice: notice
