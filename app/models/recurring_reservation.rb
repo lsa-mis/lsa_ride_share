@@ -140,7 +140,9 @@ class RecurringReservation
   end
 
   def get_following_to_delete
-    prev_reservation.update(next: nil)
+    if prev_reservation.present?
+      prev_reservation.update(next: nil)
+    end
     list = Array(@reservation.id)
     next_id = @reservation.next
     until next_id.nil? do
