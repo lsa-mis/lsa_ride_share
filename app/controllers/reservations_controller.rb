@@ -509,7 +509,7 @@ class ReservationsController < ApplicationController
         if note == ""
           notice += " Reservation was removed from the list of recurring reservations."
         else
-          redirect_to reservation_path(@reservation), alert: note
+          redirect_to reservation_path(@reservation), alert: notice + note
           return
         end
       end
