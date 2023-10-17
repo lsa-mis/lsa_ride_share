@@ -307,6 +307,17 @@ class ReservationsController < ApplicationController
         redirect_to reservation_path(@reservation), alert: note
       end
     else
+      notice = ""
+      if @reservation.recurring.present?
+        recurring_reservation = RecurringReservation.new(@reservation)
+        note = recurring_reservation.remove_from_list
+        if note == ""
+          notice = " Reservation was removed from the list of recurring reservations."
+        else
+          redirect_to reservation_path(@reservation), notice: "Reservation was not updated." + note
+          return
+        end
+      end
       @reservation.attributes = reservation_params
       @reservation.car_id = params[:car_id]
       @reservation.start_time = params[:start_time].to_datetime - 15.minute
@@ -315,7 +326,7 @@ class ReservationsController < ApplicationController
 
       respond_to do |format|
         if @reservation.update(reservation_params)
-          format.html { redirect_to reservation_url(@reservation), notice: "Reservation was successfully updated." }
+          format.html { redirect_to reservation_url(@reservation), notice: "Reservation was successfully updated." + notice }
           format.json { render :show, status: :ok, location: @reservation }
         else
           @programs = Program.where(unit_id: current_user.unit_ids).order(:title, :catalog_number, :class_section)
@@ -382,6 +393,16 @@ class ReservationsController < ApplicationController
     end
     if success
       if params[:edit] == "true"
+        if @reservation.recurring.present?
+          recurring_reservation = RecurringReservation.new(@reservation)
+          result = recurring_reservation.remove_from_list
+          if result == ""
+            note += " Reservation was removed from the list of recurring reservations."
+          else
+            redirect_to reservation_path(@reservation), alert: note + result
+            return
+          end
+        end
         @reservation = Reservation.find(params[:id])
         drivers_emails_new = reservation_drivers_emails
         if drivers_emails == drivers_emails_new
@@ -482,6 +503,16 @@ class ReservationsController < ApplicationController
     else
       recurring = false
       notice = "Passengers list was updated."
+      if @reservation.recurring.present?
+        recurring_reservation = RecurringReservation.new(@reservation)
+        note = recurring_reservation.remove_from_list
+        if note == ""
+          notice += " Reservation was removed from the list of recurring reservations."
+        else
+          redirect_to reservation_path(@reservation), alert: notice + note
+          return
+        end
+      end
     end
     ReservationMailer.with(reservation: @reservation).car_reservation_update_passengers(current_user, recurring).deliver_now
     redirect_to reservation_path(@reservation), notice: notice

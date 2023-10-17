@@ -2,9 +2,12 @@
   <div class="lg:flex justify-between items-center mb-4">
     <div>
       <% if params["edit"] %>
-        <h1>Edit Passengers</h1>
-        <% if params["all_recurring"] == "true" %>
+        <h1 class="inline">Edit Passengers</h1>
+        <% if params["recurring"] == "true" %>
           <h2>for All Recurring Reservations</h2>
+          <p class="body-sm-text ml-2">
+            Click on the Go Back to Reservation Page button after editing
+          </p>
           <div class="pt-4 pb-2">
             <% recurring_reservation = RecurringReservation.new(@reservation) %>
             <p class="body-lg-bold-text inline">
@@ -15,9 +18,16 @@
               <%= recurring_reservation.first_reservation.rule.to_s %>
             </p>
           </div>
+        <% else %>
+          <p class="body-sm-text ml-2">
+            Click on the Go Back to Reservation Page button after editing
+          </p>
         <% end %>
       <% else %>
         <h1>Add Passengers</h1>
+        <p class="body-sm-text ml-2">
+          Click on the Finish Creating Reservation button after adding passengers
+        </p>
       <% end %>
       <h2>
         <%= @reservation.program.display_name_with_title %>
