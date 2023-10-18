@@ -18,6 +18,7 @@ module LsaRideShare
     # in config/environments, which are processed later.
     #
     config.time_zone = 'Eastern Time (US & Canada)'
+    config.hosts = nil
     # config.eager_load_paths << Rails.root.join("extras")
   end
 end

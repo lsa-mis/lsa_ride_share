@@ -8,7 +8,8 @@ module.exports = {
     './app/helpers/**/*.rb',
     './app/javascript/**/*.js',
     './app/views/**/*.{erb,haml,html,slim}',
-    './vendor/javascript/tailwindcss-stimulus-components.js'
+    './vendor/javascript/tailwindcss-stimulus-components.js',
+    './public/documentation/**/*.{erb,haml,html,slim,md}'
   ],
   theme: {
     extend: {
