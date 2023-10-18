@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Documention</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="description" content="Description" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0"
+    />
+    <link
+      rel="stylesheet"
+      href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css"
+    />
+  </head>
+
+  <body>
+    <div id="app"></div>
+    <script>
+      window.$docsify = {
+        basePath: "/documentation",
+
+        loadSidebar: true,
+        themeColor: "slateblue",
+
+        search: "auto",
+        name: "ModelrailsApp",
+        repo: "",
+
+        // complete configuration parameters
+        search: {
+          maxAge: 86400000, // Expiration time, the default one day
+          // paths: [auto], // or 'auto'
+          placeholder: "Type to search",
+          noData: "No Results!",
+          // Headline depth, 1 - 6
+          depth: 2,
+          hideOtherSidebarContent: false, // whether or not to hide other sidebar content
+          // To avoid search index collision
+          // between multiple websites under the same domain
+          namespace: "website-1",
+          // Use different indexes for path prefixes (namespaces).
+          // NOTE: Only works in 'auto' mode.
+          //
+          // When initialiazing an index, we look for the first path from the sidebar.
+          // If it matches the prefix from the list, we switch to the corresponding index.
+          pathNamespaces: ["/zh-cn", "/ru-ru", "/ru-ru/v1"],
+
+          // You can provide a regexp to match prefixes. In this case,
+          // the matching substring will be used to identify the index
+          pathNamespaces: /^(\/(zh-cn|ru-ru))?(\/(v1|v2))?/,
+        },
+      };
+    </script>
+
+
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/js/docsify-themeable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/zoom-image.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docsify-pagination/dist/docsify-pagination.min.js"></script>
+     <script src="https://unpkg.com/docsify-mermaid@2.0.0/dist/docsify-mermaid.js"> </script>
+
+
+    <script>
+      window.$docsify = {
+        loadSidebar: true,
+        alias: {
+          "/.*/_sidebar.md": "/_sidebar.md",
+        },
+        subMaxLevel: 3,
+        sidebarDisplayLevel: 1, // set sidebar display level
+      };
+    </script>
+
+    <!-- Docsify v4 -->
+
+    <script type="module">
+      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
+      mermaid.initialize({ startOnLoad: true });
+      window.mermaid = mermaid;
+    </script>
+
+    <!-- Update the browser url when links are clicked in the documentation -->
+    <script>
+      // Inside the iframe's JavaScript code
+      document.addEventListener("click", function (event) {
+        var target = event.target;
+        if (target.tagName === "A") {
+          // event.preventDefault(); // Prevent the default link behavior
+
+          var newUrl = target.href;
+          var modifiedUrl = newUrl.replace("documentation", "docs");
+
+          window.parent.history.pushState(null, "", modifiedUrl); // Update the parent window's URL
+          // window.location.href = modifiedUrl; // Change the iframe's URL to match the modified link
+        }
+      });
+    </script>
+  </body>
+</html>

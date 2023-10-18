@@ -119,8 +119,11 @@ Rails.application.routes.draw do
 
   get 'welcome_pages/student'
   get 'welcome_pages/manager'
-  
-  get 'static_pages/home'
+
+  scope controller: :static_pages do
+    get :home
+    get :docs
+  end
 
   devise_for :users, controllers: {omniauth_callbacks: "users/omniauth_callbacks", sessions: "users/sessions"} do
     delete 'sign_out', :to => 'users/sessions#destroy', :as => :destroy_user_session

@@ -1,0 +1,24 @@
+
+hello I am here
+
+<iframe src=“/documentation” class=“w-screen max-w-6xl min-h-screen ” id=“docs”>boop boop</iframe>
+
+
+<%# Passes submitted url to iframe so that proper pages are displayed. %>
+<script>
+  // Inside the parent window’s JavaScript code
+  document.addEventListener(‘click’, function(event) {
+    var target = event.target;
+    if (target.tagName === ‘A’) {
+      // event.preventDefault(); // Prevent the default link behavior
+      var iframe = document.getElementById(‘docs’); // Replace with your iframe’s ID
+      var newUrl = target.href;
+      var message = {
+        params: {
+        }
+      };
+      // Send the message containing parameters to the iframe
+      iframe.contentWindow.postMessage(message, newUrl);
+    }
+  });
+ </script>

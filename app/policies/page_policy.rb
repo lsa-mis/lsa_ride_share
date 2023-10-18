@@ -4,4 +4,8 @@ class PagePolicy < ApplicationPolicy
     true
   end
 
+  def docs?
+    true
+  end
+
 end
