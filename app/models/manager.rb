@@ -49,10 +49,10 @@ class Manager < ApplicationRecord
   end
 
   def self.eligible_drivers
-    mvr_status.canvas_pass.meeting_with_admin
+    mvr_status_pass.canvas_pass.meeting_with_admin_pass
   end
 
-  def self.mvr_status
+  def self.mvr_status_pass
     where("mvr_status LIKE ?", "Approved%")
   end
 
@@ -60,8 +60,8 @@ class Manager < ApplicationRecord
     where.not(canvas_course_complete_date: nil) 
   end
 
-  def self.class_training
-    where.not(class_training_date: nil) 
+  def self.meeting_with_admin_pass
+    where.not(meeting_with_admin_date: nil) 
   end
 
   def reservations_current
