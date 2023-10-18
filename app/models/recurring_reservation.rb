@@ -78,7 +78,7 @@ class RecurringReservation
     list.each do |id|
       reservation = Reservation.find(id)
       unless reservation.update(params)
-        note += "Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". "
+        note += " Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". "
       end
     end
     if note == ""
@@ -115,8 +115,34 @@ class RecurringReservation
     return Array(@reservation.id)
   end
 
+  def remove_from_list
+    note = ""
+    if prev_reservation && next_reservation
+      unless next_reservation.update(prev: prev_reservation.id)
+        note += " Error removing reservation #{id} from the recurring list: " + reservation.errors.full_messages.join(',') + ". "
+      end
+      unless prev_reservation.update(next: next_reservation.id)
+        note += " Error removing reservation #{id} from the recurring list: " + reservation.errors.full_messages.join(',') + ". "
+      end
+    elsif prev_reservation
+      unless prev_reservation.update(next: nil)
+        note += " Error removing reservation #{id} from the recurring list: " + reservation.errors.full_messages.join(',') + ". "
+      end
+    elsif next_reservation
+      unless next_reservation.update(prev: nil)
+        note += " Error removing reservation #{id} from the recurring list: " + reservation.errors.full_messages.join(',') + ". "
+      end
+    end
+    unless @reservation.update(recurring: nil, prev: nil, next: nil)
+      note += " Error removing reservation #{id} from the recurring list: " + reservation.errors.full_messages.join(',') + ". "
+    end
+    return note
+  end
+
   def get_following_to_delete
-    prev_reservation.update(next: nil)
+    if prev_reservation.present?
+      prev_reservation.update(next: nil)
+    end
     list = Array(@reservation.id)
     next_id = @reservation.next
     until next_id.nil? do
