@@ -48,8 +48,10 @@ class RecurringReservation
 
   def create_all
     unless @reservation.recurring.empty?
-      start_time = @reservation.start_time.strftime("%I:%M%p")
-      end_time = @reservation.end_time.strftime("%I:%M%p")
+      start_hour = @reservation.start_time.strftime("%H").to_i
+      start_minute = @reservation.start_time.strftime("%M").to_i
+      end_hour = @reservation.end_time.strftime("%H").to_i
+      end_minute = @reservation.end_time.strftime("%M").to_i
       start_day = @reservation.start_time.to_date
       end_day = @reservation.end_time.to_date
       day_diff = (end_day - start_day).to_i
@@ -59,8 +61,17 @@ class RecurringReservation
       all_days.shift
       all_days.each do |day|
         next_reservation = prev_reserv.dup
-        next_reservation.start_time = day + Time.parse(start_time).seconds_since_midnight.seconds
-        next_reservation.end_time = day + day_diff.day + Time.parse(end_time).seconds_since_midnight.seconds
+        if (day.to_time + 2.hour).dst?
+          next_reservation.start_time = DateTime.new(day.year, day.month, day.day, start_hour, start_minute, 0, 'EDT')
+        else
+          next_reservation.start_time = DateTime.new(day.year, day.month, day.day, start_hour, start_minute, 0, 'EST')
+        end
+        day_end = day + day_diff.day
+        if (day_end.to_time + 2.hour).dst?
+          next_reservation.end_time = DateTime.new(day_end.year, day_end.month, day_end.day, end_hour, end_minute, 0, 'EDT')
+        else
+          next_reservation.end_time = DateTime.new(day_end.year, day_end.month, day_end.day, end_hour, end_minute, 0, 'EST')
+        end
         next_reservation.prev = prev_reserv.id
         next_reservation.save
         if prev_reserv.passengers.present?

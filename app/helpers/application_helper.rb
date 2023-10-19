@@ -335,14 +335,22 @@ module ApplicationHelper
   def unit_begining_of_day(day, unit_id)
     t_begin = UnitPreference.find_by(name: "reservation_time_begin", unit_id: unit_id).value
     t_begin = Time.parse(t_begin).strftime("%H").to_i
-    day_begin = DateTime.new(day.year, day.month, day.day, t_begin, 0, 0, 'EDT')
+    if (day.to_time + 2.hour).dst?
+      day_begin = DateTime.new(day.year, day.month, day.day, t_begin, 0, 0, 'EDT')
+    else
+      day_begin = DateTime.new(day.year, day.month, day.day, t_begin, 0, 0, 'EST')
+    end
     return day_begin
   end
 
   def unit_end_of_day(day, unit_id)
     t_end = UnitPreference.find_by(name: "reservation_time_end", unit_id: unit_id).value
     t_end = Time.parse(t_end).strftime("%H").to_i
-    day_end = DateTime.new(day.year, day.month, day.day, t_end, 0, 0, 'EDT')
+    if (day.to_time + 2.hour).dst?
+      day_end = DateTime.new(day.year, day.month, day.day, t_end, 0, 0, 'EDT')
+    else
+      day_end = DateTime.new(day.year, day.month, day.day, t_end, 0, 0, 'EST')
+    end
     return day_end
   end
 
@@ -351,8 +359,13 @@ module ApplicationHelper
     t_begin = Time.parse(t_begin).strftime("%H").to_i
     t_end = UnitPreference.find_by(name: "reservation_time_end", unit_id: unit_id).value
     t_end = Time.parse(t_end).strftime("%H").to_i
-    day_begin = DateTime.new(day.year, day.month, day.day, t_begin, 0, 0, 'EDT')
-    day_end = DateTime.new(day.year, day.month, day.day, t_end, 0, 0, 'EDT')
+    if (day.to_time + 2.hour).dst?
+      day_begin = DateTime.new(day.year, day.month, day.day, t_begin, 0, 0, 'EDT')
+      day_end = DateTime.new(day.year, day.month, day.day, t_end, 0, 0, 'EDT')
+    else
+      day_begin = DateTime.new(day.year, day.month, day.day, t_begin, 0, 0, 'EST')
+      day_end = DateTime.new(day.year, day.month, day.day, t_end, 0, 0, 'EST')
+    end
     return [day_begin, day_end]
   end
 
