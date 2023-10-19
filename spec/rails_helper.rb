@@ -63,4 +63,24 @@ RSpec.configure do |config|
   config.before(:each, type: :system) do
     driven_by ENV['SHOW_BROWSER'] ? :selenium_chrome : :selenium_chrome_headless
   end
+
+  # We should establish our user credentials and stub out some requests to Omniauth 
+  # using a helper method. Remember to replace 'provider', 'uid', 'info', and other 
+  # fields with actual values depending on the authentication provider being used.
+  config.before(:each, type: :feature) do
+    OmniAuth.config.test_mode = true
+    OmniAuth.config.mock_auth[:provider] = OmniAuth::AuthHash.new({
+      provider: "provider",
+      uid: "123456",
+      info: {
+        email: "test@example.com",
+        name: "Test User",
+      },
+      credentials: {
+        token: "abcdefg12345",
+        expires_at: Time.now + 1.week,
+        refresh_token: "12345abcdefg",
+      },
+    })
+  end
 end
