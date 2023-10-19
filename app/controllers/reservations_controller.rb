@@ -389,7 +389,7 @@ class ReservationsController < ApplicationController
     end
     if success
       if params[:edit] == "true"
-        if @reservation.recurring.present?
+        if params[:recurring].empty? && @reservation.recurring.present?
           recurring_reservation = RecurringReservation.new(@reservation)
           result = recurring_reservation.remove_from_list
           if result == ""
