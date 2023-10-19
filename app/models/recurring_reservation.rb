@@ -93,7 +93,7 @@ class RecurringReservation
       params["driver_id"] = driver_id
     elsif driver_type == "manager"
       params["driver_manager_id"] = driver_id
-      params.delete("driver_id")
+      params["driver_id"] = nil
     end
     list.each do |id|
       reservation = Reservation.find(id)
