@@ -53,11 +53,14 @@ RSpec.configure do |config|
   #     end
   #
   # The different available types are documented in the features, such as in
-  # https://relishapp.com/rspec/rspec-rails/docs
+  # https://rspec.info/features/6-0/rspec-rails
   config.infer_spec_type_from_file_location!
 
   # Filter lines from Rails gems in backtraces.
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+  config.before(:each, type: :system) do
+    driven_by ENV['SHOW_BROWSER'] ? :selenium_chrome : :selenium_chrome_headless
+  end
 end
