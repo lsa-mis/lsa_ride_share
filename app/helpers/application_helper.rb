@@ -477,9 +477,8 @@ module ApplicationHelper
     return false unless is_student?(current_user)
     return false unless Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program).present?
     student = Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program)
-    return false if student.passenger_future.include?(reservation)
     return false if reservation.backup_driver == student
-    if ((reservation.start_time - DateTime.now.beginning_of_day)/3600).round > minimum_hours_before_reservation(reservation.program.unit)
+    if reservation.driver == student && ((reservation.start_time - DateTime.now.beginning_of_day)/3600).round > minimum_hours_before_reservation(reservation.program.unit)
       return true
     else
       return false
@@ -488,14 +487,9 @@ module ApplicationHelper
 
   def allow_manager_to_edit_reservation?(reservation)
     return false unless is_manager?(current_user)
-    manager = Manager.find_by(uniqname: current_user.uniqname)
-    return true if reservation.reserved_by = current_user.id
-    # if reservation.driver_manager_id.present?
-    #   return false unless Manager.find(reservation.driver_manager_id).uniqname == current_user.uniqname
-    # else 
-    #   return false
-    # end
-    if ((reservation.start_time - DateTime.now.beginning_of_day)/3600).round > minimum_hours_before_reservation(reservation.program.unit)
+    return false unless reservation.driver_manager_id.present?
+    # return true if reservation.reserved_by = current_user.id
+    if reservation.driver_manager.uniqname == current_user.uniqname && ((reservation.start_time - DateTime.now.beginning_of_day)/3600).round > minimum_hours_before_reservation(reservation.program.unit)
       return true
     else
       return false
@@ -515,6 +509,18 @@ module ApplicationHelper
       "Completed"
     else
       "Not Completed"
+    end
+  end
+
+  def allow_add_vehicle_report?(reservation, user)
+    if is_admin?(user)
+      return true
+    else
+      if Reservation.no_or_not_complete_vehicle_reports.exists?(reservation.id)
+        return true
+      else
+        return false
+      end
     end
   end
 
