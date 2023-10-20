@@ -13,10 +13,8 @@
       Reservation Summary:
       <ul>
         <li>DATE: <%= "#{@start_time} - #{@end_time}" %></li>
-        <% if @reservation.recurring.present? %>
-          <% recurring_reservation = RecurringReservation.new(@reservation) %>
-            <li>RECURRING: <%= recurring_reservation.first_reservation.rule.to_s %>
-              <%= "starting on #{recurring_reservation.start_on} ending on #{recurring_reservation.end_on}" %></li>
+        <% if @recurring_rule.present? %>
+          <li>RECURRING: <%= @recurring_rule %></li>
         <% end %>
         <% if @reservation.car.present? %>
           <li>VEHICLE #: <%= @reservation.car.car_number %></li>

@@ -469,9 +469,12 @@ class ReservationsController < ApplicationController
     if @reservation.recurring.present?
       recurring_reservation = RecurringReservation.new(@reservation)
       recurring_reservation.create_all
+      recurring = true
+    else  
+      recurring = false
     end
-    ReservationMailer.with(reservation: @reservation).car_reservation_confirmation(current_user).deliver_now
-    ReservationMailer.with(reservation: @reservation).car_reservation_created(current_user).deliver_now
+    ReservationMailer.with(reservation: @reservation).car_reservation_confirmation(current_user, recurring).deliver_now
+    ReservationMailer.with(reservation: @reservation).car_reservation_created(current_user, recurring).deliver_now
     redirect_to reservation_path(@reservation)
   end
 
@@ -490,6 +493,28 @@ class ReservationsController < ApplicationController
   # DELETE /reservations/1 or /reservations/1.json
   def destroy
     unless @reservation.approved
+      recurring = false
+      students = @reservation.passengers
+      cancel_passengers = []
+      cancel_emails = []
+      if students.present?
+        students.each do |s|
+          cancel_passengers << s.name
+          cancel_emails << email_address(s)
+        end
+      else
+        cancel_passengers = ["No passengers"]
+      end
+      if @reservation.program.non_uofm_passengers && @reservation.non_uofm_passengers.present?
+        cancel_passengers << "Non UofM Passengers: " + @reservation.non_uofm_passengers
+      end
+      if @reservation.passengers.present?
+        @reservation.passengers.delete_all
+      end
+      ReservationMailer.car_reservation_cancel_admin(@reservation, cancel_passengers, cancel_emails, @reservation.reserved_by, recurring).deliver_now
+      if @reservation.driver_id.present? || @reservation.driver_manager_id.present? 
+        ReservationMailer.car_reservation_cancel_driver(@reservation, cancel_passengers, cancel_emails, @reservation.reserved_by, recurring).deliver_now
+      end
       respond_to do |format|
         if @reservation.destroy
           if is_admin?(current_user)
@@ -515,17 +540,48 @@ class ReservationsController < ApplicationController
 
   def cancel_recurring_reservation
     unless @reservation.approved
+      students = @reservation.passengers
+      cancel_passengers = []
+      cancel_emails = []
+      if students.present?
+        students.each do |s|
+          cancel_passengers << s.name
+          cancel_emails << email_address(s)
+        end
+      else
+        cancel_passengers = ["No passengers"]
+      end
+      if @reservation.program.non_uofm_passengers && @reservation.non_uofm_passengers.present?
+        cancel_passengers << "Non UofM Passengers: " + @reservation.non_uofm_passengers
+      end
+
       cancel_type = params[:cancel_type]
       recurring_reservation = RecurringReservation.new(@reservation)
+
       case cancel_type
       when "one"
         result = recurring_reservation.get_one_to_delete
+        recurring = false
       when "following"
         result = recurring_reservation.get_following_to_delete
+        recurring = true #DEBUG not sure if wrigh
       when "all"
         result = recurring_reservation.get_all_reservations
+        recurring = true
       end
+
+      ReservationMailer.car_reservation_cancel_admin(@reservation, cancel_passengers, cancel_emails, @reservation.reserved_by, recurring).deliver_now
+      if @reservation.driver_id.present? || @reservation.driver_manager_id.present? 
+        ReservationMailer.car_reservation_cancel_driver(@reservation, cancel_passengers, cancel_emails, @reservation.reserved_by, recurring).deliver_now
+      end
+
+
+
+
+      recurring_reservation.destroy_passengers(result)
+
       authorize @reservation
+
       respond_to do |format|
         if Reservation.where(id: result).destroy_all
           if is_admin?(current_user)
