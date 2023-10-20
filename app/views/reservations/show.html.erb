@@ -3,7 +3,7 @@
     <%= @reservation.program.unit.name %> Reservation
   </h1>
   <% if is_student?(current_user) && allow_student_to_edit_reservation?(@reservation) || 
-    is_manager?(current_user) && allow_manager_to_edit_reservation?(@reservation)%>
+    is_manager?(current_user) && allow_manager_to_edit_reservation?(@reservation) %>
     <p class="body-md-text mt-2 text-blue-900">
       If you need to edit the reservation, please cancel it and create a new one, 
       or you can email <%= unit_email(@reservation) %> or call the office at: <%= contact_phone(@reservation) %>
@@ -107,20 +107,11 @@
           <% end %>
         <% end %>
         <div class="my-2">
-          <% if @reservation.approved %>
-            <% if is_admin?(current_user) %>
-              <% if @reservation.vehicle_report.present? %>
-                <%= link_to 'Vehicle Report', vehicle_report_path(@reservation.vehicle_report), class: "secondary_blue_button" if @reservation.car.present? %>
-              <% else %>
-                <%= link_to 'New Vehicle Report', new_reservation_vehicle_report_path(@reservation), class: "secondary_blue_button" if @reservation.car.present? %>
-              <% end %>
-            <% end %>
-            <% if is_student?(current_user) && Reservation.no_or_not_complete_vehicle_reports.exists?(@reservation.id) %>
-              <% if @reservation.vehicle_report.present? %>
-                <%= link_to 'Vehicle Report', vehicle_report_path(@reservation.vehicle_report), class: "secondary_blue_button" if @reservation.car.present? %>
-              <% else %>
-                <%= link_to 'New Vehicle Report', new_reservation_vehicle_report_path(@reservation), class: "secondary_blue_button" if @reservation.car.present? %>
-              <% end %>
+          <% if @reservation.approved && allow_add_vehicle_report?(@reservation, current_user) %>
+            <% if @reservation.vehicle_report.present? %>
+              <%= link_to 'Vehicle Report', vehicle_report_path(@reservation.vehicle_report), class: "secondary_blue_button" if @reservation.car.present? %>
+            <% else %>
+              <%= link_to 'New Vehicle Report', new_reservation_vehicle_report_path(@reservation), class: "secondary_blue_button" if @reservation.car.present? %>
             <% end %>
           <% end %>
         </div>
