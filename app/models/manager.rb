@@ -65,12 +65,11 @@ class Manager < ApplicationRecord
   end
 
   def reservations_current
-    Reservation.current_term.where("reserved_by = ? OR driver_manager_id = ?", User.find_by(uniqname: self.uniqname), self.id).where("(start_time BETWEEN ? AND ?) OR (start_time < ? AND end_time > ?)",
-    Date.today.beginning_of_day, Date.today.end_of_day, Date.today.end_of_day, Date.today.beginning_of_day)
+    Reservation.no_or_not_complete_vehicle_reports.where('(reserved_by = ? OR driver_manager_id = ?)', User.find_by(uniqname: self.uniqname), self.id)
   end
 
   def reservations_past
-    Reservation.current_term.where('(reserved_by = ? OR driver_manager_id = ?) AND end_time < ?', User.find_by(uniqname: self.uniqname), self.id, Date.today.beginning_of_day)
+    Reservation.complete_vehicle_reports.where('(reserved_by = ? OR driver_manager_id = ?)', User.find_by(uniqname: self.uniqname), self.id)
   end
 
   def reservations_future
