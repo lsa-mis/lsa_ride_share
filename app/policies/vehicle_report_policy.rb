@@ -7,19 +7,19 @@ class VehicleReportPolicy < ApplicationPolicy
   end
 
   def show?
-    user_in_access_group? || is_vehicle_report_student?
+    user_in_access_group? || is_vehicle_report_student? || is_vehicle_report_manager?
   end
 
   def create?
-    user_in_access_group? || can_student_save_report?
+    user_in_access_group? || can_student_save_report? || can_manager_save_report?
   end
 
   def new?
-    user_in_access_group? || can_student_create_report?
+    user_in_access_group? || can_student_create_report? || can_manager_create_report?
   end
   
   def update?
-    user_in_access_group? || is_vehicle_report_student?
+    user_in_access_group? || is_vehicle_report_student? || is_vehicle_report_manager?
   end
 
   def edit?
@@ -65,9 +65,25 @@ class VehicleReportPolicy < ApplicationPolicy
     end
   end
 
+  def can_manager_create_report?
+    reservation = Reservation.find(params[:reservation_id])
+    managers = reservation.program.all_managers
+    if managers.include?(reservation.driver_manager.uniqname)
+      return true
+    else
+      return false
+    end
+  end
+
   def can_student_save_report?
     program = Reservation.find(params[:vehicle_report][:reservation_id]).program
     Student.find_by(program_id: program, uniqname: @user.uniqname).present?
+  end
+
+  def can_manager_save_report?
+    program = Reservation.find(params[:vehicle_report][:reservation_id]).program
+    managers = program.all_managers
+    managers.include?(@user.uniqname)
   end
 
   def is_vehicle_report_student?
@@ -81,5 +97,14 @@ class VehicleReportPolicy < ApplicationPolicy
     end
   end
 
+  def is_vehicle_report_manager?
+    report = VehicleReport.find(params[:id])
+    managers = report.reservation.program.all_managers
+    if managers.include?(reservation.driver_manager.uniqname)
+      return true
+    else
+      return false
+    end
+  end
 
 end
