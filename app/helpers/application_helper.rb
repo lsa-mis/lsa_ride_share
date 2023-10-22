@@ -473,6 +473,18 @@ module ApplicationHelper
     end
   end
 
+  def allow_user_to_cancel_reservation?(reservation)
+    return false if reservation.approved
+    return true if is_admin?(current_user)
+    if User.find(reservation.reserved_by) == current_user
+      return true if allow_student_to_edit_reservation?(reservation) || allow_manager_to_edit_reservation?(reservation)
+    else
+      return false
+    end
+  end
+
+
+
   def allow_student_to_edit_reservation?(reservation)
     return false unless is_student?(current_user)
     return false unless Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program).present?
