@@ -54,6 +54,7 @@ class ReservationsController < ApplicationController
   def show
     @passengers = @reservation.passengers
     @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id).order(created_at: :desc)
+    authorize @reservation
   end
 
   # GET /reservations/new
@@ -416,7 +417,8 @@ class ReservationsController < ApplicationController
         return
       end
     else
-      @drivers = list_of_drivers(@reservation)
+      @backup_drivers = @reservation.program.students.eligible_drivers
+      @all_drivers = list_of_drivers(@reservation)
       @driver = reservation_driver(@reservation)
       render :add_drivers, status: :unprocessable_entity
       return
@@ -458,7 +460,7 @@ class ReservationsController < ApplicationController
   end
 
   def add_drivers
-    @drivers = @reservation.program.students.eligible_drivers
+    @backup_drivers = @reservation.program.students.eligible_drivers
     @all_drivers = list_of_drivers(@reservation)
     @passengers = @reservation.passengers
     @driver = reservation_driver(@reservation)
@@ -643,11 +645,11 @@ class ReservationsController < ApplicationController
 
     def list_of_drivers(reservation)
       drivers = reservation.program.students.eligible_drivers.map { |d| [d.display_name, d.id.to_s + "-student"] }
-      manager_drivers = reservation.program.managers.eligible_drivers.map { |d| [d.display_name + " (manager)", d.id.to_s + "-manager"] }
-      if reservation.program.instructor.can_reserve_car?
-        manager_drivers << [reservation.program.instructor.display_name + " (instructor)", reservation.program.instructor_id.to_s + "-manager"]
-      end
       if is_admin?(current_user)
+        manager_drivers = reservation.program.managers.eligible_drivers.map { |d| [d.display_name + " (manager)", d.id.to_s + "-manager"] }
+        if reservation.program.instructor.can_reserve_car?
+          manager_drivers << [reservation.program.instructor.display_name + " (instructor)", reservation.program.instructor_id.to_s + "-manager"]
+        end
         drivers.concat manager_drivers
       end
       return drivers
