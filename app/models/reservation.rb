@@ -43,7 +43,6 @@ class Reservation < ApplicationRecord
   has_many :reservation_passengers
   has_many :passengers, through: :reservation_passengers, source: :student
   has_one :vehicle_report, dependent: :destroy
-  #before_destroy :car_reservation_cancel
   before_update :check_number_of_non_uofm_passengers
   before_create :check_recurring
   
@@ -94,31 +93,7 @@ class Reservation < ApplicationRecord
     end
   end
 
-  # def car_reservation_cancel
-  #   students = self.passengers
-  #   cancel_passengers = []
-  #   cancel_emails = []
-  #   if students.present?
-  #     students.each do |s|
-  #       cancel_passengers << s.name
-  #       cancel_emails << email_address(s)
-  #     end
-  #   else
-  #     cancel_passengers = ["No passengers"]
-  #   end
-  #   if self.program.non_uofm_passengers && self.non_uofm_passengers.present?
-  #     cancel_passengers << "Non UofM Passengers: " + self.non_uofm_passengers
-  #   end
-  #   if self.passengers.present?
-  #     self.passengers.delete_all
-  #   end
-  #   ReservationMailer.car_reservation_cancel_admin(self, cancel_passengers, cancel_emails, self.reserved_by).deliver_now
-  #   if self.driver_id.present? || self.driver_manager_id.present? 
-  #     ReservationMailer.car_reservation_cancel_driver(self, cancel_passengers, cancel_emails, self.reserved_by).deliver_now
-  #   end
-  # end
-
-  def check_number_of_non_uofm_passengers
+   def check_number_of_non_uofm_passengers
     unless self.number_of_non_uofm_passengers.present?
       self.number_of_non_uofm_passengers = 0
     end
