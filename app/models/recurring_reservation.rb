@@ -86,6 +86,15 @@ class RecurringReservation
   def update_drivers(params)
     list = get_following
     note = ""
+    driver_param = params[:driver_id].split("-")
+    driver_type = driver_param[1]
+    driver_id = driver_param[0].to_i
+    if driver_type == "student"
+      params["driver_id"] = driver_id
+    elsif driver_type == "manager"
+      params["driver_manager_id"] = driver_id
+      params["driver_id"] = nil
+    end
     list.each do |id|
       reservation = Reservation.find(id)
       unless reservation.update(params)

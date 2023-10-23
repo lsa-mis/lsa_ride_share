@@ -1,7 +1,7 @@
 <div class="grid grid-cols-1 lg:grid-cols-2">
   <div>
     <div class="">
-      <% if is_student?(current_user) && @reservation.approved %>
+      <% if (is_student?(current_user) || is_manager?(current_user)) && @reservation.approved %>
         <p class="body-md-text status-true">
           The reservation is approved by admins
         </p>
