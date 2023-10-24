@@ -3,7 +3,7 @@
 class StudentPolicy < ApplicationPolicy
 
   def index?
-    user_in_access_group?
+    user_in_access_group? || is_program_manager?
   end
 
   def show?
@@ -52,6 +52,11 @@ class StudentPolicy < ApplicationPolicy
 
   def destroy?
     user_in_access_group?
+  end
+
+  def is_program_manager?
+    program = Program.find(params[:program_id])
+    program.all_managers.include?(@user.uniqname)
   end
 
 end
