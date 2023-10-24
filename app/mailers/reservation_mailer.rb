@@ -3,14 +3,24 @@ class ReservationMailer < ApplicationMailer
   before_action :set_driver_name, only: [:car_reservation_created, :car_reservation_approved, :car_reservation_confirmation, :car_reservation_updated, :car_reservation_remove_passenger, :car_reservation_update_passengers]
   before_action :set_passengers, only: [:car_reservation_created, :car_reservation_approved, :car_reservation_confirmation, :car_reservation_updated, :car_reservation_remove_passenger, :car_reservation_update_passengers]
 
-  def car_reservation_created(user)
+  def car_reservation_created(user, recurring = false)
     @recipient = @reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
-    mail(to: @recipient, subject: "New reservation for program: #{@reservation.program.display_name}" )
-    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "created",
+    if recurring
+      subject =  "New Recurring Reservation for program: #{@reservation.program.display_name_with_title}"
+      email_type = "recurring_created"
+      recurring_reservation = RecurringReservation.new(@reservation) 
+      @recurring_rule = recurring_reservation.first_reservation.rule.to_s 
+    else
+      subject = "New reservation for program: #{@reservation.program.display_name_with_title}"
+      email_type = "created"
+    end
+
+    mail(to: @recipient, subject: subject)
+    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: email_type,
       sent_to: @recipient, sent_by: user.id, sent_at: DateTime.now)
   end
 
-  def car_reservation_confirmation(user)
+  def car_reservation_confirmation(user, recurring = false)
     recipients = []
     recipients << User.find(@reservation.reserved_by).principal_name.presence
     recipients << email_address(@reservation.driver) if @reservation.driver.present?
@@ -18,8 +28,17 @@ class ReservationMailer < ApplicationMailer
     recipients << email_address(@reservation.backup_driver) if @reservation.backup_driver.present?
     recipients << @passengers_emails if @passengers_emails.present?
     @recipients = recipients.uniq.join(", ")
-    mail(to: @recipients, subject: "Reservation confirmation for program: #{@reservation.program.display_name}" )
-    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "confirmation",
+    if recurring
+      subject =  "Recurring Reservation confirmation for program: #{@reservation.program.display_name_with_title}"
+      email_type = "recurring_confirmation"
+      recurring_reservation = RecurringReservation.new(@reservation) 
+      @recurring_rule = recurring_reservation.first_reservation.rule.to_s
+    else
+      subject = "New reservation confirmation for program: #{@reservation.program.display_name_with_title}"
+      email_type = "confirmation"
+    end
+    mail(to: @recipients, subject: subject)
+    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: email_type,
       sent_to: @recipients, sent_by: user.id, sent_at: DateTime.now)
   end
 
@@ -31,37 +50,59 @@ class ReservationMailer < ApplicationMailer
     recipients << @passengers_emails if @passengers_emails.present?
     @recipients = recipients.join(", ")
     @unit_email_message = get_unit_email_message(@reservation)
-
     mail(to: @recipients, subject: "Reservation approved for program: #{@reservation.program.display_name}" )
     EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "approved",
       sent_to: @recipients, sent_by: user.id, sent_at: DateTime.now)
   end
 
-  def car_reservation_cancel_admin(cancel_reservation, cancel_passengers, cancel_emails, user)
+  def car_reservation_cancel_admin(cancel_reservation, cancel_passengers, cancel_emails, user, recurring = false, cancel_message = "")
     @reservation = cancel_reservation
     set_reservation_data(@reservation)
     set_driver_name
     @passengers = cancel_passengers
+    if recurring
+      subject = "Recurring Reservations canceled for program: #{@reservation.program.display_name_with_title}"
+      email_type = "recurring_cancel_admin"
+      recurring_reservation = RecurringReservation.new(@reservation) 
+      @recurring_rule = recurring_reservation.first_reservation.rule.to_s
+      @cancel_message = cancel_message + " scheduled '" + @recurring_rule + "' were canceled."
+    else
+      subject = "Reservation canceled for program: #{@reservation.program.display_name_with_title}"
+      email_type = "cancel_admin"
+      @cancel_message = "The reservation was canceled."
+    end
 
-    mail(to: @unit_email, subject: "Reservation canceled for program: #{@reservation.program.display_name}" )
-    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "cancel_admin",
-      sent_to: @unit_email, sent_by: user, sent_at: DateTime.now)
+    mail(to: @unit_email, subject: subject)
+    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: email_type,
+      sent_to: @unit_email, sent_by: user.id, sent_at: DateTime.now)
   end
 
-  def car_reservation_cancel_driver(cancel_reservation, cancel_passengers, cancel_emails, user)
+  def car_reservation_cancel_driver(cancel_reservation, cancel_passengers, cancel_emails, user, recurring = false, cancel_message = "")
     @reservation = cancel_reservation
     set_reservation_data(@reservation)
     set_driver_name
     @passengers = cancel_passengers
     recipients = []
+    recipients << User.find(@reservation.reserved_by).principal_name.presence
     recipients << email_address(cancel_reservation.driver) if cancel_reservation.driver.present?
     recipients << email_address(cancel_reservation.driver_manager) if cancel_reservation.driver_manager.present?
     recipients << email_address(cancel_reservation.backup_driver) if cancel_reservation.backup_driver.present?
     recipients << cancel_emails if cancel_emails.present?
     @recipients = recipients.join(", ")
-    mail(to: @recipients, subject: "Reservation canceled for program: #{@reservation.program.display_name}" )
-    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "cancel_driver",
-      sent_to: @recipients, sent_by: user, sent_at: DateTime.now)
+    if recurring
+      subject =  "Recurring Reservations canceled for program: #{@reservation.program.display_name_with_title}"
+      email_type = "recurring_cancel_driver"
+      recurring_reservation = RecurringReservation.new(@reservation) 
+      @recurring_rule = recurring_reservation.first_reservation.rule.to_s
+      @cancel_message = cancel_message + " scheduled '" + @recurring_rule + "' were canceled."
+    else
+      subject = "Reservation canceled for program: #{@reservation.program.display_name_with_title}"
+      email_type = "cancel_driver"
+      @cancel_message = "Your reservation was canceled."
+    end
+    mail(to: @recipients, subject: subject )
+    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: email_type,
+      sent_to: @recipients, sent_by: user.id, sent_at: DateTime.now)
   end
 
   def car_reservation_updated(user, recurring = false)

@@ -1,7 +1,11 @@
 
-The transportation reservation has been canceled.
+<%= @cancel_message %> 
+
 ================================================================================================
 DATE: <%= "#{@start_time} - #{@end_time}" %>
+<% if @recurring_rule.present? %>
+RECURRING: <%= @recurring_rule %>
+<% end %>
 <% if @reservation.car.present? %>
 VEHICLE #: <%= @reservation.car.car_number %>
 <% else %>

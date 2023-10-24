@@ -123,6 +123,15 @@ class RecurringReservation
     end
   end
 
+  def destroy_passengers(result)
+    result.each do |id|
+      reservation = Reservation.find(id)
+      if reservation.passengers.present?
+        reservation.passengers.delete_all
+      end
+    end
+  end
+
   def get_one_to_delete
     if prev_reservation && next_reservation
       next_reservation.update(prev: prev_reservation.id)
