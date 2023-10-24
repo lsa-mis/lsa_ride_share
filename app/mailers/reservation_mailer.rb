@@ -90,7 +90,7 @@ class ReservationMailer < ApplicationMailer
     recipients << cancel_emails if cancel_emails.present?
     @recipients = recipients.join(", ")
     if recurring
-      subject =  "Recurring Reservation canceled for program: #{@reservation.program.display_name_with_title}"
+      subject =  "Recurring Reservations canceled for program: #{@reservation.program.display_name_with_title}"
       email_type = "recurring_cancel_driver"
       recurring_reservation = RecurringReservation.new(@reservation) 
       @recurring_rule = recurring_reservation.first_reservation.rule.to_s
@@ -98,7 +98,7 @@ class ReservationMailer < ApplicationMailer
     else
       subject = "Reservation canceled for program: #{@reservation.program.display_name_with_title}"
       email_type = "cancel_driver"
-      @cancel_message = "Your reservation was canceled"
+      @cancel_message = "Your reservation was canceled."
     end
     mail(to: @recipients, subject: subject )
     EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: email_type,
