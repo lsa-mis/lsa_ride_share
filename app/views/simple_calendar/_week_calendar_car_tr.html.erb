@@ -21,6 +21,7 @@
         <% if list_start.present? %>
           <td class="td-week bg-red-650 border-r border-gray-um90">
             <% list_start.each do |one_reserv| %>
+              <% @approve_color = one_reserv.approved %>
               <div class="body-sm-semibold-text div-hover" data-reservation="<%= show_reservation(car_day_reserv.find_by(start_time: step)) %>">
                 <%= link_to show_reserved_by_in_week_calendar(one_reserv), reservation_path(one_reserv), class: 'link_to_white ml-2' %>
               </div>
@@ -30,7 +31,7 @@
         <% elsif list_end.present? %>
           <td class="td-week bg-red-650 border-r border-gray-um90"></td>
         <% else %>
-          <td class="td-week <%= reservation_color[car_day_reserv.first.approved] %> border-r border-gray-um90"></td>
+          <td class="td-week <%= reservation_color[@approve_color] %> border-r border-gray-um90"></td>
         <% end %>
       <% else %>
         <% if step.to_datetime > DateTime.now %>
