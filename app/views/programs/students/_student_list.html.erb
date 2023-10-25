@@ -18,7 +18,7 @@
       <tbody>
         <% @students.each do |student| %>
           <tr class="mi_tbody_tr">
-            <% if policy(Student).update_student_list? %>
+            <% if policy(Student).update? %>
               <td class="mi_tbody_td">
                 <%= link_to "View", program_student_path(@student_program, student), class: "link_to", data: {turbo_frame: "_top"} %>
               </td>
