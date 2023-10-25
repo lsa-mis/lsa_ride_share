@@ -18,7 +18,7 @@
       <tbody>
         <% @students.each do |student| %>
           <tr class="mi_tbody_tr">
-            <% if policy(Student).update_student_list? %>
+            <% if policy(Student).update? %>
               <td class="mi_tbody_td">
                 <%= link_to "View", program_student_path(@student_program, student), class: "link_to", data: {turbo_frame: "_top"} %>
               </td>
@@ -52,7 +52,7 @@
               <%= student.meeting_with_admin_date %>
             </td>
             <td class="mi_tbody_td">
-              <% if student.notes.present? %>
+              <% if student.notes.present? && is_admin?(current_user) %>
                 <%= link_to program_student_path(@student_program, student), class: "link_to", data: {turbo_frame: "_top"} do %>
                   <%= student.notes.count %>
                 <% end %>

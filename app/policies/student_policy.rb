@@ -11,15 +11,15 @@ class StudentPolicy < ApplicationPolicy
   end
 
   def update_student_list?
-    user_in_access_group?
+    user_in_access_group? || is_instructor?
   end
 
   def add_students?
-    user_in_access_group?
+    user_in_access_group? || is_instructor?
   end
 
   def create?
-    user_in_access_group?
+    user_in_access_group? || is_instructor?
   end
 
   def new?
@@ -51,12 +51,17 @@ class StudentPolicy < ApplicationPolicy
   end
 
   def destroy?
-    user_in_access_group?
+    user_in_access_group? || is_instructor?
   end
 
   def is_program_manager?
     program = Program.find(params[:program_id])
     program.all_managers.include?(@user.uniqname)
+  end
+
+  def is_instructor?
+    program = Program.find(params[:program_id])
+    program.instructor.uniqname == @user.uniqname
   end
 
 end
