@@ -51,7 +51,7 @@ class StudentPolicy < ApplicationPolicy
   end
 
   def destroy?
-    user_in_access_group? || is_program_manager?
+    user_in_access_group? || is_instructor?
   end
 
   def is_program_manager?
