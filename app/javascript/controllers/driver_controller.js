@@ -26,7 +26,7 @@ export default class extends Controller {
   }
 
   submitForm(event) {
-    var driver = this.driverTarget.value
+    var driver = this.driverTarget.value.split('-')[0]
     var driver_phone = this.driver_phoneTarget.value
     var number = this.number_of_people_on_tripTarget.value - this.number_of_passengersTarget.value  - 1
     var driver_error_place = document.getElementById('driver_error')

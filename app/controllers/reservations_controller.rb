@@ -54,6 +54,7 @@ class ReservationsController < ApplicationController
   def show
     @passengers = @reservation.passengers
     @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id).order(created_at: :desc)
+    authorize @reservation
   end
 
   # GET /reservations/new
@@ -350,40 +351,36 @@ class ReservationsController < ApplicationController
   def add_edit_drivers
     success = true
     recurring = false
+    note = ""
     drivers_emails = reservation_drivers_emails
+    @reservation.attributes = reservation_params
     if params[:recurring] == "true"
       recurring_reservation = RecurringReservation.new(@reservation)
       recurring = true
     end
-    if @reservation.driver_manager.present? && params[:reservation][:driver_id].present?
-      if params[:recurring] == "true"
-        reservations_to_update = recurring_reservation.get_following
-        Reservation.where(id: reservations_to_update).update_all(driver_manager: nil)
-      else
-        @reservation.update(driver_manager: nil)
+    # check if a new driver is a student or a manager
+    driver_param = params[:driver_id].split("-")
+    driver_type = driver_param[1]
+    driver_id = driver_param[0].to_i
+    if driver_type == "student"
+      @reservation.driver_id = driver_id
+      @reservation.driver_manager_id = nil
+    elsif driver_type == "manager"
+      @reservation.driver_manager_id = driver_id
+      @reservation.driver_id = nil
+    end
+    if params[:edit] == "true"
+      # check if a new driver is a passenger
+      note = check_if_driver_is_passenger(@reservation, driver_type, "Driver", driver_id, recurring)
+      # check if a new backup driver is a passenger
+      if params[:reservation][:backup_driver_id].present? 
+        note += check_if_driver_is_passenger(@reservation, "student", "Backup Driver", params[:reservation][:backup_driver_id], recurring)
       end
     end
-    # check if a new driver is a passenger
-    note = ""
-    if params[:reservation][:driver_id].present? && @reservation.passengers.include?(Student.find(params[:reservation][:driver_id]))
-      if params[:recurring] == "true"
-        recurring_reservation.remove_passenger_following_reservations(Student.find(params[:reservation][:driver_id]))
-      else
-        @reservation.passengers.delete(Student.find(params[:reservation][:driver_id]))
-      end
-      note += " Driver was removed from passengers list."
-    end
-    if params[:reservation][:backup_driver_id].present? && @reservation.passengers.include?(Student.find(params[:reservation][:backup_driver_id]))
-      if params[:recurring] == "true"
-        recurring_reservation.remove_passenger_following_reservations(Student.find(params[:reservation][:backup_driver_id]))
-      else
-        @reservation.passengers.delete(Student.find(params[:reservation][:backup_driver_id]))
-      end
-      note += " Backup Driver was removed from passengers list."
-    end
-
     if params[:recurring] == "true"
-      notice = recurring_reservation.update_drivers(reservation_params.to_h) + note
+      list_of_params = reservation_params.to_h
+      list_of_params["driver_id"] = params[:driver_id]
+      notice = recurring_reservation.update_drivers(list_of_params) + note
     else
       if @reservation.update(reservation_params)
         notice = "Drivers were updated." + note
@@ -420,7 +417,9 @@ class ReservationsController < ApplicationController
         return
       end
     else
-      @drivers = @reservation.program.students.eligible_drivers
+      @backup_drivers = @reservation.program.students.eligible_drivers
+      @all_drivers = list_of_drivers(@reservation)
+      @driver = reservation_driver(@reservation)
       render :add_drivers, status: :unprocessable_entity
       return
     end
@@ -461,8 +460,10 @@ class ReservationsController < ApplicationController
   end
 
   def add_drivers
-    @drivers = @reservation.program.students.eligible_drivers
+    @backup_drivers = @reservation.program.students.eligible_drivers
+    @all_drivers = list_of_drivers(@reservation)
     @passengers = @reservation.passengers
+    @driver = reservation_driver(@reservation)
     unless is_admin?(current_user)
       if is_student?(current_user)
         driver = Student.find_by(program_id: @reservation.program_id, uniqname: current_user.uniqname)
@@ -490,9 +491,12 @@ class ReservationsController < ApplicationController
     if @reservation.recurring.present?
       recurring_reservation = RecurringReservation.new(@reservation)
       recurring_reservation.create_all
+      recurring = true
+    else
+      recurring = false
     end
-    ReservationMailer.with(reservation: @reservation).car_reservation_confirmation(current_user).deliver_now
-    ReservationMailer.with(reservation: @reservation).car_reservation_created(current_user).deliver_now
+    ReservationMailer.with(reservation: @reservation).car_reservation_confirmation(current_user, recurring).deliver_now
+    ReservationMailer.with(reservation: @reservation).car_reservation_created(current_user, recurring).deliver_now
     redirect_to reservation_path(@reservation)
   end
 
@@ -521,6 +525,15 @@ class ReservationsController < ApplicationController
   # DELETE /reservations/1 or /reservations/1.json
   def destroy
     unless @reservation.approved
+      recurring = false
+      create_cancel_emails
+      if @reservation.passengers.present?
+        @reservation.passengers.delete_all
+      end
+      ReservationMailer.car_reservation_cancel_admin(@reservation, @cancel_passengers, @cancel_emails, current_user, recurring).deliver_now
+      if @reservation.driver_id.present? || @reservation.driver_manager_id.present? 
+        ReservationMailer.car_reservation_cancel_driver(@reservation, @cancel_passengers, @cancel_emails, current_user, recurring).deliver_now
+      end
       respond_to do |format|
         if @reservation.destroy
           if is_admin?(current_user)
@@ -546,16 +559,28 @@ class ReservationsController < ApplicationController
 
   def cancel_recurring_reservation
     unless @reservation.approved
+      create_cancel_emails
       cancel_type = params[:cancel_type]
+      cancel_message = ""
       recurring_reservation = RecurringReservation.new(@reservation)
       case cancel_type
       when "one"
         result = recurring_reservation.get_one_to_delete
+        recurring = false
       when "following"
         result = recurring_reservation.get_following_to_delete
+        recurring = true
+        cancel_message = "This reservation and all the following recurring reservations "
       when "all"
         result = recurring_reservation.get_all_reservations
+        recurring = true
+        cancel_message = "Recurring Reservations starting on #{recurring_reservation.start_on} and "
       end
+      ReservationMailer.car_reservation_cancel_admin(@reservation, @cancel_passengers, @cancel_emails, current_user, recurring, cancel_message).deliver_now
+      if @reservation.driver_id.present? || @reservation.driver_manager_id.present? 
+        ReservationMailer.car_reservation_cancel_driver(@reservation, @cancel_passengers, @cancel_emails, current_user, recurring, cancel_message).deliver_now
+      end
+      recurring_reservation.destroy_passengers(result)
       authorize @reservation
       respond_to do |format|
         if Reservation.where(id: result).destroy_all
@@ -629,17 +654,75 @@ class ReservationsController < ApplicationController
     end
 
     def reservation_drivers_emails
-      drivers_emails = []
+      emails = []
       if @reservation.driver.present?
-        drivers_emails << email_address(@reservation.driver)
+        emails << email_address(@reservation.driver)
       end
       if @reservation.backup_driver.present?
-        drivers_emails << email_address(@reservation.backup_driver)
+        emails << email_address(@reservation.backup_driver)
       end
       if @reservation.driver_manager.present?
-        drivers_emails << email_address(@reservation.driver_manager)
+        emails << email_address(@reservation.driver_manager)
       end
-      return drivers_emails
+      return emails
+    end
+
+    def list_of_drivers(reservation)
+      drivers = reservation.program.students.eligible_drivers.map { |d| [d.display_name, d.id.to_s + "-student"] }
+      if is_admin?(current_user)
+        manager_drivers = reservation.program.managers.eligible_drivers.map { |d| [d.display_name + " (manager)", d.id.to_s + "-manager"] }
+        if reservation.program.instructor.can_reserve_car?
+          manager_drivers << [reservation.program.instructor.display_name + " (instructor)", reservation.program.instructor_id.to_s + "-manager"]
+        end
+        drivers.concat manager_drivers
+      end
+      return drivers
+    end
+
+    def reservation_driver(reservation)
+      driver = []
+      if reservation.driver_id.present?
+        driver = [reservation.driver.display_name, reservation.driver_id.to_s + "-student"]
+      elsif reservation.driver_manager_id.present?
+        driver = [reservation.driver_manager.display_name, reservation.driver_manager_id.to_s + "-manager"]
+      else
+        nil
+      end
+    end
+
+    def check_if_driver_is_passenger(reservation, driver_type, field, driver_id, recurring)
+      # check if a new driver is a passenger
+      note = ""
+      if driver_type == "student"
+        student = Student.find(driver_id)
+        if @reservation.passengers.include?(student)
+          if recurring
+            recurring_reservation = RecurringReservation.new(reservation)
+            recurring_reservation.remove_passenger_following_reservations(student)
+          else
+            reservation.passengers.delete(student)
+          end
+          note = " " + field + " was removed from passengers list."
+        end
+      end
+      return note
+    end
+
+    def create_cancel_emails
+      students = @reservation.passengers
+      @cancel_passengers = []
+      @cancel_emails = []
+      if students.present?
+        students.each do |s|
+          @cancel_passengers << s.name
+          @cancel_emails << email_address(s)
+        end
+      else
+        @cancel_passengers = ["No passengers"]
+      end
+      if @reservation.program.non_uofm_passengers && @reservation.non_uofm_passengers.present?
+        @cancel_passengers << "Non UofM Passengers: " + @reservation.non_uofm_passengers
+      end
     end
 
     # Only allow a list of trusted parameters through.
