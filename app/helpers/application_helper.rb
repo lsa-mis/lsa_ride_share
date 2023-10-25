@@ -477,15 +477,13 @@ module ApplicationHelper
     return false if reservation.approved
     return true if is_admin?(current_user)
     if User.find(reservation.reserved_by) == current_user
-      return true if allow_student_to_edit_reservation?(reservation) || allow_manager_to_edit_reservation?(reservation)
+      return true if allow_student_to_edit_drivers?(reservation) || allow_manager_to_edit_drivers?(reservation)
     else
       return false
     end
   end
 
-
-
-  def allow_student_to_edit_reservation?(reservation)
+  def allow_student_to_edit_drivers?(reservation)
     return false unless is_student?(current_user)
     return false unless Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program).present?
     student = Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program)
@@ -497,11 +495,33 @@ module ApplicationHelper
     end
   end
 
-  def allow_manager_to_edit_reservation?(reservation)
+  def allow_manager_to_edit_drivers?(reservation)
     return false unless is_manager?(current_user)
     return false unless reservation.driver_manager_id.present?
     # return true if reservation.reserved_by = current_user.id
     if reservation.driver_manager.uniqname == current_user.uniqname && ((reservation.start_time - DateTime.now.beginning_of_day)/3600).round > minimum_hours_before_reservation(reservation.program.unit)
+      return true
+    else
+      return false
+    end
+  end
+
+  def allow_student_to_edit_passengers?(reservation)
+    return false unless is_student?(current_user)
+    return false unless Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program).present?
+    student = Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program)
+    if (reservation.driver == student || reservation.backup_driver == student) && reservation.end_time + 45.minute > DateTime.now
+      return true
+    else
+      return false
+    end
+  end
+
+  def allow_manager_to_edit_passengers?(reservation)
+    return false unless is_manager?(current_user)
+    return false unless reservation.driver_manager_id.present?
+    # return true if reservation.reserved_by = current_user.id
+    if reservation.driver_manager.uniqname == current_user.uniqname && reservation.end_time + 45.minute > DateTime.now
       return true
     else
       return false

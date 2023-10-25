@@ -71,7 +71,7 @@
           <%= show_driver(reservation) %>
         </p>
       </div>
-      <% if ((is_admin?(current_user) && @reservation.end_time > DateTime.now) || allow_student_to_edit_reservation?(@reservation) || allow_manager_to_edit_reservation?(@reservation)) %>
+      <% if (is_admin?(current_user) || allow_student_to_edit_drivers?(@reservation) || allow_manager_to_edit_drivers?(@reservation)) %>
         <div class="py-2 whitespace-nowrap">
           <%= link_to add_drivers_path(@reservation, :edit => true) do %>
             <span class="tertiary_button"> 
@@ -134,7 +134,7 @@
       <p class="body-lg-bold-text">
         Passengers (<%= @reservation.passengers.count %>):
       </p>
-      <% if ((is_admin?(current_user) && @reservation.end_time > DateTime.now) || allow_student_to_edit_reservation?(@reservation) || allow_manager_to_edit_reservation?(@reservation)) %>
+      <% if (is_admin?(current_user) || allow_student_to_edit_passengers?(@reservation) || allow_manager_to_edit_passengers?(@reservation)) %>
         <div class="py-2">
           <div>
             <%= link_to add_passengers_path(@reservation, :edit => true) do %>

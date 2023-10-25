@@ -55,11 +55,13 @@ class ProgramPolicy < ApplicationPolicy
   end
 
   def is_program_manager?
-    @record.all_managers.include?(@user.uniqname)
+    program = Program.find(params[:id])
+    program.all_managers.include?(@user.uniqname)
   end
 
   def is_instructor?
-    @record.instructor.uniqname == @user.uniqname
+    program = Program.find(params[:id])
+    program.instructor.uniqname == @user.uniqname
   end
 
 end
