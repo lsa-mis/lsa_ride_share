@@ -42,10 +42,10 @@ class ManagersController < ApplicationController
       else
         unit_ids = current_user.unit_ids
       end
-      p = Program.where(unit_id: unit_ids)
-      i_ids = p.pluck(:instructor_id).uniq
+      programs = Program.where(unit_id: unit_ids)
+      i_ids = programs.pluck(:instructor_id).uniq
       instructors = Manager.where(id: i_ids)
-      p_ids = p.pluck(:id)
+      p_ids = programs.pluck(:id)
       managers = Manager.joins(:programs).where('managers_programs.program_id IN (?)', p_ids)
       @managers = (instructors + managers).uniq.sort_by(&:uniqname)
       authorize Manager
