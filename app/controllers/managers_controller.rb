@@ -23,7 +23,7 @@ class ManagersController < ApplicationController
     @managers.each do |manager|
       status = mvr_status(manager.uniqname)
       unless manager.update(mvr_status: status)
-        redirect_to managers_path(@managers), alert: "Error updating student record."
+        redirect_to managers_path, alert: "Error updating manager record."
       end
     end
     flash.now[:notice] = "MVR status is updated."
