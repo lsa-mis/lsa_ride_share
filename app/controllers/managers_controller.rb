@@ -2,21 +2,10 @@ class ManagersController < ApplicationController
   before_action :auth_user
   before_action :set_manager, only: %i[ edit update ]
   before_action :set_units
+  before_action :set_managers, only: %i[ index update_managers_mvr_status ]
   include StudentApi
 
   def index
-    if params[:unit_id].present?
-      unit_ids =  [params[:unit_id]].to_a
-    else
-      unit_ids = current_user.unit_ids
-    end
-    p = Program.where(unit_id: unit_ids)
-    i_ids = p.pluck(:instructor_id).uniq
-    instructors = Manager.where(id: i_ids)
-    p_ids = p.pluck(:id)
-    managers = Manager.joins(:programs).where('managers_programs.program_id IN (?)', p_ids)
-    @managers = (instructors + managers).uniq.sort_by(&:uniqname)
-    authorize Manager
   end
 
   def edit
@@ -31,8 +20,6 @@ class ManagersController < ApplicationController
   end
 
   def update_managers_mvr_status
-    @managers = Manager.all.order(:uniqname)
-    authorize Manager
     @managers.each do |manager|
       status = mvr_status(manager.uniqname)
       unless manager.update(mvr_status: status)
@@ -47,6 +34,21 @@ class ManagersController < ApplicationController
     def set_manager
       @manager = Manager.find(params[:id])
       authorize @manager
+    end
+
+    def set_managers
+      if params[:unit_id].present?
+        unit_ids = [params[:unit_id]].to_a
+      else
+        unit_ids = current_user.unit_ids
+      end
+      p = Program.where(unit_id: unit_ids)
+      i_ids = p.pluck(:instructor_id).uniq
+      instructors = Manager.where(id: i_ids)
+      p_ids = p.pluck(:id)
+      managers = Manager.joins(:programs).where('managers_programs.program_id IN (?)', p_ids)
+      @managers = (instructors + managers).uniq.sort_by(&:uniqname)
+      authorize Manager
     end
 
     def set_units
