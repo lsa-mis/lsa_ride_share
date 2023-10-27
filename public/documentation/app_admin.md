@@ -31,7 +31,7 @@ Department Administrators have multiple ways to create programs for their unit e
     2. If the program is duplicated to a different term, Title, Subject, Catalog Number, or Class Section can be the same.
 1. Select the **Term**.
 1. Click on **Create Program**.
-1. You will be taken to the created Program Page. You can edit the [Student List](#student_list) and the [Sites](#sites).
+1. You will be taken to the created Program Page. You can edit the [Student List](#student-list-for-courses) and the [Sites](#lsa-rideshare-sites).
 
 Note: All sites that the original program has been carried forward to the new program.
 
@@ -51,20 +51,17 @@ If the new program is not a course, follow the same steps above. In the form, yo
 
 ![image](images/image03.png)
 
-Check the checkbox if your program has no Subject, Catalog Number and Class section. The Student List for such programs should be [updated manually](#updated-manually).
+Check the checkbox if your program has no Subject, Catalog Number and Class section. The Student List for such programs should be [updated manually](#manually-add-students-to-program).
 
 ### Student List for Courses
 
 1. Navigate to the program that you need a student list.
 1. If the program is a course program the Student List will be updated automatically by calling the API to get students registered for the course (from MPathways/Wolverine Access).
 1. As the course roster changes due to Add/Drop approvals, you can click on the Student List button on the Program page
-
-![image](images/image04.png)
+    ![image](images/image04.png)
 
 1. or **Refresh Student List** button on the Student List page and the student list will synchronize with the course roster
-
-![image](images/image05.png)
-
+    ![image](images/image05.png)
 1. For a not-a-course program student list should be updated manually.
 
 #### <a href="updated-manually"></a>Manually Add Students to Program
@@ -72,19 +69,13 @@ Check the checkbox if your program has no Subject, Catalog Number and Class sect
 For programs that are non-courses, or courses that need manual entry of students:
 
 1. Click the **Student List button** on the Program page.
-
-![image](images/image06.png)
-
+    ![image](images/image06.png)
 1. Click the Add Students button
-
-![image](images/image07.png)
-
+    ![image](images/image07.png)
 1. On the next screen enter a uniqname and click Add Student.
 1. Repeat until all students are entered for the program.
 1. To remove a student click on Remove near the student's name
-
-![image](images/image08.png)
-
+    ![image](images/image08.png)
 1. Finish updating by clicking on the **Exit Update Student Page** button
 
 
@@ -92,7 +83,7 @@ For programs that are non-courses, or courses that need manual entry of students
 
 LSA RideShare Admins can send Program Surveys to instructors. When instructors fill out the survey, the Program will be created based on the submission details. LSA RideShare Admins can make adjustments to created programs as needed.
 
-To use Program Survey functionality admins should turn it on in the [Unit Preferences](#unit-prefs).
+To use Program Survey functionality admins should turn it on in the [Unit Preferences](#lsa-rideshare-unit-preferences).
 
 *(Click on **Unit Options -> Unit Preferences** and check the Use faculty survey to create programs checkbox)*
 
@@ -104,34 +95,25 @@ This will add Program Surveys to the Unit Options drop-down menu in the header.
 
 1. Click on Unit Options -> *Program Surveys*
 1. This will bring you to the list of current term surveys if there are any
-
-![image](images/image10.png)
-
+    ![image](images/image10.png)
 1. Click on the Create Program Survey button.
-
-![image](images/image11.png)
-
+    ![image](images/image11.png)
 1. In the form, give a title for the survey. (e.g. *Jane Doe’s Fall 2023 Program Survey*).
 1. Add the Uniqname of the Instructor.
 1. Select Term.
 1. Click Create Program Survey.
 1. Admin can edit or delete the survey.
-![image](images/image12.png)
+    ![image](images/image12.png)
     1. Note: if an email about the survey is sent to the instructor (see below) the admin can’t edit or delete the survey.
 1. Review questions by clicking on the Questions link (see the image above).
-
-![image](images/image13.png)
-
     1. Fields in the first half of the survey are required to create the program and cannot be removed or edited.
     1. Add any new questions by clicking the New Survey Question button.
     1. Edit any questions by clicking the Edit link near the question.
     1. Remove any questions that are not necessary by clicking on the Delete link near the question.
-
+    ![image](images/image13.png)
 1. Send an email to the instructor by clicking the Send Email to Instructor button.
     1. Note: After the email is sent the admin can’t edit the survey.
-
-![image](images/image14.png)
-
+    ![image](images/image14.png)
 1. Instructors can either:
     1. Log into LSA RideShare and see Program Survey in the header. They can complete the survey from here.
     1. Receive an email from LSA RideShare. There will be a link that links directly to the sent survey.
@@ -142,26 +124,17 @@ Admins can add managers (faculty or staff members) in addition to a program’s 
 
 1. Go to **Programs -> All Programs** and select the program that you want to add additional Managers.
 1. Click on **Edit Program -> Edit Course Information**.
-
-![image](images/image15.png)
-
-![image](images/image16.png)
-
+    ![image](images/image15.png)
+    ![image](images/image16.png)
 1. Check “Do you want to add managers to this program?” Click **Save**.
-
-![image](images/image17.png)
-
+    ![image](images/image17.png)
 1. Scroll down the Program page and click on **Edit Program Managers**.
-
-![image](images/image18.png)
-
+    ![image](images/image18.png)
 1. To add a Manager, you can:
     1. Select a Manager from the drop-down menu, if they are already added.
     1. Add the additional manager’s uniqname, if they are not added. Click “Add Manager.”
     1. To remove a manager click on Remove near the manager’s name.
-
-![image](images/image19.png)
-
+    ![image](images/image19.png)
 1. Once you have added all the additional Program Managers, click **Exit Edit Managers Page** to go back to the Program Page.
 1. Click on the **Exit Edit Program** button when you are finished.
 1. If managers are allowed to reserve cars they have to complete the same steps as students’ drivers
@@ -169,18 +142,13 @@ Admins can add managers (faculty or staff members) in addition to a program’s 
     1. Complete Unit’s Canvas Course        
     1. Attend In Person Orientation
 1. Admins can see the manager's list by going to Programs -> Managers link in the header
-
-![image](images/image20.png)
-
+    ![image](images/image20.png)
 1. Update MVR Status by clicking on the Update MVR Status button
 1. Edit Canvas Course Complete Data and In Person Orientation Date by clicking the Edit link near the manager's record
-
-![image](images/image21.png)
-
+    ![image](images/image21.png)
 1. Enter dates and click Update Manager
 1. The dates will appear in the list of managers:
-
-![image](images/image22.png)
+    ![image](images/image22.png)
 
 ### LSA RideShare Sites
 
@@ -188,14 +156,9 @@ To add sites for programs:
 
 1. Navigate to the program you want to add sites for.
 1. Click Edit Program.
-
-![image](images/image23.png)
-
-
+    ![image](images/image23.png)
 1. Click Edit Sites
-
-![image](images/image24.png)
-
+    ![image](images/image24.png)
 1. On the new page, you have two options
     1. Select a previously added site from the drop down menu.
     1. Create new site:
@@ -209,21 +172,13 @@ To add sites for programs:
     1. Note: the site will be removed from the list of this program’s site, but not from the Unit’s list of sites.
     1. The removed site will appear in the drop-down ‘Select a site from the list’ menu.
 1. To see the site’s information including contacts and associated programs click on the site’s title link.
-
-![image](images/image25.png)
-
+    ![image](images/image25.png)
 1. The list of all Unit’s sites is available on the **Programs -> Sites page**.
-
-![image](images/image26.png)
-
+    ![image](images/image26.png)
 1. Click on the Site’s title to edit the site or add/edit contacts.
-
-![image](images/image27.png)
-
+    ![image](images/image27.png)
 1. To add/edit contacts click on Edit Contacts.
-
-![image](images/image28.png)
-
+    ![image](images/image28.png)
 1. Enter Title, First Name, Last Name, Phone Number, and Email Address and click the Add New Contact button.
 1. Edit contact information by clicking the Edit link.
 1. Remove contact by clicking the Remove link.
@@ -247,20 +202,15 @@ To see all cars available for Unit click on Unit Options > Cars in the header.
     1. Parking Spot
     1. Status
 1. There is a spot to upload images with any initial damages found on the cars.
-
 ![image](images/image30.png)
 
 #### Edit a Car
 
 1. Navigate to the Car Record you want to update.
 1. On the Cars index page (Unit Options -> Cars) click on the Car Number you want to update.
-
-![image](images/image31.png)
-
+    ![image](images/image31.png)
 1. Click Edit Car.
-
-![image](images/image32.png)
-
+    ![image](images/image32.png)
 1. Make any changes that you need to make.
     1. Note: if the car’s status is Unavailable - the car will not be available for reservations
 1. Click Update Car.
@@ -284,7 +234,7 @@ The calendar has the following information and functions:
     1. Link to create a One Day Reservation
     1. Link to create Multiple Days reservations
         1. Links to new reservations are available for days from today and later
-Note: Please review the Reservation Icon section in the Appendix for Icon meanings.
+Note: Please review the [Reservation Icon](appendix.md) section in the Appendix for Icon meanings.
 
 #### Create Reservations for Students
 
@@ -292,11 +242,8 @@ Note: Please review the Reservation Icon section in the Appendix for Icon meanin
 
 1. Go to **Reservations -> Reservations** in the header
 1. Click on the One Day Reservation link on a required date in the calendar or click on the New One Day Reservation button at the top of the page
-
-![image](images/image34.png)
-
-![image](images/image35.png)
-
+    ![image](images/image34.png)
+    ![image](images/image35.png)
 1. Select Term
     1. A list of programs for the term will be populated
 1. Select Program
@@ -306,30 +253,20 @@ Note: Please review the Reservation Icon section in the Appendix for Icon meanin
 1. Select the Number of People on Trip if it’s not one
     1. Start Date and Number of People on Trip affect the list of Available Cars displayed at the bottom of the form
     1. Cars’ cards display a car number, number of seats, and time slots when the car is available for the selected Start Date
-
-![image](images/image36.png)
-
+    ![image](images/image36.png)
 1. Select Start/End Time
 1. If the reservation is recurring click on the Recurring drop-down and select Set Schedule
-
-![image](images/image37.png)
-
+    ![image](images/image37.png)
 1. Set the schedule in the pop-up window
-
-![image](images/image38.png)
-
+    ![image](images/image38.png)
 1. The selected rule will appear in the Recurring field
-
-![image](images/image39.png)
-
+    ![image](images/image39.png)
 1. Select the Recurring Until Date
 1. View the list of Available Cars below
 1. Select the appropriate car in the Car Drop Down Field
 1. Click on the Create Reservation button
 1. You will be redirected to the Add Drivers Page
-
-![image](images/image40.png)
-
+    ![image](images/image40.png)
 1. If the program has eligible drivers the list of drivers will be displayed in the Driver and Backup Driver fields
 1. Select a Driver and add the driver’s phone number
 1. The Backup Driver is not required
@@ -342,16 +279,12 @@ Note: Please review the Reservation Icon section in the Appendix for Icon meanin
     1. Maximum number of people allowed - 4
     1. The number of people added to the trip - 1
     1. The bottom number is updated if passengers are added or removed
-
-![image](images/image41.png)
-
+    ![image](images/image41.png)
 1. To add passengers click on checkboxes in the List of Students
 1. To remove passengers click on the Remove link after a passenger’s name
     1. Driver and Backup Driver can’t be removed here
 1. If the program allows the addition of non-UofM passengers this form is available on the Add Passengers page
-
-![image](images/image42.png)
-
+    ![image](images/image42.png)
 1. Select the number of non-UofM passengers, add their names and click the Add Non UofM Passengers button.
 1. Click on the Finish Creating Reservation button
     1. Two emails are sent
@@ -363,36 +296,27 @@ Note: Please review the Reservation Icon section in the Appendix for Icon meanin
 
 1. Go to **Reservations -> Reservations** in the header
 1. Click on the Multiple Days Reservation link on a required date in the calendar or click on the New Multiple Days Day Reservation button at the top of the page
-
-![image](images/image43.png)
-
+    ![image](images/image43.png)
 1. Please read One Day Reservation. The difference between a one-day reservation form and a multiple-days reservation form is (see the image below)
     1. In addition to the Choose a Start Date field, there is the Choose an End Date field
     1. Available time slots in Cars’ cards show time between two days
-
-![image](images/image44.png)
-
+    ![image](images/image44.png)
 1. The rest of the creating (as well as editing and canceling) a reservation process is the same as for the One Day Reservation.
 
 ###### No Car Reservations
 
 1. If the Unit allows to create reservations without cars the Unit Preference ‘Allow to create reservations without cars’ should be turned on:
-![image](images/image45.png)
+    ![image](images/image45.png)
 2. The reservation form will have a checkbox ‘Create a reservation without a car - if no time or cars are available.’ (See the image below)
-
-![image](images/image46.png)
-
+    ![image](images/image46.png)
 1. If you check the checkbox the required dropdown cars list will be removed from the form and you can create a reservation without selecting a car
-
-![image](images/image47.png)
-
-1. Admins can’t approve a reservation until a car is assigned to the reservation. To assign a car - edit the reservation (see the instruction below [Edit Reservations](https://docs.google.com/document/d/e/2PACX-1vRSWQUpQqq7m4yBgevco9dXqZ-JKTFnwzxBQYQYQDUBnIXm9YNzruT1308qhzCT-C3-NJnvlh83jK61/pub#h.z9zkkt60drd7) )
+    ![image](images/image47.png)
+1. Admins can’t approve a reservation until a car is assigned to the reservation. To assign a car - edit the reservation (see the instruction below [Edit Reservations](#edit-reservations)
 
 
 ### Managing Reservations
 
 The reservation show page contains information about the reservation, action buttons, edit links, and an Email Log that lists all emails that were sent about the reservation
-
 ![image](images/image48.png)
 
 #### Edit Reservations
@@ -406,13 +330,10 @@ Before approving a reservation both LSA RideShare Admins and LSA RideShare Users
     1. Change the Date (Start or End)
     2. Change the Time (Start or End)
     3. Change the Car assigned.
-
-![image](images/image49.png)
-
+    ![image](images/image49.png)
 4. Click Update Reservation when you have made the appropriate changes.
 5. There is also a Cancel link in case you do not need to make any changes.
 6. If you wish to inform the driver(s) and passenger(s) in the reservation of the changes, click on Send Reservation Update button on the reservation show page
-
 ![image](images/image50.png)
 
 #### Edit Drivers or Passengers
@@ -432,13 +353,9 @@ All reservations will need to be approved by LSA RideShare Admins.
 2. From the Week view, reservations displaying in red have not been approved.
 3. Click on the reservation to get the Reservation page.
 4. Click on the toggle under Approve to approve the reservation.
-
-![image](images/image51.png)
-
+    ![image](images/image51.png)
 5. The area will be displayed as green.
-
-![image](images/image52.png)
-
+    ![image](images/image52.png)
 6. Reservations without cars or drivers can’t be approved
 
 
@@ -456,7 +373,6 @@ Any reservation can be canceled by the LSA RideShare Admin.
 #### Approve and Cancel Recurring Reservations
 
 If the reservation is recurring there are different options to approve and cancel a reservation.
-
 ![image](images/image53.png)
 
 1. Admins can approve all recurring reservations at once or approve everyone individually
@@ -480,9 +396,7 @@ Week calendar shows graphical representation of every day reservation and can he
 ![image](images/image56.png)
 
 1. The everyday header shows 15 minute slots from ‘The earliest time of the day to pick-up cars’ to ‘The latest time of the day to drop-off cars’. The time comes from the Unit Preferences
-
-![image](images/image57.png)
-
+    ![image](images/image57.png)
 2. The left vertical column has Unit’s available cars for every day of the selected week.
 3. If the day has reservations without cars a ‘No Car’ row is displayed.
 4. Every reservation is surrounded by 15 minutes gap (light red color)
@@ -490,16 +404,11 @@ Week calendar shows graphical representation of every day reservation and can he
 6. The name of a person who submitted a reservation is clickable and redirects to the reservation show page.
 7. Dots in the cells are clickable - it will open a new reservation form for the selected day and start time
 8. Two next reservations should have 30 minutes gap between then - two light red cells
-
-![image](images/image58.png)
-
+    ![image](images/image58.png)
 9. One light red cell in the middle of dark red cells represent a time conflict
-
-![image](images/image59.png)
-
+    ![image](images/image59.png)
 10. Hover the mouse over a name to see details of the reservation
-
-![image](images/image60.png)
+    ![image](images/image60.png)
 
 # Vehicle Report Form
 
@@ -515,9 +424,7 @@ A Vehicle report is created for an approved reservation during the reservation t
 ![image](images/image61.png)
 
 1. Click on New Vehicle Report button
-
-![image](images/image62.png)
-
+    ![image](images/image62.png)
 2. The form can be submitted when all required fields are filled out
     1. Mileage Start
     2. Percent of Fuel Remaining (Departure)
