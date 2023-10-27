@@ -195,9 +195,9 @@ module ApplicationHelper
 
   def show_day_reservation_time(reservation)
     if reservation.start_time.to_date == reservation.end_time.to_date 
-      show_time(reservation.start_time) + " - " +  show_time(reservation.end_time)
+      show_time(reservation.start_time + 15.minute) + " - " +  show_time(reservation.end_time - 15.minute)
     else
-      show_date_time(reservation.start_time) + " - " +  show_date_time(reservation.end_time)
+      show_date_time(reservation.start_time + 15.minute) + " - " +  show_date_time(reservation.end_time - 15.minute)
     end
   end
   
