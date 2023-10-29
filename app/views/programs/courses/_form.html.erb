@@ -1,0 +1,42 @@
+<%= turbo_frame_tag 'new_course' do %>
+  <%= form_for [@course_program, course]  do |form| %>
+    <% if course.errors.any? %>
+      <div id="error_explanation" class="text-red-umred px-3 py-2 font-medium rounded-lg mt-3">
+        <h2><%= pluralize(course.errors.count, "error") %> prohibited this course from being saved:</h2>
+        <ul>
+          <% course.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="lg:flex gap-2">
+      <div class="my-2 grow">
+        <%= form.label :subject, "Subject *", class: "fancy_label" %>
+        <%= form.text_field :subject, required: true, placeholder: "Subject", class: "input_text_field" %>
+      </div>
+
+      <div class="my-2 grow">
+        <%= form.label :catalog_number, "Catalog Number *", class: "fancy_label" %>
+        <%= form.text_field :catalog_number, required: true, placeholder: "Catalog Number ", class: "input_text_field" %>
+      </div>
+
+      <div class="my-2 grow">
+        <%= form.label :class_section, "Class Section *", class: "fancy_label" %>
+        <%= form.text_field :class_section, required: true, placeholder: "Class Section", class: "input_text_field" %>
+      </div>
+    </div>
+
+    <div class="my-2">
+      <div class="inline">
+        <%= form.submit 'Add New Course', class: "secondary_blue_button" %>
+      </div>
+      <%= link_to program_courses_path do %>
+        <span class="tertiary_button">Clear
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </span>
+      <% end %>
+    </div>
+  <% end %>
+<% end %>

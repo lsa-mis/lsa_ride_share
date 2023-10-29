@@ -1,0 +1,29 @@
+<div class="w-full">
+
+  <div class="lg:flex justify-between items-center">
+    <h1>Update Courses
+      for Program:
+      <%#= link_to @course.display_name, program_course_path(@course), class: "link_to" %>
+    </h1>
+    <div class"flex-none">
+      <%= link_to program_path(@course_program) do %>
+        <span class="primary_button mb-2">
+          <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
+          Exit Updating Courses Page
+        </span>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<%= render "form", course: @course %>
+
+<div class="w-full">
+  <div class="my-4">
+    <div>
+      <h2> Courses List</h2>
+    </div>
+  </div>
+
+  <%= render "courses_list", course: @course %>
+</div>

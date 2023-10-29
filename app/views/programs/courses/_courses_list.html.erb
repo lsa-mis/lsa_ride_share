@@ -1,0 +1,36 @@
+<%= turbo_frame_tag 'courses' do %>
+  <div class="min-w-full">
+    <table class="mi_table">
+      <thead class="border border-l-0 border-r-0 border-gray-um60">
+        <tr>
+          <th class="header_th">Subject</th>
+          <th class="header_th">Catalog Number</th>
+          <th class="header_th">Class Section</th>
+          <td></td>
+          <td></td>
+        </tr>
+      </thead>
+      <tbody>
+        <% @courses.each do |course| %>
+          <tr class="mi_tbody_tr">
+            <td class="mi_tbody_td">
+              <%= course.subject %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= course.catalog_number %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= course.class_section %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= link_to 'Edit', edit_program_course_path(@course_program, course), class: "link_to", data: {turbo_frame: "_top"} %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= link_to "Remove", program_course_path(@course_program, course), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete }, class: "link_to" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>
