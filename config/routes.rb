@@ -91,6 +91,10 @@ Rails.application.routes.draw do
     resources :students, module: :programs
   end
 
+  resources :programs do
+    resources :courses, module: :programs
+  end
+
   resources :students do
     resources :notes, module: :students
   end
