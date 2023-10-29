@@ -34,8 +34,10 @@ class Program < ApplicationRecord
   has_many :reservations
   belongs_to :unit
   belongs_to :term
+  has_many :courses
 
   accepts_nested_attributes_for :instructor
+  accepts_nested_attributes_for :courses
 
   before_save :upcase_subject
 
