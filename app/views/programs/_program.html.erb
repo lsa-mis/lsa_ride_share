@@ -1,7 +1,20 @@
 <div class="mt-2">
-  <p class="body-sm-bold-text">
-    <%= program.display_name %>
-  </p>
+  <div class="flex items-center gap-2">
+    <p class="body-sm-bold-text">
+      <%= program.display_name %>
+    </p>
+
+    <% if policy(@program).edit? %>
+      <div class="py-2 whitespace-nowrap">
+        <%= link_to program_courses_path(@program) do %>
+          <span class="tertiary_button"> 
+            Edit Courses
+            <i class="fa-solid fa-pen" aria-hidden="true"></i>
+          </span>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
 
   <div class="py-2">
     <p class="body-lg-bold-text inline">
