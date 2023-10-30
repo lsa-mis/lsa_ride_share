@@ -34,6 +34,9 @@ class ProgramsController < ApplicationController
 
   # GET /programs/1 or /programs/1.json
   def show
+    unless @program.not_course
+      @courses = @program.courses
+    end
   end
 
   # GET /programs/new

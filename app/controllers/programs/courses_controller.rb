@@ -30,6 +30,7 @@ class Programs::CoursesController < ApplicationController
     @course.program_id = @course_program.id
     authorize([@course_program, @course]) 
     if @course.save
+      @course_program.update(not_course: false)
       @course = Course.new
       flash.now[:notice] = "Course list is updated"
     end
