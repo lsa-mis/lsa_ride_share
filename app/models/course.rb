@@ -9,6 +9,7 @@
 # 
 class Course < ApplicationRecord
   belongs_to :program
+  has_many :students
 
   before_save :upcase_subject
 

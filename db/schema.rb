@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_28_202436) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_30_031101) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -259,6 +259,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_28_202436) do
     t.bigint "program_id"
     t.date "meeting_with_admin_date"
     t.boolean "registered", default: true
+    t.bigint "course_id"
+    t.index ["course_id"], name: "index_students_on_course_id"
     t.index ["program_id"], name: "index_students_on_program_id"
   end
 
@@ -347,6 +349,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_28_202436) do
   add_foreign_key "reservations", "sites"
   add_foreign_key "reservations", "students", column: "backup_driver_id"
   add_foreign_key "reservations", "students", column: "driver_id"
+  add_foreign_key "students", "courses"
   add_foreign_key "students", "programs"
   add_foreign_key "unit_preferences", "units"
   add_foreign_key "vehicle_reports", "reservations"

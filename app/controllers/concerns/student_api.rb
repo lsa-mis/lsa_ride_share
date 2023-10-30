@@ -74,7 +74,7 @@ module StudentApi
                   return
                 end
               else
-                student = Student.new(uniqname: student_info['Uniqname'], first_name: student_info['Name'].split(",").last, last_name: student_info['Name'].split(",").first, program: program)
+                student = Student.new(uniqname: student_info['Uniqname'], first_name: student_info['Name'].split(",").last, last_name: student_info['Name'].split(",").first, program: program, course: course)
                 unless student.save
                   flash[:alert] = "#{course.display_name}: Error saving registered student record."
                   return
