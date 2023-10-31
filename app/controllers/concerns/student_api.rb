@@ -69,7 +69,7 @@ module StudentApi
               if students_in_db_registered.include?(uniqname)
                 students_in_db_registered.delete(uniqname)
               elsif students_in_db_added_manually.include?(uniqname)
-                unless Student.find_by(uniqname: student_info['Uniqname'], program: program, course: course).update(registered: true)
+                unless Student.find_by(uniqname: student_info['Uniqname'], program: program, course: nil).update(registered: true, course: course)
                   flash.now[:alert] = "#{course.display_name}: Error updating student record from manually added to registered."
                   return
                 end
