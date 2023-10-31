@@ -168,7 +168,7 @@ class Programs::StudentsController < ApplicationController
     end
 
     def set_students_list
-      @students = @student_program.students.order(registered: :desc).order(:last_name)
+      @students = @student_program.students.order(registered: :desc).order(:course_id).order(:last_name)
     end
 
     # Only allow a list of trusted parameters through.
