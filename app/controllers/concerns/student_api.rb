@@ -53,23 +53,23 @@ module StudentApi
     # add new students and delete those who dropped the course
     scope = "classroster"
     token = get_auth_token(scope)
+    notice = ""
+    alert = ""
     if token['success']
       courses = program.courses
-      error_message = ""
-      success_message = ""
       courses.each do |course|
         result = class_roster_operational(program.term.code, course.subject, course.catalog_number, course.class_section, token['access_token'])
         if result['success']
           if result['data']['Classes']['Class']['ClassSections']['ClassSection']['ClassStudents'].present?
             data = result['data']['Classes']['Class']['ClassSections']['ClassSection']['ClassStudents']['ClassStudent']
-            students_in_db_registered = @student_program.students.registered.pluck(:uniqname)
+            students_in_db_registered = @student_program.students.registered.where(course_id: course.id).pluck(:uniqname)
             students_in_db_added_manually = @student_program.students.added_manually.pluck(:uniqname)
             data.each do |student_info|
               uniqname = student_info['Uniqname']
               if students_in_db_registered.include?(uniqname)
                 students_in_db_registered.delete(uniqname)
               elsif students_in_db_added_manually.include?(uniqname)
-                unless Student.find_by(uniqname: student_info['Uniqname'], program: program).update(registered: true)
+                unless Student.find_by(uniqname: student_info['Uniqname'], program: program, course: course).update(registered: true)
                   flash.now[:alert] = "#{course.display_name}: Error updating student record from manually added to registered."
                   return
                 end
@@ -84,26 +84,27 @@ module StudentApi
             if students_in_db_registered.present?
               # delete students who dropped the course
               students_in_db_registered.each do |uniqname|
-                student = Student.find_by(uniqname: students_in_db_registered, program_id: @student_program)
+                student = Student.find_by(uniqname: students_in_db_registered, program_id: @student_program, course_id: course.id)
                 if student.reservations.present?
-                  student.update(registered: false)
+                  student.update(registered: false, course_id: nil)
                 else
                   student.delete
                 end
               end
             end
-            flash[:notice] = "#{course.display_name}: Student list is updated."
+            notice += "#{course.display_name}: Student list is updated. "
           else
             flash[:notice] = "The #{course.display_name} course has no students registered."
           end
         else
-          flash[:alert] = "#{course.display_name}: " + result['errorcode'] + ": " + result['error']
+          alert += "#{course.display_name}: " + result['errorcode'] + ": " + result['error']
         end
       end
       unless @student_program.update(number_of_students: @student_program.students.count)
         flash[:alert] = "Error updating number of students."
       end
-      render_flash_stream 
+      flash.now[:notice] = notice
+      flash.now[:alert] = alert
     else
       flash.now[:alert] = token['error']
       return
