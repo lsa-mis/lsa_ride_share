@@ -608,6 +608,14 @@ module ApplicationHelper
     return ""
   end
 
+  def show_course(student)
+    if student.course.present?
+      student.course.display_name
+    else
+      ""
+    end
+  end
+
   def us_states
     [
       ['Alabama', 'AL'],
