@@ -60,6 +60,7 @@ class ReservationsController < ApplicationController
   # GET /reservations/new
   def new
     @reservation = Reservation.new
+    @term_id = Term.current[0].id
     authorize @reservation
     if is_student?(current_user)
       @program = Student.find(params[:student_id]).program
