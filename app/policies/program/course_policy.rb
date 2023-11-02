@@ -3,7 +3,7 @@
 class Program::CoursePolicy < ApplicationPolicy
 
   def index?
-    user_in_access_group?
+    user_in_access_group? || is_program_instructor?
   end
 
   def create?
@@ -20,10 +20,6 @@ class Program::CoursePolicy < ApplicationPolicy
 
   def edit?
     update?
-  end
-
-  def edit_program_sites?
-    user_in_access_group? || is_program_instructor?
   end
 
   def destroy?
