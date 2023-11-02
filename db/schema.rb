@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_30_031101) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_02_123351) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -160,9 +160,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_30_031101) do
 
   create_table "programs", force: :cascade do |t|
     t.string "title"
-    t.string "subject", null: false
-    t.string "catalog_number", null: false
-    t.string "class_section", null: false
+    t.string "subject"
+    t.string "catalog_number"
+    t.string "class_section"
     t.integer "number_of_students"
     t.integer "number_of_students_using_ride_share"
     t.boolean "pictures_required_start", default: false
@@ -177,7 +177,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_30_031101) do
     t.integer "canvas_course_id"
     t.integer "term_id"
     t.boolean "add_managers", default: false
-    t.boolean "not_course", default: false
+    t.boolean "not_course", default: true
     t.bigint "unit_id"
     t.index ["instructor_id"], name: "index_programs_on_instructor_id"
     t.index ["unit_id"], name: "index_programs_on_unit_id"
