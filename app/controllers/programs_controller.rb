@@ -51,9 +51,6 @@ class ProgramsController < ApplicationController
   def edit
   end
 
-  def program_data
-  end
-
   # POST /programs or /programs.json
   def create
     note = ''
@@ -73,7 +70,7 @@ class ProgramsController < ApplicationController
         # carry forward sites when program is carried forward
         @program.sites << Program.find(params[:program][:duplicate_program_id]).sites
       end
-      redirect_to program_data_path(@program), notice: "Program was successfully created." + note
+      redirect_to program_path(@program), notice: "Program was successfully created." + note
     else 
       render :new, status: :unprocessable_entity
     end
@@ -96,7 +93,7 @@ class ProgramsController < ApplicationController
       end
     end
     if @program.save
-      redirect_to program_data_path(@program), notice: "Program was successfully updated." + note
+      redirect_to program_path(@program), notice: "Program was successfully updated." + note
     else 
       render :edit, status: :unprocessable_entity
     end

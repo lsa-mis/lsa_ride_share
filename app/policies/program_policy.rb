@@ -30,10 +30,6 @@ class ProgramPolicy < ApplicationPolicy
     update?
   end
 
-  def program_data?
-    update?
-  end
-
   def destroy?
     false
   end
