@@ -38,14 +38,6 @@
     You can add course(s) information to the program after you submit the form. Or
   </p>
 
-  <div>
-    <div class="px-1 pb-2">
-      <%= form.check_box :not_course, class: "check_box", "data-program-target": "hide_course_data", "data-action": "program#hideCourseFields" %>
-      <%= form.label :not_course, "Check if this program is not a course" %>
-    </div>
-
-  </div>
-
   <div class="my-5" id="instructor">
     <%= form.fields_for :instructor, @instructor do |instructor_attributes| %>
       <%= form.label :instructor_attributes_uniqname, "Instructor's uniqname *", class: "fancy_label" %>
