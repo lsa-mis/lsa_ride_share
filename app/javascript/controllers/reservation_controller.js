@@ -4,7 +4,7 @@ import { get } from "@rails/request.js"
 export default class extends Controller {
   static targets = ['form', 'term', 'unit', 'program', 'site', 'required_fields',
     'day_start', 'number', 'start_time', 'end_time', 'selected_time_error',
-    'car_selection', 'car', 'car_field', 'no_car']
+    'car_selection', 'car', 'car_field', 'no_car', 'recurring', 'until_date']
 
   connect() {
     console.log("connect - reservation")
@@ -160,7 +160,18 @@ export default class extends Controller {
       this.car_selectionTarget.classList.add("fields--display")
       this.car_selectionTarget.classList.remove("fields--hide")
     }
+  }
 
+  addRecurringUntil() {
+    let recurring = this.recurringTarget.value
+    console.log(recurring)
+    if (recurring == "null") {
+      this.until_dateTarget.classList.remove("fields--display")
+      this.until_dateTarget.classList.add("fields--hide")
+    } else {
+      this.until_dateTarget.classList.add("fields--display")
+      this.until_dateTarget.classList.remove("fields--hide")
+    }
   }
 
   submitForm(event) {
