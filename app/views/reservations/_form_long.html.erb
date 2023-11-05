@@ -87,20 +87,15 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
       <div>
         <%= form.label :recurring, class: "fancy_label" %>
-        <%= form.select_recurring :recurring, nil, allow_blank: true, class: "recurring_select" %>
+        <select class="recurring_select" name="reservation[recurring]" id="reservation_recurring" 
+          data-reservation-target="recurring" data-action="change->reservation#addRecurringUntil">
+          <option value="null">- not recurring -</option>
+          <option value="custom">Set schedule...</option>
+        </select>
       </div>
 
-      <div>
-        <%= form.label :until_date, "Recurring Until", class: "fancy_label" %>
-        <%= form.text_field :until_date, value: @until_date,
-          data: {
-          controller: "flatpickr",
-          flatpickr_date_format: "Y-m-d",
-          flatpickr_min_date: @min_date,
-          flatpickr_max_date: @max_date
-          },
-          class: "input_text_field"
-        %>
+      <div id="until_date_div" class="fields--hide" data-reservation-target="until_date_div">
+        <%= render 'recurring_until_date' %>
       </div>
     </div>
 

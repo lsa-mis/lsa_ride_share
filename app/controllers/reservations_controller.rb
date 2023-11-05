@@ -173,6 +173,18 @@ class ReservationsController < ApplicationController
     if params[:day_end].present?
       @day_end = params[:day_end].to_date
     end
+    if params[:start_time].present?
+      @start_time = params[:start_time]
+      unless @day_start == @start_time.to_date
+        @start_time = combine_day_and_time(@day_start, @start_time)
+      end
+    end
+    if params[:end_time].present?
+      @end_time = params[:end_time]
+      unless @day_end == @end_time.to_date
+        @end_time = combine_day_and_time(@day_end, @end_time)
+      end
+    end
     if params[:number].present?
       @cars = @cars.where("number_of_seats >= ?", params[:number]).order(:car_number)
     end
@@ -191,6 +203,11 @@ class ReservationsController < ApplicationController
       day_end_reservations = cars_reservations.where(start_time: day_end_begining..day_end_begining + 30.minute, end_time: day_end_begining..day_end_finish).pluck(:car_id)
       exclude_cars = (between_reservations + day_start_reservations + day_end_reservations + long_reservations).uniq
       @cars = @cars.where.not(id: exclude_cars)
+    end
+    if params[:until_date].present?
+      @until_date = params[:until_date]
+    else
+      @until_date = Term.current.pluck(:classes_end_date).min
     end
     authorize Reservation
   end

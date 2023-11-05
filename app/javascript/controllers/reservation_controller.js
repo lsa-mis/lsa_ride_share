@@ -102,7 +102,6 @@ export default class extends Controller {
     let end_time_format = new Date(end_time)
     let diff_time = parseInt(end_time_format - start_time_format)/60000;
     let until_date = this.until_dateTarget.value
-    console.log(until_date)
 
     let time_field_error = document.getElementById('time_field')
     let required_fields_error = document.getElementById('required_fields')
