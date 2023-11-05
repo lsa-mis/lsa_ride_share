@@ -418,6 +418,9 @@ module ApplicationHelper
     # all day time renges for unit
     times = show_time_begin_end(day, unit_id)
     day_begin = times[0]
+    if day_begin < DateTime.now
+      day_begin = Time.at((DateTime.now.to_f / 15.minute).round * 15.minute).to_datetime
+    end
     day_end = times[1]
     day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t).to_datetime }
     available_times_begin = day_times_with_15_min_steps.map { |t| [show_time(t), t.to_s] }
@@ -436,6 +439,9 @@ module ApplicationHelper
     # array of time with 15 minutes step available to reserve cars
     times = show_time_begin_end(day, unit_id)
     day_begin = times[0]
+    if day_begin < DateTime.now
+      day_begin = Time.at((DateTime.now.to_f / 15.minute).round * 15.minute).to_datetime
+    end
     day_end = times[1]
     day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t).to_datetime }
     available_times_begin = []
