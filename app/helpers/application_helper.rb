@@ -389,6 +389,18 @@ module ApplicationHelper
     "#{time.strftime("%I:%M%p")}"
   end
 
+  def combine_day_and_time(day, time)
+    # pass in a date and time or strings
+    day = Date.parse(day) if day.is_a? String 
+    time = Time.parse(time) if time.is_a? String
+    if (day.to_time + 2.hour).dst?
+      new_time = DateTime.new(day.year, day.month, day.day, time.hour, time.min, time.sec, 'EDT')
+    else
+      new_time = DateTime.new(day.year, day.month, day.day, time.hour, time.min, time.sec, 'EST')
+    end
+    return new_time
+  end
+
   def available?(car, range)
     day = range.begin.to_date
     day_reservations = car.reservations.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day).order(:start_time)
@@ -407,7 +419,7 @@ module ApplicationHelper
     times = show_time_begin_end(day, unit_id)
     day_begin = times[0]
     day_end = times[1]
-    day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) }
+    day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t).to_datetime }
     available_times_begin = day_times_with_15_min_steps.map { |t| [show_time(t), t.to_s] }
     available_times_begin.pop
     available_times_end = day_times_with_15_min_steps.map { |t| [show_time(t), t.to_s] }
@@ -425,7 +437,7 @@ module ApplicationHelper
     times = show_time_begin_end(day, unit_id)
     day_begin = times[0]
     day_end = times[1]
-    day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) }
+    day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t).to_datetime }
     available_times_begin = []
     available_times_end = []
 
