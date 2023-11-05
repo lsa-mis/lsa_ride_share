@@ -39,7 +39,7 @@ Rails.application.routes.draw do
   resources :reservations do
     resources :vehicle_reports, module: :reservations
   end
-  get '/reservations/get_available_cars/:unit_id/:day_start/:number/:start_time/:end_time', to: 'reservations#get_available_cars'
+  get '/reservations/get_available_cars/:unit_id/:day_start/:number/:start_time/:end_time/:until_date', to: 'reservations#get_available_cars'
   get '/reservations/get_available_cars_long/:unit_id/:day_start/:day_end/:number', to: 'reservations#get_available_cars_long'
   get '/reservations/no_car_all_times/:unit_id/:day_start/:start_time/:end_time', to: 'reservations#no_car_all_times'
   get '/reservations/edit_change_day/:unit_id/:day_start/:start_time/:end_time', to: 'reservations#edit_change_day'
