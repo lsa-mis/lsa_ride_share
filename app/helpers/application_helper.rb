@@ -162,16 +162,14 @@ module ApplicationHelper
   end
 
   def show_driver(reservation)
-    result = ""
     if reservation.driver.present?
-      result = reservation.driver.display_name
+      reservation.driver.display_name
     elsif reservation.driver_manager.present?
       uniqname = Manager.find(reservation.driver_manager_id).uniqname
-      result = reservation.driver_manager.display_name + " " + show_manager(reservation.program, uniqname)
+      reservation.driver_manager.display_name + " " + show_manager(reservation.program, uniqname)
     else
-      result = "No driver selected"
+      "No driver selected"
     end
-    return result
   end
 
   def driver_status_not_eligible?(reservation)
