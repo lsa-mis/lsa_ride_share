@@ -23,7 +23,7 @@
             <% list_start.each do |one_reserv| %>
               <% @approve_color = one_reserv.approved %>
               <div class="body-sm-semibold-text div-hover" data-reservation="<%= show_reservation(car_day_reserv.find_by(start_time: step)) %>">
-                <%= link_to show_reserved_by_in_week_calendar(one_reserv), reservation_path(one_reserv), class: 'link_to_white ml-2' %>
+                <%= link_to show_reserved_by_in_week_calendar(one_reserv), reservation_path(one_reserv), class: "link_to_white ml-2 #{reservation_color[@approve_color]}" %>
               </div>
               <br>
             <% end %>
