@@ -1,4 +1,5 @@
 module ApplicationHelper
+  include ActionView::Helpers::TagHelper
 
   def root_path
     if user_signed_in?
@@ -164,19 +165,29 @@ module ApplicationHelper
     result = ""
     if reservation.driver.present?
       result = reservation.driver.display_name
-      unless reservation.driver.can_reserve_car?
-        result += " - not eligible"
-      end
     elsif reservation.driver_manager.present?
       uniqname = Manager.find(reservation.driver_manager_id).uniqname
       result = reservation.driver_manager.display_name + " " + show_manager(reservation.program, uniqname)
-      unless reservation.driver.can_reserve_car?
-        result += " - not eligible"
-      end
     else
       result = "No driver selected"
     end
     return result
+  end
+
+  def driver_status_not_eligible?(reservation)
+    if reservation.driver.present? 
+      return true unless reservation.driver.can_reserve_car?
+    end
+    if reservation.driver_manager.present? 
+      return true unless reservation.driver_manager.can_reserve_car?
+    end
+    return false
+  end
+
+  def display_driver_status(reservation)
+    if driver_status_not_eligible?(reservation)
+      content_tag(:span, " - not eligible", class: 'unavailable')
+    end
   end
 
   def show_last_driver(car)
@@ -210,13 +221,21 @@ module ApplicationHelper
   end
   
   def show_reserved_by_in_week_calendar(reservation)
+    result = ""
     if reservation.driver.present?
-      reservation.driver.name
+      result += reservation.driver.name
+      if driver_status_not_eligible?(reservation)
+        result += " - not eligible"
+      end
     elsif reservation.driver_manager.present?
-      reservation.driver_manager.name
+      result += reservation.driver_manager.name
+      if driver_status_not_eligible?(reservation)
+        result += " - not eligible"
+      end
     else
-      User.find(reservation.reserved_by).display_name
+      result += User.find(reservation.reserved_by).display_name
     end
+    return result
   end
 
   def show_reservation(reservation)
@@ -227,6 +246,9 @@ module ApplicationHelper
     end
     if reservation.driver.present? || reservation.driver_manager.present?
       driver = "Driver: " + show_driver(reservation) + " (" + reservation.driver_phone.to_s + ")"
+      if driver_status_not_eligible?(reservation)
+        driver += " - not eligible"
+      end
     else 
       driver = "No driver selected"
     end
@@ -496,6 +518,7 @@ module ApplicationHelper
     return false unless Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program).present?
     student = Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program)
     return false if reservation.backup_driver == student
+    return false unless student.can_reserve_car?
     if reservation.driver == student && ((reservation.start_time - DateTime.now.beginning_of_day)/3600).round > minimum_hours_before_reservation(reservation.program.unit)
       return true
     else
@@ -518,6 +541,7 @@ module ApplicationHelper
     return false unless is_student?(current_user)
     return false unless Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program).present?
     student = Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program)
+    return false unless student.can_reserve_car?
     if (reservation.driver == student || reservation.backup_driver == student) && reservation.end_time + 45.minute > DateTime.now
       return true
     else
