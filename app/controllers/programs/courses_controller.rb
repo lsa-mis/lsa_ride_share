@@ -50,6 +50,14 @@ class Programs::CoursesController < ApplicationController
 
   # DELETE /courses/1 or /courses/1.json
   def destroy
+    students = @course.students
+    students.each do |student|
+      if student.reservations.present?
+        student.update(registered: false, course_id: nil)
+      else
+        student.delete
+      end
+    end
     if @course.destroy
       @courses = @course_program.courses
       @course = Course.new
