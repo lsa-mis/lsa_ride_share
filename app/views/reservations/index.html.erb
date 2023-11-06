@@ -49,6 +49,9 @@
                 <%= link_to reservation_path(reservation.id), class: "link_to", data: {turbo_frame: "_top"} do %>
                   <span">
                     <%= reservation.display_name %>
+                    <% if driver_status_not_eligible?(reservation) %>
+                      <i class="fa-solid fa-exclamation" style="color:#c53030"></i>
+                    <% end %>
                     <% if reservation.approved %>
                       <i class="fa-solid fa-circle-check" style="color:#024794"></i>
                     <% end %>
@@ -59,6 +62,9 @@
                 <%= link_to reservation_path(reservation.id), class: "link_to", data: {turbo_frame: "_top"} do %>
                   <span">
                     <%= reservation.display_name %>
+                    <% if driver_status_not_eligible?(reservation) %>
+                      <i class="fa-solid fa-exclamation" style="color:#c53030"></i>
+                    <% end %>
                     <% if reservation.approved %>
                       <i class="fa-solid fa-circle-check" style="color:#024794"></i>
                     <% end %>
@@ -70,6 +76,9 @@
                 <%= link_to reservation_path(reservation.id), class: "link_to", data: {turbo_frame: "_top"} do %>
                   <span">
                     <%= reservation.display_name %>
+                    <% if driver_status_not_eligible?(reservation) %>
+                      <i class="fa-solid fa-exclamation" style="color:#c53030"></i>
+                    <% end %>
                     <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
                     <i class="fa fa-repeat" aria-hidden="true" style="color:#024794"></i>
                   </span>
@@ -78,6 +87,9 @@
                 <%= link_to reservation_path(reservation.id), class: "link_to", data: {turbo_frame: "_top"} do %>
                   <span">
                     <%= reservation.display_name %>
+                    <% if driver_status_not_eligible?(reservation) %>
+                      <i class="fa-solid fa-exclamation" style="color:#c53030"></i>
+                    <% end %>
                     <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
                   </span>
                 <% end %>
@@ -103,7 +115,7 @@
             <%= link_to new_long_reservation_path(:unit_id => @unit_id, :day_start => date), data: {turbo_frame: "_top"} do %>
               <i class="fa fa-plus" aria-hidden="true"></i>
               <span class="tertiary_button -m-4">
-              Over-Night Reservation
+                Over-Night Reservation
               </span>
             <% end %>
           <% end %>

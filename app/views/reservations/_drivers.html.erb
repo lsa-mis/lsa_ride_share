@@ -41,13 +41,21 @@
       <input type="hidden" name="driver_id" id="driver_id" value=<%= @reservation.driver_manager_id.to_s + "-manager" %> data-driver-target="driver">
     <% end %>
   <% else %>
+    <% if driver_status_not_eligible?(@reservation) %>
+      <p class="body-lg-text mt-4 inline-block">
+        Driver <%= show_driver(@reservation) %>
+        <%= display_driver_status(@reservation) %>
+        <p class="body-lg-semibold-text"> 
+          Please select another driver
+        </p>
+      </p>
+    <% end %>
     <div class="my-5">
       <label for="driver_id" class="fancy_label">Driver *</label>
       <%= select_tag :driver_id, options_for_select(@all_drivers, selected: @driver), include_blank: "Select ...", class: "input_text_field",
         "data-driver-target": "driver" %>
     </div>
   <% end %>
-  
 
   <div class="error_text" id="driver_error">
   </div>
