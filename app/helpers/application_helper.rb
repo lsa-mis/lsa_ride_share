@@ -161,14 +161,22 @@ module ApplicationHelper
   end
 
   def show_driver(reservation)
+    result = ""
     if reservation.driver.present?
-      reservation.driver.display_name
+      result = reservation.driver.display_name
+      unless reservation.driver.can_reserve_car?
+        result += " - not eligible"
+      end
     elsif reservation.driver_manager.present?
       uniqname = Manager.find(reservation.driver_manager_id).uniqname
-      reservation.driver_manager.display_name + " " + show_manager(reservation.program, uniqname)
+      result = reservation.driver_manager.display_name + " " + show_manager(reservation.program, uniqname)
+      unless reservation.driver.can_reserve_car?
+        result += " - not eligible"
+      end
     else
-      "No driver selected"
+      result = "No driver selected"
     end
+    return result
   end
 
   def show_last_driver(car)
