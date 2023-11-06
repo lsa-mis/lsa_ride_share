@@ -242,17 +242,17 @@ module ApplicationHelper
   def show_reserved_by_in_week_calendar(reservation)
     result = ""
     if reservation.driver.present?
-      result += reservation.driver.name
+      result = reservation.driver.name
       if driver_status_not_eligible?(reservation)
         result += " - not eligible"
       end
     elsif reservation.driver_manager.present?
-      result += reservation.driver_manager.name
+      result = reservation.driver_manager.name
       if driver_status_not_eligible?(reservation)
         result += " - not eligible"
       end
     else
-      result += User.find(reservation.reserved_by).display_name
+      result = User.find(reservation.reserved_by).display_name
     end
     return result
   end
