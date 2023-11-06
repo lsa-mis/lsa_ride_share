@@ -67,6 +67,15 @@
   </div>
 
   <% if @reservation.number_of_people_on_trip > 1 %>
+    <% if backup_driver_status_not_eligible?(@reservation) %>
+      <p class="body-lg-text mt-4 inline-block">
+        Backup driver <%= show_backup_driver(@reservation) %>
+        <%= display_backup_driver_status(@reservation) %>
+        <p class="body-lg-semibold-text"> 
+          Please select another backup driver
+        </p>
+      </p>
+    <% end %>
     <div class="my-5">
       <%= form.label :backup_driver_id, "Backup Driver", class: "fancy_label" %>
       <%= form.collection_select :backup_driver_id, @backup_drivers, :id, :display_name, { include_blank: "No Backup Driver" }, class: "input_text_field", "data-action": "driver#hideBackupDriverPhoneField", "data-driver-target": "backup_driver" %>
@@ -80,9 +89,9 @@
     <% else %>
      <div class="my-5 fields--hide" data-driver-target="backup_driver_phone_data">
     <% end %>
-        <%= form.label :backup_driver_phone, "Backup Driver Phone", class: "fancy_label" %>
-        <%= form.text_field :backup_driver_phone, placeholder: "XXX-XXX-XXXX", class: "input_text_field",
-          "data-driver-target": "backup_driver_phone" %>
+      <%= form.label :backup_driver_phone, "Backup Driver Phone", class: "fancy_label" %>
+      <%= form.text_field :backup_driver_phone, placeholder: "XXX-XXX-XXXX", class: "input_text_field",
+        "data-driver-target": "backup_driver_phone" %>
     </div>
 
   <% end %>

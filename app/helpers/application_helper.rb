@@ -173,10 +173,10 @@ module ApplicationHelper
   end
 
   def driver_status_not_eligible?(reservation)
-    if reservation.driver.present? 
+    if reservation.driver.present?
       return true unless reservation.driver.can_reserve_car?
     end
-    if reservation.driver_manager.present? 
+    if reservation.driver_manager.present?
       return true unless reservation.driver_manager.can_reserve_car?
     end
     return false
@@ -184,6 +184,27 @@ module ApplicationHelper
 
   def display_driver_status(reservation)
     if driver_status_not_eligible?(reservation)
+      content_tag(:span, " - not eligible", class: 'unavailable')
+    end
+  end
+
+  def show_backup_driver(reservation)
+    if reservation.backup_driver.present?
+      reservation.backup_driver.display_name
+    else
+      "No backup driver selected"
+    end
+  end
+
+  def backup_driver_status_not_eligible?(reservation)
+    if reservation.backup_driver.present?
+      return true unless reservation.backup_driver.can_reserve_car?
+    end
+    return false
+  end
+
+  def display_backup_driver_status(reservation)
+    if backup_driver_status_not_eligible?(reservation)
       content_tag(:span, " - not eligible", class: 'unavailable')
     end
   end
@@ -252,6 +273,9 @@ module ApplicationHelper
     end
     if reservation.backup_driver.present?
       backup_driver = "Backup Driver: " + show_backup_driver(reservation) + " (" + reservation.backup_driver_phone.to_s + ")"
+      if backup_driver_status_not_eligible?(reservation)
+        backup_driver += " - not eligible"
+      end
     else
       backup_driver = "No backup driver selected"
     end
@@ -273,14 +297,6 @@ module ApplicationHelper
     recurring + "\n" + driver + "\n" + backup_driver + "\n" +
     reservation.number_of_people_on_trip.to_s + " people on the trip" + "\n" +
     passengers + non_uofm_passengers
-  end
-
-  def show_backup_driver(reservation)
-    if reservation.backup_driver.present?
-      reservation.backup_driver.display_name
-    else
-      "No backup driver selected"
-    end
   end
 
   def available_ranges(car, day, unit_id)

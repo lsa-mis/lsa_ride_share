@@ -49,7 +49,7 @@
                 <%= link_to reservation_path(reservation.id), class: "link_to", data: {turbo_frame: "_top"} do %>
                   <span">
                     <%= reservation.display_name %>
-                    <% if driver_status_not_eligible?(reservation) %>
+                    <% if driver_status_not_eligible?(reservation) || backup_driver_status_not_eligible?(reservation) %>
                       <i class="fa-solid fa-exclamation" style="color:#c53030"></i>
                     <% end %>
                     <% if reservation.approved %>
@@ -62,7 +62,7 @@
                 <%= link_to reservation_path(reservation.id), class: "link_to", data: {turbo_frame: "_top"} do %>
                   <span">
                     <%= reservation.display_name %>
-                    <% if driver_status_not_eligible?(reservation) %>
+                    <% if driver_status_not_eligible?(reservation) || backup_driver_status_not_eligible?(reservation) %>
                       <i class="fa-solid fa-exclamation" style="color:#c53030"></i>
                     <% end %>
                     <% if reservation.approved %>
@@ -76,7 +76,7 @@
                 <%= link_to reservation_path(reservation.id), class: "link_to", data: {turbo_frame: "_top"} do %>
                   <span">
                     <%= reservation.display_name %>
-                    <% if driver_status_not_eligible?(reservation) %>
+                    <% if driver_status_not_eligible?(reservation) || backup_driver_status_not_eligible?(reservation) %>
                       <i class="fa-solid fa-exclamation" style="color:#c53030"></i>
                     <% end %>
                     <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
@@ -87,7 +87,7 @@
                 <%= link_to reservation_path(reservation.id), class: "link_to", data: {turbo_frame: "_top"} do %>
                   <span">
                     <%= reservation.display_name %>
-                    <% if driver_status_not_eligible?(reservation) %>
+                    <% if driver_status_not_eligible?(reservation) || backup_driver_status_not_eligible?(reservation) %>
                       <i class="fa-solid fa-exclamation" style="color:#c53030"></i>
                     <% end %>
                     <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
