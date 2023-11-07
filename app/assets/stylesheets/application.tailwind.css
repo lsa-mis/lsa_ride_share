@@ -68,8 +68,12 @@ from https://tailwindcss.com/docs/adding-custom-styles
     @apply text-sm font-normal font-montserrat;
   }
 
-  .body-bold-text {
+  .body-sm-bold-text {
     @apply text-sm font-bold font-montserrat;
+  }
+
+  .body-sm-semibold-text {
+    @apply text-sm font-semibold text-gray-900
   }
 
   .body-md-text {
@@ -94,10 +98,6 @@ from https://tailwindcss.com/docs/adding-custom-styles
 
   .body-lg-bold-text {
     @apply text-lg font-bold font-montserrat;
-  }
-
-  .body-sm-semibold-text {
-    @apply text-sm font-semibold text-gray-900
   }
 
   .nav-sm-text {
@@ -160,20 +160,8 @@ from https://tailwindcss.com/docs/adding-custom-styles
     @apply text-sm font-medium leading-4 text-gray-550 font-montserrat;
   }
 
-  .caption {
-    @apply text-sm font-medium leading-4 italic text-gray-550;
-  }
-
-  .breadcrumb {
-    @apply text-sm font-medium leading-4 text-gray-550;
-  }
-
   .text_field_label {
     @apply text-base font-semibold leading-4 text-gray-900 font-montserrat mb-2;
-  }
-
-  .text_small {
-    @apply ml-2 text-sm text-gray-700;
   }
 
   .check_box {
@@ -266,18 +254,6 @@ from https://tailwindcss.com/docs/adding-custom-styles
 
   .sign_button {
     @apply  h-6 px-4 py-1 text-sm shadow-sm rounded text-blue-umblue bg-yellow-ummaze hover:bg-gray-700 hover:text-blue-300;
-  }
-
-  .edit_button {
-    @apply my-2 px-2 py-1 rounded-md shadow-sm bg-blue-umblue text-sm text-gray-100 text-center hover:underline;
-  }
-
-  .back_button {
-    @apply text-sm text-blue-umblue pb-2 hover:underline;
-  }
-
-  .delete_button {
-    @apply my-2 px-2 py-1 rounded-md shadow-sm bg-gray-100 text-sm text-blue-umblue text-center hover:underline;
   }
 
   .link_to {
