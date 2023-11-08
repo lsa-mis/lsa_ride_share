@@ -12,7 +12,7 @@
   <% day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) } %>
   <% car_day_reserv = car.reservations.where("(start_time BETWEEN ? AND ?) OR (start_time < ? AND end_time > ?)",
     day.beginning_of_day, day.end_of_day, day.beginning_of_day, day.beginning_of_day) %>
-    <% day_times_with_15_min_steps.each do |step| %>
+  <% day_times_with_15_min_steps.each do |step| %>
     <% step_range = step..step + 15.minutes %>
     <% if car_day_reserv.present? %>
       <% if car_day_reserv.map { |res| res.start_time..res.end_time }.any? { |r| r.cover?(step_range)} %>
@@ -21,17 +21,23 @@
         <% if list_start.present? %>
           <td class="td-week bg-red-650 border-r border-gray-um90">
             <% list_start.each do |one_reserv| %>
-              <% @approve_color = one_reserv.approved %>
-              <div class="body-sm-semibold-text div-hover" data-reservation="<%= show_reservation(car_day_reserv.find_by(start_time: step)) %>">
-                <%= link_to show_reserved_by_in_week_calendar(one_reserv), reservation_path(one_reserv), class: 'link_to_white ml-2' %>
-              </div>
+              <% if (one_reserv.start_time..one_reserv.end_time).cover?(step_range) %>
+                <% @approve_color = one_reserv.approved %>
+                <div class="body-sm-semibold-text div-hover" data-reservation="<%= show_reservation(car_day_reserv.find_by(start_time: step)) %>">
+                  <%= link_to show_reserved_by_in_week_calendar(one_reserv), reservation_path(one_reserv), class: 'link_to_white ml-2' %>
+                </div>
+              <% end %>
               <br>
             <% end %>
           </td>
         <% elsif list_end.present? %>
           <td class="td-week bg-red-650 border-r border-gray-um90"></td>
         <% else %>
-          <td class="td-week <%= reservation_color[@approve_color] %> border-r border-gray-um90"></td>
+          <% if @approve_color.present? %>
+            <td class="td-week <%= reservation_color[@approve_color] %> border-r border-gray-um90"></td>
+          <% else %>
+            <td class="td-week <%= reservation_color[car_day_reserv[0].approved] %> border-r border-gray-um90"></td>
+          <% end %>
         <% end %>
       <% else %>
         <% if step.to_datetime > DateTime.now %>
