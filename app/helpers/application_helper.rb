@@ -696,8 +696,36 @@ module ApplicationHelper
     reservation.prev.present? || reservation.next.present? || reservation.recurring.present?
   end
 
-  def reservation_color 
-    {false => "bg-red-900", true => "bg-green-900"}
+  def reservation_color(id)
+    reservation = Reservation.find(id)
+    if reservation.approved
+      "bg-green-900"
+    else
+      "bg-red-900"
+    end
+    # {false => "bg-red-900", true => "bg-green-900"}
+  end
+
+  def get_car_day_reservations_hash(day_times_with_15_min_steps)
+    car_cells = {}
+    day_times_with_15_min_steps.each do |step|
+      start = []
+      ending = []
+      middle = []
+      @car_day_reserv.each do |r|
+        if r.start_time == step
+          start << r.id
+        end
+        if r.end_time == step
+          ending << r.id
+        end
+        if (r.start_time + 15.minute..r.end_time - 15.minute).cover?(step)
+          middle << r.id
+        end
+      end
+      car_cells[step] = {:start => start, :middle => middle, :ending => ending }
+    end
+    return car_cells
   end
 
   def report_types
