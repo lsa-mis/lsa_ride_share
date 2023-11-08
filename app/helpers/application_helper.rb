@@ -696,14 +696,8 @@ module ApplicationHelper
     reservation.prev.present? || reservation.next.present? || reservation.recurring.present?
   end
 
-  def reservation_color(id)
-    reservation = Reservation.find(id)
-    if reservation.approved
-      "bg-green-900"
-    else
-      "bg-red-900"
-    end
-    # {false => "bg-red-900", true => "bg-green-900"}
+  def reservation_color
+    {false => "bg-red-900", true => "bg-green-900"}
   end
 
   def get_car_day_reservations_hash(day_times_with_15_min_steps)
@@ -714,13 +708,13 @@ module ApplicationHelper
       middle = []
       @car_day_reserv.each do |r|
         if r.start_time == step
-          start << r.id
+          start << r
         end
         if r.end_time == step
-          ending << r.id
+          ending << r
         end
         if (r.start_time + 15.minute..r.end_time - 15.minute).cover?(step)
-          middle << r.id
+          middle << r
         end
       end
       car_cells[step] = {:start => start, :middle => middle, :ending => ending }

@@ -17,8 +17,7 @@
   <% car_cells.each do |step, r_data| %>
     <% if r_data[:start].present? %>
       <td class="td-week bg-red-650 border-r border-gray-um90">
-        <% r_data[:start].each do |id| %>
-          <% reservation = Reservation.find(id) %>
+        <% r_data[:start].each do |reservation| %>
           <div class="body-sm-semibold-text div-hover" data-reservation="<%= show_reservation(reservation) %>">
             <%= link_to show_reserved_by_in_week_calendar(reservation), reservation_path(reservation), class: 'link_to_white ml-2' %>
           </div>
@@ -31,7 +30,7 @@
       <% if r_data[:middle].count > 1 %>
         <td class="td-week bg-gray-um60 border-r border-gray-um90"></td>
       <% else %>
-        <td class="td-week <%= reservation_color(r_data[:middle][0]) %> border-r border-gray-um90"></td>
+        <td class="td-week <%= reservation_color[r_data[:middle][0].approved] %> border-r border-gray-um90"></td>
       <% end %>
     <% else %>
       <% if step.to_datetime > DateTime.now %>
