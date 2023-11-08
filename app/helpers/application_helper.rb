@@ -184,7 +184,7 @@ module ApplicationHelper
 
   def display_driver_status(reservation)
     if driver_status_not_eligible?(reservation)
-      content_tag(:span, " - not eligible", class: 'unavailable')
+      content_tag(:span, " - expired MVR Status", class: 'unavailable')
     end
   end
 
@@ -205,7 +205,7 @@ module ApplicationHelper
 
   def display_backup_driver_status(reservation)
     if backup_driver_status_not_eligible?(reservation)
-      content_tag(:span, " - not eligible", class: 'unavailable')
+      content_tag(:span, " - expired MVR Status", class: 'unavailable')
     end
   end
 
@@ -240,21 +240,13 @@ module ApplicationHelper
   end
   
   def show_reserved_by_in_week_calendar(reservation)
-    result = ""
     if reservation.driver.present?
-      result = reservation.driver.name
-      if driver_status_not_eligible?(reservation)
-        result += " - not eligible"
-      end
+      reservation.driver.name
     elsif reservation.driver_manager.present?
-      result = reservation.driver_manager.name
-      if driver_status_not_eligible?(reservation)
-        result += " - not eligible"
-      end
+      reservation.driver_manager.name
     else
-      result = User.find(reservation.reserved_by).display_name
+      User.find(reservation.reserved_by).display_name
     end
-    return result
   end
 
   def show_reservation(reservation)
@@ -266,7 +258,7 @@ module ApplicationHelper
     if reservation.driver.present? || reservation.driver_manager.present?
       driver = "Driver: " + show_driver(reservation) + " (" + reservation.driver_phone.to_s + ")"
       if driver_status_not_eligible?(reservation)
-        driver += " - not eligible"
+        driver += " - expired MVR Status"
       end
     else 
       driver = "No driver selected"
@@ -274,7 +266,7 @@ module ApplicationHelper
     if reservation.backup_driver.present?
       backup_driver = "Backup Driver: " + show_backup_driver(reservation) + " (" + reservation.backup_driver_phone.to_s + ")"
       if backup_driver_status_not_eligible?(reservation)
-        backup_driver += " - not eligible"
+        backup_driver += " - expired MVR Status"
       end
     else
       backup_driver = "No backup driver selected"
