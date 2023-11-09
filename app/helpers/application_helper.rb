@@ -721,10 +721,10 @@ module ApplicationHelper
         if r.start_time == step
           start << r
         end
-        if r.end_time == step
+        if r.end_time - 15.minute == step
           ending << r
         end
-        if (r.start_time + 15.minute..r.end_time - 15.minute).cover?(step)
+        if (r.start_time + 15.minute..r.end_time - 16.minute).cover?(step)
           middle << r
         end
       end
