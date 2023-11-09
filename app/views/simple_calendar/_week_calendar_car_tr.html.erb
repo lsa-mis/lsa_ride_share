@@ -1,36 +1,24 @@
-<tr class="mi_tbody_tr border">
-  <% times = show_time_begin_end(day, @unit_id) %>
-  <% day_begin = times[0] - 15.minute %>
-  <% day_end = times[1] %>
-  <% day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) } %>
-  
-  <td></td>
-  <th border>
-    Car <%= car.car_number %>
-  </th>
   <td></td>
   <td></td>
   <td></td>
-  <% @car_day_reserv = car.reservations.where("(start_time BETWEEN ? AND ?) OR (start_time < ? AND end_time > ?)",
-    day.beginning_of_day, day.end_of_day, day.beginning_of_day, day.beginning_of_day) %>
-  <% car_cells = get_car_day_reservations_hash(day_times_with_15_min_steps) %>
-  <% car_cells.each do |step, r_data| %>
-    <% if r_data[:start].present? %>
+  <% car_cells = get_car_day_reservations_hash(day, car) %>
+  <% car_cells.each do |step, reservation_data| %>
+    <% if reservation_data[:start].present? %>
       <td class="td-week bg-red-650 border-r border-gray-um90">
-        <% r_data[:start].each do |reservation| %>
+        <% reservation_data[:start].each do |reservation| %>
           <div class="body-sm-semibold-text div-hover" data-reservation="<%= show_reservation(reservation) %>">
             <%= link_to show_reserved_by_in_week_calendar(reservation), reservation_path(reservation), class: 'link_to_white ml-2' %>
           </div>
         <% end %>
         <br>
       </td>
-    <% elsif r_data[:ending].present? %>
+    <% elsif reservation_data[:ending].present? %>
         <td class="td-week bg-red-650 border-r border-gray-um90"></td>
-    <% elsif r_data[:middle].present? %>
-      <% if r_data[:middle].count > 1 %>
+    <% elsif reservation_data[:middle].present? %>
+      <% if reservation_data[:middle].count > 1 %>
         <td class="td-week bg-gray-um60 border-r border-gray-um90"></td>
       <% else %>
-        <td class="td-week <%= reservation_color[r_data[:middle][0].approved] %> border-r border-gray-um90"></td>
+        <td class="td-week <%= reservation_color[reservation_data[:middle][0].approved] %> border-r border-gray-um90"></td>
       <% end %>
     <% else %>
       <% if step.to_datetime > DateTime.now %>
@@ -42,4 +30,4 @@
       <% end %>
     <% end %>
   <% end %>
-</tr>
+
