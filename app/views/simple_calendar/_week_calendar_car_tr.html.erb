@@ -1,33 +1,32 @@
-  <td></td>
-  <td></td>
-  <td></td>
-  <% car_cells = get_car_day_reservations_hash(day, car) %>
-  <% car_cells.each do |step, reservation_data| %>
-    <% if reservation_data[:start].present? %>
-      <td class="td-week bg-red-650 border-r border-gray-um90">
-        <% reservation_data[:start].each do |reservation| %>
-          <div class="body-sm-semibold-text div-hover" data-reservation="<%= show_reservation(reservation) %>">
-            <%= link_to show_reserved_by_in_week_calendar(reservation), reservation_path(reservation), class: 'link_to_white ml-2' %>
-          </div>
-        <% end %>
-        <br>
-      </td>
-    <% elsif reservation_data[:ending].present? %>
-        <td class="td-week bg-red-650 border-r border-gray-um90"></td>
-    <% elsif reservation_data[:middle].present? %>
-      <% if reservation_data[:middle].count > 1 %>
-        <td class="td-week bg-gray-um60 border-r border-gray-um90"></td>
-      <% else %>
-        <td class="td-week <%= reservation_color[reservation_data[:middle][0].approved] %> border-r border-gray-um90"></td>
+<td></td>
+<td></td>
+<td></td>
+<% car_cells = get_car_day_reservations_hash(day, car) %>
+<% car_cells.each do |step, reservation_data| %>
+  <% if reservation_data[:start].present? %>
+    <td class="td-week bg-red-650 border-r border-gray-um90">
+      <% reservation_data[:start].each do |reservation| %>
+        <div class="body-sm-semibold-text div-hover" data-reservation="<%= show_reservation(reservation) %>">
+          <%= link_to show_reserved_by_in_week_calendar(reservation), reservation_path(reservation), class: 'link_to_white ml-2' %>
+        </div>
       <% end %>
+      <br>
+    </td>
+  <% elsif reservation_data[:ending].present? %>
+      <td class="td-week bg-red-650 border-r border-gray-um90"></td>
+  <% elsif reservation_data[:middle].present? %>
+    <% if reservation_data[:middle].count > 1 %>
+      <td class="td-week bg-gray-um60 border-r border-gray-um90"></td>
     <% else %>
-      <% if step.to_datetime > DateTime.now %>
-        <td class="border hover:bg-green-500">
-          <%= link_to '.', new_reservation_path(:unit_id => @unit_id, :day_start => day, :car_id => car.id, :start_time => step) , class: "text-gray-500 w-0" %>
-        </td>
-      <% else %>
-        <td></td>
-      <% end %>
+      <td class="td-week <%= reservation_color[reservation_data[:middle][0].approved] %> border-r border-gray-um90"></td>
+    <% end %>
+  <% else %>
+    <% if step.to_datetime > DateTime.now %>
+      <td class="border hover:bg-green-500">
+        <%= link_to '.', new_reservation_path(:unit_id => @unit_id, :day_start => day, :car_id => car.id, :start_time => step) , class: "text-gray-500 w-0" %>
+      </td>
+    <% else %>
+      <td></td>
     <% end %>
   <% end %>
-
+<% end %>
