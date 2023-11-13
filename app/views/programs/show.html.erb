@@ -1,41 +1,38 @@
 <div class="mx-auto w-full">
-  <h1><%= @program.title %></h1>
+  <div class="flex items-end gap-2">
+    <h1><%= @program.title %></h1>
+    <div>
+      <%= link_to edit_program_path(@program) do %>
+        <span class="tertiary_button"> 
+          Edit Program Information
+          <i class="fa-solid fa-pen" aria-hidden="true"></i>
+        </span>
+      <% end %>
+    </div>
+  </div>
   <div>
     <div class="grid grid-cols-1 lg:grid-cols-3">
       <div class="grid lg:col-span-2">
         <%= render @program %>
       </div>
-      <div class="lg:flex lg:flex-col">
-        <div class="lg:grid lg:justify-items-end">
-          <% if Term.current_and_future.include?(@program.term) %>
-            <div class="py-2">
-              <%= link_to 'Edit Program', program_data_path(@program), class: "primary_button" %>
-            </div>
-          <% end %>
-          <% if policy(Program).show? %>
-            <div class="py-2">
-              <%= link_to 'Students List', program_students_path(@program), class: "secondary_blue_button" %>
-            </div>
-          <% end %>
-        </div>
+      <div class="lg:grid lg:justify-items-end">
+        <% if policy(Program).show? %>
+          <div class="py-2">
+            <%= link_to 'Students List', program_students_path(@program), class: "secondary_blue_button" %>
+          </div>
+        <% end %>
       </div>
     </div>
   </div>
   <div>
-    <h2>Sites</h2>
     <div>
       <%= turbo_frame_tag "sites_list" do %>
-        <%= render "sites_list", locals: { program: @program} %>
+        <%= render 'program_site' %>
       <% end %>
     </div>
 
     <% if @program.add_managers %>
-      <h2>Managers</h2>
-      <div>
-        <%= turbo_frame_tag "managers_list" do %>
-          <%= render "managers_list", locals: { program: @program} %>
-        <% end %>
-      </div>
+      <%= render 'program_manager' %>
     <% end %>
   </div>
   <p class="body-sm-text m-4">

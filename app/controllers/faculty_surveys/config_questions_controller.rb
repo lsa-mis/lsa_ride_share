@@ -68,7 +68,7 @@ class FacultySurveys::ConfigQuestionsController < ApplicationController
         # send confirmation email to faculty that the survey was submitted
         FacultyMailer.with(faculty_survey: @faculty_survey).faculty_survey_confirmation(current_user).deliver_now
       else
-        redirect_to faculty_index_path, alert: "Error creating program form the survey. Please report an issue."
+        redirect_to surveys_index_path, alert: "Error creating program from the survey. Please report an issue."
         return
       end
     end

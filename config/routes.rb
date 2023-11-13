@@ -91,6 +91,10 @@ Rails.application.routes.draw do
     resources :students, module: :programs
   end
 
+  resources :programs do
+    resources :courses, module: :programs
+  end
+
   resources :students do
     resources :notes, module: :students
   end
@@ -107,7 +111,6 @@ Rails.application.routes.draw do
   delete 'programs/remove_site/:id/:site_id', to: 'programs#remove_site', as: :remove_site
   delete 'programs/remove_config_question/:id/:config_question_id', to: 'programs#remove_config_question', as: :remove_config_question
   get 'programs/add_config_questions/:id/', to: 'programs#add_config_questions', as: :add_config_questions
-  get 'programs/program_data/:id/', to: 'programs#program_data', as: :program_data
 
   get 'application/delete_file_attachment/:id', to: 'application#delete_file_attachment', as: :delete_file
 

@@ -34,6 +34,9 @@ class ProgramsController < ApplicationController
 
   # GET /programs/1 or /programs/1.json
   def show
+    unless @program.not_course
+      @courses = @program.courses
+    end
   end
 
   # GET /programs/new
@@ -46,9 +49,6 @@ class ProgramsController < ApplicationController
 
   # GET /programs/1/edit
   def edit
-  end
-
-  def program_data
   end
 
   # POST /programs or /programs.json
@@ -70,7 +70,7 @@ class ProgramsController < ApplicationController
         # carry forward sites when program is carried forward
         @program.sites << Program.find(params[:program][:duplicate_program_id]).sites
       end
-      redirect_to program_data_path(@program), notice: "Program was successfully created." + note
+      redirect_to program_path(@program), notice: "Program was successfully created." + note
     else 
       render :new, status: :unprocessable_entity
     end
@@ -93,7 +93,7 @@ class ProgramsController < ApplicationController
       end
     end
     if @program.save
-      redirect_to program_data_path(@program), notice: "Program was successfully updated." + note
+      redirect_to program_path(@program), notice: "Program was successfully updated." + note
     else 
       render :edit, status: :unprocessable_entity
     end

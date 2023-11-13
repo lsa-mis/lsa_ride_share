@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_08_174311) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_02_123351) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -90,6 +90,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_08_174311) do
     t.index ["site_id"], name: "index_contacts_on_site_id"
   end
 
+  create_table "courses", force: :cascade do |t|
+    t.string "subject", null: false
+    t.string "catalog_number", null: false
+    t.string "class_section", null: false
+    t.bigint "program_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["program_id"], name: "index_courses_on_program_id"
+  end
+
   create_table "email_logs", force: :cascade do |t|
     t.string "sent_from_model"
     t.integer "record_id"
@@ -150,9 +160,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_08_174311) do
 
   create_table "programs", force: :cascade do |t|
     t.string "title"
-    t.string "subject", null: false
-    t.string "catalog_number", null: false
-    t.string "class_section", null: false
+    t.string "subject"
+    t.string "catalog_number"
+    t.string "class_section"
     t.integer "number_of_students"
     t.integer "number_of_students_using_ride_share"
     t.boolean "pictures_required_start", default: false
@@ -167,7 +177,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_08_174311) do
     t.integer "canvas_course_id"
     t.integer "term_id"
     t.boolean "add_managers", default: false
-    t.boolean "not_course", default: false
+    t.boolean "not_course", default: true
     t.bigint "unit_id"
     t.index ["instructor_id"], name: "index_programs_on_instructor_id"
     t.index ["unit_id"], name: "index_programs_on_unit_id"
@@ -249,6 +259,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_08_174311) do
     t.bigint "program_id"
     t.date "meeting_with_admin_date"
     t.boolean "registered", default: true
+    t.bigint "course_id"
+    t.index ["course_id"], name: "index_students_on_course_id"
     t.index ["program_id"], name: "index_students_on_program_id"
   end
 
@@ -337,6 +349,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_08_174311) do
   add_foreign_key "reservations", "sites"
   add_foreign_key "reservations", "students", column: "backup_driver_id"
   add_foreign_key "reservations", "students", column: "driver_id"
+  add_foreign_key "students", "courses"
   add_foreign_key "students", "programs"
   add_foreign_key "unit_preferences", "units"
   add_foreign_key "vehicle_reports", "reservations"

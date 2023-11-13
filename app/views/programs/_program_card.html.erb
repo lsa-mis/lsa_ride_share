@@ -23,7 +23,7 @@
         <div class="flex flex-row justify-between">
           <div class="tertiary_button">
             <% if Term.current_and_future.include?(program.term) %>
-              <%= link_to program_data_path(program), data: { "turbo-frame": "_top" } do %>
+              <%= link_to program_path(program), data: { "turbo-frame": "_top" } do %>
                 Edit
                 <i class="fa-solid fa-pen"></i>
               <% end %>
