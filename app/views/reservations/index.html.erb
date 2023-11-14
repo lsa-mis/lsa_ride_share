@@ -1,5 +1,5 @@
 <div class="w-full" data-controller='autosubmit'>
-<a name="top" style="display: none;">top<a>
+  <a id="top" name="top" style="display: none;">top</a>
   <div class="md:flex justify-between items-center whitespace-nowrap pb-4">
     <h1 class="mb-2">Reservations</h1>
     <div>
@@ -29,7 +29,27 @@
     <% end %>
   <% end %>
   <div class="mb-2">
-    <%= link_to 'Week Calendar', week_calendar_path(:unit_id => @unit_id), class: "secondary_blue_button" %>
+    <div class="md:flex justify-between items-center whitespace-nowrap pb-4">
+      <%= link_to 'Week Calendar', week_calendar_path(:unit_id => @unit_id), class: "secondary_blue_button" %>
+      <div class="my-2 md:flex gap-4 items-center whitespace-nowrap pr-4">
+        <div>
+          <i class="fa-solid fa-circle-check" style="color:#024794"></i>
+          <span> - approved </span>
+        </div>
+        <div>
+        <i class="fa fa-repeat" aria-hidden="true" style="color:#024794"></i>
+          <span> - recurring </span>
+        </div>
+        <div>
+          <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
+          <span> - no car </span>
+        </div>
+        <div>
+          <i class="fa-solid fa-exclamation" style="color:#c53030"></i>
+          <span> - no driver </span>
+        </div>
+      </div>
+    </div>
   </div>
 
   <%= turbo_frame_tag 'unit-calendar' do %>
@@ -49,7 +69,7 @@
                 <%= link_to reservation_path(reservation.id), class: "link_to", data: {turbo_frame: "_top"} do %>
                   <span">
                     <%= reservation.display_name %>
-                    <% if driver_status_not_eligible?(reservation) || backup_driver_status_not_eligible?(reservation) %>
+                    <% if no_good_driver?(reservation) %>
                       <i class="fa-solid fa-exclamation" style="color:#c53030"></i>
                     <% end %>
                     <% if reservation.approved %>
@@ -62,7 +82,7 @@
                 <%= link_to reservation_path(reservation.id), class: "link_to", data: {turbo_frame: "_top"} do %>
                   <span">
                     <%= reservation.display_name %>
-                    <% if driver_status_not_eligible?(reservation) || backup_driver_status_not_eligible?(reservation) %>
+                    <% if no_good_driver?(reservation) %>
                       <i class="fa-solid fa-exclamation" style="color:#c53030"></i>
                     <% end %>
                     <% if reservation.approved %>
@@ -76,7 +96,7 @@
                 <%= link_to reservation_path(reservation.id), class: "link_to", data: {turbo_frame: "_top"} do %>
                   <span">
                     <%= reservation.display_name %>
-                    <% if driver_status_not_eligible?(reservation) || backup_driver_status_not_eligible?(reservation) %>
+                    <% if no_good_driver?(reservation) %>
                       <i class="fa-solid fa-exclamation" style="color:#c53030"></i>
                     <% end %>
                     <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
@@ -87,7 +107,7 @@
                 <%= link_to reservation_path(reservation.id), class: "link_to", data: {turbo_frame: "_top"} do %>
                   <span">
                     <%= reservation.display_name %>
-                    <% if driver_status_not_eligible?(reservation) || backup_driver_status_not_eligible?(reservation) %>
+                    <% if no_good_driver?(reservation) %>
                       <i class="fa-solid fa-exclamation" style="color:#c53030"></i>
                     <% end %>
                     <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
