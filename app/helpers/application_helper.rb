@@ -1,4 +1,5 @@
 module ApplicationHelper
+  include ActionView::Helpers::TagHelper
 
   def root_path
     if user_signed_in?
@@ -171,6 +172,52 @@ module ApplicationHelper
     end
   end
 
+  def no_good_driver?(reservation)
+    driver_status_not_eligible?(reservation) || backup_driver_status_not_eligible?(reservation) || no_driver?(reservation)
+  end
+
+  def no_driver?(reservation)
+    return false if reservation.driver.present? || reservation.driver_manager.present?
+    return true
+  end
+
+  def driver_status_not_eligible?(reservation)
+    if reservation.driver.present?
+      return true unless reservation.driver.can_reserve_car?
+    end
+    if reservation.driver_manager.present?
+      return true unless reservation.driver_manager.can_reserve_car?
+    end
+    return false
+  end
+
+  def display_driver_status(reservation)
+    if driver_status_not_eligible?(reservation)
+      content_tag(:span, " - expired MVR Status", class: 'unavailable')
+    end
+  end
+
+  def show_backup_driver(reservation)
+    if reservation.backup_driver.present?
+      reservation.backup_driver.display_name
+    else
+      "No backup driver selected"
+    end
+  end
+
+  def backup_driver_status_not_eligible?(reservation)
+    if reservation.backup_driver.present?
+      return true unless reservation.backup_driver.can_reserve_car?
+    end
+    return false
+  end
+
+  def display_backup_driver_status(reservation)
+    if backup_driver_status_not_eligible?(reservation)
+      content_tag(:span, " - expired MVR Status", class: 'unavailable')
+    end
+  end
+
   def show_last_driver(car)
     if car.last_driver_id.present?
       Student.find(car.last_driver_id).display_name
@@ -219,11 +266,17 @@ module ApplicationHelper
     end
     if reservation.driver.present? || reservation.driver_manager.present?
       driver = "Driver: " + show_driver(reservation) + " (" + reservation.driver_phone.to_s + ")"
+      if driver_status_not_eligible?(reservation)
+        driver += " - expired MVR Status"
+      end
     else 
       driver = "No driver selected"
     end
     if reservation.backup_driver.present?
       backup_driver = "Backup Driver: " + show_backup_driver(reservation) + " (" + reservation.backup_driver_phone.to_s + ")"
+      if backup_driver_status_not_eligible?(reservation)
+        backup_driver += " - expired MVR Status"
+      end
     else
       backup_driver = "No backup driver selected"
     end
@@ -245,14 +298,6 @@ module ApplicationHelper
     recurring + "\n" + driver + "\n" + backup_driver + "\n" +
     reservation.number_of_people_on_trip.to_s + " people on the trip" + "\n" +
     passengers + non_uofm_passengers
-  end
-
-  def show_backup_driver(reservation)
-    if reservation.backup_driver.present?
-      reservation.backup_driver.display_name
-    else
-      "No backup driver selected"
-    end
   end
 
   def available_ranges(car, day, unit_id)
@@ -488,6 +533,7 @@ module ApplicationHelper
     return false unless Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program).present?
     student = Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program)
     return false if reservation.backup_driver == student
+    return false unless student.can_reserve_car?
     if reservation.driver == student && ((reservation.start_time - DateTime.now.beginning_of_day)/3600).round > minimum_hours_before_reservation(reservation.program.unit)
       return true
     else
@@ -510,6 +556,7 @@ module ApplicationHelper
     return false unless is_student?(current_user)
     return false unless Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program).present?
     student = Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program)
+    return false unless student.can_reserve_car?
     if (reservation.driver == student || reservation.backup_driver == student) && reservation.end_time + 45.minute > DateTime.now
       return true
     else
