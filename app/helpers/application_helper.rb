@@ -172,6 +172,15 @@ module ApplicationHelper
     end
   end
 
+  def no_good_driver?(reservation)
+    driver_status_not_eligible?(reservation) || backup_driver_status_not_eligible?(reservation) || no_driver?(reservation)
+  end
+
+  def no_driver?(reservation)
+    return false if reservation.driver.present? || reservation.driver_manager.present?
+    return true
+  end
+
   def driver_status_not_eligible?(reservation)
     if reservation.driver.present?
       return true unless reservation.driver.can_reserve_car?
