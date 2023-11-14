@@ -32,7 +32,9 @@
   <% else %>
     <% if step.to_datetime > DateTime.now %>
       <td class="border hover:bg-green-500">
-        <%= link_to '.', new_reservation_path(:unit_id => @unit_id, :day_start => day, :car_id => car.id, :start_time => step) , class: "text-gray-500 w-0" %>
+        <% if car.present? %>
+          <%= link_to '.', new_reservation_path(:unit_id => @unit_id, :day_start => day, :car_id => car.id, :start_time => step) , class: "text-gray-500 w-0" %>
+        <% end %>
       </td>
     <% else %>
       <td></td>
