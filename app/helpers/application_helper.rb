@@ -734,8 +734,41 @@ module ApplicationHelper
     reservation.prev.present? || reservation.next.present? || reservation.recurring.present?
   end
 
-  def reservation_color 
+  def reservation_color
     {false => "bg-red-900", true => "bg-green-900"}
+  end
+
+  def get_car_day_reservations_hash(day, car)
+    times = show_time_begin_end(day, @unit_id)
+    day_begin = times[0] - 15.minute
+    day_end = times[1]
+    day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) }
+    if car.present?
+      car_day_reserv = car.reservations.where("(start_time BETWEEN ? AND ?) OR (start_time < ? AND end_time > ?)",
+        day.beginning_of_day, day.end_of_day, day.beginning_of_day, day.beginning_of_day)
+    else
+      car_day_reserv = Reservation.where(program: Program.where(unit_id: @unit_id), car_id: nil).where("(start_time BETWEEN ? AND ?) OR (start_time < ? AND end_time > ?)",
+        day.beginning_of_day, day.end_of_day, day.beginning_of_day, day.beginning_of_day)
+    end
+    car_cells = {}
+    day_times_with_15_min_steps.each do |step|
+      start = []
+      ending = []
+      middle = []
+      car_day_reserv.each do |r|
+        if r.start_time == step
+          start << r
+        end
+        if r.end_time - 15.minute == step
+          ending << r
+        end
+        if (r.start_time + 15.minute..r.end_time - 16.minute).cover?(step)
+          middle << r
+        end
+      end
+      car_cells[step] = {:start => start, :middle => middle, :ending => ending }
+    end
+    return car_cells
   end
 
   def report_types
