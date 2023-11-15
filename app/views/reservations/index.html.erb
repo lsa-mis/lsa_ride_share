@@ -42,11 +42,7 @@
         </div>
         <div>
           <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
-          <span> - no car </span>
-        </div>
-        <div>
-          <i class="fa-solid fa-exclamation" style="color:#c53030"></i>
-          <span> - no driver </span>
+          <span> - no car/no driver </span>
         </div>
       </div>
     </div>
@@ -70,7 +66,7 @@
                   <span">
                     <%= reservation.display_name %>
                     <% if no_good_driver?(reservation) %>
-                      <i class="fa-solid fa-exclamation" style="color:#c53030"></i>
+                      <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
                     <% end %>
                     <% if reservation.approved %>
                       <i class="fa-solid fa-circle-check" style="color:#024794"></i>
@@ -83,7 +79,7 @@
                   <span">
                     <%= reservation.display_name %>
                     <% if no_good_driver?(reservation) %>
-                      <i class="fa-solid fa-exclamation" style="color:#c53030"></i>
+                      <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
                     <% end %>
                     <% if reservation.approved %>
                       <i class="fa-solid fa-circle-check" style="color:#024794"></i>
@@ -96,9 +92,6 @@
                 <%= link_to reservation_path(reservation.id), class: "link_to", data: {turbo_frame: "_top"} do %>
                   <span">
                     <%= reservation.display_name %>
-                    <% if no_good_driver?(reservation) %>
-                      <i class="fa-solid fa-exclamation" style="color:#c53030"></i>
-                    <% end %>
                     <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
                     <i class="fa fa-repeat" aria-hidden="true" style="color:#024794"></i>
                   </span>
@@ -107,9 +100,6 @@
                 <%= link_to reservation_path(reservation.id), class: "link_to", data: {turbo_frame: "_top"} do %>
                   <span">
                     <%= reservation.display_name %>
-                    <% if no_good_driver?(reservation) %>
-                      <i class="fa-solid fa-exclamation" style="color:#c53030"></i>
-                    <% end %>
                     <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
                   </span>
                 <% end %>
