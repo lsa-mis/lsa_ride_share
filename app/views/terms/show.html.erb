@@ -1,15 +1,11 @@
 <div class="mx-auto w-full">
-  <div class="grid grid-cols-1 lg:grid-cols-2">
+  <div class="md:flex justify-between items-center pb-4">
     <h1>Term Name: <%= @term.name %></h1>
-    <div class="lg:grid lg:justify-items-end">
-      <div class="py-2">
-        <%= link_to 'Edit Term', edit_term_path(@term), class: "primary_button" %>
-      </div>
+    <div class="py-2">
+      <%= link_to 'Edit Term', edit_term_path(@term), class: "primary_button" %>
     </div>
   </div>
   <div class="grid grid-cols-1 lg:grid-cols-2">
-    <div class="grid lg:col-span-2">
-      <%= render @term %>
-    </div>
+    <%= render @term %>
   </div>
 </div>
