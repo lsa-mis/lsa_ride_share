@@ -157,7 +157,10 @@ module ApplicationHelper
     if reservation.car.present?
       reservation.car.car_number
     else
-      "No car selected"
+      tags = html_escape('') # initialize an html safe string we can append to
+      tags << content_tag(:i, nil, class: "fa-solid fa-triangle-exclamation", style: "color:#c53030;")
+      tags << content_tag(:span, " No car selected", class: 'unavailable')
+      tags
     end
   end
 
@@ -168,7 +171,10 @@ module ApplicationHelper
       uniqname = Manager.find(reservation.driver_manager_id).uniqname
       reservation.driver_manager.display_name + " " + show_manager(reservation.program, uniqname)
     else
-      "No driver selected"
+      tags = html_escape('') # initialize an html safe string we can append to
+      tags << content_tag(:i, nil, class: "fa-solid fa-triangle-exclamation", style: "color:#c53030;")
+      tags << content_tag(:span, " No driver selected", class: 'unavailable')
+      tags
     end
   end
 
@@ -193,7 +199,10 @@ module ApplicationHelper
 
   def display_driver_status(reservation)
     if driver_status_not_eligible?(reservation)
-      content_tag(:span, " - expired MVR Status", class: 'unavailable')
+      tags = html_escape('') # initialize an html safe string we can append to
+      tags << content_tag(:i, nil, class: "fa-solid fa-triangle-exclamation", style: "color:#c53030;")
+      tags << content_tag(:span, " - expired MVR Status", class: 'unavailable')
+      tags
     end
   end
 
@@ -214,7 +223,10 @@ module ApplicationHelper
 
   def display_backup_driver_status(reservation)
     if backup_driver_status_not_eligible?(reservation)
-      content_tag(:span, " - expired MVR Status", class: 'unavailable')
+      tags = html_escape('') # initialize an html safe string we can append to
+      tags << content_tag(:i, nil, class: "fa-solid fa-triangle-exclamation", style: "color:#c53030;")
+      tags << content_tag(:span, " - expired MVR Status", class: 'unavailable')
+      tags
     end
   end
 
