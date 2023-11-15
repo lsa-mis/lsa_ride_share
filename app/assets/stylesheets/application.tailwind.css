@@ -33,7 +33,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   h1 {
-    @apply text-4xl font-medium leading-10 font-oswald;
+    @apply text-4xl font-medium leading-10 font-oswald my-10;
   }
 
   h2 {
@@ -312,7 +312,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .mi_tbody_td {
-    @apply relative p-2 sm:pl-2 text-xs leading-4 font-montserrat text-left;
+    @apply relative p-2 sm:pl-2 text-sm leading-4 font-montserrat text-left;
   }
 
   .alert {

@@ -1,6 +1,6 @@
 <div class="w-full">
   <div class="lg:flex justify-between items-center mb-4">
-    <h1 class="mb-2"><%= @faculty_survey.display_name %></h1>
+    <h1><%= @faculty_survey.display_name %></h1>
     <% if is_admin?(current_user) %> 
       <% unless email_was_sent?("FacultySurvey", @faculty_survey) %>
         <%= link_to 'Send Email to Instructor', send_faculty_survey_email_path(@faculty_survey), class: "secondary_yellow_button" %>
