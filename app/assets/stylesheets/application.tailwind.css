@@ -304,11 +304,11 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .header_th {
-    @apply p-2 text-base font-semibold leading-5 font-montserrat lg:table-cell text-left;
+    @apply p-2 text-sm font-semibold leading-5 font-montserrat lg:table-cell text-left;
   }
 
   .header_mobile {
-    @apply p-2 text-base font-semibold leading-5 font-montserrat lg:table-cell text-left;
+    @apply p-2 text-sm font-semibold leading-5 font-montserrat lg:table-cell text-left;
   }
 
   .mi_tbody_td {
