@@ -11,18 +11,18 @@
       </div>
     <% end %>
 
-    <div class="sm:flex gap-2 items-end mb-2">
-      <div>
+    <div class="md:flex gap-2 justify-between items-end mb-2">
+      <div class="md:flex-1">
         <%= form.label :name, "Name *", class: "fancy_label"  %>
         <%= form.text_field :name, required: true, class: "input_text_field" %>
       </div>
 
-      <div class="">
+      <div class="md:flex-1">
         <%= form.label :ldap_group, "Ldap Group *", class: "fancy_label"  %>
         <%= form.text_field :ldap_group, required: true, class: "input_text_field" %>
       </div>
 
-      <div class="">
+      <div class="mt-2">
         <%= form.submit "Update", class: "primary_button" %>
         <%= link_to units_path, data: {turbo_frame: "_top"} do %>
           <span class="tertiary_button">Cancel
