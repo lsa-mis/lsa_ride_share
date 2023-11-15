@@ -67,3 +67,8 @@
       display: block;
   }
 }
+
+.turbo-progress-bar {
+  height: 10px !important;
+  background-color: #00AEEF;
+}
