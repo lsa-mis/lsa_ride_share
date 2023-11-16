@@ -4,12 +4,12 @@
     <h1>Reservations</h1>
     <div class="mt-2">
       <%= link_to new_reservation_path(:unit_id => @unit_id, :day_start => Date.today) do %>
-        <span class="primary_button mr-2">
+        <span class="secondary_blue_button mr-2">
           New One Day Reservation
         </span>
       <% end %>
       <%= link_to new_long_reservation_path(:unit_id => @unit_id, :day_start => Date.today) do %>
-        <span class="primary_button">
+        <span class="secondary_blue_button">
           New Over-Night Reservation
         </span>
       <% end %>
