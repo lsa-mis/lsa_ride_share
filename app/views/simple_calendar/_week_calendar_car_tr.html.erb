@@ -8,7 +8,7 @@
       <% reservation_data[:start].each do |reservation| %>
         <div class="body-sm-semibold-text div-hover" data-reservation="<%= show_reservation(reservation) %>">
           <%= link_to reservation_path(reservation), class: 'link_to_white' do %>
-            <% if no_good_driver?(reservation) %>
+            <% if no_good_driver?(reservation) || reservation.car.nil? %>
               <i class="fa-solid fa-triangle-exclamation" style="color:white"></i>
               <span>
             <% else %>
