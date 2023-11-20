@@ -17,6 +17,7 @@
           <%= link_to show_car(reservation), car_path(reservation.car), class: "link_to" %>
         <% else %>
           <span class="status-false">
+            <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
             No car selected
           </span>
         <% end %>
@@ -69,6 +70,7 @@
         </p>
         <p id="driver" class="body-lg-text ml-2 inline">
           <%= show_driver(reservation) %>
+          <%= display_driver_status(reservation) %>
         </p>
       </div>
       <% if (is_admin?(current_user) || allow_student_to_edit_drivers?(@reservation) || allow_manager_to_edit_drivers?(@reservation)) %>
@@ -109,6 +111,7 @@
       <p class="body-lg-text ml-2 inline">
         <%= show_backup_driver(reservation) %>
       </p>
+      <%= display_backup_driver_status(reservation) %>
     </div>
 
     <div class="py-2">
