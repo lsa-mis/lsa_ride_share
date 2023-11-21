@@ -52,7 +52,7 @@ class ReservationsController < ApplicationController
 
   # GET /reservations/1 or /reservations/1.json
   def show
-    @passengers = @reservation.passengers
+    @passengers = @reservation.passengers + @reservation.passengers_managers
     @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id).order(created_at: :desc)
     authorize @reservation
   end
@@ -487,6 +487,11 @@ class ReservationsController < ApplicationController
       @students = @reservation.program.students.order(:last_name) - @passengers
       @students.delete(@reservation.driver)
       @students.delete(@reservation.backup_driver)
+      @passengers_managers = @reservation.passengers_managers
+      @managers = @reservation.program.managers.to_a
+      @managers << @reservation.program.instructor
+      @managers = @managers - @passengers_managers
+      @managers.delete(@reservation.driver_manager)
       format.turbo_stream { render :add_non_uofm_passenger }
     end
   end
@@ -733,6 +738,17 @@ class ReservationsController < ApplicationController
             recurring_reservation.remove_passenger_following_reservations(student)
           else
             reservation.passengers.delete(student)
+          end
+          note = " " + field + " was removed from passengers list."
+        end
+      else
+        manager = Manager.find(driver_id)
+        if @reservation.passengers_managers.include?(manager)
+          if recurring
+            recurring_reservation = RecurringReservation.new(reservation)
+            recurring_reservation.remove_passenger_following_reservations(manager)
+          else
+            reservation.passengers_managers.delete(manager)
           end
           note = " " + field + " was removed from passengers list."
         end
