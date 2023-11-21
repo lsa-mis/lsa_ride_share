@@ -4,6 +4,10 @@
   <%= render "reservations/passengers/students", edit: params[:reservation][:edit] %>
 <% end %>
 
+<%= turbo_stream.update "new_passenger_manager" do %>
+  <%= render "reservations/passengers/managers", edit: params[:edit] %>
+<% end %>
+
 <%= turbo_stream.update "passenger_list" do %>
   <%= render "reservations/passengers/passenger_list", locals: { reservation: @reservation} %>
 <% end %>
