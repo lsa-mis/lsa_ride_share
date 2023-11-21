@@ -1,4 +1,4 @@
-class  Reservation::StudentPolicy < ApplicationPolicy
+class  Reservation::PassengerPolicy < ApplicationPolicy
 
   def add_passengers?
     user_in_access_group? || is_reservation_driver?
@@ -8,7 +8,15 @@ class  Reservation::StudentPolicy < ApplicationPolicy
     user_in_access_group? || is_reservation_driver?
   end
 
+  def add_passenger_manager?
+    user_in_access_group? || is_reservation_driver?
+  end
+
   def remove_passenger?
+    user_in_access_group? || is_reservation_driver?
+  end
+
+  def remove_passenger_manager?
     user_in_access_group? || is_reservation_driver?
   end
 
