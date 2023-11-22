@@ -763,12 +763,17 @@ class ReservationsController < ApplicationController
 
     def create_cancel_emails
       students = @reservation.passengers
+      managers = @reservation.passengers_managers
       @cancel_passengers = []
       @cancel_emails = []
-      if students.present?
+      if students.present? || managers.present?
         students.each do |s|
           @cancel_passengers << s.name
           @cancel_emails << email_address(s)
+        end
+        managers.each do |m|
+          @cancel_passengers << m.name
+          @cancel_emails << email_address(m)
         end
       else
         @cancel_passengers = ["No passengers"]
