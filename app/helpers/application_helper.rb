@@ -292,13 +292,16 @@ module ApplicationHelper
     else
       backup_driver = "No backup driver selected"
     end
-    if reservation.passengers.present?
+    if reservation.passengers.present? || reservation.passengers_managers.present?
       passengers = "Passengers: "
       reservation.passengers.each do |passenger|
         passengers += passenger.display_name + "\n"
       end
+      reservation.passengers_managers.each do |passenger|
+        passengers += passenger.display_name + show_manager(reservation.program, passenger.uniqname) + "\n"
+      end
     else
-      passengers = "No passengerds"
+      passengers = "No passengers"
     end
     if reservation.program.non_uofm_passengers && reservation.non_uofm_passengers.present?
       non_uofm_passengers = reservation.number_of_non_uofm_passengers.to_s + " Non UofM Passenge(s): " + reservation.non_uofm_passengers
