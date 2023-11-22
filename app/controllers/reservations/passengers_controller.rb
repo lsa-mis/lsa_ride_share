@@ -48,7 +48,7 @@ class Reservations::PassengersController < ApplicationController
       end
     end
     # send email only if reservation confirmation email has been sent already; if a passenger is removed for a new reservation - do not sent an email
-    if EmailLog.find_by(email_type: "confirmation", sent_from_model: "Reservation", record_id: @reservation)
+    if EmailLog.find_by(email_type: "confirmation", sent_from_model: "Reservation", record_id: @reservation) || EmailLog.find_by(email_type: "recurring_confirmation", sent_from_model: "Reservation", record_id: @reservation)
       ReservationMailer.with(reservation: @reservation).car_reservation_remove_passenger(passenger, current_user, recurring).deliver_now
     end
     add_passengers
