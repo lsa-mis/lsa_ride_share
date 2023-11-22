@@ -16,10 +16,6 @@ class  Reservation::PassengerPolicy < ApplicationPolicy
     user_in_access_group? || is_reservation_driver?
   end
 
-  def remove_passenger_manager?
-    user_in_access_group? || is_reservation_driver?
-  end
-
   def is_reservation_driver?
     @reservation = Reservation.find(params[:reservation_id])
     student = Student.find_by(program_id: @reservation.program, uniqname: @user.uniqname)
