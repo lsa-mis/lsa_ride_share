@@ -9,7 +9,7 @@
           <%= check_box_tag "id", manager.id, nil, class: "check_box", id: "manager_id_#{manager.id}",
             disabled: @reservation.added_people == @reservation.number_of_people_on_trip,
             :"data-action" => "change->autosubmit#search" %>
-          <span class="check_box_text"><%= manager.display_name %> <%= show_manager(@reservation.program, manager.uniqname) %></span>
+          <span class="check_box_text"><%= manager.display_name %><%= show_manager(@reservation.program, manager.uniqname) %></span>
         </div>
       <% end %>
     </fieldset>
