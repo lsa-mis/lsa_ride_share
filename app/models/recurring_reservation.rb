@@ -107,19 +107,27 @@ class RecurringReservation
     return note
   end
 
-  def add_passenger_following_reservations(student)
+  def add_passenger_following_reservations(passenger, model)
     list = get_following
     list.each do |id|
       reservation = Reservation.find(id)
-      reservation.passengers << student
+      if model == 'student'
+        reservation.passengers << passenger
+      else
+        reservation.passengers_managers << passenger
+      end
     end
   end
 
-  def remove_passenger_following_reservations(student)
+  def remove_passenger_following_reservations(passenger, model)
     list = get_following
     list.each do |id|
       reservation = Reservation.find(id)
-      reservation.passengers.delete(student)
+      if model == 'student'
+        reservation.passengers.delete(passenger)
+      else
+        reservation.passengers_managers.delete(passenger)
+      end
     end
   end
 
@@ -128,6 +136,9 @@ class RecurringReservation
       reservation = Reservation.find(id)
       if reservation.passengers.present?
         reservation.passengers.delete_all
+      end
+      if reservation.passengers_managers.present?
+        reservation.passengers_managers.delete_all
       end
     end
   end
