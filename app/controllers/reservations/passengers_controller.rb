@@ -15,30 +15,21 @@ class Reservations::PassengersController < ApplicationController
   end
 
   def add_passenger
+    model = params[:model]
+    passenger = model.classify.constantize.find(params[:id])
     authorize([@reservation, :passenger])
-    if params[:student_id].present?
-      if params[:recurring] == "true"
-        recurring_reservation =  RecurringReservation.new(@reservation)
-        recurring_reservation.add_passenger_following_reservations(Student.find(params[:student_id]))
+    if params[:recurring] == "true"
+      recurring_reservation =  RecurringReservation.new(@reservation)
+      recurring_reservation.add_passenger_following_reservations(passenger, model)
+    else
+      if model == 'student'
+        @reservation.passengers << passenger
       else
-        @reservation.passengers << Student.find(params[:student_id])
+        @reservation.passengers_managers << passenger
       end
-      redirect_to add_passengers_path(@reservation, :edit => params[:edit], :recurring => params[:recurring])
     end
+    redirect_to add_passengers_path(@reservation, :edit => params[:edit], :recurring => params[:recurring])
   end
-  def add_passenger_manager
-    authorize([@reservation, :passenger])
-    if params[:manager_id].present?
-      if params[:recurring] == "true"
-        recurring_reservation =  RecurringReservation.new(@reservation)
-        recurring_reservation.add_passenger_manager_following_reservations(Manager.find(params[:manager_id]))
-      else
-        @reservation.passengers_managers << Manager.find(params[:manager_id])
-      end
-      redirect_to add_passengers_path(@reservation, :edit => params[:edit], :recurring => params[:recurring])
-    end
-  end
-
 
   def remove_passenger
     model = params[:resource]
@@ -47,11 +38,11 @@ class Reservations::PassengersController < ApplicationController
     recurring = false
     if params[:recurring] == "true"
       recurring_reservation =  RecurringReservation.new(@reservation)
-      recurring_reservation.remove_passenger_following_reservations(passenger)
+      recurring_reservation.remove_passenger_following_reservations(passenger, model)
       recurring = true
     else
       if model == 'student'
-       @reservation.passengers.delete(passenger)
+        @reservation.passengers.delete(passenger)
       else
         @reservation.passengers_managers.delete(passenger)
       end

@@ -48,7 +48,6 @@ Rails.application.routes.draw do
   patch '/reservations/add_non_uofm_passengers/:reservation_id', to: 'reservations#add_non_uofm_passengers', as: :add_non_uofm_passengers
   get '/reservations/add_passengers/:reservation_id', to: 'reservations/passengers#add_passengers', as: :add_passengers
   get '/reservations/add_passenger/:reservation_id', to: 'reservations/passengers#add_passenger', as: :add_passenger
-  get '/reservations/add_passenger_manager/:reservation_id', to: 'reservations/passengers#add_passenger_manager', as: :add_passenger_manager
 
   get '/reservations/add_drivers/:id', to: 'reservations#add_drivers', as: :add_drivers
   patch '/reservations/add_edit_drivers/:id', to: 'reservations#add_edit_drivers', as: :add_edit_drivers
