@@ -249,6 +249,7 @@ class ReservationsController < ApplicationController
     @reservation.start_time = (params[:start_time]).to_datetime - 15.minute
     @reservation.end_time = (params[:end_time]).to_datetime + 15.minute
     @reservation.number_of_people_on_trip = params[:number_of_people_on_trip]
+    @reservation.until_date = params[:until_date]
     @reservation.reserved_by = current_user.id
     authorize @reservation
     if @reservation.save
@@ -265,6 +266,7 @@ class ReservationsController < ApplicationController
       @car_id = params[:car_id]
       @start_time = params[:start_time]
       @end_time = params[:end_time]
+      @until_date = params[:until_date]
       @cars = list_of_available_cars(@unit_id, @day_start, @number_of_people_on_trip, @start_time, @end_time)
       render :new, status: :unprocessable_entity
     end
