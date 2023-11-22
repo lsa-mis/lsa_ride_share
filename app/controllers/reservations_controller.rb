@@ -567,6 +567,9 @@ class ReservationsController < ApplicationController
       if @reservation.passengers.present?
         @reservation.passengers.delete_all
       end
+      if @reservation.passengers_managers.present?
+        @reservation.passengers_managers.delete_all
+      end
       ReservationMailer.car_reservation_cancel_admin(@reservation, @cancel_passengers, @cancel_emails, current_user, recurring).deliver_now
       if @reservation.driver_id.present? || @reservation.driver_manager_id.present? 
         ReservationMailer.car_reservation_cancel_driver(@reservation, @cancel_passengers, @cancel_emails, current_user, recurring).deliver_now
