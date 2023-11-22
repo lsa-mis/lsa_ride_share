@@ -77,6 +77,9 @@ class RecurringReservation
         if prev_reserv.passengers.present?
           next_reservation.passengers << prev_reserv.passengers
         end
+        if prev_reserv.passengers_managers.present?
+          next_reservation.passengers_managers << prev_reserv.passengers_managers
+        end
         prev_reserv.update(next: next_reservation.id)
         prev_reserv = Reservation.find(next_reservation.id)
       end
