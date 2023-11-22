@@ -169,7 +169,7 @@ module ApplicationHelper
       reservation.driver.display_name
     elsif reservation.driver_manager.present?
       uniqname = Manager.find(reservation.driver_manager_id).uniqname
-      reservation.driver_manager.display_name + " " + show_manager(reservation.program, uniqname)
+      reservation.driver_manager.display_name + show_manager(reservation.program, uniqname)
     else
       tags = html_escape('') # initialize an html safe string we can append to
       tags << content_tag(:i, nil, class: "fa-solid fa-triangle-exclamation", style: "color:#c53030;")
@@ -240,23 +240,23 @@ module ApplicationHelper
 
   def show_manager(program, uniqname)
     if program.instructor.uniqname == uniqname
-      return "(instructor)"
+      return " (instructor)"
     elsif program.managers.pluck(:uniqname).include?(uniqname)
-      return "(manager)"
+      return " (manager)"
     else
       return ""
     end
   end
 
   def show_reservation_date(reservation)
-    show_date_time(reservation.start_time) + " - " +  show_date_time(reservation.end_time)
+    show_date_time(reservation.start_time) + " - " + show_date_time(reservation.end_time)
   end
 
   def show_day_reservation_time(reservation)
     if reservation.start_time.to_date == reservation.end_time.to_date 
-      show_time(reservation.start_time + 15.minute) + " - " +  show_time(reservation.end_time - 15.minute)
+      show_time(reservation.start_time + 15.minute) + " - " + show_time(reservation.end_time - 15.minute)
     else
-      show_date_time(reservation.start_time + 15.minute) + " - " +  show_date_time(reservation.end_time - 15.minute)
+      show_date_time(reservation.start_time + 15.minute) + " - " + show_date_time(reservation.end_time - 15.minute)
     end
   end
   
@@ -292,13 +292,16 @@ module ApplicationHelper
     else
       backup_driver = "No backup driver selected"
     end
-    if reservation.passengers.present?
+    if reservation.passengers.present? || reservation.passengers_managers.present?
       passengers = "Passengers: "
       reservation.passengers.each do |passenger|
         passengers += passenger.display_name + "\n"
       end
+      reservation.passengers_managers.each do |passenger|
+        passengers += passenger.display_name + show_manager(reservation.program, passenger.uniqname) + "\n"
+      end
     else
-      passengers = "No passengerds"
+      passengers = "No passengers"
     end
     if reservation.program.non_uofm_passengers && reservation.non_uofm_passengers.present?
       non_uofm_passengers = reservation.number_of_non_uofm_passengers.to_s + " Non UofM Passenge(s): " + reservation.non_uofm_passengers

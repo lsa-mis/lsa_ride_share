@@ -165,6 +165,7 @@
         <% @passengers.each do |passenger| %>
           <p class="body-lg-text ml-2">
             <%= passenger.display_name %>
+            <%= show_manager(@reservation.program, passenger.uniqname) %>
           </p>
         <% end %>
       </ul>

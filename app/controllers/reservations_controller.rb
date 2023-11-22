@@ -52,7 +52,7 @@ class ReservationsController < ApplicationController
 
   # GET /reservations/1 or /reservations/1.json
   def show
-    @passengers = @reservation.passengers
+    @passengers = @reservation.passengers + @reservation.passengers_managers
     @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id).order(created_at: :desc)
     authorize @reservation
   end
@@ -249,6 +249,7 @@ class ReservationsController < ApplicationController
     @reservation.start_time = (params[:start_time]).to_datetime - 15.minute
     @reservation.end_time = (params[:end_time]).to_datetime + 15.minute
     @reservation.number_of_people_on_trip = params[:number_of_people_on_trip]
+    @reservation.until_date = params[:until_date]
     @reservation.reserved_by = current_user.id
     authorize @reservation
     if @reservation.save
@@ -265,6 +266,7 @@ class ReservationsController < ApplicationController
       @car_id = params[:car_id]
       @start_time = params[:start_time]
       @end_time = params[:end_time]
+      @until_date = params[:until_date]
       @cars = list_of_available_cars(@unit_id, @day_start, @number_of_people_on_trip, @start_time, @end_time)
       render :new, status: :unprocessable_entity
     end
@@ -487,6 +489,11 @@ class ReservationsController < ApplicationController
       @students = @reservation.program.students.order(:last_name) - @passengers
       @students.delete(@reservation.driver)
       @students.delete(@reservation.backup_driver)
+      @passengers_managers = @reservation.passengers_managers
+      @managers = @reservation.program.managers.to_a
+      @managers << @reservation.program.instructor
+      @managers = @managers - @passengers_managers
+      @managers.delete(@reservation.driver_manager)
       format.turbo_stream { render :add_non_uofm_passenger }
     end
   end
@@ -561,6 +568,9 @@ class ReservationsController < ApplicationController
       create_cancel_emails
       if @reservation.passengers.present?
         @reservation.passengers.delete_all
+      end
+      if @reservation.passengers_managers.present?
+        @reservation.passengers_managers.delete_all
       end
       ReservationMailer.car_reservation_cancel_admin(@reservation, @cancel_passengers, @cancel_emails, current_user, recurring).deliver_now
       if @reservation.driver_id.present? || @reservation.driver_manager_id.present? 
@@ -736,18 +746,34 @@ class ReservationsController < ApplicationController
           end
           note = " " + field + " was removed from passengers list."
         end
+      else
+        manager = Manager.find(driver_id)
+        if @reservation.passengers_managers.include?(manager)
+          if recurring
+            recurring_reservation = RecurringReservation.new(reservation)
+            recurring_reservation.remove_passenger_following_reservations(manager)
+          else
+            reservation.passengers_managers.delete(manager)
+          end
+          note = " " + field + " was removed from passengers list."
+        end
       end
       return note
     end
 
     def create_cancel_emails
       students = @reservation.passengers
+      managers = @reservation.passengers_managers
       @cancel_passengers = []
       @cancel_emails = []
-      if students.present?
+      if students.present? || managers.present?
         students.each do |s|
           @cancel_passengers << s.name
           @cancel_emails << email_address(s)
+        end
+        managers.each do |m|
+          @cancel_passengers << m.name
+          @cancel_emails << email_address(m)
         end
       else
         @cancel_passengers = ["No passengers"]

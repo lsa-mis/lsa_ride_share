@@ -52,7 +52,8 @@ Rails.application.routes.draw do
   get '/reservations/add_drivers/:id', to: 'reservations#add_drivers', as: :add_drivers
   patch '/reservations/add_edit_drivers/:id', to: 'reservations#add_edit_drivers', as: :add_edit_drivers
 
-  delete 'reservations/:reservation_id/:student_id', to: 'reservations/passengers#remove_passenger', as: :remove_passenger
+  delete 'reservations/:reservation_id/:id/:resource', to: 'reservations/passengers#remove_passenger', as: :remove_passenger
+
   get '/reservations/day_reservations/:date', to: 'reservations#day_reservations', as: :day_reservations
   get '/reservations/:id/add_drivers_later', to: 'reservations#add_drivers_later', as: :add_drivers_later
   get '/reservations/:id/finish_reservation', to: 'reservations#finish_reservation', as: :finish_reservation
