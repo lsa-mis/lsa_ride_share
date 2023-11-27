@@ -8,16 +8,14 @@ class ReservationMailer < ApplicationMailer
     if recurring
       subject =  "New Recurring Reservation for program: #{@reservation.program.display_name_with_title}"
       email_type = "recurring_created"
-      recurring_reservation = RecurringReservation.new(@reservation)
-      all_reservations = recurring_reservation.get_all_reservations
-      @recurring_rule = recurring_reservation.first_reservation.rule.to_s
+      @recurring_reservation = RecurringReservation.new(@reservation)
+      @recurring_rule = @recurring_reservation.first_reservation.rule.to_s
     else
       subject = "New reservation for program: #{@reservation.program.display_name_with_title}"
       email_type = "created"
-      all_reservations = Array(@reservation.id)
     end
     mail(to: @recipient, subject: subject)
-    create_email_log_records("Reservation", all_reservations, email_type, @recipient, user.id)
+    create_email_log_records("Reservation", @reservation, recurring, email_type, @recipient, user.id)
   end
 
   def car_reservation_confirmation(user, recurring = false)
@@ -31,16 +29,15 @@ class ReservationMailer < ApplicationMailer
     if recurring
       subject =  "Recurring Reservation confirmation for program: #{@reservation.program.display_name_with_title}"
       email_type = "recurring_confirmation"
-      recurring_reservation = RecurringReservation.new(@reservation)
-      all_reservations = recurring_reservation.get_all_reservations
-      @recurring_rule = recurring_reservation.first_reservation.rule.to_s
+      @recurring_reservation = RecurringReservation.new(@reservation)
+      @recurring_rule = @recurring_reservation.first_reservation.rule.to_s
     else
       subject = "New reservation confirmation for program: #{@reservation.program.display_name_with_title}"
       email_type = "confirmation"
       all_reservations = Array(@reservation.id)
     end
     mail(to: @recipients, subject: subject)
-    create_email_log_records("Reservation", all_reservations, email_type, @recipients, user.id)
+    create_email_log_records("Reservation", @reservation, recurring, email_type, @recipients, user.id)
   end
 
   def car_reservation_approved(user)
@@ -64,18 +61,16 @@ class ReservationMailer < ApplicationMailer
     if recurring
       subject = "Recurring Reservations canceled for program: #{@reservation.program.display_name_with_title}"
       email_type = "recurring_cancel_admin"
-      recurring_reservation = RecurringReservation.new(@reservation)
-      all_reservations = recurring_reservation.get_all_reservations
-      @recurring_rule = recurring_reservation.first_reservation.rule.to_s
+      @recurring_reservation = RecurringReservation.new(@reservation)
+      @recurring_rule = @recurring_reservation.first_reservation.rule.to_s
       @cancel_message = cancel_message + " scheduled '" + @recurring_rule + "' were canceled."
     else
       subject = "Reservation canceled for program: #{@reservation.program.display_name_with_title}"
       email_type = "cancel_admin"
-      all_reservations = Array(@reservation.id)
       @cancel_message = "The reservation was canceled."
     end
     mail(to: @unit_email, subject: subject)
-    create_email_log_records("Reservation", all_reservations, email_type, @unit_email, user.id)
+    create_email_log_records("Reservation", @reservation, recurring, email_type, @unit_email, user.id)
   end
 
   def car_reservation_cancel_driver(cancel_reservation, cancel_passengers, cancel_emails, user, recurring = false, cancel_message = "")
@@ -93,18 +88,16 @@ class ReservationMailer < ApplicationMailer
     if recurring
       subject =  "Recurring Reservations canceled for program: #{@reservation.program.display_name_with_title}"
       email_type = "recurring_cancel_driver"
-      recurring_reservation = RecurringReservation.new(@reservation)
-      all_reservations = recurring_reservation.get_all_reservations
-      @recurring_rule = recurring_reservation.first_reservation.rule.to_s
+      @recurring_reservation = RecurringReservation.new(@reservation)
+      @recurring_rule = @recurring_reservation.first_reservation.rule.to_s
       @cancel_message = cancel_message + " scheduled '" + @recurring_rule + "' were canceled."
     else
       subject = "Reservation canceled for program: #{@reservation.program.display_name_with_title}"
       email_type = "cancel_driver"
-      all_reservations = Array(@reservation.id)
       @cancel_message = "Your reservation was canceled."
     end
     mail(to: @recipients, subject: subject )
-    create_email_log_records("Reservation", all_reservations, email_type, @recipients, user.id)
+    create_email_log_records("Reservation", @reservation, recurring, email_type, @recipients, user.id)
   end
 
   def car_reservation_updated(user, recurring = false)
@@ -118,16 +111,14 @@ class ReservationMailer < ApplicationMailer
     if recurring
       subject =  "Recurring Reservations updated for program: #{@reservation.program.display_name_with_title}"
       email_type = "recurring_updated"
-      recurring_reservation = RecurringReservation.new(@reservation)
-      all_reservations = recurring_reservation.get_all_reservations
-      @recurring_rule = recurring_reservation.first_reservation.rule.to_s
+      @recurring_reservation = RecurringReservation.new(@reservation)
+      @recurring_rule = @recurring_reservation.first_reservation.rule.to_s
     else
       subject = "Reservation updated for program: #{@reservation.program.display_name_with_title}"
       email_type = "updated"
-      all_reservations = Array(@reservation.id)
     end
     mail(to: @recipients, subject: subject)
-    create_email_log_records("Reservation", all_reservations, email_type, @recipients, user.id)
+    create_email_log_records("Reservation", @reservation, recurring, email_type, @recipients, user.id)
   end
 
   def car_reservation_drivers_edited(drivers_reservation, drivers_emails, user, recurring = false)
@@ -144,16 +135,14 @@ class ReservationMailer < ApplicationMailer
     if recurring
       subject =  "Recurring Reservations - drivers changed for program: #{@reservation.program.display_name_with_title}"
       email_type = "recurring_drivers_edited"
-      recurring_reservation = RecurringReservation.new(@reservation)
-      all_reservations = recurring_reservation.get_all_reservations
-      @recurring_rule = recurring_reservation.first_reservation.rule.to_s
+      @recurring_reservation = RecurringReservation.new(@reservation)
+      @recurring_rule = @recurring_reservation.first_reservation.rule.to_s
     else
       subject = "Reservation drivers changed for program: #{@reservation.program.display_name_with_title}"
       email_type = "drivers_edited"
-      all_reservations = Array(@reservation.id)
     end
     mail(to: @recipients, subject: subject)
-    create_email_log_records("Reservation", all_reservations, email_type, @recipients, user.id)
+    create_email_log_records("Reservation", @reservation, recurring, email_type, @recipients, user.id)
   end
 
   def car_reservation_remove_passenger(passenger, user, recurring = false)
@@ -162,16 +151,14 @@ class ReservationMailer < ApplicationMailer
     if recurring
       subject =  "Recurring Reservations - removed from the reservation passagers' list for program: #{@reservation.program.display_name_with_title}"
       email_type = "recurring_passenger_removed"
-      recurring_reservation = RecurringReservation.new(@reservation)
-      all_reservations = recurring_reservation.get_all_reservations
-      @recurring_rule = recurring_reservation.first_reservation.rule.to_s
+      @recurring_reservation = RecurringReservation.new(@reservation)
+      @recurring_rule = @recurring_reservation.first_reservation.rule.to_s
     else
       subject = "Removed from the reservation passagers' list for program: #{@reservation.program.display_name_with_title}"
       email_type = "passenger_removed"
-      all_reservations = Array(@reservation.id)
     end
     mail(to: @email, subject: subject )
-    create_email_log_records("Reservation", all_reservations, email_type, @email, user.id)
+    create_email_log_records("Reservation", @reservation, recurring, email_type, @email, user.id)
   end
 
   def car_reservation_update_passengers(user, recurring = false)
@@ -186,16 +173,14 @@ class ReservationMailer < ApplicationMailer
     if recurring
       subject =  "Recurring Reservations - passengers list updated for program: #{@reservation.program.display_name_with_title}"
       email_type = "recurring_passengers_edited"
-      recurring_reservation = RecurringReservation.new(@reservation)
-      all_reservations = recurring_reservation.get_all_reservations
-      @recurring_rule = recurring_reservation.first_reservation.rule.to_s
+      @recurring_reservation = RecurringReservation.new(@reservation)
+      @recurring_rule = @recurring_reservation.first_reservation.rule.to_s
     else
       subject = "Reservation passengers list updated for program: #{@reservation.program.display_name_with_title}"
       email_type = "passengers_edited"
-      all_reservations = Array(@reservation.id)
     end
     mail(to: @recipients, subject: subject)
-    create_email_log_records("Reservation", all_reservations, email_type, @recipients, user.id)
+    create_email_log_records("Reservation", @reservation, recurring, email_type, @recipients, user.id)
   end
 
   private 
@@ -257,7 +242,12 @@ class ReservationMailer < ApplicationMailer
     return unit_email_message
   end
 
-  def create_email_log_records(model, all_reservations, email_type, recipients, user_id)
+  def create_email_log_records(model, reservation, recurring, email_type, recipients, user_id)
+    if recurring
+      all_reservations = @recurring_reservation.get_all_reservations
+    else
+      all_reservations = Array(reservation.id)
+    end
     all_reservations.each do |id|
       EmailLog.create(sent_from_model: model, record_id: id, email_type: email_type,
         sent_to: recipients, sent_by: user_id, sent_at: DateTime.now)
