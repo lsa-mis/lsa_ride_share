@@ -1,6 +1,6 @@
 <div class="mx-auto w-full">
   <% if params[:recurring] == "true" %>
-    <h1>Editing Recurring Over-Night Reservations</h1>
+    <h1>Editing Recurring OverNight Reservations</h1>
     <% if recurring?(@reservation) %>
       <div class="pt-4 pb-2">
         <% recurring_reservation = RecurringReservation.new(@reservation) %>
@@ -15,7 +15,7 @@
     <% end %>
     <%= render "edit_form_recurring_long", reservation: @reservation %>
   <% else %>
-    <h1>Editing Over-Night Reservation</h1>
+    <h1>Editing OverNight Reservation</h1>
     <%= render "edit_form_long", reservation: @reservation %>
   <% end %>
   <div>
