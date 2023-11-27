@@ -69,7 +69,7 @@ class ReservationMailer < ApplicationMailer
     else
       @cancel_message = "Your reservation was canceled."
     end
-    mail(to: @recipients, subject: @subject )
+    mail(to: @recipients, subject: @subject)
     create_email_log_records("Reservation", @reservation, recurring, @email_type, @recipients, user.id)
   end
 
@@ -106,7 +106,7 @@ class ReservationMailer < ApplicationMailer
     @name = passenger.name
     @email = email_address(passenger)
     subject_email_type_recurring_rule(@reservation, recurring, "passenger_removed")
-    mail(to: @email, subject: @subject )
+    mail(to: @email, subject: @subject)
     create_email_log_records("Reservation", @reservation, recurring, @email_type, @email, user.id)
   end
 
