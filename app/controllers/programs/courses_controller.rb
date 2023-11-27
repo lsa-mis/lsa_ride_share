@@ -28,7 +28,7 @@ class Programs::CoursesController < ApplicationController
   def create
     @course = Course.new(course_params)
     @course.program_id = @course_program.id
-    authorize([@course_program, @course]) 
+    authorize([@course_program, @course])
     if @course.save
       @course_program.update(not_course: false)
       @course = Course.new
