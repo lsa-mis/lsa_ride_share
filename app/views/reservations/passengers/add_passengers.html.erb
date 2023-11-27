@@ -74,6 +74,17 @@
       </p>
       <%= render "students" %>
     </div>
+    <% unless is_student?(current_user) %>
+      <div class="m-2">
+        <h3>
+          List of Managers
+        </h3>
+        <p class="body-sm-text mb-2">
+          Add managers to passenger list
+        </p>
+        <%= render 'managers' %>
+      </div>
+    <% end %>
     <div>
       <% if @reservation.program.non_uofm_passengers %>
         <%= render 'non_uofm_passengers' %>

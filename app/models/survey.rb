@@ -138,13 +138,18 @@ class Survey
       instructor = Manager.create(uniqname: @faculty_survey.uniqname, first_name: @faculty_survey.first_name, last_name: @faculty_survey.last_name)
     end
     program = Program.new(title: title, not_course: not_course,
-                subject: subject, catalog_number: catalog_number, class_section: class_section,
                 instructor_id: instructor.id,
                 term_id: @faculty_survey.term_id, unit_id: @faculty_survey.unit_id, updated_by: current_user.id,
                 number_of_students_using_ride_share: number_of_students_using_ride_share,
                 mvr_link: "https://ltp.umich.edu/fleet/vehicle-use/")
     if program.save(validate: false)
       instructor.update(program_id: program.id)
+      unless not_course
+        course = Course.new(subject: subject, catalog_number: catalog_number, class_section: class_section, program: program)
+        unless course.save
+          return false
+        end
+      end
       return program.id
     else 
       return false

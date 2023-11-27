@@ -6,6 +6,7 @@
           <td></td>
           <td></td>
           <th class="header_th">Registered</th>
+          <th class="header_th">Course</th>
           <th class="header_th">Uniqname</th>
           <th class="header_th">Last Name</th>
           <th class="header_th">First Name</th>
@@ -32,6 +33,9 @@
               <% if student.registered %>
                 <i class="fa-solid fa-check"></i>
               <% end %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= show_course(student) %>
             </td>
             <td class="mi_tbody_td">
               <%= student.uniqname %>

@@ -39,8 +39,8 @@ Rails.application.routes.draw do
   resources :reservations do
     resources :vehicle_reports, module: :reservations
   end
-  get '/reservations/get_available_cars/:unit_id/:day_start/:number/:start_time/:end_time', to: 'reservations#get_available_cars'
-  get '/reservations/get_available_cars_long/:unit_id/:day_start/:day_end/:number', to: 'reservations#get_available_cars_long'
+  get '/reservations/get_available_cars/:unit_id/:day_start/:number/:start_time/:end_time/:until_date', to: 'reservations#get_available_cars'
+  get '/reservations/get_available_cars_long/:unit_id/:day_start/:day_end/:number/:start_time/:end_time/:until_date', to: 'reservations#get_available_cars_long'
   get '/reservations/no_car_all_times/:unit_id/:day_start/:start_time/:end_time', to: 'reservations#no_car_all_times'
   get '/reservations/edit_change_day/:unit_id/:day_start/:start_time/:end_time', to: 'reservations#edit_change_day'
   get '/reservations/change_start_end_day/:unit_id/:day_start/:day_end/:start_time/:end_time', to: 'reservations#change_start_end_day'
@@ -52,7 +52,8 @@ Rails.application.routes.draw do
   get '/reservations/add_drivers/:id', to: 'reservations#add_drivers', as: :add_drivers
   patch '/reservations/add_edit_drivers/:id', to: 'reservations#add_edit_drivers', as: :add_edit_drivers
 
-  delete 'reservations/:reservation_id/:student_id', to: 'reservations/passengers#remove_passenger', as: :remove_passenger
+  delete 'reservations/:reservation_id/:id/:resource', to: 'reservations/passengers#remove_passenger', as: :remove_passenger
+
   get '/reservations/day_reservations/:date', to: 'reservations#day_reservations', as: :day_reservations
   get '/reservations/:id/add_drivers_later', to: 'reservations#add_drivers_later', as: :add_drivers_later
   get '/reservations/:id/finish_reservation', to: 'reservations#finish_reservation', as: :finish_reservation
@@ -91,6 +92,10 @@ Rails.application.routes.draw do
     resources :students, module: :programs
   end
 
+  resources :programs do
+    resources :courses, module: :programs
+  end
+
   resources :students do
     resources :notes, module: :students
   end
@@ -107,7 +112,6 @@ Rails.application.routes.draw do
   delete 'programs/remove_site/:id/:site_id', to: 'programs#remove_site', as: :remove_site
   delete 'programs/remove_config_question/:id/:config_question_id', to: 'programs#remove_config_question', as: :remove_config_question
   get 'programs/add_config_questions/:id/', to: 'programs#add_config_questions', as: :add_config_questions
-  get 'programs/program_data/:id/', to: 'programs#program_data', as: :program_data
 
   get 'application/delete_file_attachment/:id', to: 'application#delete_file_attachment', as: :delete_file
 

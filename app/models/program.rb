@@ -34,15 +34,14 @@ class Program < ApplicationRecord
   has_many :reservations
   belongs_to :unit
   belongs_to :term
+  has_many :courses
 
   accepts_nested_attributes_for :instructor
-
-  before_save :upcase_subject
+  accepts_nested_attributes_for :courses
 
   validates_presence_of :title, :instructor_id, :unit_id
-  validates_presence_of :subject, :catalog_number, :class_section, unless: -> { self.not_course }
-  validates :term_id, uniqueness: { scope: [:subject, :catalog_number, :class_section], message: "already has this program" }, unless: -> { self.not_course } 
-  validates :term_id, uniqueness: { scope: [:title], message: "already has this program" }, if: -> { self.not_course }
+  validates :term_id, uniqueness: { scope: [:title], message: "already has this program" }
+
 
   scope :current_term, -> { where(term_id: Term.current) }
   scope :data, ->(term_id) { term_id.present? ? where(term_id: term_id) : current_term }
@@ -73,23 +72,24 @@ class Program < ApplicationRecord
     options
   end
 
-  def upcase_subject
-    self.subject = subject.upcase
-  end
-
   def display_name
     if self.not_course
-      "Not a course - #{self.term.name}"
+      name = "Not a course - #{self.term.name}"
     else
-      "#{self.subject} #{self.catalog_number} - #{self.class_section} - #{self.term.name}"
+      name = ""
+      self.courses.each do |course|
+       name += course.display_name + "; "
+      end
+      name += "#{self.term.name}"
     end
+    return name
   end
 
   def display_name_with_title
     if self.not_course
       "#{self.title} - not a course - #{self.term.name}"
     else
-      "#{self.title} - #{self.subject} #{self.catalog_number} - #{self.class_section} - #{self.term.name}"
+      "#{self.title} - #{self.display_name}"
     end
   end
 
@@ -101,7 +101,7 @@ class Program < ApplicationRecord
     if self.not_course
       "#{self.unit.name} - #{self.title} - not a course - #{self.term.name}"
     else
-      "#{self.unit.name} - #{self.title} - #{self.subject} #{self.catalog_number} - #{self.class_section} - #{self.term.name}"
+      "#{self.unit.name} - #{self.title} - #{self.display_name}"
     end
   end
 

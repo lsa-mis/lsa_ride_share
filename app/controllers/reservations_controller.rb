@@ -52,7 +52,7 @@ class ReservationsController < ApplicationController
 
   # GET /reservations/1 or /reservations/1.json
   def show
-    @passengers = @reservation.passengers
+    @passengers = @reservation.passengers + @reservation.passengers_managers
     @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id).order(created_at: :desc)
     authorize @reservation
   end
@@ -60,6 +60,7 @@ class ReservationsController < ApplicationController
   # GET /reservations/new
   def new
     @reservation = Reservation.new
+    @term_id = Term.current[0].id
     authorize @reservation
     if is_student?(current_user)
       @program = Student.find(params[:student_id]).program
@@ -81,6 +82,9 @@ class ReservationsController < ApplicationController
     end
     if params[:term_id].present?
       @term_id = params[:term_id]
+    end
+    if @term_id.present? && @unit_id.present?
+      @programs = Program.where(unit_id: @unit_id, term: @term_id).order(:title, :catalog_number, :class_section)
     end
     if params[:car_id].present?
       @car_id = params[:car_id]
@@ -135,15 +139,26 @@ class ReservationsController < ApplicationController
     end
     if params[:start_time].present?
       @start_time = params[:start_time]
+      unless @day_start == @start_time.to_date
+        @start_time = combine_day_and_time(@day_start, @start_time)
+      end
     end
     if params[:end_time].present?
       @end_time = params[:end_time]
+      unless @day_start == @end_time.to_date
+        @end_time = combine_day_and_time(@day_start, @end_time)
+      end
     end
     if ((@end_time.to_datetime - @start_time.to_datetime) * 24 * 60).to_i > 30
       @reserv_begin = @start_time.to_datetime
       @reserv_end = @end_time.to_datetime
       range = @reserv_begin..@reserv_end
       @cars = available_cars(@cars, range)
+    end
+    if params[:until_date].present?
+      @until_date = params[:until_date]
+    else
+      @until_date = Term.current.pluck(:classes_end_date).min
     end
     authorize Reservation
   end
@@ -157,6 +172,18 @@ class ReservationsController < ApplicationController
     end
     if params[:day_end].present?
       @day_end = params[:day_end].to_date
+    end
+    if params[:start_time].present?
+      @start_time = params[:start_time]
+      unless @day_start == @start_time.to_date
+        @start_time = combine_day_and_time(@day_start, @start_time)
+      end
+    end
+    if params[:end_time].present?
+      @end_time = params[:end_time]
+      unless @day_end == @end_time.to_date
+        @end_time = combine_day_and_time(@day_end, @end_time)
+      end
     end
     if params[:number].present?
       @cars = @cars.where("number_of_seats >= ?", params[:number]).order(:car_number)
@@ -176,6 +203,11 @@ class ReservationsController < ApplicationController
       day_end_reservations = cars_reservations.where(start_time: day_end_begining..day_end_begining + 30.minute, end_time: day_end_begining..day_end_finish).pluck(:car_id)
       exclude_cars = (between_reservations + day_start_reservations + day_end_reservations + long_reservations).uniq
       @cars = @cars.where.not(id: exclude_cars)
+    end
+    if params[:until_date].present?
+      @until_date = params[:until_date]
+    else
+      @until_date = Term.current.pluck(:classes_end_date).min
     end
     authorize Reservation
   end
@@ -217,6 +249,7 @@ class ReservationsController < ApplicationController
     @reservation.start_time = (params[:start_time]).to_datetime - 15.minute
     @reservation.end_time = (params[:end_time]).to_datetime + 15.minute
     @reservation.number_of_people_on_trip = params[:number_of_people_on_trip]
+    @reservation.until_date = params[:until_date]
     @reservation.reserved_by = current_user.id
     authorize @reservation
     if @reservation.save
@@ -233,6 +266,7 @@ class ReservationsController < ApplicationController
       @car_id = params[:car_id]
       @start_time = params[:start_time]
       @end_time = params[:end_time]
+      @until_date = params[:until_date]
       @cars = list_of_available_cars(@unit_id, @day_start, @number_of_people_on_trip, @start_time, @end_time)
       render :new, status: :unprocessable_entity
     end
@@ -455,6 +489,11 @@ class ReservationsController < ApplicationController
       @students = @reservation.program.students.order(:last_name) - @passengers
       @students.delete(@reservation.driver)
       @students.delete(@reservation.backup_driver)
+      @passengers_managers = @reservation.passengers_managers
+      @managers = @reservation.program.managers.to_a
+      @managers << @reservation.program.instructor
+      @managers = @managers - @passengers_managers
+      @managers.delete(@reservation.driver_manager)
       format.turbo_stream { render :add_non_uofm_passenger }
     end
   end
@@ -529,6 +568,9 @@ class ReservationsController < ApplicationController
       create_cancel_emails
       if @reservation.passengers.present?
         @reservation.passengers.delete_all
+      end
+      if @reservation.passengers_managers.present?
+        @reservation.passengers_managers.delete_all
       end
       ReservationMailer.car_reservation_cancel_admin(@reservation, @cancel_passengers, @cancel_emails, current_user, recurring).deliver_now
       if @reservation.driver_id.present? || @reservation.driver_manager_id.present? 
@@ -704,18 +746,34 @@ class ReservationsController < ApplicationController
           end
           note = " " + field + " was removed from passengers list."
         end
+      else
+        manager = Manager.find(driver_id)
+        if @reservation.passengers_managers.include?(manager)
+          if recurring
+            recurring_reservation = RecurringReservation.new(reservation)
+            recurring_reservation.remove_passenger_following_reservations(manager)
+          else
+            reservation.passengers_managers.delete(manager)
+          end
+          note = " " + field + " was removed from passengers list."
+        end
       end
       return note
     end
 
     def create_cancel_emails
       students = @reservation.passengers
+      managers = @reservation.passengers_managers
       @cancel_passengers = []
       @cancel_emails = []
-      if students.present?
+      if students.present? || managers.present?
         students.each do |s|
           @cancel_passengers << s.name
           @cancel_emails << email_address(s)
+        end
+        managers.each do |m|
+          @cancel_passengers << m.name
+          @cancel_emails << email_address(m)
         end
       else
         @cancel_passengers = ["No passengers"]

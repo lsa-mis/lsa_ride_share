@@ -1,0 +1,36 @@
+<%= form_for [@course_program, course] do |form| %>
+  <% if course.errors.any? %>
+    <div id="error_explanation" class="text-red-umredum rounded-lg mt-3">
+      <h2><%= pluralize(course.errors.count, "error") %> prohibited this course from being saved:</h2>
+      <ul>
+        <% course.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <div>
+    <div class="my-5">
+      <%= form.label :subject, class: "fancy_label" %>
+      <%= form.text_field :subject, required: true, placeholder: "Subject", class: "input_text_field" %>
+    </div>
+
+    <div class="my-5">
+      <%= form.label :catalog_number, class: "fancy_label" %>
+      <%= form.text_field :catalog_number, required: true, placeholder: "Catalog Number", class: "input_text_field" %>
+    </div>
+
+    <div class="my-5">
+      <%= form.label :class_section, class: "fancy_label" %>
+      <%= form.text_field :class_section, required: true, placeholder: "Class Section", class: "input_text_field" %>
+    </div>
+
+  <div class="inline">
+    <%= form.submit "Update Courses", class: "secondary_blue_button" %>
+  </div>
+  <%= link_to program_courses_path do %>
+    <span class="tertiary_button">Cancel
+      <i class="fa fa-times" aria-hidden="true"></i>
+    </span>
+  <% end %>
+<% end %>

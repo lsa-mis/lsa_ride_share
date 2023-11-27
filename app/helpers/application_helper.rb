@@ -169,7 +169,7 @@ module ApplicationHelper
       reservation.driver.display_name
     elsif reservation.driver_manager.present?
       uniqname = Manager.find(reservation.driver_manager_id).uniqname
-      reservation.driver_manager.display_name + " " + show_manager(reservation.program, uniqname)
+      reservation.driver_manager.display_name + show_manager(reservation.program, uniqname)
     else
       tags = html_escape('') # initialize an html safe string we can append to
       tags << content_tag(:i, nil, class: "fa-solid fa-triangle-exclamation", style: "color:#c53030;")
@@ -240,23 +240,23 @@ module ApplicationHelper
 
   def show_manager(program, uniqname)
     if program.instructor.uniqname == uniqname
-      return "(instructor)"
+      return " (instructor)"
     elsif program.managers.pluck(:uniqname).include?(uniqname)
-      return "(manager)"
+      return " (manager)"
     else
       return ""
     end
   end
 
   def show_reservation_date(reservation)
-    show_date_time(reservation.start_time) + " - " +  show_date_time(reservation.end_time)
+    show_date_time(reservation.start_time) + " - " + show_date_time(reservation.end_time)
   end
 
   def show_day_reservation_time(reservation)
     if reservation.start_time.to_date == reservation.end_time.to_date 
-      show_time(reservation.start_time + 15.minute) + " - " +  show_time(reservation.end_time - 15.minute)
+      show_time(reservation.start_time + 15.minute) + " - " + show_time(reservation.end_time - 15.minute)
     else
-      show_date_time(reservation.start_time + 15.minute) + " - " +  show_date_time(reservation.end_time - 15.minute)
+      show_date_time(reservation.start_time + 15.minute) + " - " + show_date_time(reservation.end_time - 15.minute)
     end
   end
   
@@ -292,13 +292,16 @@ module ApplicationHelper
     else
       backup_driver = "No backup driver selected"
     end
-    if reservation.passengers.present?
+    if reservation.passengers.present? || reservation.passengers_managers.present?
       passengers = "Passengers: "
       reservation.passengers.each do |passenger|
         passengers += passenger.display_name + "\n"
       end
+      reservation.passengers_managers.each do |passenger|
+        passengers += passenger.display_name + show_manager(reservation.program, passenger.uniqname) + "\n"
+      end
     else
-      passengers = "No passengerds"
+      passengers = "No passengers"
     end
     if reservation.program.non_uofm_passengers && reservation.non_uofm_passengers.present?
       non_uofm_passengers = reservation.number_of_non_uofm_passengers.to_s + " Non UofM Passenge(s): " + reservation.non_uofm_passengers
@@ -446,6 +449,18 @@ module ApplicationHelper
     "#{time.strftime("%I:%M%p")}"
   end
 
+  def combine_day_and_time(day, time)
+    # pass in a date and time or strings
+    day = Date.parse(day) if day.is_a? String 
+    time = Time.parse(time) if time.is_a? String
+    if (day.to_time + 2.hour).dst?
+      new_time = DateTime.new(day.year, day.month, day.day, time.hour, time.min, time.sec, 'EDT')
+    else
+      new_time = DateTime.new(day.year, day.month, day.day, time.hour, time.min, time.sec, 'EST')
+    end
+    return new_time
+  end
+
   def available?(car, range)
     day = range.begin.to_date
     day_reservations = car.reservations.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day).order(:start_time)
@@ -463,8 +478,11 @@ module ApplicationHelper
     # all day time renges for unit
     times = show_time_begin_end(day, unit_id)
     day_begin = times[0]
+    if day_begin < DateTime.now
+      day_begin = Time.at(((DateTime.now + 450.second).to_f / 15.minute).round * 15.minute).to_datetime
+    end
     day_end = times[1]
-    day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) }
+    day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t).to_datetime }
     available_times_begin = day_times_with_15_min_steps.map { |t| [show_time(t), t.to_s] }
     available_times_begin.pop
     available_times_end = day_times_with_15_min_steps.map { |t| [show_time(t), t.to_s] }
@@ -481,8 +499,11 @@ module ApplicationHelper
     # array of time with 15 minutes step available to reserve cars
     times = show_time_begin_end(day, unit_id)
     day_begin = times[0]
+    if day_begin < DateTime.now
+      day_begin = Time.at(((DateTime.now + 450.second).to_f / 15.minute).round * 15.minute).to_datetime
+    end
     day_end = times[1]
-    day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) }
+    day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t).to_datetime }
     available_times_begin = []
     available_times_end = []
 
@@ -665,6 +686,14 @@ module ApplicationHelper
     return "Passenger Side *" if image_field_name == "image_passenger_end"
     return "Back of Car *" if image_field_name == "image_back_end"
     return ""
+  end
+
+  def show_course(student)
+    if student.course.present?
+      student.course.display_name
+    else
+      ""
+    end
   end
 
   def us_states

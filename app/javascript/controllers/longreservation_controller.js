@@ -3,7 +3,8 @@ import { get } from "@rails/request.js"
 
 export default class extends Controller {
   static targets = ['unit',
-    'day_start', 'day_end', 'number', 'start_time', 'end_time', 'selected_time_error', 'car', 'car_selection', 'car_field']
+    'day_start', 'day_end', 'number', 'start_time', 'end_time', 'selected_time_error',
+    'car', 'car_selection', 'car_field', 'until_date']
 
   connect() {
     console.log("connect - long reservation")
@@ -20,6 +21,7 @@ export default class extends Controller {
     let start_time_format = new Date(start_time)
     let end_time_format = new Date(end_time)
     let diff_time = parseInt(end_time_format - start_time_format)/60000;
+    let until_date = this.until_dateTarget.value
 
     let time_field_error = document.getElementById('time_field')
     let car_field_error = document.getElementById('car_field')
@@ -34,7 +36,7 @@ export default class extends Controller {
       time_field_error.innerHTML = ''
     }
 
-    get(`/reservations/get_available_cars_long/${unit_id}/${day_start}/${day_end}/${number}/`, {
+    get(`/reservations/get_available_cars_long/${unit_id}/${day_start}/${day_end}/${number}/${start_time}/${end_time}/${until_date}`, {
       responseKind: "turbo-stream"
     })
 

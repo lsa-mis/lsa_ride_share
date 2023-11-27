@@ -1,10 +1,10 @@
-<div class="flex flex-row items-end gap-4 m-2">
+<div class="flex flex-row items-end gap-4 my-2">
   <div>
-    <h2>Program Managers</h2>
+    <h2>Managers</h2>
   </div>
   <div>
     <% if is_admin?(current_user) %>
-      <%= link_to edit_program_managers_path(@program) do %>
+      <%= link_to edit_program_managers_path(@program), data: { "turbo-frame": "_top" }  do %>
         <span class="tertiary_button">
           Edit Program Managers
         <i class="fa-solid fa-pen" aria-hidden="true"></i>
