@@ -17,6 +17,8 @@
 class Manager < ApplicationRecord
   has_many :managers_programs
   has_many :programs, through: :managers_programs
+  has_many :reservation_passengers_managers
+  has_many :passengers_managers, through: :reservation_passengers_managers, source: :reservation
 
   validates :uniqname, uniqueness: true
 
@@ -65,15 +67,18 @@ class Manager < ApplicationRecord
   end
 
   def reservations_current
-    Reservation.no_or_not_complete_vehicle_reports.where('(reserved_by = ? OR driver_manager_id = ?)', User.find_by(uniqname: self.uniqname), self.id)
+    Reservation.no_or_not_complete_vehicle_reports.joins(:passengers_managers).where("reservation_passengers_managers.manager_id = ?", self).
+    or(Reservation.no_or_not_complete_vehicle_reports.where('(reserved_by = ? OR driver_manager_id = ?)', User.find_by(uniqname: self.uniqname), self.id))
   end
 
   def reservations_past
-    Reservation.complete_vehicle_reports.where('(reserved_by = ? OR driver_manager_id = ?)', User.find_by(uniqname: self.uniqname), self.id)
+    Reservation.complete_vehicle_reports.joins(:passengers_managers).where("reservation_passengers_managers.manager_id = ?", self).
+    or(Reservation.complete_vehicle_reports.where('(reserved_by = ? OR driver_manager_id = ?)', User.find_by(uniqname: self.uniqname), self.id))
   end
 
   def reservations_future
-    Reservation.current_term.where('(reserved_by = ? OR driver_manager_id = ?) AND start_time > ?', User.find_by(uniqname: self.uniqname), self.id, Date.today.end_of_day)
+    Reservation.joins(:passengers_managers).where("reservation_passengers_managers.manager_id = ? AND date_trunc('day', start_time) > ?", self, Date.today).
+    or(Reservation.joins(:passengers_managers).where('(reserved_by = ? OR driver_manager_id = ?) AND start_time > ?', User.find_by(uniqname: self.uniqname), self.id, Date.today.end_of_day))
   end
 
   def display_name
