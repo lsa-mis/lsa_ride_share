@@ -3,15 +3,17 @@
   <div class="md:flex justify-between items-center whitespace-nowrap pb-4">
     <h1>Reservations</h1>
     <div class="mt-2">
-      <%= link_to new_reservation_path(:unit_id => @unit_id, :day_start => Date.today) do %>
-        <span class="secondary_blue_button mr-2">
-          New One Day Reservation
-        </span>
-      <% end %>
-      <%= link_to new_long_reservation_path(:unit_id => @unit_id, :day_start => Date.today) do %>
-        <span class="secondary_blue_button">
-          New Over-Night Reservation
-        </span>
+      <% if @unit_id.present? %>
+        <%= link_to new_reservation_path(:unit_id => @unit_id, :day_start => Date.today) do %>
+          <span class="secondary_blue_button mr-2">
+            One Day Reservation
+          </span>
+        <% end %>
+        <%= link_to new_long_reservation_path(:unit_id => @unit_id, :day_start => Date.today) do %>
+          <span class="secondary_blue_button">
+            Overnight Reservation
+          </span>
+        <% end %>
       <% end %>
     </div>
   </div>
@@ -29,23 +31,25 @@
     <% end %>
   <% end %>
   <div class="mb-2">
-    <div class="md:flex justify-between items-center whitespace-nowrap pb-4">
-      <%= link_to 'Week Calendar', week_calendar_path(:unit_id => @unit_id), class: "secondary_blue_button" %>
-      <div class="my-2 md:flex gap-4 items-center whitespace-nowrap pr-4">
-        <div>
-          <i class="fa-solid fa-circle-check" style="color:#024794"></i>
-          <span> - approved </span>
-        </div>
-        <div>
-        <i class="fa fa-repeat" aria-hidden="true" style="color:#024794"></i>
-          <span> - recurring </span>
-        </div>
-        <div>
-          <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
-          <span> - no car/no driver </span>
+    <% if @unit_id.present? %>
+      <div class="md:flex justify-between items-center whitespace-nowrap pb-4">
+        <%= link_to 'Week Calendar', week_calendar_path(:unit_id => @unit_id), class: "secondary_blue_button" %>
+        <div class="my-2 md:flex gap-4 items-center whitespace-nowrap pr-4">
+          <div>
+            <i class="fa-solid fa-circle-check" style="color:#024794"></i>
+            <span> - approved </span>
+          </div>
+          <div>
+          <i class="fa fa-repeat" aria-hidden="true" style="color:#024794"></i>
+            <span> - recurring </span>
+          </div>
+          <div>
+            <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
+            <span> - no car/no driver </span>
+          </div>
         </div>
       </div>
-    </div>
+    <% end %>
   </div>
 
   <%= turbo_frame_tag 'unit-calendar' do %>
@@ -113,7 +117,7 @@
           </div>
         <% end %>
         <div class="">
-          <% if date >= Date.today %>
+          <% if date >= Date.today && @unit_id.present? %>
             <%= link_to new_reservation_path(:unit_id => @unit_id, :day_start => date), data: {turbo_frame: "_top"} do %>
               <i class="fa fa-plus" aria-hidden="true"></i>
               <span class="tertiary_button -m-4">
@@ -125,7 +129,7 @@
             <%= link_to new_long_reservation_path(:unit_id => @unit_id, :day_start => date), data: {turbo_frame: "_top"} do %>
               <i class="fa fa-plus" aria-hidden="true"></i>
               <span class="tertiary_button -m-4">
-                Over-Night Reservation
+                Overnight Reservation
               </span>
             <% end %>
           <% end %>

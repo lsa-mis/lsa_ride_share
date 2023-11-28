@@ -104,7 +104,7 @@ class ReservationsController < ApplicationController
     if params[:day_end].present?
       @day_end = params[:day_end].to_date
     else
-      @day_end = @day_start
+      @day_end = @day_start + 1.day
     end
     @reservation.end_time = @day_end
   end
@@ -172,6 +172,9 @@ class ReservationsController < ApplicationController
     end
     if params[:day_end].present?
       @day_end = params[:day_end].to_date
+      if @day_start > @day_end
+        @day_end = @day_start + 1.day
+      end
     end
     if params[:start_time].present?
       @start_time = params[:start_time]
