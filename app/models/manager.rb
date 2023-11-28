@@ -66,19 +66,28 @@ class Manager < ApplicationRecord
     where.not(meeting_with_admin_date: nil) 
   end
 
-  def reservations_current
-    Reservation.no_or_not_complete_vehicle_reports.joins(:passengers_managers).where("reservation_passengers_managers.manager_id = ?", self).
-    or(Reservation.no_or_not_complete_vehicle_reports.where('(reserved_by = ? OR driver_manager_id = ?)', User.find_by(uniqname: self.uniqname), self.id))
+  def passenger_current
+    Reservation.no_or_not_complete_vehicle_reports.joins(:passengers_managers).where("reservation_passengers_managers.manager_id = ?", self)
   end
 
-  def reservations_past
-    Reservation.complete_vehicle_reports.joins(:passengers_managers).where("reservation_passengers_managers.manager_id = ?", self).
-    or(Reservation.complete_vehicle_reports.where('(reserved_by = ? OR driver_manager_id = ?)', User.find_by(uniqname: self.uniqname), self.id))
+  def passenger_past
+    Reservation.complete_vehicle_reports.joins(:passengers_managers).where("reservation_passengers_managers.manager_id = ?", self)
   end
 
-  def reservations_future
-    Reservation.joins(:passengers_managers).where("reservation_passengers_managers.manager_id = ? AND date_trunc('day', start_time) > ?", self, Date.today).
-    or(Reservation.joins(:passengers_managers).where('(reserved_by = ? OR driver_manager_id = ?) AND start_time > ?', User.find_by(uniqname: self.uniqname), self.id, Date.today.end_of_day))
+  def passenger_future
+    Reservation.joins(:passengers_managers).where("reservation_passengers_managers.manager_id = ? AND date_trunc('day', start_time) > ?", self, Date.today)
+  end
+
+  def reserved_by_or_driver_current
+    Reservation.no_or_not_complete_vehicle_reports.where('(reserved_by = ? OR driver_manager_id = ?)', User.find_by(uniqname: self.uniqname), self.id)
+  end
+
+  def reserved_by_or_driver_past
+    Reservation.complete_vehicle_reports.where('(reserved_by = ? OR driver_manager_id = ?)', User.find_by(uniqname: self.uniqname), self.id)
+  end
+
+  def reserved_by_or_driver_future
+    Reservation.current_term.where('(reserved_by = ? OR driver_manager_id = ?) AND start_time > ?', User.find_by(uniqname: self.uniqname), self.id, Date.today.end_of_day)
   end
 
   def display_name
