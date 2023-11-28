@@ -38,13 +38,23 @@ module StudentApi
     request["accept"] = 'application/json'
 
     response = http.request(request)
-    response_json = JSON.parse(response.read_body)
-    if response_json['errorCode'].present?
-      result['errorcode'] = response_json['errorCode']
-      result['error'] = response_json['errorMessage']
+    if response.is_a?(Net::HTTPSuccess)
+      response_json = JSON.parse(response.read_body)
+      if response_json['errorCode'].present?
+        result['errorcode'] = response_json['errorCode']
+        result['error'] = response_json['errorMessage']
+      else
+        result['success'] = true
+        result['data'] = response_json['getClassMembersOperResponse']
+      end
     else
-      result['success'] = true
-      result['data'] = response_json['getClassMembersOperResponse']
+      if response.is_a?(Net::HTTPGatewayTimeout)
+        result['errorcode'] = "GatewayTimeout Error accessing Students Roster"
+        result['error'] = "Please try again later"
+      else
+        result['errorcode'] = "Error accessing Class Roster"
+        result['error'] = "Please try again later. "
+      end
     end
     return result
   end

@@ -7,8 +7,10 @@ class Programs::StudentsController < ApplicationController
 
   # GET /students or /students.json
   def index
-    unless @student_program.not_course
-      update_students(@student_program)
+    unless params[:update] == "false"
+      unless @student_program.not_course
+        update_students(@student_program)
+      end
     end
     authorize @students
   end

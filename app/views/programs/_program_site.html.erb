@@ -6,7 +6,11 @@
     <% if policy(@program).edit? %> 
       <%= link_to edit_program_sites_path(@program), data: { "turbo-frame": "_top" }  do %>
         <span class="tertiary_button" %>
-          Edit Sites
+          <% if @program.sites.present? %>
+            Edit Sites
+          <% else %>
+            Add Sites
+          <% end %>
           <i class="fa-solid fa-pen" aria-hidden="true"></i>
         </span>
       <% end %>
