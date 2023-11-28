@@ -115,8 +115,8 @@ class ReservationsController < ApplicationController
     @unit_id = @reservation.program.unit.id
     @term_id = @reservation.program.term.id
     @car_id = @reservation.car_id
-    @start_time = (@reservation.start_time + 15.minute).to_s
-    @end_time = (@reservation.end_time - 15.minute).to_s
+    @start_time = (@reservation.start_time + 15.minute).to_datetime.to_s
+    @end_time = (@reservation.end_time - 15.minute).to_datetime.to_s
     @number_of_people_on_trip = @reservation.number_of_people_on_trip
     @cars = Car.available.where(unit_id: @unit_id).order(:car_number)
     @sites = @reservation.program.sites
