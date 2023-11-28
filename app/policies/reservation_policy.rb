@@ -113,7 +113,7 @@ class ReservationPolicy < ApplicationPolicy
     end
     if is_manager?
       manager = Manager.find_by(uniqname: @user.uniqname)
-      return @record.driver_manager == manager || is_reserved_by?
+      return @record.driver_manager == manager || is_reserved_by? || @record.passengers_managers.include?(manager)
     end
     return false
   end
