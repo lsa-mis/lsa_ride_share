@@ -11,8 +11,8 @@ export default class extends Controller {
   }
 
   changePrograms() {
-    let unit =this.unitTarget.value
-    let term =this.termTarget.value
+    let unit = this.unitTarget.value
+    let term = this.termTarget.value
     if (unit && term) {
       fetch(`/programs/get_programs_list/${unit}/${term}`)
         .then((response) => response.json())
