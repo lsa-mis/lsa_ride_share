@@ -49,6 +49,8 @@ Rails.application.routes.draw do
   get '/reservations/add_passengers/:reservation_id', to: 'reservations/passengers#add_passengers', as: :add_passengers
   get '/reservations/add_passenger/:reservation_id', to: 'reservations/passengers#add_passenger', as: :add_passenger
 
+  get '/reservations/get_drivers_list/:id/:driver_id', to: 'reservations#get_drivers_list', as: :get_drivers_list
+
   get '/reservations/add_drivers/:id', to: 'reservations#add_drivers', as: :add_drivers
   patch '/reservations/add_edit_drivers/:id', to: 'reservations#add_edit_drivers', as: :add_edit_drivers
 

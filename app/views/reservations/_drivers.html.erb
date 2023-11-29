@@ -25,6 +25,7 @@
     </p>
   <% end %>
   <input type="hidden" id="number_of_passengers" name="number_of_passengers" value=<%= @reservation.passengers.count %> data-driver-target="number_of_passengers">
+  <input type="hidden" id="reservation_id" name="reservation_id" value=<%= @reservation.id %> data-driver-target="reservation_id">
   <% if is_student?(current_user) || is_manager?(current_user) %>
     <div class="mt-2">
       <label class="body-lg-bold-text">
@@ -53,7 +54,7 @@
     <div class="my-5">
       <label for="driver_id" class="fancy_label">Driver *</label>
       <%= select_tag :driver_id, options_for_select(@all_drivers, selected: @driver), include_blank: "Select ...", class: "input_text_field",
-        "data-driver-target": "driver" %>
+        "data-driver-target": "driver", :"data-action" => "change->driver#editBackupDriversList" %>
     </div>
   <% end %>
 

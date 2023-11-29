@@ -1,7 +1,8 @@
 class ReservationsController < ApplicationController
   before_action :auth_user
   before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger 
-    finish_reservation update_passengers send_reservation_updated_email cancel_recurring_reservation add_drivers_later approve_all_recurring edit_long add_edit_drivers]
+    finish_reservation update_passengers send_reservation_updated_email cancel_recurring_reservation 
+    add_drivers_later approve_all_recurring edit_long add_edit_drivers get_drivers_list]
   before_action :set_terms_and_units
   before_action :set_programs
   before_action :set_cars, only: %i[ new new_long get_available_cars get_available_cars_long ]
@@ -502,7 +503,7 @@ class ReservationsController < ApplicationController
   end
 
   def add_drivers
-    @backup_drivers = @reservation.program.students.eligible_drivers
+    @backup_drivers = @reservation.program.students.eligible_drivers.reject{ |backup_driver| backup_driver ==  @reservation.driver}
     @all_drivers = list_of_drivers(@reservation)
     @passengers = @reservation.passengers
     @driver = reservation_driver(@reservation)
@@ -515,6 +516,19 @@ class ReservationsController < ApplicationController
         @reservation.update(driver_manager_id: driver_manager.id)
       end
     end
+  end
+
+  def get_drivers_list
+    driver_type = params["driver_type"]
+    driver_id = params["driver_id"]
+    if driver_id == "0"
+      backup_drivers = @reservation.program.students.eligible_drivers
+    else
+      backup_drivers = @reservation.program.students.eligible_drivers.reject{ |backup_driver| backup_driver == Student.find(driver_id)}
+    end
+      backup_drivers = backup_drivers.map { |bd| [bd.display_name, bd.id] }
+    render json: backup_drivers
+    authorize Reservation
   end
 
   def add_drivers_later
