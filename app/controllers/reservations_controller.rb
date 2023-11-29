@@ -92,6 +92,13 @@ class ReservationsController < ApplicationController
     end
     if params[:start_time].present?
       @start_time = params[:start_time]
+    elsif @day_start == Date.today
+      times = show_time_begin_end(@day_start, @unit_id)
+      @start_time = times[0]
+      if @start_time < DateTime.now
+        @start_time = Time.at(((DateTime.now + 450.second).to_f / 15.minute).round * 15.minute).to_datetime
+        @end_time = @start_time + 15.minute
+      end
     end
     if is_admin?(current_user)
       @sites = []
@@ -173,7 +180,7 @@ class ReservationsController < ApplicationController
     end
     if params[:day_end].present?
       @day_end = params[:day_end].to_date
-      if @day_start > @day_end
+      if @day_start >= @day_end
         @day_end = @day_start + 1.day
       end
     end
