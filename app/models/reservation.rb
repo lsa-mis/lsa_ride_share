@@ -65,12 +65,6 @@ class Reservation < ApplicationRecord
   scope :no_or_not_complete_vehicle_reports, -> { Reservation.with_not_complete_vehicle_reports.or(Reservation.with_no_vehicle_reports) }
   scope :complete_vehicle_reports, -> { current_term.where(vehicle_report: {student_status: true}) }
 
-  def reservation_date
-    start_d = start_time.present? ? start_time.strftime("%m/%d/%Y %I:%M%p") : ''
-    end_d = end_time.present? ? end_time.strftime("%m/%d/%Y %I:%M%p") : ''
-    "#{start_d} - #{end_d}"
-  end
-
   def display_name
     if self.car_id.present?
       "car - #{self.car.car_number}"
