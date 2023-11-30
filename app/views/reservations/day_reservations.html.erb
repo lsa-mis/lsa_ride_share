@@ -31,7 +31,7 @@
           <% @day_reservations.each do |reservation| %>
             <tr>
               <td class="mi_tbody_td">
-                <%= link_to show_day_reservation_time(reservation), reservation_path(reservation), class: "link_to", data: { "turbo-frame": "_top" } %>
+                <%= link_to show_reservation_time(reservation), reservation_path(reservation), class: "link_to", data: { "turbo-frame": "_top" } %>
               </td>
               <td class="mi_tbody_td">
                 <% if reservation.car.present? %>

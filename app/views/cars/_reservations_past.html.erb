@@ -18,7 +18,7 @@
         <% @reservations_past.each do |reservation| %>
           <tr class="mi_tbody_tr">
             <td class="mi_tbody_td">
-              <%= link_to reservation.reservation_date, reservation_path(reservation.id), class: "link_to", data: { "turbo-frame": "_top" } %>
+              <%= link_to show_reservation_time(reservation), reservation_path(reservation.id), class: "link_to", data: { "turbo-frame": "_top" } %>
             </td>
             <td class="mi_tbody_td">
               <%= reservation.site.title %>
