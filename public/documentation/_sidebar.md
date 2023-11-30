@@ -2,6 +2,7 @@
 - [Understanding Access Roles](understanding_user_roles.md)
 - [LSA RideShare Integrations](rideshare_integrations.md)
 - [Application Administration](app_admin.md)
+- [LSA RideShare Programs](rideshare_programs.md)
 - [System Reports](system_reports.md)
 - [Email Notifications](email_notifications.md)
 - [Additional Assistance](additional_assistance.md)
