@@ -1,26 +1,29 @@
 <div class="mx-auto w-full">
   <% if params["edit"] %>
     <h1>Edit Driver and Backup Driver</h1>
+  <% else %>
+    <h1>Add Driver and Backup Driver</h1>
+  <% end %>
+    <div">
+      <p class="body-lg-bold-text">
+        <%= @reservation.program.display_name_with_title %>
+      </p>
+      <p class="body-lg-medium-text inline">
+        <%= @reservation.display_name %> reservation on <%= show_reservation_time(@reservation) %>
+      </p>
+    </div>
     <% if params["recurring"] == "true" %>
-      <h2>for This and Following Recurring Reservations</h2>
-      <div class="pt-4 pb-2">
+      <div class="mb-2">
         <% recurring_reservation = RecurringReservation.new(@reservation) %>
         <p class="body-lg-bold-text inline">
           Recurring:
         </p>
-        <p class="body-lg-text ml-2 inline">
+        <p class="body-lg-text inline">
           Start on <%= show_date(@reservation.start_time) %>
           <%= recurring_reservation.first_reservation.rule.to_s %>
         </p>
       </div>
     <% end %>
-  <% else %>
-    <h1>Add Driver and Backup Driver</h1>
-  <% end %>
-  <h2>
-    <%= @reservation.program.unit.name %>
-    <%= @reservation.program.display_name_with_title %>
-  </h2>
   <h3 class="my-2">
     List of Students Who are Eligible to Drive
   </h3>
