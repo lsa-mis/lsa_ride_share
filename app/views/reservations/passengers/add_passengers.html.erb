@@ -7,20 +7,20 @@
         <h1>Add Passengers</h1>
       <% end %>
       <div>
-        <p class="body-lg-bold-text">
+        <h3>
           <%= @reservation.program.display_name_with_title %>
-        </p>
-        <p class="body-lg-medium-text inline">
+        </h3>
+        <p class="body-sm-medium-text inline">
           <%= @reservation.display_name %> reservation on <%= show_reservation_time(@reservation) %>
         </p>
       </div>
       <% if params["recurring"] == "true" %>
         <div class="mb-2">
           <% recurring_reservation = RecurringReservation.new(@reservation) %>
-          <p class="body-lg-bold-text inline">
+          <p class="body-sm-bold-text inline">
             Recurring:
           </p>
-          <p class="body-lg-text inline">
+          <p class="body-sm-text inline">
             Start on <%= show_date(@reservation.start_time) %>
             <%= recurring_reservation.first_reservation.rule.to_s %>
           </p>
@@ -30,7 +30,7 @@
     <div class="mt-4 whitespace-nowrap">
       <% if params["edit"] == "true" %>
         <div class="lg:flex lg:flex-col place-items-end whitespace-nowrap">
-          <%= link_to "Update Passengers", update_passengers_path(@reservation, :recurring => params[:recurring]), class: "primary_button mb-4" %>
+          <%= link_to "Update Reservation", update_passengers_path(@reservation, :recurring => params[:recurring]), class: "primary_button mb-4" %>
           <%= link_to reservation_path(@reservation) do %>
             <span class="tertiary_button">Cancel
               <i class="fa fa-times" aria-hidden="true"></i>
@@ -38,7 +38,7 @@
           <% end %>
         </div>
       <% else %>
-        <%= link_to "Finish Reservation", finish_reservation_path(@reservation), class: "primary_button" %>
+        <%= link_to "Finish Creating Reservation", finish_reservation_path(@reservation), class: "primary_button" %>
       <% end %>
     </div>
   </div>
