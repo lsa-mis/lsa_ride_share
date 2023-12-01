@@ -5,27 +5,27 @@
     <h1>Add Driver and Backup Driver</h1>
   <% end %>
     <div">
-      <p class="body-lg-bold-text">
+      <h3>
         <%= @reservation.program.display_name_with_title %>
-      </p>
-      <p class="body-lg-medium-text inline">
+      </h3>
+      <p class="body-sm-text inline">
         <%= @reservation.display_name %> reservation on <%= show_reservation_time(@reservation) %>
       </p>
     </div>
     <% if params["recurring"] == "true" %>
       <div class="mb-2">
         <% recurring_reservation = RecurringReservation.new(@reservation) %>
-        <p class="body-lg-bold-text inline">
+        <p class="body-sm-bold-text inline">
           Recurring:
         </p>
-        <p class="body-lg-text inline">
+        <p class="body-sm-text inline">
           Start on <%= show_date(@reservation.start_time) %>
           <%= recurring_reservation.first_reservation.rule.to_s %>
         </p>
       </div>
     <% end %>
   <h3 class="my-2">
-    List of Students Who are Eligible to Drive
+    Students Eligible to Drive
   </h3>
   <%= turbo_frame_tag 'drivers' do %>
     <%= render "drivers" %>

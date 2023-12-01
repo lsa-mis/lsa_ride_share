@@ -6,34 +6,31 @@
       <% else %>
         <h1>Add Passengers</h1>
       <% end %>
-        <div>
-          <p class="body-lg-bold-text">
-            <%= @reservation.program.display_name_with_title %>
+      <div>
+        <h3>
+          <%= @reservation.program.display_name_with_title %>
+        </h3>
+        <p class="body-sm-text inline">
+          <%= @reservation.display_name %> reservation on <%= show_reservation_time(@reservation) %>
+        </p>
+      </div>
+      <% if params["recurring"] == "true" %>
+        <div class="mb-2">
+          <% recurring_reservation = RecurringReservation.new(@reservation) %>
+          <p class="body-sm-bold-text inline">
+            Recurring:
           </p>
-          <p class="body-lg-medium-text inline">
-            <%= @reservation.display_name %> reservation on <%= show_reservation_time(@reservation) %>
+          <p class="body-sm-text inline">
+            Start on <%= show_date(@reservation.start_time) %>
+            <%= recurring_reservation.first_reservation.rule.to_s %>
           </p>
         </div>
-        <% if params["recurring"] == "true" %>
-          <div class="mb-2">
-            <% recurring_reservation = RecurringReservation.new(@reservation) %>
-            <p class="body-lg-bold-text inline">
-              Recurring:
-            </p>
-            <p class="body-lg-text inline">
-              Start on <%= show_date(@reservation.start_time) %>
-              <%= recurring_reservation.first_reservation.rule.to_s %>
-            </p>
-          </div>
-        <% end %>
-        <p class="body-sm-text mt-2">
-          Click on the Go Back to Reservation Page button after editing
-        </p>
+      <% end %>
     </div>
     <div class="mt-4 whitespace-nowrap">
       <% if params["edit"] == "true" %>
         <div class="lg:flex lg:flex-col place-items-end whitespace-nowrap">
-          <%= link_to "Go Back to Reservation Page", update_passengers_path(@reservation, :recurring => params[:recurring]), class: "primary_button mb-4" %>
+          <%= link_to "Update Reservation", update_passengers_path(@reservation, :recurring => params[:recurring]), class: "primary_button mb-4" %>
           <%= link_to reservation_path(@reservation) do %>
             <span class="tertiary_button">Cancel
               <i class="fa fa-times" aria-hidden="true"></i>
