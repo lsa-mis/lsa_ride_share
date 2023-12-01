@@ -67,8 +67,8 @@ module StudentApi
         if result['success']
           if result['data']['Classes']['Class']['ClassSections']['ClassSection']['ClassStudents'].present?
             data = result['data']['Classes']['Class']['ClassSections']['ClassSection']['ClassStudents']['ClassStudent']
-            students_in_db_registered = @student_program.students.registered.where(course_id: course.id).pluck(:uniqname)
-            students_in_db_added_manually = @student_program.students.added_manually.pluck(:uniqname)
+            students_in_db_registered = program.students.registered.where(course_id: course.id).pluck(:uniqname)
+            students_in_db_added_manually = program.students.added_manually.pluck(:uniqname)
             data.each do |student_info|
               uniqname = student_info['Uniqname']
               if students_in_db_registered.include?(uniqname)
@@ -89,7 +89,7 @@ module StudentApi
             if students_in_db_registered.present?
               # delete students who dropped the course
               students_in_db_registered.each do |uniqname|
-                student = Student.find_by(uniqname: students_in_db_registered, program_id: @student_program, course_id: course.id)
+                student = Student.find_by(uniqname: students_in_db_registered, program_id: program, course_id: course.id)
                 if student.reservations.present?
                   student.update(registered: false, course_id: nil)
                 else
@@ -105,7 +105,7 @@ module StudentApi
           alert += "#{course.display_name}: " + result['errorcode'] + ": " + result['error']
         end
       end
-      unless @student_program.update(number_of_students: @student_program.students.count)
+      unless program.update(number_of_students: program.students.count)
         flash[:alert] = "Error updating number of students."
       end
       flash.now[:notice] = notice
