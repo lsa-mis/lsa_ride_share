@@ -542,12 +542,11 @@ module ApplicationHelper
   end
 
   def allow_user_to_cancel_reservation?(reservation)
-    return false if reservation.approved
     return true if is_admin?(current_user)
-    if User.find(reservation.reserved_by) == current_user
-      return true if allow_student_to_edit_drivers?(reservation) || allow_manager_to_edit_drivers?(reservation)
+    if reservation.end_time < Date.today.beginning_of_day
+      false
     else
-      return false
+      true
     end
   end
 
