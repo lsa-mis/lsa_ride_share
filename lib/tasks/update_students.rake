@@ -13,7 +13,7 @@ task update_students: :environment do
     api.update_students(program, @log)
   end
 
-  @log.api_logger.info "Update MVR status ***********************************"
+  @log.api_logger.info "Update students MVR status ***********************************"
   programs = Program.current_term.where(not_course: false)
   programs.each do |program|
     program.students.each do |student|
@@ -21,6 +21,13 @@ task update_students: :environment do
       student.update(mvr_status: status)
     end
     @log.api_logger.info "#{program.title} program updated"
+  end
+
+  @log.api_logger.info "Update managers MVR status ***********************************"
+  managers = Managers.all
+  managers.each do |manager|
+    status = api.mvr_status(manager.uniqname)
+    manager.update(mvr_status: status)
   end
 
 end
