@@ -1,4 +1,4 @@
-module StudentApi
+class UpdateStudentsApi
   require 'uri'
   require 'net/http'
 
@@ -54,7 +54,7 @@ module StudentApi
     return result
   end
 
-  def update_students(program)
+  def update_students(program, log)
     # add new students and delete those who dropped the course
     scope = "classroster"
     token = get_auth_token(scope)
@@ -75,13 +75,13 @@ module StudentApi
                 students_in_db_registered.delete(uniqname)
               elsif students_in_db_added_manually.include?(uniqname)
                 unless Student.find_by(uniqname: student_info['Uniqname'], program: program, course: nil).update(registered: true, course: course)
-                  flash.now[:alert] = "#{course.display_name}: Error updating student record from manually added to registered."
+                  log.api_logger.debug "#{course.display_name}: Error updating student record from manually added to registered."
                   return
                 end
               else
                 student = Student.new(uniqname: student_info['Uniqname'], first_name: student_info['Name'].split(",").last, last_name: student_info['Name'].split(",").first, program: program, course: course)
                 unless student.save
-                  flash[:alert] = "#{course.display_name}: Error saving registered student record."
+                  log.api_logger.debug "#{course.display_name}: Error saving registered student record."
                   return
                 end
               end
@@ -99,70 +99,25 @@ module StudentApi
             end
             notice += "#{course.display_name}: Student list is updated. "
           else
-            flash[:notice] = "The #{course.display_name} course has no students registered."
+            log.api_logger.info "The #{course.display_name} course has no students registered."
           end
         else
           alert += "#{course.display_name}: " + result['errorcode'] + ": " + result['error']
         end
       end
       unless program.update(number_of_students: program.students.count)
-        flash[:alert] = "Error updating number of students."
+        log.api_logger.debug "Error updating number of students."
       end
-      flash.now[:notice] = notice
-      flash.now[:alert] = alert
+      unless notice == ""
+        log.api_logger.info "#{notice}"
+      end
+      unless alert == ""
+        log.api_logger.debug "#{alert}"
+      end
     else
-      flash.now[:alert] = token['error']
+      log.api_logger.debug "#{token['error']}"
       return
     end
-  end
-
-  def canvas_readonly(course_id, access_token)
-    result = {'success' => false, 'error' => '', 'data' => []}
-    url = URI("https://gw.api.it.umich.edu/um/aa/CanvasReadOnly/courses/#{course_id}/enrollments")
-    http = Net::HTTP.new(url.host, url.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-    request = Net::HTTP::Get.new(url)
-    request["x-ibm-client-id"] = "#{Rails.application.credentials.um_api[:client_id]}"
-    request["authorization"] = "Bearer #{access_token}"
-    request["accept"] = 'application/json'
-
-    response = http.request(request)
-    response_json = JSON.parse(response.read_body)
-    if response_json.is_a?(Hash) && response_json['errors'].present?
-      result['error'] = "course id #{course_id} - " + response_json['errors'][0]['message']
-    else
-      if response_json.present?
-        students_with_pass_score = {}
-        response_json.each do |student|
-          if student['grades'].present? and student['grades']['final_score'] == 100.00
-            students_with_pass_score.merge! Hash[student['user']['login_id'], student['last_activity_at']]
-          end
-        end
-        result['success'] = true
-        result['data'] = students_with_pass_score
-      else
-        result['error'] = " course id #{course_id} - empty result"
-      end
-    end
-    return result
-  end
-
-  def update_my_canvas_status(student, program)
-    scope = "canvasreadonly"
-    token = get_auth_token(scope)
-    if token['success']
-      result = canvas_readonly(program.canvas_course_id, token['access_token'])
-    end
-    if result['success']
-      students_with_good_score = result['data']
-      uniqnames = students_with_good_score.keys
-      if uniqnames.include?(student.uniqname)
-        return students_with_good_score[student.uniqname]
-      end
-    end
-    return false
   end
 
   def get_auth_token(scope)
@@ -187,23 +142,10 @@ module StudentApi
     end
     return returned_data
   end
+end
 
-  def get_name(uniqname)
-    result = {'valid' => false, 'note' => '', 'last_name' => '', 'first_name' => ''}
-    valid = LdapLookup.uid_exist?(uniqname)
-    if valid
-      result['valid'] = true
-      name = LdapLookup.get_simple_name(uniqname)
-      if name.include?("No displayname")
-        result['note'] = " Mcommunity returns no name for '#{uniqname}' uniqname."
-      else
-        result['first_name'] = name.split(" ").first
-        result['last_name'] = name.split(" ").last
-      end
-    else
-      result['note'] = "The '#{uniqname}' uniqname is not valid."
-    end
-    return result
+class ApiLog
+  def api_logger
+    @@api_logger ||= Logger.new("#{Rails.root}/log/api_nightly_update_db.log")
   end
-
 end
