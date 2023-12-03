@@ -38,12 +38,12 @@ class WelcomePagesController < ApplicationController
       status = mvr_status(resource.uniqname)
         resource.update(mvr_status: status)
     end
-    unless resource.canvas_course_complete_date.present?
-      canvas_date = update_my_canvas_status(resource, program)
-      if canvas_date 
-        resource.update(canvas_course_complete_date: canvas_date)
-      end
-    end
+    # unless resource.canvas_course_complete_date.present?
+    #   canvas_date = update_my_canvas_status(resource, program)
+    #   if canvas_date 
+    #     resource.update(canvas_course_complete_date: canvas_date)
+    #   end
+    # end
   end
 
   def manager
