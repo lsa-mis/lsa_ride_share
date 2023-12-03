@@ -24,7 +24,7 @@ task update_students: :environment do
   end
 
   @log.api_logger.info "Update managers MVR status ***********************************"
-  managers = Managers.all
+  managers = Manager.all
   managers.each do |manager|
     status = api.mvr_status(manager.uniqname)
     manager.update(mvr_status: status)
