@@ -542,11 +542,14 @@ module ApplicationHelper
   end
 
   def allow_user_to_cancel_reservation?(reservation)
-    return true if is_admin?(current_user)
-    if reservation.end_time < Date.today.beginning_of_day
-      false
-    else
-      true
+    if is_admin?(current_user)
+      return true
+    else 
+      if reservation.end_time < Date.today.beginning_of_day
+        return false
+      else
+        return true
+      end
     end
   end
 
