@@ -510,10 +510,6 @@ class ReservationsController < ApplicationController
   end
 
   def add_drivers
-    @backup_drivers = @reservation.program.students.eligible_drivers.reject{ |backup_driver| backup_driver ==  @reservation.driver}
-    @all_drivers = list_of_drivers(@reservation)
-    @passengers = @reservation.passengers
-    @driver = reservation_driver(@reservation)
     unless is_admin?(current_user)
       if is_student?(current_user)
         driver = Student.find_by(program_id: @reservation.program_id, uniqname: current_user.uniqname)
@@ -523,6 +519,10 @@ class ReservationsController < ApplicationController
         @reservation.update(driver_manager_id: driver_manager.id)
       end
     end
+    @backup_drivers = @reservation.program.students.eligible_drivers.reject{ |backup_driver| backup_driver ==  @reservation.driver}
+    @all_drivers = list_of_drivers(@reservation)
+    @passengers = @reservation.passengers
+    @driver = reservation_driver(@reservation)
   end
 
   def get_drivers_list
