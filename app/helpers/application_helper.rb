@@ -544,13 +544,18 @@ module ApplicationHelper
   def allow_user_to_cancel_reservation?(reservation)
     if is_admin?(current_user)
       return true
-    else 
-      if reservation.end_time < Date.today.beginning_of_day
-        return false
-      else
+    elsif is_student?(current_user)
+      student = Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program)
+      if (reservation.driver == student || reservation.backup_driver == student) && reservation.end_time > Date.today.beginning_of_day
+        return true
+      end
+    else
+      manager = Manager.find_by(uniqname: current_user.uniqname)
+      if reservation.driver_manager == manager && reservation.end_time > Date.today.beginning_of_day
         return true
       end
     end
+    return false
   end
 
   def allow_student_to_edit_drivers?(reservation)

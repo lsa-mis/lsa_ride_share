@@ -67,6 +67,7 @@ class VehicleReportPolicy < ApplicationPolicy
 
   def can_manager_create_report?
     reservation = Reservation.find(params[:reservation_id])
+    return false unless reservation.driver_manager_id.present?
     managers = reservation.program.all_managers
     if managers.include?(reservation.driver_manager.uniqname)
       return true
@@ -98,6 +99,7 @@ class VehicleReportPolicy < ApplicationPolicy
   end
 
   def is_vehicle_report_manager?
+    return false unless reservation.driver_manager_id.present?
     report = VehicleReport.find(params[:id])
     managers = report.reservation.program.all_managers
     if managers.include?(reservation.driver_manager.uniqname)
