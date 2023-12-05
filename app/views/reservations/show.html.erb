@@ -49,9 +49,6 @@
                 "data-approve-target": "cancel_type", "data-action": "change->approve#cancelReservation" %>
               </div>
             <% end %>
-            <div>
-              <%= link_to 'Approve Recurring Reservations', approve_all_recurring_path(@reservation), class: "secondary_blue_button" %>
-            </div>
           <% else %>
             <%= link_to reservation_path(@reservation), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete} do %>
               <span class="tertiary_button">Cancel Reservation
@@ -60,6 +57,11 @@
             <% end %>
           <% end %>
         <% end %>
+        <% if is_admin?(current_user) && recurring?(@reservation) %>
+          <div>
+          <%= link_to 'Approve Recurring Reservations', approve_all_recurring_path(@reservation), class: "secondary_blue_button" %>
+        <% end %>
+      </div>
         <% if (is_admin?(current_user)) && @reservation.end_time > DateTime.now %>
           <% if recurring?(@reservation) %>
             <div class="mt-2">
