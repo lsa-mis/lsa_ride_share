@@ -619,46 +619,41 @@ class ReservationsController < ApplicationController
   end
 
   def cancel_recurring_reservation
-    unless @reservation.approved
-      create_cancel_emails
-      cancel_type = params[:cancel_type]
-      cancel_message = ""
-      recurring_reservation = RecurringReservation.new(@reservation)
-      case cancel_type
-      when "one"
-        result = recurring_reservation.get_one_to_delete
-        recurring = false
-      when "following"
-        result = recurring_reservation.get_following_to_delete
-        recurring = true
-        cancel_message = "This reservation and all the following recurring reservations "
-      when "all"
-        result = recurring_reservation.get_all_reservations
-        recurring = true
-        cancel_message = "Recurring Reservations starting on #{recurring_reservation.start_on} and "
-      end
-      ReservationMailer.car_reservation_cancel_admin(@reservation, @cancel_passengers, @cancel_emails, current_user, recurring, cancel_message).deliver_now
-      if @reservation.driver_id.present? || @reservation.driver_manager_id.present? 
-        ReservationMailer.car_reservation_cancel_driver(@reservation, @cancel_passengers, @cancel_emails, current_user, recurring, cancel_message).deliver_now
-      end
-      recurring_reservation.destroy_passengers(result)
-      authorize @reservation
-      respond_to do |format|
-        if Reservation.where(id: result).destroy_all
-          if is_admin?(current_user)
-            format.turbo_stream { redirect_to reservations_url, notice: "Selected Reservation(s) were canceled." }
-          elsif is_student?(current_user)
-            format.turbo_stream { redirect_to welcome_pages_student_url, notice: "Selected Reservation(s) were canceled." }
-          elsif is_manager?(current_user)
-            format.turbo_stream { redirect_to welcome_pages_manager_url, notice: "Selected Reservation(s) were canceled." }
-          end
-        else
-          render :show, status: :unprocessable_entity
+    create_cancel_emails
+    cancel_type = params[:cancel_type]
+    cancel_message = ""
+    recurring_reservation = RecurringReservation.new(@reservation)
+    case cancel_type
+    when "one"
+      result = recurring_reservation.get_one_to_delete
+      recurring = false
+    when "following"
+      result = recurring_reservation.get_following_to_delete
+      recurring = true
+      cancel_message = "This reservation and all the following recurring reservations "
+    when "all"
+      result = recurring_reservation.get_all_reservations
+      recurring = true
+      cancel_message = "Recurring Reservations starting on #{recurring_reservation.start_on} and "
+    end
+    ReservationMailer.car_reservation_cancel_admin(@reservation, @cancel_passengers, @cancel_emails, current_user, recurring, cancel_message).deliver_now
+    if @reservation.driver_id.present? || @reservation.driver_manager_id.present? 
+      ReservationMailer.car_reservation_cancel_driver(@reservation, @cancel_passengers, @cancel_emails, current_user, recurring, cancel_message).deliver_now
+    end
+    recurring_reservation.destroy_passengers(result)
+    authorize @reservation
+    respond_to do |format|
+      if Reservation.where(id: result).destroy_all
+        if is_admin?(current_user)
+          format.turbo_stream { redirect_to reservations_url, notice: "Selected Reservation(s) were canceled." }
+        elsif is_student?(current_user)
+          format.turbo_stream { redirect_to welcome_pages_student_url, notice: "Selected Reservation(s) were canceled." }
+        elsif is_manager?(current_user)
+          format.turbo_stream { redirect_to welcome_pages_manager_url, notice: "Selected Reservation(s) were canceled." }
         end
+      else
+        render :show, status: :unprocessable_entity
       end
-    else
-      flash.now[:alert] = 'The reservation is approved. To cancel, please contact your administrator'
-      render turbo_stream: turbo_stream.update("flash", partial: "layouts/notification")
     end
   end
 
