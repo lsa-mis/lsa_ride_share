@@ -542,25 +542,36 @@ class ReservationsController < ApplicationController
     if @reservation.recurring.present?
       if @reservation.recurring.present?
         recurring_reservation = RecurringReservation.new(@reservation)
-        recurring_reservation.create_all
+        conflict_days_message = recurring_reservation.create_all
       end
-      redirect_to reservation_path(@reservation)
+      redirect_to reservation_path(@reservation),
+        alert: "Recurring reservations were created, but confirmation email was not sent.
+        Send email mannualy after adding drivers. " + conflict_days_message
       return
     end
-    redirect_to reservation_path(@reservation)
+    redirect_to reservation_path(@reservation),
+      alert: "Reservation was created, but confirmation email was not sent.
+      Send email mannualy after adding drivers."
   end
 
   def finish_reservation
+    notice = ""
     if @reservation.recurring.present?
       recurring_reservation = RecurringReservation.new(@reservation)
-      recurring_reservation.create_all
+      conflict_days_message = recurring_reservation.create_all
       recurring = true
     else
       recurring = false
     end
-    ReservationMailer.with(reservation: @reservation).car_reservation_confirmation(current_user, recurring).deliver_now
-    ReservationMailer.with(reservation: @reservation).car_reservation_created(current_user, recurring).deliver_now
-    redirect_to reservation_path(@reservation)
+    ReservationMailer.with(reservation: @reservation).car_reservation_confirmation(current_user, recurring, conflict_days_message).deliver_now
+    ReservationMailer.with(reservation: @reservation).car_reservation_created(current_user, recurring, conflict_days_message).deliver_now
+    if recurring and conflict_days_message.present?
+      notice = conflict_days_message
+      unless is_admin?(current_user)
+        notice += " an email was send to admins to inform them about conflicts."
+      end
+    end
+    redirect_to reservation_path(@reservation), alert: notice
   end
 
   def update_passengers
