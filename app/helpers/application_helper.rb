@@ -458,16 +458,31 @@ module ApplicationHelper
   end
 
   def available?(car, range)
-    day = range.begin.to_date
-    day_reservations = car.reservations.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day).order(:start_time)
-    return true unless day_reservations.present?
-    # to add 15 minutes to nother reservation. Time slot between two reservations should be 30 minutes
-    car_ranges = day_reservations.map { |res| (res.start_time - 14.minute)..(res.end_time + 14.minute) }
-    if car_ranges.any? { |r| r.overlaps?(range)}
-      return false
-    else
-      return true
+    # day = range.begin.to_date
+    # day_reservations = car.reservations.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day).order(:start_time)
+    # day_reservations_long
+    # return true unless day_reservations.present?
+    # # to add 15 minutes to nother reservation. Time slot between two reservations should be 30 minutes
+    # car_ranges = day_reservations.map { |res| (res.start_time - 14.minute)..(res.end_time + 14.minute) }
+    # if car_ranges.any? { |r| r.overlaps?(range)}
+    #   return false
+    # else
+    #   return true
+    # end
+    range_begin = range.begin
+    range_end = range.end
+    Rails.logger.debug "************************ inside available? "
+    Rails.logger.debug "************************ range: #{range}"
+    if car.reservations.where("start_time BETWEEN ? AND ? OR end_time BETWEEN ? AND ?", range_begin, range_end, range_begin, range_end).present?
+      Rails.logger.debug "************************ hell one "
+      return false 
     end
+    if car.reservations.where("start_time < ? AND end_time > ?", range_begin, range_end).present?
+      Rails.logger.debug "************************ hell two "
+      return false 
+    end
+    Rails.logger.debug "************************ hell three "
+    return true
   end
 
   def all_day_available_time(day, unit_id)
