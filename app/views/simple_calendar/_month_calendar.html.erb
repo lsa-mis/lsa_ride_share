@@ -3,13 +3,13 @@
     <%= link_to calendar.url_for_previous_view do %>
       <span class="tertiary_button">
         <i class="fa-solid fa-less-than" aria-hidden="true"></i>
-        <%= t('simple_calendar.previous', default: Date::MONTHNAMES[start_date.to_date.month - 1]) %>
+        <%= t('simple_calendar.previous', default: Date::MONTHNAMES[(start_date.to_date - 1.month).month]) %>
       </span>
     <% end %>
     <time datetime="<%= start_date.strftime('%Y-%m') %>" class="calendar-title"><%= t('date.month_names')[start_date.month] %> <%= start_date.year %></time>
-    <%= link_to calendar.url_for_next_view  do %>
+    <%= link_to calendar.url_for_next_view do %>
       <span class="tertiary_button">
-        <%= t('simple_calendar.next', default: Date::MONTHNAMES[start_date.to_date.month + 1]) %>
+        <%= t('simple_calendar.next', default: Date::MONTHNAMES[(start_date.to_date + 1.month).month]) %>
         <i class="fa-solid fa-greater-than" aria-hidden="true"></i>
       </span>
     <% end %>
