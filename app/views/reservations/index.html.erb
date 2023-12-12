@@ -31,25 +31,27 @@
     <% end %>
   <% end %>
   <div class="mb-2">
-    <% if @unit_id.present? %>
-      <div class="md:flex justify-between items-center whitespace-nowrap pb-4">
+    <div class="md:flex justify-between items-center whitespace-nowrap pb-4">
+      <% if @unit_id.present? %>
         <%= link_to 'Week Calendar', week_calendar_path(:unit_id => @unit_id), class: "secondary_blue_button" %>
-        <div class="my-2 md:flex gap-4 items-center whitespace-nowrap pr-4">
-          <div>
-            <i class="fa-solid fa-circle-check" style="color:#024794"></i>
-            <span> - approved </span>
-          </div>
-          <div>
-          <i class="fa fa-repeat" aria-hidden="true" style="color:#024794"></i>
-            <span> - recurring </span>
-          </div>
-          <div>
-            <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
-            <span> - no car/no driver </span>
-          </div>
+      <% else %>
+        <div> </div>
+      <% end %>
+      <div class="my-2 md:flex gap-4 items-center whitespace-nowrap pr-4">
+        <div>
+          <i class="fa-solid fa-circle-check" style="color:#024794"></i>
+          <span> - approved </span>
+        </div>
+        <div>
+        <i class="fa fa-repeat" aria-hidden="true" style="color:#024794"></i>
+          <span> - recurring </span>
+        </div>
+        <div>
+          <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
+          <span> - no car/no driver </span>
         </div>
       </div>
-    <% end %>
+    </div>
   </div>
 
   <%= turbo_frame_tag 'unit-calendar' do %>
