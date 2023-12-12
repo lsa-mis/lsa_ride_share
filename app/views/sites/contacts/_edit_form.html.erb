@@ -1,6 +1,6 @@
 <%= form_for [@site, contact] do |form| %>
   <% if contact.errors.any? %>
-    <div id="error_explanation" class="text-red-umredum rounded-lg mt-3">
+    <div id="error_explanation" class="text-red-umred rounded-lg mt-3">
       <h2><%= pluralize(contact.errors.count, "error") %> prohibited this contact from being saved:</h2>
       <ul>
         <% contact.errors.each do |error| %>
