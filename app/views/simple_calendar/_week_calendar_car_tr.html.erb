@@ -7,7 +7,16 @@
     <td class="td-week bg-red-650 border-r border-gray-um90">
       <% reservation_data[:start].each do |reservation| %>
         <div class="body-sm-semibold-text div-hover" data-reservation="<%= show_reservation(reservation) %>">
-          <%= link_to show_reserved_by_in_week_calendar(reservation), reservation_path(reservation), class: 'link_to_white ml-2' %>
+          <%= link_to reservation_path(reservation), class: 'link_to_white' do %>
+            <% if no_good_driver?(reservation) || reservation.car.nil? %>
+              <i class="fa-solid fa-triangle-exclamation" style="color:white"></i>
+              <span>
+            <% else %>
+              <span class="ml-2">
+            <% end %>
+              <%= show_reserved_by_in_week_calendar(reservation) %>
+            </span>
+          <% end %>
         </div>
       <% end %>
       <br>
@@ -23,7 +32,9 @@
   <% else %>
     <% if step.to_datetime > DateTime.now %>
       <td class="border hover:bg-green-500">
-        <%= link_to '.', new_reservation_path(:unit_id => @unit_id, :day_start => day, :car_id => car.id, :start_time => step) , class: "text-gray-500 w-0" %>
+        <% if car.present? %>
+          <%= link_to '.', new_reservation_path(:unit_id => @unit_id, :day_start => day, :car_id => car.id, :start_time => step) , class: "text-gray-500 w-0" %>
+        <% end %>
       </td>
     <% else %>
       <td></td>

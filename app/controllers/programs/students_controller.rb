@@ -7,8 +7,10 @@ class Programs::StudentsController < ApplicationController
 
   # GET /students or /students.json
   def index
-    unless @student_program.not_course
-      update_students(@student_program)
+    unless params[:update] == "false"
+      unless @student_program.not_course
+        update_students(@student_program)
+      end
     end
     authorize @students
   end
@@ -168,7 +170,7 @@ class Programs::StudentsController < ApplicationController
     end
 
     def set_students_list
-      @students = @student_program.students.order(registered: :desc).order(:last_name)
+      @students = @student_program.students.order(registered: :desc).order(:course_id).order(:last_name)
     end
 
     # Only allow a list of trusted parameters through.

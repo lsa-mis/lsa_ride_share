@@ -2,11 +2,52 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ['form', 'number_of_people_on_trip', 'number_of_passengers',
-    'driver', 'driver_phone',
+    'driver', 'driver_phone', 'reservation_id',
     'backup_driver', 'backup_driver_phone', 'backup_driver_phone_data']
   connect() {
     console.log("connect - driver")
+  }
 
+  editBackupDriversList() {
+    var driver = this.driverTarget.value.split('-')[1]
+    if (driver == "student") {
+      var driver_id = this.driverTarget.value.split('-')[0]
+    } else {
+      var driver_id = 0
+    }
+    var reservation_id = this.reservation_idTarget.value
+    fetch(`/reservations/get_drivers_list/${reservation_id}/${driver_id}`)
+    .then((response) => response.json())
+    .then((data) => this.updateBackupDriversSelect(data)
+    );
+  }
+
+  updateBackupDriversSelect(data) {
+    var backup_driver_selected = this.backup_driverTarget.value
+    let dropdown = this.backup_driverTarget;
+    dropdown.length = 0;
+    var nothing_selected = true
+    let defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.text = 'No Backup Driver';
+    dropdown.add(defaultOption);
+    if (data.length > 0) {
+      dropdown.selectedIndex = 0;
+      let option;
+      for (let i = 0; i < data.length; i++) {
+        option = document.createElement('option');
+        option.value = data[i][1];
+        option.text = data[i][0]
+        if (data[i][1] == backup_driver_selected) {
+          option.selected = "selected"
+          nothing_selected = false
+        }
+        dropdown.add(option);
+      }
+    }
+    if (nothing_selected) {
+      this.hideBackupDriverPhoneField()
+    }
   }
 
   hideBackupDriverPhoneField() {

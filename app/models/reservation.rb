@@ -42,6 +42,8 @@ class Reservation < ApplicationRecord
 
   has_many :reservation_passengers
   has_many :passengers, through: :reservation_passengers, source: :student
+  has_many :reservation_passengers_managers
+  has_many :passengers_managers, through: :reservation_passengers_managers, source: :manager
   has_one :vehicle_report, dependent: :destroy
   before_update :check_number_of_non_uofm_passengers
   before_create :check_recurring
@@ -63,12 +65,6 @@ class Reservation < ApplicationRecord
   scope :no_or_not_complete_vehicle_reports, -> { Reservation.with_not_complete_vehicle_reports.or(Reservation.with_no_vehicle_reports) }
   scope :complete_vehicle_reports, -> { current_term.where(vehicle_report: {student_status: true}) }
 
-  def reservation_date
-    start_d = start_time.present? ? start_time.strftime("%m/%d/%Y %I:%M%p") : ''
-    end_d = end_time.present? ? end_time.strftime("%m/%d/%Y %I:%M%p") : ''
-    "#{start_d} - #{end_d}"
-  end
-
   def display_name
     if self.car_id.present?
       "car - #{self.car.car_number}"
@@ -78,7 +74,7 @@ class Reservation < ApplicationRecord
   end
 
   def added_people
-    number = self.passengers.count + (self.driver.present? ? 1 : 0).to_i + (self.backup_driver.present? ? 1 : 0).to_i + + (self.driver_manager.present? ? 1 : 0).to_i
+    number = self.passengers.count + self.passengers_managers.count + (self.driver.present? ? 1 : 0).to_i + (self.backup_driver.present? ? 1 : 0).to_i + + (self.driver_manager.present? ? 1 : 0).to_i
     if self.program.non_uofm_passengers
       number += self.number_of_non_uofm_passengers
     end

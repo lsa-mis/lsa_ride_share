@@ -36,7 +36,7 @@
     <% else %>
       <div>
         <%= form.label :term_id, 'Term *', class: "fancy_label" %>
-        <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: @term_id), include_blank: "Select Term ...", class: "input_text_field",
+        <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: @term_id), class: "input_text_field",
           "data-reservation-target": "term", "data-action": "change->reservation#changePrograms" %>
       </div>
 
@@ -69,16 +69,7 @@
           %>
       </div>
       <div>
-        <%= form.label :day_end, "Choose an End Date", class: "fancy_label" %>
-        <%= text_field_tag :day_end, @day_end,
-          data: {
-          controller: "flatpickr",
-          flatpickr_date_format: "Y-m-d",
-          flatpickr_min_date: @min_date,
-          flatpickr_max_date: @max_date
-          }, "data-longreservation-target": "day_end", "data-action": "change->longreservation#availableCars",
-          class: "input_text_field"
-        %>
+        <%= render 'end_day_long' %>
       </div>
     </div>
 
@@ -87,20 +78,15 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
       <div>
         <%= form.label :recurring, class: "fancy_label" %>
-        <%= form.select_recurring :recurring, nil, allow_blank: true, class: "recurring_select" %>
+        <select class="recurring_select" name="reservation[recurring]" id="reservation_recurring" 
+          data-reservation-target="recurring" data-action="change->reservation#addRecurringUntil">
+          <option value="null">- not recurring -</option>
+          <option value="custom">Set Schedule...</option>
+        </select>
       </div>
 
-      <div>
-        <%= form.label :until_date, "Recurring Until", class: "fancy_label" %>
-        <%= form.text_field :until_date, value: @until_date,
-          data: {
-          controller: "flatpickr",
-          flatpickr_date_format: "Y-m-d",
-          flatpickr_min_date: @min_date,
-          flatpickr_max_date: @max_date
-          },
-          class: "input_text_field"
-        %>
+      <div id="until_date_div" class="fields--hide" data-reservation-target="until_date_div">
+        <%= render 'recurring_until_date' %>
       </div>
     </div>
 

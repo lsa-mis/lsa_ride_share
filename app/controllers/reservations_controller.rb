@@ -1,7 +1,8 @@
 class ReservationsController < ApplicationController
   before_action :auth_user
   before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger 
-    finish_reservation update_passengers send_reservation_updated_email cancel_recurring_reservation add_drivers_later approve_all_recurring edit_long add_edit_drivers]
+    finish_reservation update_passengers send_reservation_updated_email cancel_recurring_reservation 
+    add_drivers_later approve_all_recurring edit_long add_edit_drivers get_drivers_list]
   before_action :set_terms_and_units
   before_action :set_programs
   before_action :set_cars, only: %i[ new new_long get_available_cars get_available_cars_long ]
@@ -52,7 +53,7 @@ class ReservationsController < ApplicationController
 
   # GET /reservations/1 or /reservations/1.json
   def show
-    @passengers = @reservation.passengers
+    @passengers = @reservation.passengers + @reservation.passengers_managers
     @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id).order(created_at: :desc)
     authorize @reservation
   end
@@ -60,6 +61,7 @@ class ReservationsController < ApplicationController
   # GET /reservations/new
   def new
     @reservation = Reservation.new
+    @term_id = Term.current[0].id
     authorize @reservation
     if is_student?(current_user)
       @program = Student.find(params[:student_id]).program
@@ -82,11 +84,21 @@ class ReservationsController < ApplicationController
     if params[:term_id].present?
       @term_id = params[:term_id]
     end
+    if @term_id.present? && @unit_id.present?
+      @programs = Program.where(unit_id: @unit_id, term: @term_id).order(:title, :catalog_number, :class_section)
+    end
     if params[:car_id].present?
       @car_id = params[:car_id]
     end
     if params[:start_time].present?
       @start_time = params[:start_time]
+    elsif @day_start == Date.today
+      times = show_time_begin_end(@day_start, @unit_id)
+      @start_time = times[0]
+      if @start_time < DateTime.now
+        @start_time = Time.at(((DateTime.now + 450.second).to_f / 15.minute).round * 15.minute).to_datetime
+        @end_time = @start_time + 15.minute
+      end
     end
     if is_admin?(current_user)
       @sites = []
@@ -100,7 +112,7 @@ class ReservationsController < ApplicationController
     if params[:day_end].present?
       @day_end = params[:day_end].to_date
     else
-      @day_end = @day_start
+      @day_end = @day_start + 1.day
     end
     @reservation.end_time = @day_end
   end
@@ -111,8 +123,8 @@ class ReservationsController < ApplicationController
     @unit_id = @reservation.program.unit.id
     @term_id = @reservation.program.term.id
     @car_id = @reservation.car_id
-    @start_time = (@reservation.start_time + 15.minute).to_s
-    @end_time = (@reservation.end_time - 15.minute).to_s
+    @start_time = (@reservation.start_time + 15.minute).to_datetime.to_s
+    @end_time = (@reservation.end_time - 15.minute).to_datetime.to_s
     @number_of_people_on_trip = @reservation.number_of_people_on_trip
     @cars = Car.available.where(unit_id: @unit_id).order(:car_number)
     @sites = @reservation.program.sites
@@ -135,15 +147,26 @@ class ReservationsController < ApplicationController
     end
     if params[:start_time].present?
       @start_time = params[:start_time]
+      unless @day_start == @start_time.to_date
+        @start_time = combine_day_and_time(@day_start, @start_time)
+      end
     end
     if params[:end_time].present?
       @end_time = params[:end_time]
+      unless @day_start == @end_time.to_date
+        @end_time = combine_day_and_time(@day_start, @end_time)
+      end
     end
     if ((@end_time.to_datetime - @start_time.to_datetime) * 24 * 60).to_i > 30
       @reserv_begin = @start_time.to_datetime
       @reserv_end = @end_time.to_datetime
       range = @reserv_begin..@reserv_end
       @cars = available_cars(@cars, range)
+    end
+    if params[:until_date].present?
+      @until_date = params[:until_date]
+    else
+      @until_date = Term.current.pluck(:classes_end_date).min
     end
     authorize Reservation
   end
@@ -157,6 +180,21 @@ class ReservationsController < ApplicationController
     end
     if params[:day_end].present?
       @day_end = params[:day_end].to_date
+      if @day_start >= @day_end
+        @day_end = @day_start + 1.day
+      end
+    end
+    if params[:start_time].present?
+      @start_time = params[:start_time]
+      unless @day_start == @start_time.to_date
+        @start_time = combine_day_and_time(@day_start, @start_time)
+      end
+    end
+    if params[:end_time].present?
+      @end_time = params[:end_time]
+      unless @day_end == @end_time.to_date
+        @end_time = combine_day_and_time(@day_end, @end_time)
+      end
     end
     if params[:number].present?
       @cars = @cars.where("number_of_seats >= ?", params[:number]).order(:car_number)
@@ -176,6 +214,11 @@ class ReservationsController < ApplicationController
       day_end_reservations = cars_reservations.where(start_time: day_end_begining..day_end_begining + 30.minute, end_time: day_end_begining..day_end_finish).pluck(:car_id)
       exclude_cars = (between_reservations + day_start_reservations + day_end_reservations + long_reservations).uniq
       @cars = @cars.where.not(id: exclude_cars)
+    end
+    if params[:until_date].present?
+      @until_date = params[:until_date]
+    else
+      @until_date = Term.current.pluck(:classes_end_date).min
     end
     authorize Reservation
   end
@@ -217,6 +260,7 @@ class ReservationsController < ApplicationController
     @reservation.start_time = (params[:start_time]).to_datetime - 15.minute
     @reservation.end_time = (params[:end_time]).to_datetime + 15.minute
     @reservation.number_of_people_on_trip = params[:number_of_people_on_trip]
+    @reservation.until_date = params[:until_date]
     @reservation.reserved_by = current_user.id
     authorize @reservation
     if @reservation.save
@@ -233,6 +277,7 @@ class ReservationsController < ApplicationController
       @car_id = params[:car_id]
       @start_time = params[:start_time]
       @end_time = params[:end_time]
+      @until_date = params[:until_date]
       @cars = list_of_available_cars(@unit_id, @day_start, @number_of_people_on_trip, @start_time, @end_time)
       render :new, status: :unprocessable_entity
     end
@@ -455,15 +500,16 @@ class ReservationsController < ApplicationController
       @students = @reservation.program.students.order(:last_name) - @passengers
       @students.delete(@reservation.driver)
       @students.delete(@reservation.backup_driver)
+      @passengers_managers = @reservation.passengers_managers
+      @managers = @reservation.program.managers.to_a
+      @managers << @reservation.program.instructor
+      @managers = @managers - @passengers_managers
+      @managers.delete(@reservation.driver_manager)
       format.turbo_stream { render :add_non_uofm_passenger }
     end
   end
 
   def add_drivers
-    @backup_drivers = @reservation.program.students.eligible_drivers
-    @all_drivers = list_of_drivers(@reservation)
-    @passengers = @reservation.passengers
-    @driver = reservation_driver(@reservation)
     unless is_admin?(current_user)
       if is_student?(current_user)
         driver = Student.find_by(program_id: @reservation.program_id, uniqname: current_user.uniqname)
@@ -473,6 +519,23 @@ class ReservationsController < ApplicationController
         @reservation.update(driver_manager_id: driver_manager.id)
       end
     end
+    @backup_drivers = @reservation.program.students.eligible_drivers.reject{ |backup_driver| backup_driver ==  @reservation.driver}
+    @all_drivers = list_of_drivers(@reservation)
+    @passengers = @reservation.passengers
+    @driver = reservation_driver(@reservation)
+  end
+
+  def get_drivers_list
+    driver_type = params["driver_type"]
+    driver_id = params["driver_id"]
+    if driver_id == "0"
+      backup_drivers = @reservation.program.students.eligible_drivers
+    else
+      backup_drivers = @reservation.program.students.eligible_drivers.reject{ |backup_driver| backup_driver == Student.find(driver_id)}
+    end
+      backup_drivers = backup_drivers.map { |bd| [bd.display_name, bd.id] }
+    render json: backup_drivers
+    authorize Reservation
   end
 
   def add_drivers_later
@@ -524,80 +587,73 @@ class ReservationsController < ApplicationController
 
   # DELETE /reservations/1 or /reservations/1.json
   def destroy
-    unless @reservation.approved
-      recurring = false
-      create_cancel_emails
-      if @reservation.passengers.present?
-        @reservation.passengers.delete_all
-      end
-      ReservationMailer.car_reservation_cancel_admin(@reservation, @cancel_passengers, @cancel_emails, current_user, recurring).deliver_now
-      if @reservation.driver_id.present? || @reservation.driver_manager_id.present? 
-        ReservationMailer.car_reservation_cancel_driver(@reservation, @cancel_passengers, @cancel_emails, current_user, recurring).deliver_now
-      end
-      respond_to do |format|
-        if @reservation.destroy
-          if is_admin?(current_user)
-            format.html { redirect_to reservations_url, notice: "Reservation was canceled." }
-            format.json { head :no_content }
-          elsif is_manager?(current_user)
-            format.html { redirect_to welcome_pages_manager_url, notice: "Reservation was canceled." }
-            format.json { head :no_content }
-          elsif is_student?(current_user)
-            format.html { redirect_to welcome_pages_student_url, notice: "Reservation was canceled." }
-            format.json { head :no_content }
-          end
-        else
-          format.html { render :show, status: :unprocessable_entity }
-          format.json { render json: @reservation.errors, status: :unprocessable_entity }
+    recurring = false
+    create_cancel_emails
+    if @reservation.passengers.present?
+      @reservation.passengers.delete_all
+    end
+    if @reservation.passengers_managers.present?
+      @reservation.passengers_managers.delete_all
+    end
+    ReservationMailer.car_reservation_cancel_admin(@reservation, @cancel_passengers, @cancel_emails, current_user, recurring).deliver_now
+    if @reservation.driver_id.present? || @reservation.driver_manager_id.present? 
+      ReservationMailer.car_reservation_cancel_driver(@reservation, @cancel_passengers, @cancel_emails, current_user, recurring).deliver_now
+    end
+    respond_to do |format|
+      if @reservation.destroy
+        if is_admin?(current_user)
+          format.html { redirect_to reservations_url, notice: "Reservation was canceled." }
+          format.json { head :no_content }
+        elsif is_manager?(current_user)
+          format.html { redirect_to welcome_pages_manager_url, notice: "Reservation was canceled." }
+          format.json { head :no_content }
+        elsif is_student?(current_user)
+          format.html { redirect_to welcome_pages_student_url, notice: "Reservation was canceled." }
+          format.json { head :no_content }
         end
+      else
+        format.html { render :show, status: :unprocessable_entity }
+        format.json { render json: @reservation.errors, status: :unprocessable_entity }
       end
-    else
-      flash.now[:alert] = 'The reservation is approved. To cancel, please contact your administrator'
-      render turbo_stream: turbo_stream.update("flash", partial: "layouts/notification")
     end
   end
 
   def cancel_recurring_reservation
-    unless @reservation.approved
-      create_cancel_emails
-      cancel_type = params[:cancel_type]
-      cancel_message = ""
-      recurring_reservation = RecurringReservation.new(@reservation)
-      case cancel_type
-      when "one"
-        result = recurring_reservation.get_one_to_delete
-        recurring = false
-      when "following"
-        result = recurring_reservation.get_following_to_delete
-        recurring = true
-        cancel_message = "This reservation and all the following recurring reservations "
-      when "all"
-        result = recurring_reservation.get_all_reservations
-        recurring = true
-        cancel_message = "Recurring Reservations starting on #{recurring_reservation.start_on} and "
-      end
-      ReservationMailer.car_reservation_cancel_admin(@reservation, @cancel_passengers, @cancel_emails, current_user, recurring, cancel_message).deliver_now
-      if @reservation.driver_id.present? || @reservation.driver_manager_id.present? 
-        ReservationMailer.car_reservation_cancel_driver(@reservation, @cancel_passengers, @cancel_emails, current_user, recurring, cancel_message).deliver_now
-      end
-      recurring_reservation.destroy_passengers(result)
-      authorize @reservation
-      respond_to do |format|
-        if Reservation.where(id: result).destroy_all
-          if is_admin?(current_user)
-            format.turbo_stream { redirect_to reservations_url, notice: "Selected Reservation(s) were canceled." }
-          elsif is_student?(current_user)
-            format.turbo_stream { redirect_to welcome_pages_student_url, notice: "Selected Reservation(s) were canceled." }
-          elsif is_manager?(current_user)
-            format.turbo_stream { redirect_to welcome_pages_manager_url, notice: "Selected Reservation(s) were canceled." }
-          end
-        else
-          render :show, status: :unprocessable_entity
+    create_cancel_emails
+    cancel_type = params[:cancel_type]
+    cancel_message = ""
+    recurring_reservation = RecurringReservation.new(@reservation)
+    case cancel_type
+    when "one"
+      result = recurring_reservation.get_one_to_delete
+      recurring = false
+    when "following"
+      result = recurring_reservation.get_following_to_delete
+      recurring = true
+      cancel_message = "This reservation and all the following recurring reservations "
+    when "all"
+      result = recurring_reservation.get_all_reservations
+      recurring = true
+      cancel_message = "Recurring Reservations starting on #{recurring_reservation.start_on} and "
+    end
+    ReservationMailer.car_reservation_cancel_admin(@reservation, @cancel_passengers, @cancel_emails, current_user, recurring, cancel_message, cancel_type).deliver_now
+    if @reservation.driver_id.present? || @reservation.driver_manager_id.present? 
+      ReservationMailer.car_reservation_cancel_driver(@reservation, @cancel_passengers, @cancel_emails, current_user, recurring, cancel_message, cancel_type).deliver_now
+    end
+    recurring_reservation.destroy_passengers(result)
+    authorize @reservation
+    respond_to do |format|
+      if Reservation.where(id: result).destroy_all
+        if is_admin?(current_user)
+          format.turbo_stream { redirect_to reservations_url, notice: "Selected Reservation(s) were canceled." }
+        elsif is_student?(current_user)
+          format.turbo_stream { redirect_to welcome_pages_student_url, notice: "Selected Reservation(s) were canceled." }
+        elsif is_manager?(current_user)
+          format.turbo_stream { redirect_to welcome_pages_manager_url, notice: "Selected Reservation(s) were canceled." }
         end
+      else
+        render :show, status: :unprocessable_entity
       end
-    else
-      flash.now[:alert] = 'The reservation is approved. To cancel, please contact your administrator'
-      render turbo_stream: turbo_stream.update("flash", partial: "layouts/notification")
     end
   end
 
@@ -704,18 +760,34 @@ class ReservationsController < ApplicationController
           end
           note = " " + field + " was removed from passengers list."
         end
+      else
+        manager = Manager.find(driver_id)
+        if @reservation.passengers_managers.include?(manager)
+          if recurring
+            recurring_reservation = RecurringReservation.new(reservation)
+            recurring_reservation.remove_passenger_following_reservations(manager)
+          else
+            reservation.passengers_managers.delete(manager)
+          end
+          note = " " + field + " was removed from passengers list."
+        end
       end
       return note
     end
 
     def create_cancel_emails
       students = @reservation.passengers
+      managers = @reservation.passengers_managers
       @cancel_passengers = []
       @cancel_emails = []
-      if students.present?
+      if students.present? || managers.present?
         students.each do |s|
           @cancel_passengers << s.name
           @cancel_emails << email_address(s)
+        end
+        managers.each do |m|
+          @cancel_passengers << m.name
+          @cancel_emails << email_address(m)
         end
       else
         @cancel_passengers = ["No passengers"]

@@ -106,6 +106,10 @@ class ReservationPolicy < ApplicationPolicy
     user_in_access_group?
   end
 
+  def get_drivers_list?
+    create?
+  end
+
   def is_in_reservation?
     if is_student?
       student = Student.find_by(program_id: @record.program, uniqname: @user.uniqname)
@@ -113,7 +117,7 @@ class ReservationPolicy < ApplicationPolicy
     end
     if is_manager?
       manager = Manager.find_by(uniqname: @user.uniqname)
-      return @record.driver_manager == manager || is_reserved_by?
+      return @record.driver_manager == manager || is_reserved_by? || @record.passengers_managers.include?(manager)
     end
     return false
   end

@@ -4,15 +4,15 @@ import { get } from "@rails/request.js"
 export default class extends Controller {
   static targets = ['form', 'term', 'unit', 'program', 'site', 'required_fields',
     'day_start', 'number', 'start_time', 'end_time', 'selected_time_error',
-    'car_selection', 'car', 'car_field', 'no_car']
+    'car_selection', 'car', 'car_field', 'no_car', 'recurring', 'until_date', 'until_date_div']
 
   connect() {
     console.log("connect - reservation")
   }
 
   changePrograms() {
-    let unit =this.unitTarget.value
-    let term =this.termTarget.value
+    let unit = this.unitTarget.value
+    let term = this.termTarget.value
     if (unit && term) {
       fetch(`/programs/get_programs_list/${unit}/${term}`)
         .then((response) => response.json())
@@ -37,7 +37,6 @@ export default class extends Controller {
       for (let i = 0; i < data.length; i++) {
         option = document.createElement('option');
         option.value = data[i].id;
-        // option.text = data[i].title;
         option.text = this.programTitle(data[i])
         dropdown.add(option);
       }
@@ -46,7 +45,6 @@ export default class extends Controller {
       let option;
       option = document.createElement('option');
       option.value = data[0].id;
-      // option.text = data[0].title;
       option.text = this.programTitle(data[0])
       dropdown.add(option);
       this.setSites()
@@ -81,14 +79,24 @@ export default class extends Controller {
     if (data.length > 1) {
       defaultOption.text = 'Select Site ...';
       dropdown.add(defaultOption);
-    }
-    dropdown.selectedIndex = 0;
-    let option;
-    for (let i = 0; i < data.length; i++) {
+      dropdown.selectedIndex = 0;
+      let option;
+      for (let i = 0; i < data.length; i++) {
+        option = document.createElement('option');
+        option.value = data[i].id;
+        option.text = data[i].title;
+        dropdown.add(option);
+      }
+    } else if (data.length == 1) {
+      dropdown.selectedIndex = 0;
+      let option;
       option = document.createElement('option');
-      option.value = data[i].id;
-      option.text = data[i].title;
+      option.value = data[0].id;
+      option.text = data[0].title
       dropdown.add(option);
+    } else {
+      defaultOption.text = 'The program has no sites';
+      dropdown.add(defaultOption);
     }
   }
 
@@ -101,6 +109,7 @@ export default class extends Controller {
     let start_time_format = new Date(start_time)
     let end_time_format = new Date(end_time)
     let diff_time = parseInt(end_time_format - start_time_format)/60000;
+    let until_date = this.until_dateTarget.value
 
     let time_field_error = document.getElementById('time_field')
     let required_fields_error = document.getElementById('required_fields')
@@ -122,12 +131,12 @@ export default class extends Controller {
 
     if (this.elementExist(no_car)) {
       if (!no_car.checked) {
-        get(`/reservations/get_available_cars/${unit_id}/${day_start}/${number}/${start_time}/${end_time}`, {
+        get(`/reservations/get_available_cars/${unit_id}/${day_start}/${number}/${start_time}/${end_time}/${until_date}`, {
           responseKind: "turbo-stream"
         })
       }
     } else {
-      get(`/reservations/get_available_cars/${unit_id}/${day_start}/${number}/${start_time}/${end_time}`, {
+      get(`/reservations/get_available_cars/${unit_id}/${day_start}/${number}/${start_time}/${end_time}/${until_date}`, {
         responseKind: "turbo-stream"
       })
     }
@@ -160,7 +169,18 @@ export default class extends Controller {
       this.car_selectionTarget.classList.add("fields--display")
       this.car_selectionTarget.classList.remove("fields--hide")
     }
+  }
 
+  addRecurringUntil() {
+    let recurring = this.recurringTarget.value
+    console.log(recurring)
+    if (recurring == "null") {
+      this.until_date_divTarget.classList.remove("fields--display")
+      this.until_date_divTarget.classList.add("fields--hide")
+    } else {
+      this.until_date_divTarget.classList.add("fields--display")
+      this.until_date_divTarget.classList.remove("fields--hide")
+    }
   }
 
   submitForm(event) {

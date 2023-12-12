@@ -1,0 +1,11 @@
+<%= turbo_frame_tag "recurring_until_date" do %>
+  <%= label_tag :until_date, "Recurring Until", class: "fancy_label" %>
+  <%= text_field_tag :until_date, @until_date,
+    data: {
+    controller: "flatpickr",
+    flatpickr_date_format: "Y-m-d",
+    flatpickr_min_date: @day_start
+    }, "data-reservation-target": "until_date", "data-longreservation-target": "until_date",
+    class: "input_text_field"
+  %>
+<% end %>

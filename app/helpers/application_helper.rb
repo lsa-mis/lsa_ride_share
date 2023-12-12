@@ -1,4 +1,5 @@
 module ApplicationHelper
+  include ActionView::Helpers::TagHelper
 
   def root_path
     if user_signed_in?
@@ -156,7 +157,10 @@ module ApplicationHelper
     if reservation.car.present?
       reservation.car.car_number
     else
-      "No car selected"
+      tags = html_escape('') # initialize an html safe string we can append to
+      tags << content_tag(:i, nil, class: "fa-solid fa-triangle-exclamation", style: "color:#c53030;")
+      tags << content_tag(:span, " No car selected", class: 'unavailable')
+      tags
     end
   end
 
@@ -165,9 +169,64 @@ module ApplicationHelper
       reservation.driver.display_name
     elsif reservation.driver_manager.present?
       uniqname = Manager.find(reservation.driver_manager_id).uniqname
-      reservation.driver_manager.display_name + " " + show_manager(reservation.program, uniqname)
+      reservation.driver_manager.display_name + show_manager(reservation.program, uniqname)
     else
-      "No driver selected"
+      tags = html_escape('') # initialize an html safe string we can append to
+      tags << content_tag(:i, nil, class: "fa-solid fa-triangle-exclamation", style: "color:#c53030;")
+      tags << content_tag(:span, " No driver selected", class: 'unavailable')
+      tags
+    end
+  end
+
+  def no_good_driver?(reservation)
+    driver_status_not_eligible?(reservation) || backup_driver_status_not_eligible?(reservation) || no_driver?(reservation)
+  end
+
+  def no_driver?(reservation)
+    return false if reservation.driver.present? || reservation.driver_manager.present?
+    return true
+  end
+
+  def driver_status_not_eligible?(reservation)
+    if reservation.driver.present?
+      return true unless reservation.driver.can_reserve_car?
+    end
+    if reservation.driver_manager.present?
+      return true unless reservation.driver_manager.can_reserve_car?
+    end
+    return false
+  end
+
+  def display_driver_status(reservation)
+    if driver_status_not_eligible?(reservation)
+      tags = html_escape('') # initialize an html safe string we can append to
+      tags << content_tag(:i, nil, class: "fa-solid fa-triangle-exclamation", style: "color:#c53030;")
+      tags << content_tag(:span, " - expired MVR Status", class: 'unavailable')
+      tags
+    end
+  end
+
+  def show_backup_driver(reservation)
+    if reservation.backup_driver.present?
+      reservation.backup_driver.display_name
+    else
+      "No backup driver selected"
+    end
+  end
+
+  def backup_driver_status_not_eligible?(reservation)
+    if reservation.backup_driver.present?
+      return true unless reservation.backup_driver.can_reserve_car?
+    end
+    return false
+  end
+
+  def display_backup_driver_status(reservation)
+    if backup_driver_status_not_eligible?(reservation)
+      tags = html_escape('') # initialize an html safe string we can append to
+      tags << content_tag(:i, nil, class: "fa-solid fa-triangle-exclamation", style: "color:#c53030;")
+      tags << content_tag(:span, " - expired MVR Status", class: 'unavailable')
+      tags
     end
   end
 
@@ -181,23 +240,19 @@ module ApplicationHelper
 
   def show_manager(program, uniqname)
     if program.instructor.uniqname == uniqname
-      return "(instructor)"
+      return " (instructor)"
     elsif program.managers.pluck(:uniqname).include?(uniqname)
-      return "(manager)"
+      return " (manager)"
     else
       return ""
     end
   end
 
-  def show_reservation_date(reservation)
-    show_date_time(reservation.start_time) + " - " +  show_date_time(reservation.end_time)
-  end
-
-  def show_day_reservation_time(reservation)
-    if reservation.start_time.to_date == reservation.end_time.to_date 
-      show_time(reservation.start_time + 15.minute) + " - " +  show_time(reservation.end_time - 15.minute)
+  def show_reservation_time(reservation)
+    if reservation.start_time.to_date == reservation.end_time.to_date
+      show_date(reservation.start_time) + " " + show_time(reservation.start_time + 15.minute) + " - " + show_time(reservation.end_time - 15.minute)
     else
-      show_date_time(reservation.start_time + 15.minute) + " - " +  show_date_time(reservation.end_time - 15.minute)
+      show_date_time(reservation.start_time + 15.minute) + " - " + show_date_time(reservation.end_time - 15.minute)
     end
   end
   
@@ -219,21 +274,30 @@ module ApplicationHelper
     end
     if reservation.driver.present? || reservation.driver_manager.present?
       driver = "Driver: " + show_driver(reservation) + " (" + reservation.driver_phone.to_s + ")"
+      if driver_status_not_eligible?(reservation)
+        driver += " - expired MVR Status"
+      end
     else 
       driver = "No driver selected"
     end
     if reservation.backup_driver.present?
       backup_driver = "Backup Driver: " + show_backup_driver(reservation) + " (" + reservation.backup_driver_phone.to_s + ")"
+      if backup_driver_status_not_eligible?(reservation)
+        backup_driver += " - expired MVR Status"
+      end
     else
       backup_driver = "No backup driver selected"
     end
-    if reservation.passengers.present?
+    if reservation.passengers.present? || reservation.passengers_managers.present?
       passengers = "Passengers: "
       reservation.passengers.each do |passenger|
         passengers += passenger.display_name + "\n"
       end
+      reservation.passengers_managers.each do |passenger|
+        passengers += passenger.display_name + show_manager(reservation.program, passenger.uniqname) + "\n"
+      end
     else
-      passengers = "No passengerds"
+      passengers = "No passengers"
     end
     if reservation.program.non_uofm_passengers && reservation.non_uofm_passengers.present?
       non_uofm_passengers = reservation.number_of_non_uofm_passengers.to_s + " Non UofM Passenge(s): " + reservation.non_uofm_passengers
@@ -245,14 +309,6 @@ module ApplicationHelper
     recurring + "\n" + driver + "\n" + backup_driver + "\n" +
     reservation.number_of_people_on_trip.to_s + " people on the trip" + "\n" +
     passengers + non_uofm_passengers
-  end
-
-  def show_backup_driver(reservation)
-    if reservation.backup_driver.present?
-      reservation.backup_driver.display_name
-    else
-      "No backup driver selected"
-    end
   end
 
   def available_ranges(car, day, unit_id)
@@ -389,6 +445,18 @@ module ApplicationHelper
     "#{time.strftime("%I:%M%p")}"
   end
 
+  def combine_day_and_time(day, time)
+    # pass in a date and time or strings
+    day = Date.parse(day) if day.is_a? String 
+    time = Time.parse(time) if time.is_a? String
+    if (day.to_time + 2.hour).dst?
+      new_time = DateTime.new(day.year, day.month, day.day, time.hour, time.min, time.sec, 'EDT')
+    else
+      new_time = DateTime.new(day.year, day.month, day.day, time.hour, time.min, time.sec, 'EST')
+    end
+    return new_time
+  end
+
   def available?(car, range)
     day = range.begin.to_date
     day_reservations = car.reservations.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day).order(:start_time)
@@ -407,7 +475,7 @@ module ApplicationHelper
     times = show_time_begin_end(day, unit_id)
     day_begin = times[0]
     day_end = times[1]
-    day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) }
+    day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t).to_datetime }
     available_times_begin = day_times_with_15_min_steps.map { |t| [show_time(t), t.to_s] }
     available_times_begin.pop
     available_times_end = day_times_with_15_min_steps.map { |t| [show_time(t), t.to_s] }
@@ -425,7 +493,7 @@ module ApplicationHelper
     times = show_time_begin_end(day, unit_id)
     day_begin = times[0]
     day_end = times[1]
-    day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) }
+    day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t).to_datetime }
     available_times_begin = []
     available_times_end = []
 
@@ -474,13 +542,20 @@ module ApplicationHelper
   end
 
   def allow_user_to_cancel_reservation?(reservation)
-    return false if reservation.approved
-    return true if is_admin?(current_user)
-    if User.find(reservation.reserved_by) == current_user
-      return true if allow_student_to_edit_drivers?(reservation) || allow_manager_to_edit_drivers?(reservation)
+    if is_admin?(current_user)
+      return true
+    elsif is_student?(current_user)
+      student = Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program)
+      if (reservation.driver == student || reservation.backup_driver == student) && reservation.end_time > Date.today.beginning_of_day
+        return true
+      end
     else
-      return false
+      manager = Manager.find_by(uniqname: current_user.uniqname)
+      if reservation.driver_manager == manager && reservation.end_time > Date.today.beginning_of_day
+        return true
+      end
     end
+    return false
   end
 
   def allow_student_to_edit_drivers?(reservation)
@@ -488,6 +563,7 @@ module ApplicationHelper
     return false unless Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program).present?
     student = Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program)
     return false if reservation.backup_driver == student
+    return false unless student.can_reserve_car?
     if reservation.driver == student && ((reservation.start_time - DateTime.now.beginning_of_day)/3600).round > minimum_hours_before_reservation(reservation.program.unit)
       return true
     else
@@ -510,6 +586,7 @@ module ApplicationHelper
     return false unless is_student?(current_user)
     return false unless Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program).present?
     student = Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program)
+    return false unless student.can_reserve_car?
     if (reservation.driver == student || reservation.backup_driver == student) && reservation.end_time + 45.minute > DateTime.now
       return true
     else
@@ -606,6 +683,14 @@ module ApplicationHelper
     return "Passenger Side *" if image_field_name == "image_passenger_end"
     return "Back of Car *" if image_field_name == "image_back_end"
     return ""
+  end
+
+  def show_course(student)
+    if student.course.present?
+      student.course.display_name
+    else
+      ""
+    end
   end
 
   def us_states

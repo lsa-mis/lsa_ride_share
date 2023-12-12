@@ -34,36 +34,9 @@
     <%= form.collection_select :term_id, @terms, :id, :name, { include_blank: "Select ...", required: true }, { class: "input_text_field" } %>
   </div>
 
-  <div>
-    <div class="px-1 pb-2">
-      <%= form.check_box :not_course, class: "check_box", "data-program-target": "hide_course_data", "data-action": "program#hideCourseFields" %>
-      <%= form.label :not_course, "Check if this program is not a course" %>
-    </div>
-
-    <div id="error_text" class="error_text fields--hide" data-program-target="course_error">
-     <span>Please enter course data</span>
-    </div>
-    <% if program.not_course %>
-      <div data-program-target="course_data" class="fields--hide">
-    <% else %>
-      <div data-program-target="course_data" class="fields--display">
-    <% end %>
-      <div class="my-5">
-        <%= form.label :subject, 'Subject *', class: "fancy_label" %>
-        <%= form.text_field :subject, placeholder: "Subject", class: "input_text_field", "data-program-target": "subject" %>
-      </div>
-
-      <div class="my-5">
-        <%= form.label :catalog_number, 'Catalog number *', class: "fancy_label" %>
-        <%= form.text_field :catalog_number, placeholder: "Catalog number", class: "input_text_field", "data-program-target": "catalog_number" %>
-      </div>
-
-      <div class="my-5">
-        <%= form.label :class_section, 'Class section *', class: "fancy_label" %>
-        <%= form.text_field :class_section, placeholder: "Class section", class: "input_text_field", "data-program-target": "class_section" %>
-      </div>
-    </div>
-  </div>
+  <p class="body-sm-text pb-2">
+    You can add course(s) information to the program after you submit the form.
+  </p>
 
   <div class="my-5" id="instructor">
     <%= form.fields_for :instructor, @instructor do |instructor_attributes| %>
@@ -130,13 +103,13 @@
     <%= form.submit class: "primary_button" %>
   </div>
   <% if program.persisted? %>
-    <%= link_to program_data_path(program) do %>
+    <%= link_to program_path(program) do %>
       <span class="tertiary_button">Cancel
         <i class="fa fa-times" aria-hidden="true"></i>
       </span>
     <% end %>
   <% else %>
-    <%= link_to programs_path do %>
+    <%= link_to programs_path, data: {turbo_frame: "_top"}  do %>
       <span class="tertiary_button">Cancel
         <i class="fa fa-times" aria-hidden="true"></i>
       </span>

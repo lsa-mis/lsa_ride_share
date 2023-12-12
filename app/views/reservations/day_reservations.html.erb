@@ -1,6 +1,6 @@
 <div class="min-w-full">
   <div class="flex justify-between items-center pb-4">
-    <h1 class="my-4">Reservations for <%= show_date(@day) %><h1>
+    <h1>Reservations for <%= show_date(@day) %><h1>
     <div>
       <%= link_to reservations_path do %>
         <span class="primary_button mb-2">
@@ -31,7 +31,7 @@
           <% @day_reservations.each do |reservation| %>
             <tr>
               <td class="mi_tbody_td">
-                <%= link_to show_day_reservation_time(reservation), reservation_path(reservation), class: "link_to", data: { "turbo-frame": "_top" } %>
+                <%= link_to show_reservation_time(reservation), reservation_path(reservation), class: "link_to", data: { "turbo-frame": "_top" } %>
               </td>
               <td class="mi_tbody_td">
                 <% if reservation.car.present? %>
@@ -51,6 +51,7 @@
               </td>
               <td class="mi_tbody_td">
                 <%= show_driver(reservation) %>
+                <%= display_driver_status(reservation) %>
               </td>
               <td class="mi_tbody_td">
                 <%= reservation.number_of_people_on_trip %>

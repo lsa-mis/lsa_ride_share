@@ -38,12 +38,12 @@ class WelcomePagesController < ApplicationController
       status = mvr_status(resource.uniqname)
         resource.update(mvr_status: status)
     end
-    unless resource.canvas_course_complete_date.present?
-      canvas_date = update_my_canvas_status(resource, program)
-      if canvas_date 
-        resource.update(canvas_course_complete_date: canvas_date)
-      end
-    end
+    # unless resource.canvas_course_complete_date.present?
+    #   canvas_date = update_my_canvas_status(resource, program)
+    #   if canvas_date 
+    #     resource.update(canvas_course_complete_date: canvas_date)
+    #   end
+    # end
   end
 
   def manager
@@ -61,9 +61,12 @@ class WelcomePagesController < ApplicationController
     @contact_data = UnitPreference.select(:unit_id, :name, :value).where(unit_id: unit_ids).where("name = 'unit_office' OR name = 'contact_phone'").group_by(&:unit_id).to_a
     if @program.present?
       update_status(@manager, @program)
-      @reservations_current = @manager.reservations_current.where(program_id: @program.id).sort_by(&:start_time)
-      @reservations_past = @manager.reservations_past.where(program_id: @program.id).sort_by(&:start_time).reverse
-      @reservations_future = @manager.reservations_future.where(program_id: @program.id).sort_by(&:start_time)
+      @reservations_current = (@manager.passenger_current.where(program_id: @program.id) + 
+        @manager.reserved_by_or_driver_current.where(program_id: @program.id)).sort_by(&:start_time)
+      @reservations_past = (@manager.passenger_past.where(program_id: @program.id) + 
+        @manager.reserved_by_or_driver_past.where(program_id: @program.id)).sort_by(&:start_time).reverse
+      @reservations_future = (@manager.passenger_future.where(program_id: @program.id) + 
+        @manager.reserved_by_or_driver_future.where(program_id: @program.id)).sort_by(&:start_time)
       unit_ids = [@program.unit_id]
     else
       @reservation = []

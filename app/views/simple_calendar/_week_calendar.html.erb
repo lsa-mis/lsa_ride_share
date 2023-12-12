@@ -34,7 +34,10 @@
           day.beginning_of_day, day.end_of_day, day.beginning_of_day, day.beginning_of_day).present? %>
           <tr class="mi_tbody_tr border">
             <th border>
-              <span class="status-false">No Car</span>
+              <span class="status-false">
+                No Car
+                <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
+              </span>
             </th>
             <td></td>
             <%= render 'simple_calendar/week_calendar_car_tr', car: nil, day: day %>

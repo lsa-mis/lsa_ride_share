@@ -3,6 +3,16 @@
     <p class="body-sm-bold-text">
       <%= student.display_name %>
     </p>
+    <div class="py-2">
+      <% if student.registered %>
+        <p class="body-lg-bold-text inline">
+          Course:
+        </p>
+        <p class="body-lg-text ml-2 inline">
+          <%= show_course(student) %>
+        </p>
+      <% end %>
+    </div>
 
     <div class="py-2">
       <p class="body-lg-bold-text inline">

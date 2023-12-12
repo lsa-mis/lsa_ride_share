@@ -1,5 +1,5 @@
 <div class="container px-1 mb-20" data-controller='autosubmit'>
-  <h1 class="m-4">Welcome <%= current_user.display_name %></h1>
+  <h1>Welcome <%= current_user.display_name %></h1>
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
     <div class="col-span-3">
       <div>
@@ -30,7 +30,7 @@
       <div class="my-8 whitespace-nowrap">
         <% if @program.present? && max_day_for_reservation(@program) > default_reservation_for_students(@program.unit.id) %>
           <%= link_to "One Day Reservation", new_reservation_path(:program_id => @program.id), class: "secondary_blue_button" if @manager.can_reserve_car? %>
-          <%= link_to "Over-Night Reservation", new_long_reservation_path(:program_id => @program.id), class: "secondary_blue_button" if @manager.can_reserve_car? %>
+          <%= link_to "Overnight Reservation", new_long_reservation_path(:program_id => @program.id), class: "secondary_blue_button" if @manager.can_reserve_car? %>
         <% end %>
       </div>
       <div class="my-2">

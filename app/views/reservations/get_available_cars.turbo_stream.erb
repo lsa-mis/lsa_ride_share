@@ -2,6 +2,10 @@
   <%= render "start_end_time" %>
 <% end %>
 
+<%= turbo_stream.update "recurring_until_date" do %>
+  <%= render "recurring_until_date" %>
+<% end %>
+
 <%= turbo_stream.update "cars_dropdown" do %>
   <%= render "cars_dropdown" %>
 <% end %>
