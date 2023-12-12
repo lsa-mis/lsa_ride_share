@@ -647,9 +647,9 @@ class ReservationsController < ApplicationController
       recurring = true
       cancel_message = "Recurring Reservations starting on #{recurring_reservation.start_on} and "
     end
-    ReservationMailer.car_reservation_cancel_admin(@reservation, @cancel_passengers, @cancel_emails, current_user, recurring, cancel_message).deliver_now
+    ReservationMailer.car_reservation_cancel_admin(@reservation, @cancel_passengers, @cancel_emails, current_user, recurring, cancel_message, cancel_type).deliver_now
     if @reservation.driver_id.present? || @reservation.driver_manager_id.present? 
-      ReservationMailer.car_reservation_cancel_driver(@reservation, @cancel_passengers, @cancel_emails, current_user, recurring, cancel_message).deliver_now
+      ReservationMailer.car_reservation_cancel_driver(@reservation, @cancel_passengers, @cancel_emails, current_user, recurring, cancel_message, cancel_type).deliver_now
     end
     recurring_reservation.destroy_passengers(result)
     authorize @reservation
