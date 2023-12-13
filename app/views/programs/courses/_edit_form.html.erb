@@ -1,6 +1,6 @@
 <%= form_for [@course_program, course] do |form| %>
   <% if course.errors.any? %>
-    <div id="error_explanation" class="text-red-umredum rounded-lg mt-3">
+    <div id="error_explanation" class="text-red-umred rounded-lg mt-3">
       <h2><%= pluralize(course.errors.count, "error") %> prohibited this course from being saved:</h2>
       <ul>
         <% course.errors.each do |error| %>
