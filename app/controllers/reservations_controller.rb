@@ -370,10 +370,18 @@ class ReservationsController < ApplicationController
       @reservation.end_time = params[:end_time].to_datetime + 15.minute
       @reservation.number_of_people_on_trip = params[:number_of_people_on_trip]
 
-      respond_to do |format|
+      # check if updated reservation has conflict with existing resertvations
+      no_conflict = available_edit?(@reservation.id, @reservation.car, @reservation.start_time..@reservation.end_time)
+      if !no_conflict && is_admin?(current_user)
+        notice = " There is a conflict on " + show_date_with_month_name(@reservation.start_time) + " day."
+      else
+        alert = " There is a conflict on " + show_date_with_month_name(@reservation.start_time) + " day. Please select diferent time or ask admins to edit the reservation"
+      end
+      # for admins - always save && display message about conflict
+      # for non admins - save if there is no conflict
+      if is_admin?(current_user) || !is_admin?(current_user) && no_conflict
         if @reservation.update(reservation_params)
-          format.html { redirect_to reservation_url(@reservation), notice: "Reservation was successfully updated." + notice }
-          format.json { render :show, status: :ok, location: @reservation }
+          redirect_to reservation_path(@reservation), notice: "Reservation was successfully updated." + notice
         else
           @programs = Program.where(unit_id: current_user.unit_ids).order(:title, :catalog_number, :class_section)
           @number_of_seats = 1..Car.available.maximum(:number_of_seats)
@@ -386,9 +394,24 @@ class ReservationsController < ApplicationController
           @start_time = params[:start_time]
           @end_time = params[:end_time]
           @students = Student.all
-          format.html { render :edit, status: :unprocessable_entity }
-          format.json { render json: @reservation.errors, status: :unprocessable_entity }
+          render :edit, status: :unprocessable_entity
         end
+      else
+        # for students and managers - don't save if there is a conflict
+        @programs = Program.where(unit_id: current_user.unit_ids).order(:title, :catalog_number, :class_section)
+        @number_of_seats = 1..Car.available.maximum(:number_of_seats)
+        @number_of_people_on_trip = Reservation.find(params[:id]).number_of_people_on_trip
+        @day_start = params[:day_start].to_date
+        @unit_id = params[:unit_id]
+        @cars = Car.available.where(unit_id: @unit_id).order(:car_number)
+        @sites = @reservation.program.sites
+        @car_id = @reservation.car_id
+        @start_time = params[:start_time]
+        @end_time = params[:end_time]
+        @students = Student.all
+        flash.now[:alert] = alert
+        render :edit, status: :unprocessable_entity
+        return
       end
     end
   end
