@@ -25,6 +25,10 @@ module ApplicationHelper
     field.strftime("%m/%d/%Y") unless field.blank?
   end
 
+  def show_date_with_month_name(field)
+    field.to_date.strftime("%B %d, %Y") unless field.blank?
+  end
+
   def show_date_time(field)
     field.strftime("%m/%d/%Y %I:%M%p") unless field.blank?
   end
@@ -478,6 +482,21 @@ module ApplicationHelper
       return false 
     end
     if car.reservations.where("start_time < ? AND end_time > ?", range_begin, range_end).present?
+      Rails.logger.debug "************************ hell two "
+      return false 
+    end
+    Rails.logger.debug "************************ hell three "
+    return true
+  end
+
+  def available_edit?(reservation_id, car, range)
+    range_begin = range.begin
+    range_end = range.end
+    if car.reservations.where("id <> ? AND (start_time BETWEEN ? AND ? OR end_time BETWEEN ? AND ?)", reservation_id, range_begin, range_end, range_begin, range_end).present?
+      Rails.logger.debug "************************ hell one "
+      return false 
+    end
+    if car.reservations.where("id <> ? AND (start_time < ? AND end_time > ?)", reservation_id, range_begin, range_end).present?
       Rails.logger.debug "************************ hell two "
       return false 
     end
