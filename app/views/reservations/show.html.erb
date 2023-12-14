@@ -62,7 +62,7 @@
             <%= link_to 'Approve Recurring Reservations', approve_all_recurring_path(@reservation), class: "secondary_blue_button" %>
           </div>
         <% end %>
-        <% if (is_admin?(current_user)) && @reservation.end_time > DateTime.now %>
+        <% if is_admin?(current_user) && @reservation.end_time > DateTime.now || allow_student_to_edit_drivers?(@reservation) || allow_manager_to_edit_drivers?(@reservation) %>
           <% if recurring?(@reservation) %>
             <div class="mt-2">
               <% if @reservation.start_time.to_date == @reservation.end_time.to_date %>
