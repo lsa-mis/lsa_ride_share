@@ -396,7 +396,6 @@ class ReservationsController < ApplicationController
   def add_edit_drivers
     success = true
     recurring = false
-    note = ""
     drivers_emails = reservation_drivers_emails
     @reservation.attributes = reservation_params
     if params[:recurring] == "true"
@@ -419,7 +418,7 @@ class ReservationsController < ApplicationController
       note = check_if_driver_is_passenger(@reservation, driver_type, "Driver", driver_id, recurring)
       # check if a new backup driver is a passenger
       if params[:reservation][:backup_driver_id].present? 
-        note += check_if_driver_is_passenger(@reservation, "student", "Backup Driver", params[:reservation][:backup_driver_id], recurring)
+        notice += check_if_driver_is_passenger(@reservation, "student", "Backup Driver", params[:reservation][:backup_driver_id], recurring)
       end
     end
     if params[:recurring] == "true"
@@ -437,11 +436,11 @@ class ReservationsController < ApplicationController
       if params[:edit] == "true"
         if params[:recurring].empty? && @reservation.recurring.present?
           recurring_reservation = RecurringReservation.new(@reservation)
-          result = recurring_reservation.remove_from_list
-          if result == ""
-            note += " Reservation was removed from the list of recurring reservations."
+          alert = recurring_reservation.remove_from_list
+          if alert == ""
+            notice += " Reservation was removed from the list of recurring reservations."
           else
-            redirect_to reservation_path(@reservation), alert: note + result
+            redirect_to reservation_path(@reservation), notice: notice, alert: alert
             return
           end
         end
@@ -455,7 +454,7 @@ class ReservationsController < ApplicationController
           ReservationMailer.car_reservation_drivers_edited(@reservation, drivers_emails, current_user, recurring).deliver_now
           notice += " Old Drivers were removed from the trip."
         end
-        redirect_to reservation_path(@reservation), notice: notice
+        redirect_to reservation_path(@reservation), notice: notice, alert: alert
         return
       else
         redirect_to add_passengers_path(@reservation)
@@ -539,39 +538,38 @@ class ReservationsController < ApplicationController
   end
 
   def add_drivers_later
+    notice = "Reservation was created, but confirmation email was not sent."
+    alert = "Send email mannualy after adding drivers."
     if @reservation.recurring.present?
       if @reservation.recurring.present?
         recurring_reservation = RecurringReservation.new(@reservation)
         conflict_days_message = recurring_reservation.create_all
       end
-      redirect_to reservation_path(@reservation),
-        alert: "Recurring reservations were created, but confirmation email was not sent.
-        Send email mannualy after adding drivers. " + conflict_days_message
-      return
+        notice = "Recurring Reservations were created, but confirmation email was not sent."
+        alert += conflict_days_message
     end
-    redirect_to reservation_path(@reservation),
-      alert: "Reservation was created, but confirmation email was not sent.
-      Send email mannualy after adding drivers."
+    redirect_to reservation_path(@reservation), notice: notice, alert: alert
   end
 
   def finish_reservation
-    notice = ""
     if @reservation.recurring.present?
       recurring_reservation = RecurringReservation.new(@reservation)
       conflict_days_message = recurring_reservation.create_all
       recurring = true
+      notice = "Recurring reservations were created."
     else
       recurring = false
+      notice = "Reservation was created."
     end
     ReservationMailer.with(reservation: @reservation).car_reservation_confirmation(current_user, recurring, conflict_days_message).deliver_now
     ReservationMailer.with(reservation: @reservation).car_reservation_created(current_user, recurring, conflict_days_message).deliver_now
     if recurring and conflict_days_message.present?
-      notice = conflict_days_message
+      alert = conflict_days_message
       unless is_admin?(current_user)
-        notice += " an email was send to admins to inform them about conflicts."
+        alert += " an email was send to admins to inform them about conflicts."
       end
     end
-    redirect_to reservation_path(@reservation), alert: notice
+    redirect_to reservation_path(@reservation), notice: notice, alert: alert
   end
 
   def update_passengers
@@ -583,11 +581,11 @@ class ReservationsController < ApplicationController
       notice = "Passengers list was updated."
       if @reservation.recurring.present?
         recurring_reservation = RecurringReservation.new(@reservation)
-        note = recurring_reservation.remove_from_list
-        if note == ""
+        alert = recurring_reservation.remove_from_list
+        if alert == ""
           notice += " Reservation was removed from the list of recurring reservations."
         else
-          redirect_to reservation_path(@reservation), alert: notice + note
+          redirect_to reservation_path(@reservation), notice: notice, alert: alert
           return
         end
       end
@@ -765,7 +763,7 @@ class ReservationsController < ApplicationController
         if @reservation.passengers.include?(student)
           if recurring
             recurring_reservation = RecurringReservation.new(reservation)
-            recurring_reservation.remove_passenger_following_reservations(student)
+            recurring_reservation.remove_passenger_following_reservations(student, "student")
           else
             reservation.passengers.delete(student)
           end
@@ -776,7 +774,7 @@ class ReservationsController < ApplicationController
         if @reservation.passengers_managers.include?(manager)
           if recurring
             recurring_reservation = RecurringReservation.new(reservation)
-            recurring_reservation.remove_passenger_following_reservations(manager)
+            recurring_reservation.remove_passenger_following_reservations(manager, "manager")
           else
             reservation.passengers_managers.delete(manager)
           end
