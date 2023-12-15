@@ -94,7 +94,7 @@ class RecurringReservation
       end
     end
     if conflict_days_message.present?
-      conflict_days_message = "On these day(s) there are conflicts with other reservations: " + conflict_days_message
+      conflict_days_message = "There are conflicts with other reservations on: " + conflict_days_message
     end
     return conflict_days_message
   end
