@@ -373,15 +373,15 @@ class ReservationsController < ApplicationController
       # check if updated reservation has conflict with existing resertvations
       no_conflict = available_edit?(@reservation.id, @reservation.car, @reservation.start_time..@reservation.end_time)
       if !no_conflict && is_admin?(current_user)
-        notice = " There is a conflict on " + show_date_with_month_name(@reservation.start_time) + " day."
+        alert = " There is a conflict on " + show_date_with_month_name(@reservation.start_time) + " day."
       else
-        alert = " There is a conflict on " + show_date_with_month_name(@reservation.start_time) + " day. Please select diferent time or ask admins to edit the reservation"
+        alert = " There is a conflict on " + show_date_with_month_name(@reservation.start_time) + " day. Please select diferent time or ask admins to edit the reservation."
       end
       # for admins - always save && display message about conflict
       # for non admins - save if there is no conflict
       if is_admin?(current_user) || !is_admin?(current_user) && no_conflict
         if @reservation.update(reservation_params)
-          redirect_to reservation_path(@reservation), notice: "Reservation was successfully updated." + notice
+          redirect_to reservation_path(@reservation), notice: "Reservation was successfully updated." + notice, alert: alert
         else
           @programs = Program.where(unit_id: current_user.unit_ids).order(:title, :catalog_number, :class_section)
           @number_of_seats = 1..Car.available.maximum(:number_of_seats)
