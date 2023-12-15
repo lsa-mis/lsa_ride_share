@@ -70,19 +70,19 @@ module StudentApi
             students_in_db_registered = program.students.registered.where(course_id: course.id).pluck(:uniqname)
             students_in_db_added_manually = program.students.added_manually.pluck(:uniqname)
             data.each do |student_info|
-              uniqname = student_info['Uniqname']
-              if students_in_db_registered.include?(uniqname)
-                students_in_db_registered.delete(uniqname)
-              elsif students_in_db_added_manually.include?(uniqname)
-                unless Student.find_by(uniqname: student_info['Uniqname'], program: program, course: nil).update(registered: true, course: course)
-                  flash.now[:alert] = "#{course.display_name}: Error updating student record from manually added to registered."
-                  return
-                end
-              else
-                student = Student.new(uniqname: student_info['Uniqname'], first_name: student_info['Name'].split(",").last, last_name: student_info['Name'].split(",").first, program: program, course: course)
-                unless student.save
-                  flash[:alert] = "#{course.display_name}: Error saving registered student record."
-                  return
+              if student_info['EnrollmentStatus'] == "Enrolled"
+                uniqname = student_info['Uniqname']
+                if students_in_db_registered.include?(uniqname)
+                  students_in_db_registered.delete(uniqname)
+                elsif students_in_db_added_manually.include?(uniqname)
+                  unless Student.find_by(uniqname: student_info['Uniqname'], program: program, course: nil).update(registered: true, course: course)
+                  alert += "#{course.display_name}: Error updating student #{student_info['Uniqname']} record from manually added to registered."
+                  end
+                else
+                  student = Student.new(uniqname: student_info['Uniqname'], first_name: student_info['Name'].split(",").last, last_name: student_info['Name'].split(",").first, program: program, course: course)
+                  unless student.save
+                    alert += "#{course.display_name}: Student (uniqname - #{student_info['Uniqname']}) was not added: " + student.errors.full_messages.join(',')
+                  end
                 end
               end
             end
@@ -99,14 +99,14 @@ module StudentApi
             end
             notice += "#{course.display_name}: Student list is updated. "
           else
-            flash[:notice] = "The #{course.display_name} course has no students registered."
+            notice += "The #{course.display_name} course has no students registered."
           end
         else
           alert += "#{course.display_name}: " + result['errorcode'] + ": " + result['error']
         end
       end
       unless program.update(number_of_students: program.students.count)
-        flash[:alert] = "Error updating number of students."
+        alert += "Error updating number of students."
       end
       flash.now[:notice] = notice
       flash.now[:alert] = alert

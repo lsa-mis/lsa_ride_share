@@ -70,19 +70,19 @@ class UpdateStudentsApi
             students_in_db_registered = program.students.registered.where(course_id: course.id).pluck(:uniqname)
             students_in_db_added_manually = program.students.added_manually.pluck(:uniqname)
             data.each do |student_info|
-              uniqname = student_info['Uniqname']
-              if students_in_db_registered.include?(uniqname)
-                students_in_db_registered.delete(uniqname)
-              elsif students_in_db_added_manually.include?(uniqname)
-                unless Student.find_by(uniqname: student_info['Uniqname'], program: program, course: nil).update(registered: true, course: course)
-                  log.api_logger.debug "#{course.display_name}: Error updating student record from manually added to registered."
-                  return
-                end
-              else
-                student = Student.new(uniqname: student_info['Uniqname'], first_name: student_info['Name'].split(",").last, last_name: student_info['Name'].split(",").first, program: program, course: course)
-                unless student.save
-                  log.api_logger.debug "#{course.display_name}: Error saving registered student record."
-                  return
+              if student_info['EnrollmentStatus'] == "Enrolled"
+                uniqname = student_info['Uniqname']
+                if students_in_db_registered.include?(uniqname)
+                  students_in_db_registered.delete(uniqname)
+                elsif students_in_db_added_manually.include?(uniqname)
+                  unless Student.find_by(uniqname: student_info['Uniqname'], program: program, course: nil).update(registered: true, course: course)
+                    log.api_logger.debug "#{course.display_name}: Error updating student - uniqname: #{student_info['Uniqname']} - record from manually added to registered."
+                  end
+                else
+                  student = Student.new(uniqname: student_info['Uniqname'], first_name: student_info['Name'].split(",").last, last_name: student_info['Name'].split(",").first, program: program, course: course)
+                  unless student.save
+                    log.api_logger.debug "#{course.display_name}: Student (uniqname - #{student_info['Uniqname']}) was not added: #{student.errors.full_messages.join(',')}"
+                  end
                 end
               end
             end
