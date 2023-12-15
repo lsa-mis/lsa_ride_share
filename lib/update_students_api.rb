@@ -81,7 +81,7 @@ class UpdateStudentsApi
                 else
                   student = Student.new(uniqname: student_info['Uniqname'], first_name: student_info['Name'].split(",").last, last_name: student_info['Name'].split(",").first, program: program, course: course)
                   unless student.save
-                    log.api_logger.debug "#{course.display_name}: Error saving registered student - uniqname: #{student_info['Uniqname']} - record."
+                    log.api_logger.debug "#{course.display_name}: Student (uniqname - #{student_info['Uniqname']}) was not added: #{student.errors.full_messages.join(',')}"
                   end
                 end
               end

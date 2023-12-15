@@ -81,7 +81,7 @@ module StudentApi
                 else
                   student = Student.new(uniqname: student_info['Uniqname'], first_name: student_info['Name'].split(",").last, last_name: student_info['Name'].split(",").first, program: program, course: course)
                   unless student.save
-                    alert += "#{course.display_name}: Error saving registered student #{student_info['Uniqname']} record."
+                    alert += "#{course.display_name}: Student (uniqname - #{student_info['Uniqname']}) was not added: " + student.errors.full_messages.join(',')
                   end
                 end
               end
