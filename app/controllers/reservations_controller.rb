@@ -576,6 +576,8 @@ class ReservationsController < ApplicationController
   end
 
   def update_passengers
+    notice = ""
+    alert = ""
     if params["recurring"] == "true"
       recurring = true
       notice = "Passengers list was updated for this and following recurring reservations."
@@ -587,14 +589,11 @@ class ReservationsController < ApplicationController
         alert = recurring_reservation.remove_from_list
         if alert == ""
           notice += " Reservation was removed from the list of recurring reservations."
-        else
-          redirect_to reservation_path(@reservation), notice: notice, alert: alert
-          return
         end
       end
     end
     ReservationMailer.with(reservation: @reservation).car_reservation_update_passengers(current_user, recurring).deliver_now
-    redirect_to reservation_path(@reservation), notice: notice
+    redirect_to reservation_path(@reservation), notice: notice, alert: alert
   end
 
   # DELETE /reservations/1 or /reservations/1.json
@@ -760,6 +759,8 @@ class ReservationsController < ApplicationController
 
     def check_if_driver_is_passenger(reservation, driver_type, field, driver_id, recurring)
       # check if a new driver is a passenger
+      # driver_type: "student" or "manager"
+      # field: "Driver" or "Backup Driver"
       note = ""
       if driver_type == "student"
         student = Student.find(driver_id)
