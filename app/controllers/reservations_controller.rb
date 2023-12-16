@@ -436,6 +436,9 @@ class ReservationsController < ApplicationController
   def add_edit_drivers
     success = true
     recurring = false
+    notice = ""
+    alert == ""
+    note = ""
     drivers_emails = reservation_drivers_emails
     @reservation.attributes = reservation_params
     if params[:recurring] == "true"
@@ -458,7 +461,7 @@ class ReservationsController < ApplicationController
       note = check_if_driver_is_passenger(@reservation, driver_type, "Driver", driver_id, recurring)
       # check if a new backup driver is a passenger
       if params[:reservation][:backup_driver_id].present? 
-        notice += check_if_driver_is_passenger(@reservation, "student", "Backup Driver", params[:reservation][:backup_driver_id], recurring)
+        note += check_if_driver_is_passenger(@reservation, "student", "Backup Driver", params[:reservation][:backup_driver_id], recurring)
       end
     end
     if params[:recurring] == "true"
@@ -475,13 +478,11 @@ class ReservationsController < ApplicationController
     if success
       if params[:edit] == "true"
         if params[:recurring].empty? && @reservation.recurring.present?
+          # edit recuring reservation as a stand-alone; remove it from the recirring set
           recurring_reservation = RecurringReservation.new(@reservation)
           alert = recurring_reservation.remove_from_list
           if alert == ""
             notice += " Reservation was removed from the list of recurring reservations."
-          else
-            redirect_to reservation_path(@reservation), notice: notice, alert: alert
-            return
           end
         end
         @reservation = Reservation.find(params[:id])
@@ -579,7 +580,7 @@ class ReservationsController < ApplicationController
 
   def add_drivers_later
     notice = "Reservation was created, but confirmation email was not sent."
-    alert = "Send email mannualy after adding drivers."
+    alert = "Send email mannualy after adding drivers. "
     if @reservation.recurring.present?
       if @reservation.recurring.present?
         recurring_reservation = RecurringReservation.new(@reservation)
@@ -613,6 +614,8 @@ class ReservationsController < ApplicationController
   end
 
   def update_passengers
+    notice = ""
+    alert = ""
     if params["recurring"] == "true"
       recurring = true
       notice = "Passengers list was updated for this and following recurring reservations."
@@ -624,14 +627,11 @@ class ReservationsController < ApplicationController
         alert = recurring_reservation.remove_from_list
         if alert == ""
           notice += " Reservation was removed from the list of recurring reservations."
-        else
-          redirect_to reservation_path(@reservation), notice: notice, alert: alert
-          return
         end
       end
     end
     ReservationMailer.with(reservation: @reservation).car_reservation_update_passengers(current_user, recurring).deliver_now
-    redirect_to reservation_path(@reservation), notice: notice
+    redirect_to reservation_path(@reservation), notice: notice, alert: alert
   end
 
   # DELETE /reservations/1 or /reservations/1.json
@@ -797,6 +797,8 @@ class ReservationsController < ApplicationController
 
     def check_if_driver_is_passenger(reservation, driver_type, field, driver_id, recurring)
       # check if a new driver is a passenger
+      # driver_type: "student" or "manager"
+      # field: "Driver" or "Backup Driver"
       note = ""
       if driver_type == "student"
         student = Student.find(driver_id)
