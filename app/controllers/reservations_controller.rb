@@ -443,9 +443,6 @@ class ReservationsController < ApplicationController
           alert = recurring_reservation.remove_from_list
           if alert == ""
             notice += " Reservation was removed from the list of recurring reservations."
-          else
-            redirect_to reservation_path(@reservation), notice: notice, alert: alert
-            return
           end
         end
         @reservation = Reservation.find(params[:id])
