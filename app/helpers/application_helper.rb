@@ -378,7 +378,7 @@ module ApplicationHelper
     # time renges when the car is available on the day including time for reservation that student is editing
     # example: ["04:30PM - 05:00PM", "08:00AM - 11:00AM", "11:00AM - 04:30PM - current"]
     car_available = available_ranges(car, day, unit_id)
-    r = reservation.start_time..reservation.end_time
+    r = Reservation.find(reservation.id).start_time..Reservation.find(reservation.id).end_time
     car_available << show_time_range(r, true)
     return car_available
   end
@@ -387,7 +387,7 @@ module ApplicationHelper
     # time renges when the car is available on the day including time for reservation that student is editing
     # example: ["04:30PM - 05:00PM", "08:00AM - 11:00AM", "11:00AM - 04:30PM - current"]
     car_available = available_ranges_long(car, day_start, day_end, unit_id)
-    r = reservation.start_time..reservation.end_time
+    r = Reservation.find(reservation.id).start_time..Reservation.find(reservation.id).end_time
     car_available << show_time_range_long(r, true)
     return car_available
   end
@@ -474,17 +474,14 @@ module ApplicationHelper
   end
 
   def available_edit?(reservation_id, car, range)
-    range_begin = range.begin
-    range_end = range.end
+    range_begin = range.begin + 1.minute
+    range_end = range.end - 1.minute
     if car.reservations.where("id <> ? AND (start_time BETWEEN ? AND ? OR end_time BETWEEN ? AND ?)", reservation_id, range_begin, range_end, range_begin, range_end).present?
-      Rails.logger.debug "************************ hell one "
       return false 
     end
     if car.reservations.where("id <> ? AND (start_time < ? AND end_time > ?)", reservation_id, range_begin, range_end).present?
-      Rails.logger.debug "************************ hell two "
       return false 
     end
-    Rails.logger.debug "************************ hell three "
     return true
   end
 
