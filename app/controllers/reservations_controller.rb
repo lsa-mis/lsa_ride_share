@@ -396,6 +396,8 @@ class ReservationsController < ApplicationController
   def add_edit_drivers
     success = true
     recurring = false
+    notice = ""
+    alert == ""
     drivers_emails = reservation_drivers_emails
     @reservation.attributes = reservation_params
     if params[:recurring] == "true"
@@ -418,7 +420,7 @@ class ReservationsController < ApplicationController
       note = check_if_driver_is_passenger(@reservation, driver_type, "Driver", driver_id, recurring)
       # check if a new backup driver is a passenger
       if params[:reservation][:backup_driver_id].present? 
-        notice += check_if_driver_is_passenger(@reservation, "student", "Backup Driver", params[:reservation][:backup_driver_id], recurring)
+        note += check_if_driver_is_passenger(@reservation, "student", "Backup Driver", params[:reservation][:backup_driver_id], recurring)
       end
     end
     if params[:recurring] == "true"
@@ -435,6 +437,7 @@ class ReservationsController < ApplicationController
     if success
       if params[:edit] == "true"
         if params[:recurring].empty? && @reservation.recurring.present?
+          # edit recuring reservation as a stand-alone; remove it from the recirring set
           recurring_reservation = RecurringReservation.new(@reservation)
           alert = recurring_reservation.remove_from_list
           if alert == ""
