@@ -398,6 +398,7 @@ class ReservationsController < ApplicationController
     recurring = false
     notice = ""
     alert == ""
+    note = ""
     drivers_emails = reservation_drivers_emails
     @reservation.attributes = reservation_params
     if params[:recurring] == "true"
