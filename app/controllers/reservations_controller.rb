@@ -263,15 +263,31 @@ class ReservationsController < ApplicationController
     @reservation.until_date = params[:until_date]
     @reservation.reserved_by = current_user.id
     authorize @reservation
-    if @reservation.save
-      @students = @reservation.program.students 
-      redirect_to add_drivers_path(@reservation), notice: "Reservation was successfully created. Please add drivers."
+    # check for conflicts
+    if available?(@reservation.car, @reservation.start_time..@reservation.end_time)
+      if @reservation.save
+        @students = @reservation.program.students 
+        redirect_to add_drivers_path(@reservation), notice: "Reservation was successfully created. Please add drivers."
+      else
+        @program = Program.find(params[:reservation][:program_id])
+        @term_id = params[:term_id]
+        @sites = @program.sites.order(:title)
+        @number_of_people_on_trip = params[:number_of_people_on_trip]
+        @day_start = params[:day_start].to_date
+        @unit_id = params[:unit_id]
+        @car_id = params[:car_id]
+        @start_time = params[:start_time]
+        @end_time = params[:end_time]
+        @until_date = params[:until_date]
+        @cars = list_of_available_cars(@unit_id, @day_start, @number_of_people_on_trip, @start_time, @end_time)
+        render :new, status: :unprocessable_entity
+      end
     else
+      flash[:alert] = "There is a conflict with another reservation. Please select different time."
       @program = Program.find(params[:reservation][:program_id])
       @term_id = params[:term_id]
       @sites = @program.sites.order(:title)
       @number_of_people_on_trip = params[:number_of_people_on_trip]
-      
       @day_start = params[:day_start].to_date
       @unit_id = params[:unit_id]
       @car_id = params[:car_id]
@@ -314,6 +330,7 @@ class ReservationsController < ApplicationController
 
   # PATCH/PUT /reservations/1 or /reservations/1.json
   def update
+    notice = ""
     if params[:reservation][:approved].present?
       if @reservation.update(reservation_params)
         ReservationMailer.with(reservation: @reservation).car_reservation_approved(current_user).deliver_now unless @reservation.approved == false
@@ -335,7 +352,6 @@ class ReservationsController < ApplicationController
       update_params["number_of_people_on_trip"] = params[:number_of_people_on_trip]
       start_time = params[:start_time].to_datetime - 15.minute
       end_time = params[:end_time].to_datetime + 15.minute
-      note = ""
       result.each do |id|
         reservation = Reservation.find(id)
         day_start = reservation.start_time.beginning_of_day
@@ -343,24 +359,23 @@ class ReservationsController < ApplicationController
         update_params["start_time"] = day_start + Time.parse(start_time.strftime("%I:%M%p")).seconds_since_midnight.seconds
         update_params["end_time"] = day_end + Time.parse(end_time.strftime("%I:%M%p")).seconds_since_midnight.seconds
         unless reservation.update(update_params)
-          note += "Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". "
+          alert += "Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". "
         end
       end
-      if note == ""
-        note = "This and all following recurring reservations were updated."
-        redirect_to reservation_path(@reservation), notice: note
+      if alert == ""
+        notice = "This and all following recurring reservations were updated."
+        redirect_to reservation_path(@reservation), notice: notice
       else
-        redirect_to reservation_path(@reservation), alert: note
+        redirect_to reservation_path(@reservation), notice: notice, alert: alert
       end
     else
-      notice = ""
       if @reservation.recurring.present?
         recurring_reservation = RecurringReservation.new(@reservation)
-        note = recurring_reservation.remove_from_list
-        if note == ""
+        alert = recurring_reservation.remove_from_list
+        if alert == ""
           notice = " Reservation was removed from the list of recurring reservations."
         else
-          redirect_to reservation_path(@reservation), notice: "Reservation was not updated." + note
+          redirect_to reservation_path(@reservation), alert: "Reservation was not updated." + alert
           return
         end
       end
@@ -372,10 +387,12 @@ class ReservationsController < ApplicationController
 
       # check if updated reservation has conflict with existing resertvations
       no_conflict = available_edit?(@reservation.id, @reservation.car, @reservation.start_time..@reservation.end_time)
-      if !no_conflict && is_admin?(current_user)
-        alert = " There is a conflict on " + show_date_with_month_name(@reservation.start_time) + " day."
+      if no_conflict
+        alert = ""
+      elsif !no_conflict && is_admin?(current_user)
+        alert = " There is a conflict with another reservation on " + show_date_with_month_name(@reservation.start_time) + "."
       else
-        alert = " There is a conflict on " + show_date_with_month_name(@reservation.start_time) + " day. Please select diferent time or ask admins to edit the reservation."
+        alert = " There is a conflict with another reservation on " + show_date_with_month_name(@reservation.start_time) + ". Please select diferent time or ask admins to edit the reservation."
       end
       # for admins - always save && display message about conflict
       # for non admins - save if there is no conflict
