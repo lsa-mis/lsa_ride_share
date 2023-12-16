@@ -543,7 +543,7 @@ class ReservationsController < ApplicationController
 
   def add_drivers_later
     notice = "Reservation was created, but confirmation email was not sent."
-    alert = "Send email mannualy after adding drivers."
+    alert = "Send email mannualy after adding drivers. "
     if @reservation.recurring.present?
       if @reservation.recurring.present?
         recurring_reservation = RecurringReservation.new(@reservation)
