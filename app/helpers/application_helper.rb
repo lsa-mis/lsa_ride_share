@@ -25,6 +25,10 @@ module ApplicationHelper
     field.strftime("%m/%d/%Y") unless field.blank?
   end
 
+  def show_date_with_month_name(field)
+    field.to_date.strftime("%B %d, %Y") unless field.blank?
+  end
+
   def show_date_time(field)
     field.strftime("%m/%d/%Y %I:%M%p") unless field.blank?
   end
@@ -458,16 +462,15 @@ module ApplicationHelper
   end
 
   def available?(car, range)
-    day = range.begin.to_date
-    day_reservations = car.reservations.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day).order(:start_time)
-    return true unless day_reservations.present?
-    # to add 15 minutes to nother reservation. Time slot between two reservations should be 30 minutes
-    car_ranges = day_reservations.map { |res| (res.start_time - 14.minute)..(res.end_time + 14.minute) }
-    if car_ranges.any? { |r| r.overlaps?(range)}
-      return false
-    else
-      return true
+    range_begin = range.begin
+    range_end = range.end
+    if car.reservations.where("start_time BETWEEN ? AND ? OR end_time BETWEEN ? AND ?", range_begin, range_end, range_begin, range_end).present?
+      return false 
     end
+    if car.reservations.where("start_time < ? AND end_time > ?", range_begin, range_end).present?
+      return false 
+    end
+    return true
   end
 
   def all_day_available_time(day, unit_id)

@@ -7,6 +7,12 @@
     <h3>
      New transportation reservation for (<%= "#{@start_time} - #{@end_time}" %>) has been submitted.
     </h3>
+    <% if @conflict_days_message.present? %>
+      <p style="color:red">
+       <%= @conflict_days_message %>
+       drivers and passengers are notified about conflicts.
+      </p>
+    <% end %>
 
     <p> Reservation for:  <%= link_to "#{@reservation.display_name}", reservation_url(@reservation) %> </p>
     <p>

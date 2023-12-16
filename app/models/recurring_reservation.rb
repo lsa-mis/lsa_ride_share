@@ -47,6 +47,7 @@ class RecurringReservation
   end
 
   def create_all
+    conflict_days_message = ""
     unless @reservation.recurring.empty?
       start_hour = @reservation.start_time.strftime("%H").to_i
       start_minute = @reservation.start_time.strftime("%M").to_i
@@ -73,6 +74,11 @@ class RecurringReservation
           next_reservation.end_time = DateTime.new(day_end.year, day_end.month, day_end.day, end_hour, end_minute, 0, 'EST')
         end
         next_reservation.prev = prev_reserv.id
+        # check if there are start_time..end_time for @reservation.car is available on start_day
+        # ranges = available_ranges(@reservation.car, start_day, @reservation.program.unit)
+        unless available?(@reservation.car, next_reservation.start_time..next_reservation.end_time)
+          conflict_days_message += show_date_with_month_name(day) + "; "
+        end
         next_reservation.save
         if prev_reserv.passengers.present?
           next_reservation.passengers << prev_reserv.passengers
@@ -84,6 +90,10 @@ class RecurringReservation
         prev_reserv = Reservation.find(next_reservation.id)
       end
     end
+    if conflict_days_message.present?
+      conflict_days_message = "There are conflicts with other reservations on: " + conflict_days_message
+    end
+    return conflict_days_message
   end
 
   def update_drivers(params)
