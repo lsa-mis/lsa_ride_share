@@ -370,6 +370,7 @@ class ReservationsController < ApplicationController
       end
     else
       if @reservation.recurring.present?
+        # edit recurring reservation as stahd-alone; remotve it from the list of recurring reservations
         recurring_reservation = RecurringReservation.new(@reservation)
         alert = recurring_reservation.remove_from_list
         if alert == ""
