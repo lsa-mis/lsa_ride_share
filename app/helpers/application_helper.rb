@@ -462,8 +462,8 @@ module ApplicationHelper
   end
 
   def available?(car, range)
-    range_begin = range.begin
-    range_end = range.end
+    range_begin = range.begin + 1.minute
+    range_end = range.end - 1.minute
     if car.reservations.where("start_time BETWEEN ? AND ? OR end_time BETWEEN ? AND ?", range_begin, range_end, range_begin, range_end).present?
       return false 
     end
