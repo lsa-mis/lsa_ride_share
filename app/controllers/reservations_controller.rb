@@ -295,7 +295,12 @@ class ReservationsController < ApplicationController
       @end_time = params[:end_time]
       @until_date = params[:until_date]
       @cars = list_of_available_cars(@unit_id, @day_start, @number_of_people_on_trip, @start_time, @end_time)
-      render :new, status: :unprocessable_entity
+      if params[:day_end].present?
+        @day_end = params[:day_end].to_date
+        render :new_long, status: :unprocessable_entity
+      else 
+        render :new, status: :unprocessable_entity
+      end
     end
   end
 
@@ -342,7 +347,6 @@ class ReservationsController < ApplicationController
         return
       end
     end
-
     if params[:recurring] == "true"
       recurring_reservation = RecurringReservation.new(@reservation)
       result = recurring_reservation.get_following
@@ -385,7 +389,6 @@ class ReservationsController < ApplicationController
       @reservation.start_time = params[:start_time].to_datetime - 15.minute
       @reservation.end_time = params[:end_time].to_datetime + 15.minute
       @reservation.number_of_people_on_trip = params[:number_of_people_on_trip]
-
       # check if updated reservation has conflict with existing resertvations
       no_conflict = available_edit?(@reservation.id, @reservation.car, @reservation.start_time..@reservation.end_time)
       if no_conflict
@@ -412,7 +415,12 @@ class ReservationsController < ApplicationController
           @start_time = params[:start_time]
           @end_time = params[:end_time]
           @students = Student.all
-          render :edit, status: :unprocessable_entity
+          if params[:day_end].present?
+            @day_end = params[:day_end].to_date
+            render :edit_long, status: :unprocessable_entity
+          else 
+            render :edit, status: :unprocessable_entity
+          end
         end
       else
         # for students and managers - don't save if there is a conflict
@@ -428,7 +436,12 @@ class ReservationsController < ApplicationController
         @end_time = params[:end_time]
         @students = Student.all
         flash.now[:alert] = alert
-        render :edit, status: :unprocessable_entity
+        if params[:day_end].present?
+          @day_end = params[:day_end].to_date
+          render :edit_long, status: :unprocessable_entity
+        else 
+          render :edit, status: :unprocessable_entity
+        end
         return
       end
     end
