@@ -10,7 +10,6 @@ export default class extends Controller {
   }
 
   changeStartEndDay(){
-    console.log("here)")
     let unit_id = this.unitTarget.value
     let day_start = this.day_startTarget.value
     let day_end = this.day_endTarget.value

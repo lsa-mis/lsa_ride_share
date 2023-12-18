@@ -75,7 +75,6 @@ class RecurringReservation
         end
         next_reservation.prev = prev_reserv.id
         # check if there are start_time..end_time for @reservation.car is available on start_day
-        # ranges = available_ranges(@reservation.car, start_day, @reservation.program.unit)
         unless available?(@reservation.car, next_reservation.start_time..next_reservation.end_time)
           conflict_days_message += show_date_with_month_name(day) + "; "
         end
@@ -106,8 +105,8 @@ class RecurringReservation
         reservation = Reservation.find(id)
         day_start = reservation.start_time.beginning_of_day
         day_end = reservation.end_time.beginning_of_day
-        start_time = day_start + Time.parse(start_time.strftime("%I:%M%p")).seconds_since_midnight.seconds
-        end_time = day_end + Time.parse(end_time.strftime("%I:%M%p")).seconds_since_midnight.seconds
+        start_time = combine_day_and_time(day_start, start_time)
+        end_time = combine_day_and_time(day_end, end_time)
         update_params["start_time"] = start_time
         update_params["end_time"] = end_time
         unless reservation.update(update_params)
@@ -125,8 +124,8 @@ class RecurringReservation
       reservation = Reservation.find(id)
       day_start = reservation.start_time.beginning_of_day
       day_end = reservation.end_time.beginning_of_day
-      start_time = day_start + Time.parse(start_time.strftime("%I:%M%p")).seconds_since_midnight.seconds
-      end_time = day_end + Time.parse(end_time.strftime("%I:%M%p")).seconds_since_midnight.seconds
+      start_time = combine_day_and_time(day_start, start_time)
+      end_time = combine_day_and_time(day_end, end_time)
       unless available_edit?(id, reservation.car, start_time..end_time)
         conflict_days_message += show_date_with_month_name(day_start) + "; "
       end

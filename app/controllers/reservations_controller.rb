@@ -93,8 +93,7 @@ class ReservationsController < ApplicationController
     if params[:start_time].present?
       @start_time = params[:start_time]
     elsif @day_start == Date.today
-      times = show_time_begin_end(@day_start, @unit_id)
-      @start_time = times[0]
+      @start_time = unit_beginning_of_day(day, unit_id)
       if @start_time < DateTime.now
         @start_time = Time.at(((DateTime.now + 450.second).to_f / 15.minute).round * 15.minute).to_datetime
         @end_time = @start_time + 15.minute
@@ -202,16 +201,16 @@ class ReservationsController < ApplicationController
     if (@day_end.to_date - @day_start.to_date).to_i > 1
 
       cars_reservations = Reservation.where(car_id: @cars)
-      day_start_beginning = unit_begining_of_day(@day_start, @unit_id) - 15.minute
+      day_start_beginning = unit_beginning_of_day(@day_start, @unit_id) - 15.minute
       day_start_finish = unit_end_of_day(@day_start, @unit_id) + 15.minute
 
-      day_end_begining = unit_begining_of_day(@day_end, @unit_id) - 15.minute
+      day_end_beginning = unit_beginning_of_day(@day_end, @unit_id) - 15.minute
       day_end_finish = unit_end_of_day(@day_end, @unit_id) + 15.minute
 
-      long_reservations = cars_reservations.where("start_time < ? AND end_time > ?", day_start_finish, day_end_begining).pluck(:car_id)
+      long_reservations = cars_reservations.where("start_time < ? AND end_time > ?", day_start_finish, day_end_beginning).pluck(:car_id)
       between_reservations = cars_reservations.where(start_time: (day_start_beginning + 1.day).., end_time: ..(day_end_finish - 1.day)).pluck(:car_id)
       day_start_reservations = cars_reservations.where(start_time: day_start_beginning..day_start_finish, end_time: day_start_finish - 30.minute..day_start_finish).pluck(:car_id)
-      day_end_reservations = cars_reservations.where(start_time: day_end_begining..day_end_begining + 30.minute, end_time: day_end_begining..day_end_finish).pluck(:car_id)
+      day_end_reservations = cars_reservations.where(start_time: day_end_beginning..day_end_beginning + 30.minute, end_time: day_end_beginning..day_end_finish).pluck(:car_id)
       exclude_cars = (between_reservations + day_start_reservations + day_end_reservations + long_reservations).uniq
       @cars = @cars.where.not(id: exclude_cars)
     end
@@ -244,8 +243,8 @@ class ReservationsController < ApplicationController
       @day_start = params[:day_start].to_date
     end
     @day_start = params[:day_start].to_date
-    @start_time = @day_start + Time.parse(params[:start_time]).seconds_since_midnight.seconds
-    @end_time = @day_start + Time.parse(params[:end_time]).seconds_since_midnight.seconds
+    @start_time = combine_day_and_time(@day_start, params[:start_time])
+    @end_time = combine_day_and_time(@day_start, params[:end_time])
     @cars = []
     authorize Reservation
   end
@@ -310,8 +309,8 @@ class ReservationsController < ApplicationController
     end
     if params[:day_start].present?
       @day_start = params[:day_start].to_date
-      @start_time = @day_start + Time.parse(params[:start_time]).seconds_since_midnight.seconds
-      @end_time = @day_start + Time.parse(params[:end_time]).seconds_since_midnight.seconds
+      @start_time = combine_day_and_time(@day_start, params[:start_time])
+      @end_time = combine_day_and_time(@day_start, params[:end_time])
     end
     @cars = Car.available.where(unit_id: @unit_id).order(:car_number)
     authorize Reservation
@@ -323,13 +322,12 @@ class ReservationsController < ApplicationController
     end
     if params[:day_start].present?
       @day_start = params[:day_start].to_date
-      @start_time = @day_start + Time.parse(params[:start_time]).seconds_since_midnight.seconds
+      @start_time = combine_day_and_time(@day_start, params[:start_time])
     end
     if params[:day_end].present?
       @day_end = params[:day_end].to_date
-      @end_time = @day_end + Time.parse(params[:end_time]).seconds_since_midnight.seconds
+      @end_time = combine_day_and_time(@day_end, params[:end_time])
     end
-    # @cars = Car.available.where(unit_id: @unit_id).order(:car_number)
     authorize Reservation
   end
 
