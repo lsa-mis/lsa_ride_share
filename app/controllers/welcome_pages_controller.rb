@@ -25,7 +25,7 @@ class WelcomePagesController < ApplicationController
     else
       @reservation = []
     end
-    @contact_data = UnitPreference.select(:unit_id, :name, :value).where(unit_id: unit_ids).where("name = 'unit_office' OR name = 'contact_phone'").group_by(&:unit_id).to_a
+    @contact_data = UnitPreference.select(:unit_id, :name, :value).where(unit_id: unit_ids).where("name = 'unit_office' OR name = 'contact_phone' OR name = 'notification_email'").group_by(&:unit_id).to_a
   end
 
   def update_status(resource, program)
@@ -58,7 +58,7 @@ class WelcomePagesController < ApplicationController
       @program = Program.find(params[:program_id])
       @unit_id = @program.unit.id
     end
-    @contact_data = UnitPreference.select(:unit_id, :name, :value).where(unit_id: unit_ids).where("name = 'unit_office' OR name = 'contact_phone'").group_by(&:unit_id).to_a
+    @contact_data = UnitPreference.select(:unit_id, :name, :value).where(unit_id: unit_ids).where("name = 'unit_office' OR name = 'contact_phone' OR name = 'notification_email'").group_by(&:unit_id).to_a
     if @program.present?
       update_status(@manager, @program)
       @reservations_current = (@manager.passenger_current.where(program_id: @program.id) + 

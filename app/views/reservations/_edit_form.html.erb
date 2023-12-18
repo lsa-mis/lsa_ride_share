@@ -73,7 +73,7 @@
         Current Start Time:
       </label>
       <p class="body-lg-text ml-2 inline-block">
-        <%= show_date_time(reservation.start_time + 15.minute) %>
+        <%= show_date_time(Reservation.find(reservation.id).start_time + 15.minute) %>
       </p>
     </div>
     <div class="py-2">
@@ -81,7 +81,7 @@
         Current End Time:
       </label>
       <p class="body-lg-text ml-2 inline-block">
-        <%= show_date_time(reservation.end_time - 15.minute)%>
+        <%= show_date_time(Reservation.find(reservation.id).end_time - 15.minute)%>
       </p>
     </div>
 
