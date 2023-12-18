@@ -93,8 +93,7 @@ class ReservationsController < ApplicationController
     if params[:start_time].present?
       @start_time = params[:start_time]
     elsif @day_start == Date.today
-      times = show_time_begin_end(@day_start, @unit_id)
-      @start_time = times[0]
+      @start_time = unit_begining_of_day(day, unit_id)
       if @start_time < DateTime.now
         @start_time = Time.at(((DateTime.now + 450.second).to_f / 15.minute).round * 15.minute).to_datetime
         @end_time = @start_time + 15.minute

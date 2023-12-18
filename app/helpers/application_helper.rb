@@ -93,14 +93,6 @@ module ApplicationHelper
     end
   end
 
-  def show_units(user)
-    if is_super_admin?(user)
-      "SuperAdmin"
-    else
-      Unit.where(id: current_user.unit_ids).pluck(:name).join(' ')
-    end
-  end
-
   def unit_use_faculty_survey?(unit_id)
     UnitPreference.where(unit_id: unit_id, name: "faculty_survey").present? && UnitPreference.where(unit_id: unit_id, name: "faculty_survey").pluck(:on_off).include?(true)
   end
@@ -316,10 +308,9 @@ module ApplicationHelper
   end
 
   def available_ranges(car, day, unit_id)
-    # time renges when the car is available on the day
-    times = show_time_begin_end(day, unit_id)
-    day_begin  = times[0] - 15.minute
-    day_end  = times[1] + 15.minute
+    # time ranges when the car is available on the day
+    day_begin  = unit_begining_of_day(day, unit_id) - 15.minute
+    day_end  = unit_end_of_day(day, unit_id) + 15.minute
     car_available = []
     space_begin = day_begin
     car_day_reserv = car.reservations.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day).order(:start_time)
@@ -393,6 +384,7 @@ module ApplicationHelper
   end
 
   def unit_begining_of_day(day, unit_id)
+    # earliest time from Unit Preferences to create reseervation 
     t_begin = UnitPreference.find_by(name: "reservation_time_begin", unit_id: unit_id).value
     t_begin = Time.parse(t_begin).strftime("%H").to_i
     if (day.to_time + 2.hour).dst?
@@ -404,6 +396,7 @@ module ApplicationHelper
   end
 
   def unit_end_of_day(day, unit_id)
+    # latest time from Unit Preferences to create reseervation 
     t_end = UnitPreference.find_by(name: "reservation_time_end", unit_id: unit_id).value
     t_end = Time.parse(t_end).strftime("%H").to_i
     if (day.to_time + 2.hour).dst?
@@ -412,21 +405,6 @@ module ApplicationHelper
       day_end = DateTime.new(day.year, day.month, day.day, t_end, 0, 0, 'EST')
     end
     return day_end
-  end
-
-  def show_time_begin_end(day, unit_id)
-    t_begin = UnitPreference.find_by(name: "reservation_time_begin", unit_id: unit_id).value
-    t_begin = Time.parse(t_begin).strftime("%H").to_i
-    t_end = UnitPreference.find_by(name: "reservation_time_end", unit_id: unit_id).value
-    t_end = Time.parse(t_end).strftime("%H").to_i
-    if (day.to_time + 2.hour).dst?
-      day_begin = DateTime.new(day.year, day.month, day.day, t_begin, 0, 0, 'EDT')
-      day_end = DateTime.new(day.year, day.month, day.day, t_end, 0, 0, 'EDT')
-    else
-      day_begin = DateTime.new(day.year, day.month, day.day, t_begin, 0, 0, 'EST')
-      day_end = DateTime.new(day.year, day.month, day.day, t_end, 0, 0, 'EST')
-    end
-    return [day_begin, day_end]
   end
 
   def show_time_range(day_range, current = false)
@@ -487,9 +465,8 @@ module ApplicationHelper
 
   def all_day_available_time(day, unit_id)
     # all day time renges for unit
-    times = show_time_begin_end(day, unit_id)
-    day_begin = times[0]
-    day_end = times[1]
+    day_begin = unit_begining_of_day(day, unit_id)
+    day_end = unit_end_of_day(day, unit_id)
     day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t).to_datetime }
     available_times_begin = day_times_with_15_min_steps.map { |t| [show_time(t), t.to_s] }
     available_times_begin.pop
@@ -505,9 +482,8 @@ module ApplicationHelper
       return all_day_available_time(day, unit_id)
     end
     # array of time with 15 minutes step available to reserve cars
-    times = show_time_begin_end(day, unit_id)
-    day_begin = times[0]
-    day_end = times[1]
+    day_begin = unit_begining_of_day(day, unit_id)
+    day_end = unit_end_of_day(day, unit_id)
     day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t).to_datetime }
     available_times_begin = []
     available_times_end = []
@@ -801,9 +777,8 @@ module ApplicationHelper
   end
 
   def get_car_day_reservations_hash(day, car)
-    times = show_time_begin_end(day, @unit_id)
-    day_begin = times[0] - 15.minute
-    day_end = times[1]
+    day_begin = unit_begining_of_day(day, @unit_id) - 15.minute
+    day_end = unit_end_of_day(day, @unit_id)
     day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) }
     if car.present?
       car_day_reserv = car.reservations.where("(start_time BETWEEN ? AND ?) OR (start_time < ? AND end_time > ?)",

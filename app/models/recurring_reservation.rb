@@ -75,7 +75,6 @@ class RecurringReservation
         end
         next_reservation.prev = prev_reserv.id
         # check if there are start_time..end_time for @reservation.car is available on start_day
-        # ranges = available_ranges(@reservation.car, start_day, @reservation.program.unit)
         unless available?(@reservation.car, next_reservation.start_time..next_reservation.end_time)
           conflict_days_message += show_date_with_month_name(day) + "; "
         end
