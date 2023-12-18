@@ -309,11 +309,15 @@ module ApplicationHelper
 
   def available_ranges(car, day, unit_id)
     # time ranges when the car is available on the day
-    day_begin  = unit_begining_of_day(day, unit_id) - 15.minute
+    day_begin  = unit_beginning_of_day(day, unit_id) - 15.minute
     day_end  = unit_end_of_day(day, unit_id) + 15.minute
     car_available = []
+    car_whole_day = car.reservations.where("start_time < ? AND end_time > ?", day.beginning_of_day, day.end_of_day)
+    if car_whole_day.present?
+      return car_available
+    end
     space_begin = day_begin
-    car_day_reserv = car.reservations.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day).order(:start_time)
+    car_day_reserv = car.reservations.where("start_time BETWEEN ? AND ? OR end_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day, day.beginning_of_day, day.end_of_day).order(:start_time)
     if car_day_reserv.present?
       day_ranges = car_day_reserv.map { |res| res.start_time..res.end_time }
       day_ranges.each do |range|
@@ -340,15 +344,20 @@ module ApplicationHelper
 
   def available_ranges_long(car, day_start, day_end, unit_id)
     # time renges when the car is available from day_start to day_end
-    day_start_beginning = unit_begining_of_day(@day_start, @unit_id) - 15.minute
+    day_start_beginning = unit_beginning_of_day(@day_start, @unit_id) - 15.minute
     day_start_finish = unit_end_of_day(@day_start, @unit_id) + 15.minute
 
-    day_end_begining = unit_begining_of_day(@day_end, @unit_id) - 15.minute
+    day_end_beginning = unit_beginning_of_day(@day_end, @unit_id) - 15.minute
     day_end_finish = unit_end_of_day(@day_end, @unit_id) + 15.minute
-    day_start_reservation = car.reservations.where(start_time: day_start_beginning..day_start_finish).order(end_time: :desc).first
-    day_end_reservation = car.reservations.where(start_time: day_end_begining..day_end_finish).order(:start_time).first
-
     car_available = []
+    car_whole_day_beginning = car.reservations.where("start_time < ? AND end_time > ?", day_start_beginning, day_start_finish)
+    car_whole_day_finish = car.reservations.where("start_time < ? AND end_time > ?", day_end_beginning, day_end_finish)
+    if car_whole_day_beginning.present? || car_whole_day_finish.present?
+      return car_available
+    end
+    day_start_reservation = car.reservations.where(start_time: day_start_beginning..day_start_finish).order(end_time: :desc).first
+    day_end_reservation = car.reservations.where(start_time: day_end_beginning..day_end_finish).order(:start_time).first
+
     if day_start_reservation.present?
       range_start = day_start_reservation.end_time
     else
@@ -383,7 +392,7 @@ module ApplicationHelper
     return car_available
   end
 
-  def unit_begining_of_day(day, unit_id)
+  def unit_beginning_of_day(day, unit_id)
     # earliest time from Unit Preferences to create reseervation 
     t_begin = UnitPreference.find_by(name: "reservation_time_begin", unit_id: unit_id).value
     t_begin = Time.parse(t_begin).strftime("%H").to_i
@@ -408,6 +417,10 @@ module ApplicationHelper
   end
 
   def show_time_range(day_range, current = false)
+    # show avalable time range or current reservation range
+    if (day_range.begin + 15.minute).strftime("%I:%M%p") == (day_range.end - 15.minute).strftime("%I:%M%p")
+      return ""
+    end
     if current
       "#{(day_range.begin + 15.minute).strftime("%I:%M%p")} - #{(day_range.end - 15.minute).strftime("%I:%M%p")} - current"
     else
@@ -416,6 +429,7 @@ module ApplicationHelper
   end
 
   def show_time_range_long(day_range, current = false)
+    # show avalable time range or current reservation range
     if current
       "#{(day_range.begin + 15.minute).strftime("%I:%M%p")}(#{(day_range.begin).strftime("%b %d")}) - #{(day_range.end - 15.minute).strftime("%I:%M%p")}(#{(day_range.end).strftime("%b %d")}) - current"
     else
@@ -440,6 +454,7 @@ module ApplicationHelper
   end
 
   def available?(car, range)
+    # if car is avalable for the time range
     range_begin = range.begin + 1.minute
     range_end = range.end - 1.minute
     if car.reservations.where("start_time BETWEEN ? AND ? OR end_time BETWEEN ? AND ?", range_begin, range_end, range_begin, range_end).present?
@@ -452,6 +467,7 @@ module ApplicationHelper
   end
 
   def available_edit?(reservation_id, car, range)
+    # if car is avalable for the time range - do not count the current reservation
     range_begin = range.begin + 1.minute
     range_end = range.end - 1.minute
     if car.reservations.where("id <> ? AND (start_time BETWEEN ? AND ? OR end_time BETWEEN ? AND ?)", reservation_id, range_begin, range_end, range_begin, range_end).present?
@@ -465,7 +481,7 @@ module ApplicationHelper
 
   def all_day_available_time(day, unit_id)
     # all day time renges for unit
-    day_begin = unit_begining_of_day(day, unit_id)
+    day_begin = unit_beginning_of_day(day, unit_id)
     day_end = unit_end_of_day(day, unit_id)
     day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t).to_datetime }
     available_times_begin = day_times_with_15_min_steps.map { |t| [show_time(t), t.to_s] }
@@ -482,7 +498,7 @@ module ApplicationHelper
       return all_day_available_time(day, unit_id)
     end
     # array of time with 15 minutes step available to reserve cars
-    day_begin = unit_begining_of_day(day, unit_id)
+    day_begin = unit_beginning_of_day(day, unit_id)
     day_end = unit_end_of_day(day, unit_id)
     day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t).to_datetime }
     available_times_begin = []
@@ -515,6 +531,7 @@ module ApplicationHelper
   end
 
   def available_cars(cars, range)
+    # all cars available for the time range
     available = []
     cars.each do |car|
       if available?(car, range)
@@ -777,7 +794,7 @@ module ApplicationHelper
   end
 
   def get_car_day_reservations_hash(day, car)
-    day_begin = unit_begining_of_day(day, @unit_id) - 15.minute
+    day_begin = unit_beginning_of_day(day, @unit_id) - 15.minute
     day_end = unit_end_of_day(day, @unit_id)
     day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) }
     if car.present?
