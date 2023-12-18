@@ -360,6 +360,8 @@ class ReservationsController < ApplicationController
       else
         alert = recurring_reservation.update_this_and_following(update_params, start_time, end_time, false)
         if alert == ""
+          ReservationMailer.with(reservation: @reservation).car_reservation_updated(user: current_user, recurring: true, admin: true).deliver_now
+          @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id).order(created_at: :desc)
           redirect_to reservation_path(@reservation), notice: notice
         else
           # for students and managers - don't save if there is a conflict
@@ -414,6 +416,10 @@ class ReservationsController < ApplicationController
       # for non admins - save if there is no conflict
       if is_admin?(current_user) || !is_admin?(current_user) && no_conflict
         if @reservation.update(reservation_params)
+          unless is_admin?(current_user)
+            ReservationMailer.with(reservation: @reservation).car_reservation_updated(user: current_user, recurring: false, admin: true).deliver_now
+            @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id).order(created_at: :desc)
+          end
           redirect_to reservation_path(@reservation), notice: "Reservation was successfully updated." + notice, alert: alert
         else
           @programs = Program.where(unit_id: current_user.unit_ids).order(:title, :catalog_number, :class_section)
@@ -543,7 +549,7 @@ class ReservationsController < ApplicationController
       recurring = false
       note = "Email about updating this reservation was sent."
     end
-    ReservationMailer.with(reservation: @reservation).car_reservation_updated(current_user, recurring).deliver_now
+    ReservationMailer.with(reservation: @reservation).car_reservation_updated(user: current_user, recurring: recurring, admin: false).deliver_now
     @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id).order(created_at: :desc)
     redirect_to reservation_path(@reservation), notice: note
   end

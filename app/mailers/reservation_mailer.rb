@@ -75,13 +75,16 @@ class ReservationMailer < ApplicationMailer
     create_email_log_records("Reservation", @reservation, recurring, @email_type, @recipients, user.id, cancel_type)
   end
 
-  def car_reservation_updated(user, recurring = false)
+  def car_reservation_updated(user:, recurring: false, admin: false)
+    # admin == false - don't sent email to admin
+    # admin == true - send email to admin
     recipients = []
     recipients << User.find(@reservation.reserved_by).principal_name.presence
     recipients << email_address(@reservation.driver) if @reservation.driver.present?
     recipients << email_address(@reservation.driver_manager) if @reservation.driver_manager.present?
     recipients << email_address(@reservation.backup_driver) if @reservation.backup_driver.present?
     recipients << @passengers_emails if @passengers_emails.present?
+    recipients << @unit_email if admin
     @recipients = recipients.uniq.join(", ")
     subject_email_type_recurring_rule(@reservation, recurring, "updated")
     mail(to: @recipients, subject: @subject)
