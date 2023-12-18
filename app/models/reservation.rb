@@ -82,9 +82,12 @@ class Reservation < ApplicationRecord
   end
 
   def check_number_of_people_on_trip
+    if self.number_of_people_on_trip > self.car.number_of_seats
+        errors.add(:number_of_people_on_trip, "is bigger then number of seats in the car.")
+    end
     if self.number_of_people_on_trip_changed?
       if self.number_of_people_on_trip_change[0] > self.number_of_people_on_trip_change[1] && self.number_of_people_on_trip_change[1] < self.added_people
-        errors.add(:number_of_people_on_trip, ": remove passengers before updating the number")
+        errors.add(:number_of_people_on_trip, "can't be smaller then number of people added to the reservation; remove passengers before updating the number.")
       end
     end
   end
