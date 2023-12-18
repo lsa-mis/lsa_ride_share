@@ -1,7 +1,7 @@
 <div class="mx-auto w-full">
   <div class="md:flex justify-between items-center pb-4">
     <h1><%= @program.title %></h1>
-    <div class="lg:grid lg:justify-items-end">
+    <div class="lg:grid lg:justify-items-end whitespace-nowrap">
       <% if Term.current_and_future.include?(@program.term) %>
         <div class="py-2">
           <%= link_to 'Edit Program', edit_program_path(@program), class: "primary_button" %>
