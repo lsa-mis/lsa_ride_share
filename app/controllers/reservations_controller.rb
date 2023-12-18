@@ -244,8 +244,8 @@ class ReservationsController < ApplicationController
       @day_start = params[:day_start].to_date
     end
     @day_start = params[:day_start].to_date
-    @start_time = @day_start + Time.parse(params[:start_time]).seconds_since_midnight.seconds
-    @end_time = @day_start + Time.parse(params[:end_time]).seconds_since_midnight.seconds
+    @start_time = combine_day_and_time(@day_start, params[:start_time])
+    @end_time = combine_day_and_time(@day_start, params[:end_time])
     @cars = []
     authorize Reservation
   end
