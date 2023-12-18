@@ -349,28 +349,42 @@ class ReservationsController < ApplicationController
     end
     if params[:recurring] == "true"
       recurring_reservation = RecurringReservation.new(@reservation)
-      result = recurring_reservation.get_following
       update_params = {}
       update_params["site_id"] = reservation_params[:site_id]
       update_params["car_id"] = params[:car_id]
       update_params["number_of_people_on_trip"] = params[:number_of_people_on_trip]
       start_time = params[:start_time].to_datetime - 15.minute
       end_time = params[:end_time].to_datetime + 15.minute
-      result.each do |id|
-        reservation = Reservation.find(id)
-        day_start = reservation.start_time.beginning_of_day
-        day_end = reservation.end_time.beginning_of_day
-        update_params["start_time"] = day_start + Time.parse(start_time.strftime("%I:%M%p")).seconds_since_midnight.seconds
-        update_params["end_time"] = day_end + Time.parse(end_time.strftime("%I:%M%p")).seconds_since_midnight.seconds
-        unless reservation.update(update_params)
-          alert += "Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". "
-        end
-      end
-      if alert == ""
-        notice = "This and all following recurring reservations were updated."
-        redirect_to reservation_path(@reservation), notice: notice
-      else
+      notice = "This and all following recurring reservations were updated."
+      if is_admin?(current_user)
+        alert = recurring_reservation.update_this_and_following(update_params, start_time, end_time, true)
         redirect_to reservation_path(@reservation), notice: notice, alert: alert
+      else
+        alert = recurring_reservation.update_this_and_following(update_params, start_time, end_time, false)
+        if alert == ""
+          redirect_to reservation_path(@reservation), notice: notice
+        else
+          # for students and managers - don't save if there is a conflict
+          alert += " please select diferent time or ask admins to edit the reservation."
+          @programs = Program.where(unit_id: current_user.unit_ids).order(:title, :catalog_number, :class_section)
+          @number_of_seats = 1..Car.available.maximum(:number_of_seats)
+          @number_of_people_on_trip = Reservation.find(params[:id]).number_of_people_on_trip
+          @day_start = @reservation.start_time.to_date
+          @unit_id = params[:unit_id]
+          @cars = Car.available.where(unit_id: @unit_id).order(:car_number)
+          @sites = @reservation.program.sites
+          @car_id = @reservation.car_id
+          @start_time = params[:start_time]
+          @end_time = params[:end_time]
+          flash.now[:alert] = alert
+          if params[:day_end].present?
+            @day_end = params[:day_end].to_date
+            render :edit_long, status: :unprocessable_entity
+          else 
+            render :edit, status: :unprocessable_entity
+          end
+          return
+        end
       end
     else
       if @reservation.recurring.present?
@@ -414,7 +428,6 @@ class ReservationsController < ApplicationController
           @car_id = @reservation.car_id
           @start_time = params[:start_time]
           @end_time = params[:end_time]
-          @students = Student.all
           if params[:day_end].present?
             @day_end = params[:day_end].to_date
             render :edit_long, status: :unprocessable_entity
@@ -434,7 +447,6 @@ class ReservationsController < ApplicationController
         @car_id = @reservation.car_id
         @start_time = params[:start_time]
         @end_time = params[:end_time]
-        @students = Student.all
         flash.now[:alert] = alert
         if params[:day_end].present?
           @day_end = params[:day_end].to_date

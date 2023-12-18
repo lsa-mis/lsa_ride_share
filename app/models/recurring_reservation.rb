@@ -96,6 +96,47 @@ class RecurringReservation
     return conflict_days_message
   end
 
+  def update_this_and_following(update_params, start_time, end_time, admin = false)
+    conflict_days_message = ""
+    alert = ""
+    list = get_following
+    conflict_days_message = conflicts_updating_recurring(start_time, end_time)
+    if admin || (!admin && conflict_days_message == "")
+      list.each do |id|
+        reservation = Reservation.find(id)
+        day_start = reservation.start_time.beginning_of_day
+        day_end = reservation.end_time.beginning_of_day
+        start_time = day_start + Time.parse(start_time.strftime("%I:%M%p")).seconds_since_midnight.seconds
+        end_time = day_end + Time.parse(end_time.strftime("%I:%M%p")).seconds_since_midnight.seconds
+        update_params["start_time"] = start_time
+        update_params["end_time"] = end_time
+        unless reservation.update(update_params)
+          alert += "Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". "
+        end
+      end
+    end
+    return conflict_days_message + alert
+  end
+
+  def conflicts_updating_recurring(start_time, end_time)
+    conflict_days_message = ""
+    list = get_following
+    list.each do |id|
+      reservation = Reservation.find(id)
+      day_start = reservation.start_time.beginning_of_day
+      day_end = reservation.end_time.beginning_of_day
+      start_time = day_start + Time.parse(start_time.strftime("%I:%M%p")).seconds_since_midnight.seconds
+      end_time = day_end + Time.parse(end_time.strftime("%I:%M%p")).seconds_since_midnight.seconds
+      unless available_edit?(id, reservation.car, start_time..end_time)
+        conflict_days_message += show_date_with_month_name(day_start) + "; "
+      end
+    end
+    if conflict_days_message.present?
+      conflict_days_message = "There are conflicts with other reservations on: " + conflict_days_message
+    end
+    return conflict_days_message
+  end
+
   def update_drivers(params)
     list = get_following
     note = ""
