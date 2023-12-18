@@ -5,7 +5,7 @@
   </head>
   <body>
     <p>
-      Your transportation reservation for (<%= "#{@start_time} - #{@end_time}" %>) has been updated. Please look at the new data.
+      The transportation reservation for (<%= "#{@start_time} - #{@end_time}" %>) has been updated. Please look at the new data.
     </p>
 
     <p> Reservation for:  <%= link_to "#{@reservation.display_name}", reservation_url(@reservation) %> </p>
