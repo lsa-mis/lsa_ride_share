@@ -1,7 +1,7 @@
 <td></td>
 <td></td>
 <td></td>
-<% car_cells = get_car_day_reservations_hash(day, car) %>
+<% car_cells = get_car_day_reservations_hash(day, car, @unit_id) %>
 <% car_cells.each do |step, reservation_data| %>
   <% if reservation_data[:start].present? %>
     <td class="td-week bg-red-650 border-r border-gray-um90">
