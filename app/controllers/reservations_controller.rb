@@ -365,7 +365,7 @@ class ReservationsController < ApplicationController
           redirect_to reservation_path(@reservation), notice: notice
         else
           # for students and managers - don't save if there is a conflict
-          alert += " please select diferent time or ask admins to edit the reservation."
+          alert += " please select a different time or ask admins to edit the reservation."
           @programs = Program.where(unit_id: current_user.unit_ids).order(:title, :catalog_number, :class_section)
           @number_of_seats = 1..Car.available.maximum(:number_of_seats)
           @number_of_people_on_trip = Reservation.find(params[:id]).number_of_people_on_trip
@@ -410,7 +410,7 @@ class ReservationsController < ApplicationController
       elsif !no_conflict && is_admin?(current_user)
         alert = " There is a conflict with another reservation on " + show_date_with_month_name(@reservation.start_time) + "."
       else
-        alert = " There is a conflict with another reservation on " + show_date_with_month_name(@reservation.start_time) + ". Please select diferent time or ask admins to edit the reservation."
+        alert = " There is a conflict with another reservation on " + show_date_with_month_name(@reservation.start_time) + ". Please select a different time or ask admins to edit the reservation."
       end
       # for admins - always save && display message about conflict
       # for non admins - save if there is no conflict
@@ -636,7 +636,9 @@ class ReservationsController < ApplicationController
     ReservationMailer.with(reservation: @reservation).car_reservation_created(current_user, recurring, conflict_days_message).deliver_now
     if recurring and conflict_days_message.present?
       alert = conflict_days_message
-      unless is_admin?(current_user)
+      if is_admin?(current_user)
+        alert += " drivers and passengers are notified. Please contact them in regards to the conflicts."
+      else
         alert += " an email was sent to admins, and they will be in contact with you in regards to the conflicts."
       end
     end
