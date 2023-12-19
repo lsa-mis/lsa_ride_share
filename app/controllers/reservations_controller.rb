@@ -266,7 +266,7 @@ class ReservationsController < ApplicationController
     if available?(@reservation.car, @reservation.start_time..@reservation.end_time)
       if @reservation.save
         @students = @reservation.program.students 
-        redirect_to add_drivers_path(@reservation), notice: "Reservation was successfully created. Please add drivers."
+        redirect_to add_drivers_path(@reservation), notice: "Please add drivers."
       else
         @program = Program.find(params[:reservation][:program_id])
         @term_id = params[:term_id]
@@ -637,7 +637,7 @@ class ReservationsController < ApplicationController
     if recurring and conflict_days_message.present?
       alert = conflict_days_message
       unless is_admin?(current_user)
-        alert += " an email was send to admins to inform them about conflicts."
+        alert += " an email was sent to admins, and they will be in contact with you in regards to the conflicts."
       end
     end
     redirect_to reservation_path(@reservation), notice: notice, alert: alert
