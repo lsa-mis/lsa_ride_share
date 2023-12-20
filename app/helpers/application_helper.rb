@@ -393,7 +393,7 @@ module ApplicationHelper
   end
 
   def unit_beginning_of_day(day, unit_id)
-    # earliest time from Unit Preferences to create reseervation 
+    # earliest time from Unit Preferences to create reservation 
     t_begin = UnitPreference.find_by(name: "reservation_time_begin", unit_id: unit_id).value
     t_begin = Time.parse(t_begin).strftime("%H").to_i
     if (day.to_time + 2.hour).dst?
@@ -405,7 +405,7 @@ module ApplicationHelper
   end
 
   def unit_end_of_day(day, unit_id)
-    # latest time from Unit Preferences to create reseervation 
+    # latest time from Unit Preferences to create reservation 
     t_end = UnitPreference.find_by(name: "reservation_time_end", unit_id: unit_id).value
     t_end = Time.parse(t_end).strftime("%H").to_i
     if (day.to_time + 2.hour).dst?

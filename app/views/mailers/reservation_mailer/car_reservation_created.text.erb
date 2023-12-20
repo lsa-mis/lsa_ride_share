@@ -1,7 +1,7 @@
 New transportation reservation for (<%= "#{@start_time} - #{@end_time}" %>) has been submitted.
 <% if @conflict_days_message.present? %>
 <%= @conflict_days_message %>
-drivers and passengers are notified about conflicts.
+drivers and passengers are notified about conflicts. Please contact them in regards to the conflicts.
 <% end %>
 
 Reservation for:  <%= link_to "#{@reservation.display_name}", reservation_url(@reservation) %>
