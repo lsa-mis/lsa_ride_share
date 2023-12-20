@@ -9,6 +9,12 @@
       You will receive a confirmation email when approved. If it can not be approved as is, we modify the request so that you have transportation, where possible. If that 
       is not possible, your request will be cancelled. Either way, you will receive an email indicating this.
     </p>
+    <% if @conflict_days_message.present? %>
+      <p style="color:red">
+      <%= @conflict_days_message %>
+      an email was sent to admins, and they will be in contact with you in regards to the conflicts.
+      </p>
+    <% end %>
 
     <p> Reservation for:  <%= link_to "#{@reservation.display_name}", reservation_url(@reservation) %> </p>
     <p>

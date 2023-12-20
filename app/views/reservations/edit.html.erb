@@ -16,7 +16,7 @@
     <%= render "edit_recurring_form", reservation: @reservation %>
   <% else %>
     <h1>Editing Reservation</h1>
-    <%= render "edit_form", reservation: @reservation %>
+      <%= render "edit_form", reservation: @reservation %>
   <% end %>
   <div>
     <%= turbo_frame_tag "available_cars" do %>

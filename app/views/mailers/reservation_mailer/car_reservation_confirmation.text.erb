@@ -2,6 +2,11 @@ Your transportation reservation for (<%= "#{@start_time} - #{@end_time}" %>) has
 You will receive a confirmation email when approved. If it can not be approved as is, we modify the request so that you have transportation, where possible. If that 
 is not possible, your request will be cancelled. Either way, you will receive an email indicating this.
 
+<% if @conflict_days_message.present? %>
+ <%= @conflict_days_message %>
+ an email was sent to admins, and they will be in contact with you in regards to the conflicts.
+<% end %>
+
 Reservation for:  <%= link_to "#{@reservation.display_name}", reservation_url(@reservation) %>
 ================================================================================================
 DATE: <%= "#{@start_time} - #{@end_time}" %>

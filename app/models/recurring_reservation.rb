@@ -47,6 +47,7 @@ class RecurringReservation
   end
 
   def create_all
+    conflict_days_message = ""
     unless @reservation.recurring.empty?
       start_hour = @reservation.start_time.strftime("%H").to_i
       start_minute = @reservation.start_time.strftime("%M").to_i
@@ -73,6 +74,10 @@ class RecurringReservation
           next_reservation.end_time = DateTime.new(day_end.year, day_end.month, day_end.day, end_hour, end_minute, 0, 'EST')
         end
         next_reservation.prev = prev_reserv.id
+        # check if there are start_time..end_time for @reservation.car is available on start_day
+        unless available?(@reservation.car, next_reservation.start_time..next_reservation.end_time)
+          conflict_days_message += show_date_with_month_name(day) + "; "
+        end
         next_reservation.save
         if prev_reserv.passengers.present?
           next_reservation.passengers << prev_reserv.passengers
@@ -84,6 +89,51 @@ class RecurringReservation
         prev_reserv = Reservation.find(next_reservation.id)
       end
     end
+    if conflict_days_message.present?
+      conflict_days_message = "There are conflicts with other reservations on: " + conflict_days_message
+    end
+    return conflict_days_message
+  end
+
+  def update_this_and_following(update_params, start_time, end_time, admin = false)
+    conflict_days_message = ""
+    alert = ""
+    list = get_following
+    conflict_days_message = conflicts_updating_recurring(start_time, end_time)
+    if admin || (!admin && conflict_days_message == "")
+      list.each do |id|
+        reservation = Reservation.find(id)
+        day_start = reservation.start_time.beginning_of_day
+        day_end = reservation.end_time.beginning_of_day
+        start_time = combine_day_and_time(day_start, start_time)
+        end_time = combine_day_and_time(day_end, end_time)
+        update_params["start_time"] = start_time
+        update_params["end_time"] = end_time
+        unless reservation.update(update_params)
+          alert += "Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". "
+        end
+      end
+    end
+    return conflict_days_message + alert
+  end
+
+  def conflicts_updating_recurring(start_time, end_time)
+    conflict_days_message = ""
+    list = get_following
+    list.each do |id|
+      reservation = Reservation.find(id)
+      day_start = reservation.start_time.beginning_of_day
+      day_end = reservation.end_time.beginning_of_day
+      start_time = combine_day_and_time(day_start, start_time)
+      end_time = combine_day_and_time(day_end, end_time)
+      unless available_edit?(id, reservation.car, start_time..end_time)
+        conflict_days_message += show_date_with_month_name(day_start) + "; "
+      end
+    end
+    if conflict_days_message.present?
+      conflict_days_message = "There are conflicts with other reservations on: " + conflict_days_message
+    end
+    return conflict_days_message
   end
 
   def update_drivers(params)

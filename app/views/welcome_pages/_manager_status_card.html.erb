@@ -12,7 +12,11 @@
           <span class="ml-2 body-sm-semibold-text"><%= contact['value'] %></span>
         <% end %>
         <% if contact['name'] == 'unit_office' && contact['value'].present? %>
-        <i class="fa-solid fa-location-dot"></i>
+          <i class="fa-solid fa-location-dot"></i>
+          <span class="ml-4 body-sm-semibold-text"><%= contact['value'] %></span>
+        <% end %>
+        <% if contact['name'] == 'notification_email' && contact['value'].present? %>
+          <i class="fa-solid fa-envelope"></i>
           <span class="ml-4 body-sm-semibold-text"><%= contact['value'] %></span>
         <% end %>
       </div>

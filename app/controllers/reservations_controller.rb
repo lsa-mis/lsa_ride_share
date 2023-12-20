@@ -93,8 +93,7 @@ class ReservationsController < ApplicationController
     if params[:start_time].present?
       @start_time = params[:start_time]
     elsif @day_start == Date.today
-      times = show_time_begin_end(@day_start, @unit_id)
-      @start_time = times[0]
+      @start_time = unit_beginning_of_day(@day_start, @unit_id)
       if @start_time < DateTime.now
         @start_time = Time.at(((DateTime.now + 450.second).to_f / 15.minute).round * 15.minute).to_datetime
         @end_time = @start_time + 15.minute
@@ -202,16 +201,16 @@ class ReservationsController < ApplicationController
     if (@day_end.to_date - @day_start.to_date).to_i > 1
 
       cars_reservations = Reservation.where(car_id: @cars)
-      day_start_beginning = unit_begining_of_day(@day_start, @unit_id) - 15.minute
+      day_start_beginning = unit_beginning_of_day(@day_start, @unit_id) - 15.minute
       day_start_finish = unit_end_of_day(@day_start, @unit_id) + 15.minute
 
-      day_end_begining = unit_begining_of_day(@day_end, @unit_id) - 15.minute
+      day_end_beginning = unit_beginning_of_day(@day_end, @unit_id) - 15.minute
       day_end_finish = unit_end_of_day(@day_end, @unit_id) + 15.minute
 
-      long_reservations = cars_reservations.where("start_time < ? AND end_time > ?", day_start_finish, day_end_begining).pluck(:car_id)
+      long_reservations = cars_reservations.where("start_time < ? AND end_time > ?", day_start_finish, day_end_beginning).pluck(:car_id)
       between_reservations = cars_reservations.where(start_time: (day_start_beginning + 1.day).., end_time: ..(day_end_finish - 1.day)).pluck(:car_id)
       day_start_reservations = cars_reservations.where(start_time: day_start_beginning..day_start_finish, end_time: day_start_finish - 30.minute..day_start_finish).pluck(:car_id)
-      day_end_reservations = cars_reservations.where(start_time: day_end_begining..day_end_begining + 30.minute, end_time: day_end_begining..day_end_finish).pluck(:car_id)
+      day_end_reservations = cars_reservations.where(start_time: day_end_beginning..day_end_beginning + 30.minute, end_time: day_end_beginning..day_end_finish).pluck(:car_id)
       exclude_cars = (between_reservations + day_start_reservations + day_end_reservations + long_reservations).uniq
       @cars = @cars.where.not(id: exclude_cars)
     end
@@ -244,8 +243,8 @@ class ReservationsController < ApplicationController
       @day_start = params[:day_start].to_date
     end
     @day_start = params[:day_start].to_date
-    @start_time = @day_start + Time.parse(params[:start_time]).seconds_since_midnight.seconds
-    @end_time = @day_start + Time.parse(params[:end_time]).seconds_since_midnight.seconds
+    @start_time = combine_day_and_time(@day_start, params[:start_time])
+    @end_time = combine_day_and_time(@day_start, params[:end_time])
     @cars = []
     authorize Reservation
   end
@@ -263,15 +262,31 @@ class ReservationsController < ApplicationController
     @reservation.until_date = params[:until_date]
     @reservation.reserved_by = current_user.id
     authorize @reservation
-    if @reservation.save
-      @students = @reservation.program.students 
-      redirect_to add_drivers_path(@reservation), notice: "Reservation was successfully created. Please add drivers."
+    # check for conflicts
+    if available?(@reservation.car, @reservation.start_time..@reservation.end_time)
+      if @reservation.save
+        @students = @reservation.program.students 
+        redirect_to add_drivers_path(@reservation), notice: "Please add drivers."
+      else
+        @program = Program.find(params[:reservation][:program_id])
+        @term_id = params[:term_id]
+        @sites = @program.sites.order(:title)
+        @number_of_people_on_trip = params[:number_of_people_on_trip]
+        @day_start = params[:day_start].to_date
+        @unit_id = params[:unit_id]
+        @car_id = params[:car_id]
+        @start_time = params[:start_time]
+        @end_time = params[:end_time]
+        @until_date = params[:until_date]
+        @cars = list_of_available_cars(@unit_id, @day_start, @number_of_people_on_trip, @start_time, @end_time)
+        render :new, status: :unprocessable_entity
+      end
     else
+      flash[:alert] = "There is a conflict with another reservation. Please select different time."
       @program = Program.find(params[:reservation][:program_id])
       @term_id = params[:term_id]
       @sites = @program.sites.order(:title)
       @number_of_people_on_trip = params[:number_of_people_on_trip]
-      
       @day_start = params[:day_start].to_date
       @unit_id = params[:unit_id]
       @car_id = params[:car_id]
@@ -279,7 +294,12 @@ class ReservationsController < ApplicationController
       @end_time = params[:end_time]
       @until_date = params[:until_date]
       @cars = list_of_available_cars(@unit_id, @day_start, @number_of_people_on_trip, @start_time, @end_time)
-      render :new, status: :unprocessable_entity
+      if params[:day_end].present?
+        @day_end = params[:day_end].to_date
+        render :new_long, status: :unprocessable_entity
+      else 
+        render :new, status: :unprocessable_entity
+      end
     end
   end
 
@@ -289,8 +309,8 @@ class ReservationsController < ApplicationController
     end
     if params[:day_start].present?
       @day_start = params[:day_start].to_date
-      @start_time = @day_start + Time.parse(params[:start_time]).seconds_since_midnight.seconds
-      @end_time = @day_start + Time.parse(params[:end_time]).seconds_since_midnight.seconds
+      @start_time = combine_day_and_time(@day_start, params[:start_time])
+      @end_time = combine_day_and_time(@day_start, params[:end_time])
     end
     @cars = Car.available.where(unit_id: @unit_id).order(:car_number)
     authorize Reservation
@@ -302,18 +322,18 @@ class ReservationsController < ApplicationController
     end
     if params[:day_start].present?
       @day_start = params[:day_start].to_date
-      @start_time = @day_start + Time.parse(params[:start_time]).seconds_since_midnight.seconds
+      @start_time = combine_day_and_time(@day_start, params[:start_time])
     end
     if params[:day_end].present?
       @day_end = params[:day_end].to_date
-      @end_time = @day_end + Time.parse(params[:end_time]).seconds_since_midnight.seconds
+      @end_time = combine_day_and_time(@day_end, params[:end_time])
     end
-    # @cars = Car.available.where(unit_id: @unit_id).order(:car_number)
     authorize Reservation
   end
 
   # PATCH/PUT /reservations/1 or /reservations/1.json
   def update
+    notice = ""
     if params[:reservation][:approved].present?
       if @reservation.update(reservation_params)
         ReservationMailer.with(reservation: @reservation).car_reservation_approved(current_user).deliver_now unless @reservation.approved == false
@@ -325,42 +345,56 @@ class ReservationsController < ApplicationController
         return
       end
     end
-
     if params[:recurring] == "true"
       recurring_reservation = RecurringReservation.new(@reservation)
-      result = recurring_reservation.get_following
       update_params = {}
       update_params["site_id"] = reservation_params[:site_id]
       update_params["car_id"] = params[:car_id]
       update_params["number_of_people_on_trip"] = params[:number_of_people_on_trip]
       start_time = params[:start_time].to_datetime - 15.minute
       end_time = params[:end_time].to_datetime + 15.minute
-      note = ""
-      result.each do |id|
-        reservation = Reservation.find(id)
-        day_start = reservation.start_time.beginning_of_day
-        day_end = reservation.end_time.beginning_of_day
-        update_params["start_time"] = day_start + Time.parse(start_time.strftime("%I:%M%p")).seconds_since_midnight.seconds
-        update_params["end_time"] = day_end + Time.parse(end_time.strftime("%I:%M%p")).seconds_since_midnight.seconds
-        unless reservation.update(update_params)
-          note += "Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". "
+      notice = "This and all following recurring reservations were updated."
+      if is_admin?(current_user)
+        alert = recurring_reservation.update_this_and_following(update_params, start_time, end_time, true)
+        redirect_to reservation_path(@reservation), notice: notice, alert: alert
+      else
+        alert = recurring_reservation.update_this_and_following(update_params, start_time, end_time, false)
+        if alert == ""
+          ReservationMailer.with(reservation: @reservation).car_reservation_updated(user: current_user, recurring: true, admin: true).deliver_now
+          @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id).order(created_at: :desc)
+          redirect_to reservation_path(@reservation), notice: notice
+        else
+          # for students and managers - don't save if there is a conflict
+          alert += " please select a different time or ask admins to edit the reservation."
+          @programs = Program.where(unit_id: current_user.unit_ids).order(:title, :catalog_number, :class_section)
+          @number_of_seats = 1..Car.available.maximum(:number_of_seats)
+          @number_of_people_on_trip = Reservation.find(params[:id]).number_of_people_on_trip
+          @day_start = @reservation.start_time.to_date
+          @unit_id = params[:unit_id]
+          @cars = Car.available.where(unit_id: @unit_id).order(:car_number)
+          @sites = @reservation.program.sites
+          @car_id = @reservation.car_id
+          @start_time = params[:start_time]
+          @end_time = params[:end_time]
+          flash.now[:alert] = alert
+          if params[:day_end].present?
+            @day_end = params[:day_end].to_date
+            render :edit_long, status: :unprocessable_entity
+          else 
+            render :edit, status: :unprocessable_entity
+          end
+          return
         end
       end
-      if note == ""
-        note = "This and all following recurring reservations were updated."
-        redirect_to reservation_path(@reservation), notice: note
-      else
-        redirect_to reservation_path(@reservation), alert: note
-      end
     else
-      notice = ""
       if @reservation.recurring.present?
+        # edit recurring reservation as stahd-alone; remotve it from the list of recurring reservations
         recurring_reservation = RecurringReservation.new(@reservation)
-        note = recurring_reservation.remove_from_list
-        if note == ""
+        alert = recurring_reservation.remove_from_list
+        if alert == ""
           notice = " Reservation was removed from the list of recurring reservations."
         else
-          redirect_to reservation_path(@reservation), notice: "Reservation was not updated." + note
+          redirect_to reservation_path(@reservation), alert: "Reservation was not updated." + alert
           return
         end
       end
@@ -369,11 +403,24 @@ class ReservationsController < ApplicationController
       @reservation.start_time = params[:start_time].to_datetime - 15.minute
       @reservation.end_time = params[:end_time].to_datetime + 15.minute
       @reservation.number_of_people_on_trip = params[:number_of_people_on_trip]
-
-      respond_to do |format|
+      # check if updated reservation has conflict with existing resertvations
+      no_conflict = available_edit?(@reservation.id, @reservation.car, @reservation.start_time..@reservation.end_time)
+      if no_conflict
+        alert = ""
+      elsif !no_conflict && is_admin?(current_user)
+        alert = " There is a conflict with another reservation on " + show_date_with_month_name(@reservation.start_time) + "."
+      else
+        alert = " There is a conflict with another reservation on " + show_date_with_month_name(@reservation.start_time) + ". Please select a different time or ask admins to edit the reservation."
+      end
+      # for admins - always save && display message about conflict
+      # for non admins - save if there is no conflict
+      if is_admin?(current_user) || !is_admin?(current_user) && no_conflict
         if @reservation.update(reservation_params)
-          format.html { redirect_to reservation_url(@reservation), notice: "Reservation was successfully updated." + notice }
-          format.json { render :show, status: :ok, location: @reservation }
+          unless is_admin?(current_user)
+            ReservationMailer.with(reservation: @reservation).car_reservation_updated(user: current_user, recurring: false, admin: true).deliver_now
+            @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id).order(created_at: :desc)
+          end
+          redirect_to reservation_path(@reservation), notice: "Reservation was successfully updated." + notice, alert: alert
         else
           @programs = Program.where(unit_id: current_user.unit_ids).order(:title, :catalog_number, :class_section)
           @number_of_seats = 1..Car.available.maximum(:number_of_seats)
@@ -385,10 +432,33 @@ class ReservationsController < ApplicationController
           @car_id = @reservation.car_id
           @start_time = params[:start_time]
           @end_time = params[:end_time]
-          @students = Student.all
-          format.html { render :edit, status: :unprocessable_entity }
-          format.json { render json: @reservation.errors, status: :unprocessable_entity }
+          if params[:day_end].present?
+            @day_end = params[:day_end].to_date
+            render :edit_long, status: :unprocessable_entity
+          else 
+            render :edit, status: :unprocessable_entity
+          end
         end
+      else
+        # for students and managers - don't save if there is a conflict
+        @programs = Program.where(unit_id: current_user.unit_ids).order(:title, :catalog_number, :class_section)
+        @number_of_seats = 1..Car.available.maximum(:number_of_seats)
+        @number_of_people_on_trip = Reservation.find(params[:id]).number_of_people_on_trip
+        @day_start = params[:day_start].to_date
+        @unit_id = params[:unit_id]
+        @cars = Car.available.where(unit_id: @unit_id).order(:car_number)
+        @sites = @reservation.program.sites
+        @car_id = @reservation.car_id
+        @start_time = params[:start_time]
+        @end_time = params[:end_time]
+        flash.now[:alert] = alert
+        if params[:day_end].present?
+          @day_end = params[:day_end].to_date
+          render :edit_long, status: :unprocessable_entity
+        else 
+          render :edit, status: :unprocessable_entity
+        end
+        return
       end
     end
   end
@@ -396,6 +466,8 @@ class ReservationsController < ApplicationController
   def add_edit_drivers
     success = true
     recurring = false
+    notice = ""
+    alert == ""
     note = ""
     drivers_emails = reservation_drivers_emails
     @reservation.attributes = reservation_params
@@ -436,13 +508,11 @@ class ReservationsController < ApplicationController
     if success
       if params[:edit] == "true"
         if params[:recurring].empty? && @reservation.recurring.present?
+          # edit recuring reservation as a stand-alone; remove it from the recirring set
           recurring_reservation = RecurringReservation.new(@reservation)
-          result = recurring_reservation.remove_from_list
-          if result == ""
-            note += " Reservation was removed from the list of recurring reservations."
-          else
-            redirect_to reservation_path(@reservation), alert: note + result
-            return
+          alert = recurring_reservation.remove_from_list
+          if alert == ""
+            notice += " Reservation was removed from the list of recurring reservations."
           end
         end
         @reservation = Reservation.find(params[:id])
@@ -455,7 +525,7 @@ class ReservationsController < ApplicationController
           ReservationMailer.car_reservation_drivers_edited(@reservation, drivers_emails, current_user, recurring).deliver_now
           notice += " Old Drivers were removed from the trip."
         end
-        redirect_to reservation_path(@reservation), notice: notice
+        redirect_to reservation_path(@reservation), notice: notice, alert: alert
         return
       else
         redirect_to add_passengers_path(@reservation)
@@ -479,7 +549,7 @@ class ReservationsController < ApplicationController
       recurring = false
       note = "Email about updating this reservation was sent."
     end
-    ReservationMailer.with(reservation: @reservation).car_reservation_updated(current_user, recurring).deliver_now
+    ReservationMailer.with(reservation: @reservation).car_reservation_updated(user: current_user, recurring: recurring, admin: false).deliver_now
     @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id).order(created_at: :desc)
     redirect_to reservation_path(@reservation), notice: note
   end
@@ -539,31 +609,45 @@ class ReservationsController < ApplicationController
   end
 
   def add_drivers_later
+    notice = "Reservation was created, but confirmation email was not sent."
+    alert = "Send email mannualy after adding drivers. "
     if @reservation.recurring.present?
       if @reservation.recurring.present?
         recurring_reservation = RecurringReservation.new(@reservation)
-        recurring_reservation.create_all
+        conflict_days_message = recurring_reservation.create_all
       end
-      redirect_to reservation_path(@reservation)
-      return
+        notice = "Recurring Reservations were created, but confirmation email was not sent."
+        alert += conflict_days_message
     end
-    redirect_to reservation_path(@reservation)
+    redirect_to reservation_path(@reservation), notice: notice, alert: alert
   end
 
   def finish_reservation
     if @reservation.recurring.present?
       recurring_reservation = RecurringReservation.new(@reservation)
-      recurring_reservation.create_all
+      conflict_days_message = recurring_reservation.create_all
       recurring = true
+      notice = "Recurring reservations were created."
     else
       recurring = false
+      notice = "Reservation was created."
     end
-    ReservationMailer.with(reservation: @reservation).car_reservation_confirmation(current_user, recurring).deliver_now
-    ReservationMailer.with(reservation: @reservation).car_reservation_created(current_user, recurring).deliver_now
-    redirect_to reservation_path(@reservation)
+    ReservationMailer.with(reservation: @reservation).car_reservation_confirmation(current_user, recurring, conflict_days_message).deliver_now
+    ReservationMailer.with(reservation: @reservation).car_reservation_created(current_user, recurring, conflict_days_message).deliver_now
+    if recurring and conflict_days_message.present?
+      alert = conflict_days_message
+      if is_admin?(current_user)
+        alert += " drivers and passengers are notified. Please contact them in regards to the conflicts."
+      else
+        alert += " an email was sent to admins, and they will be in contact with you in regards to the conflicts."
+      end
+    end
+    redirect_to reservation_path(@reservation), notice: notice, alert: alert
   end
 
   def update_passengers
+    notice = ""
+    alert = ""
     if params["recurring"] == "true"
       recurring = true
       notice = "Passengers list was updated for this and following recurring reservations."
@@ -572,17 +656,14 @@ class ReservationsController < ApplicationController
       notice = "Passengers list was updated."
       if @reservation.recurring.present?
         recurring_reservation = RecurringReservation.new(@reservation)
-        note = recurring_reservation.remove_from_list
-        if note == ""
+        alert = recurring_reservation.remove_from_list
+        if alert == ""
           notice += " Reservation was removed from the list of recurring reservations."
-        else
-          redirect_to reservation_path(@reservation), alert: notice + note
-          return
         end
       end
     end
     ReservationMailer.with(reservation: @reservation).car_reservation_update_passengers(current_user, recurring).deliver_now
-    redirect_to reservation_path(@reservation), notice: notice
+    redirect_to reservation_path(@reservation), notice: notice, alert: alert
   end
 
   # DELETE /reservations/1 or /reservations/1.json
@@ -748,13 +829,15 @@ class ReservationsController < ApplicationController
 
     def check_if_driver_is_passenger(reservation, driver_type, field, driver_id, recurring)
       # check if a new driver is a passenger
+      # driver_type: "student" or "manager"
+      # field: "Driver" or "Backup Driver"
       note = ""
       if driver_type == "student"
         student = Student.find(driver_id)
         if @reservation.passengers.include?(student)
           if recurring
             recurring_reservation = RecurringReservation.new(reservation)
-            recurring_reservation.remove_passenger_following_reservations(student)
+            recurring_reservation.remove_passenger_following_reservations(student, "student")
           else
             reservation.passengers.delete(student)
           end
@@ -765,7 +848,7 @@ class ReservationsController < ApplicationController
         if @reservation.passengers_managers.include?(manager)
           if recurring
             recurring_reservation = RecurringReservation.new(reservation)
-            recurring_reservation.remove_passenger_following_reservations(manager)
+            recurring_reservation.remove_passenger_following_reservations(manager, "manager")
           else
             reservation.passengers_managers.delete(manager)
           end

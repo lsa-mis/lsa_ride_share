@@ -3,14 +3,15 @@ class ReservationMailer < ApplicationMailer
   before_action :set_driver_name, only: [:car_reservation_created, :car_reservation_approved, :car_reservation_confirmation, :car_reservation_updated, :car_reservation_remove_passenger, :car_reservation_update_passengers]
   before_action :set_passengers, only: [:car_reservation_created, :car_reservation_approved, :car_reservation_confirmation, :car_reservation_updated, :car_reservation_remove_passenger, :car_reservation_update_passengers]
 
-  def car_reservation_created(user, recurring = false)
+  def car_reservation_created(user, recurring = false, conflict_days_message = " ")
     @recipient = @reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
     subject_email_type_recurring_rule(@reservation, recurring, "created")
+    @conflict_days_message = conflict_days_message
     mail(to: @recipient, subject: @subject)
     create_email_log_records("Reservation", @reservation, recurring, @email_type, @recipient, user.id, "all")
   end
 
-  def car_reservation_confirmation(user, recurring = false)
+  def car_reservation_confirmation(user, recurring = false, conflict_days_message = "")
     recipients = []
     recipients << User.find(@reservation.reserved_by).principal_name.presence
     recipients << email_address(@reservation.driver) if @reservation.driver.present?
@@ -19,6 +20,7 @@ class ReservationMailer < ApplicationMailer
     recipients << @passengers_emails if @passengers_emails.present?
     @recipients = recipients.uniq.join(", ")
     subject_email_type_recurring_rule(@reservation, recurring, "confirmation")
+    @conflict_days_message = conflict_days_message
     mail(to: @recipients, subject: @subject)
     create_email_log_records("Reservation", @reservation, recurring, @email_type, @recipients, user.id, "all")
   end
@@ -73,13 +75,16 @@ class ReservationMailer < ApplicationMailer
     create_email_log_records("Reservation", @reservation, recurring, @email_type, @recipients, user.id, cancel_type)
   end
 
-  def car_reservation_updated(user, recurring = false)
+  def car_reservation_updated(user:, recurring: false, admin: false)
+    # admin == false - don't sent email to admin
+    # admin == true - send email to admin
     recipients = []
     recipients << User.find(@reservation.reserved_by).principal_name.presence
     recipients << email_address(@reservation.driver) if @reservation.driver.present?
     recipients << email_address(@reservation.driver_manager) if @reservation.driver_manager.present?
     recipients << email_address(@reservation.backup_driver) if @reservation.backup_driver.present?
     recipients << @passengers_emails if @passengers_emails.present?
+    recipients << @unit_email if admin
     @recipients = recipients.uniq.join(", ")
     subject_email_type_recurring_rule(@reservation, recurring, "updated")
     mail(to: @recipients, subject: @subject)

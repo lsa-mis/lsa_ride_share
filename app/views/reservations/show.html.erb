@@ -2,13 +2,6 @@
   <h1>
     <%= @reservation.program.unit.name %> Reservation
   </h1>
-  <% if is_student?(current_user) && allow_student_to_edit_drivers?(@reservation) || 
-    is_manager?(current_user) && allow_manager_to_edit_drivers?(@reservation) %>
-    <p class="body-md-text mt-2 text-blue-900">
-      If you need to edit the reservation, please cancel it and create a new one, 
-      or you can email <%= unit_email(@reservation) %> or call the office at: <%= contact_phone(@reservation) %>
-    </p>
-  <% end %>
   <h2 class="mb-4">
     <%= @reservation.program.display_name_with_title %>
   </h2>
@@ -62,7 +55,7 @@
             <%= link_to 'Approve Recurring Reservations', approve_all_recurring_path(@reservation), class: "secondary_blue_button" %>
           </div>
         <% end %>
-        <% if (is_admin?(current_user)) && @reservation.end_time > DateTime.now %>
+        <% if is_admin?(current_user) && @reservation.end_time > DateTime.now || allow_student_to_edit_drivers?(@reservation) || allow_manager_to_edit_drivers?(@reservation) %>
           <% if recurring?(@reservation) %>
             <div class="mt-2">
               <% if @reservation.start_time.to_date == @reservation.end_time.to_date %>
