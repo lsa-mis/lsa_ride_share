@@ -60,4 +60,13 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+
+  config.include Warden::Test::Helpers
+
+  config.include FactoryBot::Syntax::Methods
+
+  config.before(:each, type: :system) do
+    driven_by ENV['SHOW_BROWSER'] ? :selenium_chrome : :selenium_chrome_headless
+  end
+
 end
