@@ -31,8 +31,8 @@ FactoryBot.define do
     parking_spot { Faker::Lorem.word }
     last_used { Faker::Date.in_date_period }
     last_driver_id { Faker::Number.within(range: 1..7) }
-    updated_by { Faker::Number.within(range: 1..7) }
-    status { :available }
+    updated_by { Faker::Types.rb_integer }
+    status { Faker::Random.array(['Available', 'Unvailable']) }
     association :unit
   end
 end
