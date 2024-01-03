@@ -579,6 +579,18 @@ module ApplicationHelper
     end
   end
 
+  def allow_student_to_edit_reservations?(reservation)
+    return false unless is_student?(current_user)
+    return false unless Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program).present?
+    student = Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program)
+    return false unless student.can_reserve_car?
+    if (reservation.driver == student || reservation.backup_driver == student) && ((reservation.start_time - DateTime.now.beginning_of_day)/3600).round > minimum_hours_before_reservation(reservation.program.unit)
+      return true
+    else
+      return false
+    end
+  end
+
   def allow_manager_to_edit_drivers?(reservation)
     return false unless is_manager?(current_user)
     return false unless reservation.driver_manager_id.present?
