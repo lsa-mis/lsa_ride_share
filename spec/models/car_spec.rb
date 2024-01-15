@@ -128,8 +128,6 @@ RSpec.describe Car, type: :model do
   end
 
   context "create car without a updated_by" do
-    let!(:user) { FactoryBot.create(:user) }
-
     it 'raise error "ActiveRecord::RecordInvalid: Validation failed: Updated by can\'t be blank"' do
       expect { FactoryBot.create(:car, updated_by: nil) }.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: Updated by can't be blank")
     end
