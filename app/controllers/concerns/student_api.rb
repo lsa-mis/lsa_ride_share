@@ -67,6 +67,11 @@ module StudentApi
         if result['success']
           if result['data']['Classes']['Class']['ClassSections']['ClassSection']['ClassStudents'].present?
             data = result['data']['Classes']['Class']['ClassSections']['ClassSection']['ClassStudents']['ClassStudent']
+            if data.class == Hash
+              data1 = []
+              data1 << data
+              data = data1
+            end
             students_in_db_registered = program.students.registered.where(course_id: course.id).pluck(:uniqname)
             students_in_db_added_manually = program.students.added_manually.pluck(:uniqname)
             data.each do |student_info|
