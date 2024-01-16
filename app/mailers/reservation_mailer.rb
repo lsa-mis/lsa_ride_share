@@ -2,6 +2,7 @@ class ReservationMailer < ApplicationMailer
   before_action :set_reservation, only: [:car_reservation_created, :car_reservation_approved, :car_reservation_confirmation, :car_reservation_updated, :car_reservation_remove_passenger, :car_reservation_update_passengers]
   before_action :set_driver_name, only: [:car_reservation_created, :car_reservation_approved, :car_reservation_confirmation, :car_reservation_updated, :car_reservation_remove_passenger, :car_reservation_update_passengers]
   before_action :set_passengers, only: [:car_reservation_created, :car_reservation_approved, :car_reservation_confirmation, :car_reservation_updated, :car_reservation_remove_passenger, :car_reservation_update_passengers]
+  before_action :set_contact_info
 
   def car_reservation_created(user, recurring = false, conflict_days_message = " ")
     @recipient = @reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
@@ -135,15 +136,20 @@ class ReservationMailer < ApplicationMailer
     @reservation = params[:reservation]
     @start_time = show_date_time(@reservation.start_time)
     @end_time = show_date_time(@reservation.end_time)
-    @contact_phone = @reservation.program.unit.unit_preferences.find_by(name: "contact_phone").value.presence || ""
-    @unit_email = @reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
+    # @contact_phone = @reservation.program.unit.unit_preferences.find_by(name: "contact_phone").value.presence || ""
+    # @unit_email = @reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
   end
 
   def set_reservation_data(reservation)
     @start_time = show_date_time(reservation.start_time)
     @end_time = show_date_time(reservation.end_time)
-    @contact_phone = reservation.program.unit.unit_preferences.find_by(name: "contact_phone").value.presence || ""
-    @unit_email = reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
+    # @contact_phone = reservation.program.unit.unit_preferences.find_by(name: "contact_phone").value.presence || ""
+    # @unit_email = reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
+  end
+
+  def set_contact_info
+    @contact_phone = @reservation.program.unit.unit_preferences.find_by(name: "contact_phone").value.presence || ""
+    @unit_email = @reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
   end
 
   def set_driver_name
