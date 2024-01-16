@@ -13,13 +13,8 @@ class ReservationMailer < ApplicationMailer
   end
 
   def car_reservation_confirmation(recurring = false, conflict_days_message = "")
-    recipients = []
-    recipients << User.find(@reservation.reserved_by).principal_name.presence
-    recipients << email_address(@reservation.driver) if @reservation.driver.present?
-    recipients << email_address(@reservation.driver_manager) if @reservation.driver_manager.present?
-    recipients << email_address(@reservation.backup_driver) if @reservation.backup_driver.present?
-    recipients << @passengers_emails if @passengers_emails.present?
-    @recipients = recipients.uniq.join(", ")
+    create_recipients_list
+
     subject_email_type_recurring_rule(@reservation, recurring, "confirmation")
     @conflict_days_message = conflict_days_message
     mail(to: @recipients, subject: @subject)
@@ -27,12 +22,8 @@ class ReservationMailer < ApplicationMailer
   end
 
   def car_reservation_approved
-    recipients = []
-    recipients << email_address(@reservation.driver) if @reservation.driver.present?
-    recipients << email_address(@reservation.driver_manager) if @reservation.driver_manager.present?
-    recipients << email_address(@reservation.backup_driver) if @reservation.backup_driver.present?
-    recipients << @passengers_emails if @passengers_emails.present?
-    @recipients = recipients.join(", ")
+    create_recipients_list(reserved_by_flag: false)
+
     @unit_email_message = get_unit_email_message(@reservation)
     mail(to: @recipients, subject: "Reservation approved for program: #{@reservation.program.display_name}" )
     EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "approved",
@@ -59,13 +50,8 @@ class ReservationMailer < ApplicationMailer
     set_reservation_data(@reservation)
     set_driver_name
     @passengers = cancel_passengers
-    recipients = []
-    recipients << User.find(@reservation.reserved_by).principal_name.presence
-    recipients << email_address(@reservation.driver) if @reservation.driver.present?
-    recipients << email_address(@reservation.driver_manager) if @reservation.driver_manager.present?
-    recipients << email_address(@reservation.backup_driver) if @reservation.backup_driver.present?
-    recipients << cancel_emails if cancel_emails.present?
-    @recipients = recipients.join(", ")
+    create_recipients_list(cancel_emails: cancel_emails)
+
     subject_email_type_recurring_rule(@reservation, recurring, "cancel_driver")
     if recurring
       @cancel_message = cancel_message + " scheduled '" + @recurring_rule + "' were canceled."
@@ -79,14 +65,8 @@ class ReservationMailer < ApplicationMailer
   def car_reservation_updated(recurring: false, admin: false)
     # admin == false - don't sent email to admin
     # admin == true - send email to admin
-    recipients = []
-    recipients << User.find(@reservation.reserved_by).principal_name.presence
-    recipients << email_address(@reservation.driver) if @reservation.driver.present?
-    recipients << email_address(@reservation.driver_manager) if @reservation.driver_manager.present?
-    recipients << email_address(@reservation.backup_driver) if @reservation.backup_driver.present?
-    recipients << @passengers_emails if @passengers_emails.present?
-    recipients << @unit_email if admin
-    @recipients = recipients.uniq.join(", ")
+    create_recipients_list(admin_flag: admin)
+
     subject_email_type_recurring_rule(@reservation, recurring, "updated")
     mail(to: @recipients, subject: @subject)
     create_email_log_records("Reservation", @reservation, recurring, @email_type, @recipients, params[:user].id, "following")
@@ -117,14 +97,8 @@ class ReservationMailer < ApplicationMailer
   end
 
   def car_reservation_update_passengers(recurring = false)
-    recipients = []
-    recipients << User.find(@reservation.reserved_by).principal_name.presence
-    recipients << email_address(@reservation.driver) if @reservation.driver.present?
-    recipients << email_address(@reservation.driver_manager) if @reservation.driver_manager.present?
-    recipients << email_address(@reservation.backup_driver) if @reservation.backup_driver.present?
-    recipients << @passengers_emails if @passengers_emails.present?
-    recipients << @unit_email
-    @recipients = recipients.uniq.join(", ")
+    create_recipients_list(admin_flag: true)
+
     subject_email_type_recurring_rule(@reservation, recurring, "passengers_updated")
     mail(to: @recipients, subject: @subject)
     create_email_log_records("Reservation", @reservation, recurring, @email_type, @recipients, params[:user].id, "following")
@@ -183,6 +157,18 @@ class ReservationMailer < ApplicationMailer
     if @reservation.program.non_uofm_passengers && @reservation.non_uofm_passengers.present? 
       @non_uofm_passengers = @reservation.non_uofm_passengers
     end
+  end
+
+  def create_recipients_list(reserved_by_flag: true, cancel_emails: nil, admin_flag: false)
+    recipients = []
+    recipients << User.find(@reservation.reserved_by).principal_name.presence unless reserved_by_flag
+    recipients << email_address(@reservation.driver) if @reservation.driver.present?
+    recipients << email_address(@reservation.driver_manager) if @reservation.driver_manager.present?
+    recipients << email_address(@reservation.backup_driver) if @reservation.backup_driver.present?
+    recipients << @passengers_emails if @passengers_emails.present?
+    recipients << cancel_emails if cancel_emails.present?
+    recipients << @unit_email if admin_flag
+    @recipients = recipients.uniq.join(", ")
   end
 
   def get_unit_email_message(reservation)
