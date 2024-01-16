@@ -522,7 +522,7 @@ class ReservationsController < ApplicationController
         else
           drivers_emails << drivers_emails_new
           drivers_emails = drivers_emails.flatten.uniq
-          ReservationMailer.with(user: current_user).car_reservation_drivers_edited(@reservation, drivers_emails, recurring).deliver_now
+          ReservationMailer.with(reservation: @reservation, user: current_user).car_reservation_drivers_edited(drivers_emails, recurring).deliver_now
           notice += " Old Drivers were removed from the trip."
         end
         redirect_to reservation_path(@reservation), notice: notice, alert: alert
@@ -676,9 +676,9 @@ class ReservationsController < ApplicationController
     if @reservation.passengers_managers.present?
       @reservation.passengers_managers.delete_all
     end
-    ReservationMailer.with(user: current_user).car_reservation_cancel_admin(@reservation, @cancel_passengers, @cancel_emails, recurring).deliver_now
+    ReservationMailer.with(reservation: @reservation, user: current_user).car_reservation_cancel_admin(@cancel_passengers, @cancel_emails, recurring).deliver_now
     if @reservation.driver_id.present? || @reservation.driver_manager_id.present? 
-      ReservationMailer.with(user: current_user).car_reservation_cancel_driver(@reservation, @cancel_passengers, @cancel_emails, recurring).deliver_now
+      ReservationMailer.with(reservation: @reservation, user: current_user).car_reservation_cancel_driver(@cancel_passengers, @cancel_emails, recurring).deliver_now
     end
     respond_to do |format|
       if @reservation.destroy
