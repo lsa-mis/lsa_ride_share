@@ -1,24 +1,24 @@
 class ReservationMailer < ApplicationMailer
-  before_action :set_reservation, only: [:car_reservation_created, :car_reservation_confirmation, :car_reservation_approved, :car_reservation_cancel_admin, :car_reservation_cancel_driver, :car_reservation_drivers_edited, :car_reservation_updated, :car_reservation_remove_passenger, :car_reservation_update_passengers]
+  before_action :set_reservation
   before_action :set_driver_name, only: [:car_reservation_created, :car_reservation_approved, :car_reservation_confirmation, :car_reservation_updated, :car_reservation_remove_passenger, :car_reservation_update_passengers]
   before_action :set_passengers, only: [:car_reservation_created, :car_reservation_approved, :car_reservation_confirmation, :car_reservation_updated, :car_reservation_remove_passenger, :car_reservation_update_passengers]
-  before_action :set_contact_info
+  # before_action :set_contact_info
 
-  def car_reservation_created(recurring = false, conflict_days_message = " ")
+  def car_reservation_created(conflict_days_message = " ")
     @recipient = @reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
-    subject_email_type_recurring_rule(@reservation, recurring, "created")
+    subject_email_type_recurring_rule(@reservation, params[:recurring], "created")
     @conflict_days_message = conflict_days_message
     mail(to: @recipient, subject: @subject)
-    create_email_log_records("Reservation", @reservation, recurring, @email_type, @recipient, params[:user].id, "all")
+    create_email_log_records("Reservation", @reservation, params[:recurring], @email_type, @recipient, params[:user].id, "all")
   end
 
-  def car_reservation_confirmation(recurring = false, conflict_days_message = "")
+  def car_reservation_confirmation(conflict_days_message = "")
     create_recipients_list
 
-    subject_email_type_recurring_rule(@reservation, recurring, "confirmation")
+    subject_email_type_recurring_rule(@reservation, params[:recurring], "confirmation")
     @conflict_days_message = conflict_days_message
     mail(to: @recipients, subject: @subject)
-    create_email_log_records("Reservation", @reservation, recurring, @email_type, @recipients, params[:user].id, "all")
+    create_email_log_records("Reservation", @reservation, params[:recurring], @email_type, @recipients, params[:user].id, "all")
   end
 
   def car_reservation_approved
@@ -30,52 +30,52 @@ class ReservationMailer < ApplicationMailer
       sent_to: @recipients, sent_by: params[:user].id, sent_at: DateTime.now)
   end
 
-  def car_reservation_cancel_admin(cancel_passengers, cancel_emails, recurring = false, cancel_message = "", cancel_type)
+  def car_reservation_cancel_admin(cancel_passengers, cancel_emails, cancel_message = "", cancel_type)
     # @reservation = cancel_reservation
-    set_reservation_data(@reservation)
+    # set_reservation_data(@reservation)
     set_driver_name
     @passengers = cancel_passengers
-    subject_email_type_recurring_rule(@reservation, recurring, "cancel_admin")
-    if recurring
+    subject_email_type_recurring_rule(@reservation, params[:recurring], "cancel_admin")
+    if params[:recurring]
       @cancel_message = cancel_message + " scheduled '" + @recurring_rule + "' were canceled."
     else
       @cancel_message = "The reservation was canceled."
     end
     mail(to: @unit_email, subject: @subject)
-    create_email_log_records("Reservation", @reservation, recurring, @email_type, @unit_email, params[:user].id, cancel_type)
+    create_email_log_records("Reservation", @reservation, params[:recurring], @email_type, @unit_email, params[:user].id, cancel_type)
   end
 
-  def car_reservation_cancel_driver(cancel_passengers, cancel_emails, recurring = false, cancel_message = "", cancel_type)
+  def car_reservation_cancel_driver(cancel_passengers, cancel_emails, cancel_message = "", cancel_type)
     # @reservation = cancel_reservation
-    set_reservation_data(@reservation)
+    # set_reservation_data(@reservation)
     set_driver_name
     @passengers = cancel_passengers
     create_recipients_list(cancel_emails: cancel_emails)
 
-    subject_email_type_recurring_rule(@reservation, recurring, "cancel_driver")
-    if recurring
+    subject_email_type_recurring_rule(@reservation, params[:recurring], "cancel_driver")
+    if params[:recurring]
       @cancel_message = cancel_message + " scheduled '" + @recurring_rule + "' were canceled."
     else
       @cancel_message = "Your reservation was canceled."
     end
     mail(to: @recipients, subject: @subject)
-    create_email_log_records("Reservation", @reservation, recurring, @email_type, @recipients, params[:user].id, cancel_type)
+    create_email_log_records("Reservation", @reservation, params[:recurring], @email_type, @recipients, params[:user].id, cancel_type)
   end
 
-  def car_reservation_updated(recurring: false, admin: false)
+  def car_reservation_updated(admin: false)
     # admin == false - don't sent email to admin
     # admin == true - send email to admin
     create_recipients_list(admin_flag: admin)
 
-    subject_email_type_recurring_rule(@reservation, recurring, "updated")
+    subject_email_type_recurring_rule(@reservation, params[:recurring], "updated")
     mail(to: @recipients, subject: @subject)
-    create_email_log_records("Reservation", @reservation, recurring, @email_type, @recipients, params[:user].id, "following")
+    create_email_log_records("Reservation", @reservation, params[:recurring], @email_type, @recipients, params[:user].id, "following")
   end
 
-  def car_reservation_drivers_edited(drivers_emails, recurring = false)
+  def car_reservation_drivers_edited(drivers_emails)
     # @reservation = drivers_reservation
     @unit_email_message = get_unit_email_message(@reservation)
-    set_reservation_data(@reservation)
+    # set_reservation_data(@reservation)
     recipients = drivers_emails
     recipients << User.find(@reservation.reserved_by).principal_name.presence
     set_passengers
@@ -83,25 +83,25 @@ class ReservationMailer < ApplicationMailer
     recipients << @passengers_emails if @passengers_emails.present?
     recipients << @unit_email
     @recipients = recipients.uniq.join(", ")
-    subject_email_type_recurring_rule(@reservation, recurring, "drivers_edited")
+    subject_email_type_recurring_rule(@reservation, params[:recurring], "drivers_edited")
     mail(to: @recipients, subject: @subject)
-    create_email_log_records("Reservation", @reservation, recurring, @email_type, @recipients, params[:user].id, "following")
+    create_email_log_records("Reservation", @reservation, params[:recurring], @email_type, @recipients, params[:user].id, "following")
   end
 
-  def car_reservation_remove_passenger(passenger, recurring = false)
+  def car_reservation_remove_passenger(passenger)
     @name = passenger.name
     @email = email_address(passenger)
-    subject_email_type_recurring_rule(@reservation, recurring, "passenger_removed")
+    subject_email_type_recurring_rule(@reservation, params[:recurring], "passenger_removed")
     mail(to: @email, subject: @subject)
-    create_email_log_records("Reservation", @reservation, recurring, @email_type, @email, params[:user].id, "following")
+    create_email_log_records("Reservation", @reservation, params[:recurring], @email_type, @email, params[:user].id, "following")
   end
 
-  def car_reservation_update_passengers(recurring = false)
+  def car_reservation_update_passengers
     create_recipients_list(admin_flag: true)
 
-    subject_email_type_recurring_rule(@reservation, recurring, "passengers_updated")
+    subject_email_type_recurring_rule(@reservation, params[:recurring], "passengers_updated")
     mail(to: @recipients, subject: @subject)
-    create_email_log_records("Reservation", @reservation, recurring, @email_type, @recipients, params[:user].id, "following")
+    create_email_log_records("Reservation", @reservation, params[:recurring], @email_type, @recipients, params[:user].id, "following")
   end
 
   private 
@@ -110,21 +110,21 @@ class ReservationMailer < ApplicationMailer
     @reservation = params[:reservation]
     @start_time = show_date_time(@reservation.start_time)
     @end_time = show_date_time(@reservation.end_time)
-    # @contact_phone = @reservation.program.unit.unit_preferences.find_by(name: "contact_phone").value.presence || ""
-    # @unit_email = @reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
-  end
-
-  def set_reservation_data(reservation)
-    @start_time = show_date_time(reservation.start_time)
-    @end_time = show_date_time(reservation.end_time)
-    # @contact_phone = reservation.program.unit.unit_preferences.find_by(name: "contact_phone").value.presence || ""
-    # @unit_email = reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
-  end
-
-  def set_contact_info
     @contact_phone = @reservation.program.unit.unit_preferences.find_by(name: "contact_phone").value.presence || ""
     @unit_email = @reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
   end
+
+  # def set_reservation_data(reservation)
+  #   @start_time = show_date_time(reservation.start_time)
+  #   @end_time = show_date_time(reservation.end_time)
+  #   # @contact_phone = reservation.program.unit.unit_preferences.find_by(name: "contact_phone").value.presence || ""
+  #   # @unit_email = reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
+  # end
+
+  # def set_contact_info
+  #   @contact_phone = @reservation.program.unit.unit_preferences.find_by(name: "contact_phone").value.presence || ""
+  #   @unit_email = @reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
+  # end
 
   def set_driver_name
     if @reservation.driver.present? || @reservation.driver_manager.present?
