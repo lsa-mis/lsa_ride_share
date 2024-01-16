@@ -5,7 +5,7 @@ class ReservationMailer < ApplicationMailer
 
   def car_reservation_created(conflict_days_message = " ")
     @recipient = @reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
-    subject_email_type_recurring_rule(@reservation, params[:recurring], "created")
+    subject_email_type_recurring_rule("created")
     @conflict_days_message = conflict_days_message
     mail(to: @recipient, subject: @subject)
     create_email_log_records("Reservation", @reservation, params[:recurring], @email_type, @recipient, params[:user].id, "all")
@@ -14,7 +14,7 @@ class ReservationMailer < ApplicationMailer
   def car_reservation_confirmation(conflict_days_message = "")
     create_recipients_list
 
-    subject_email_type_recurring_rule(@reservation, params[:recurring], "confirmation")
+    subject_email_type_recurring_rule("confirmation")
     @conflict_days_message = conflict_days_message
     mail(to: @recipients, subject: @subject)
     create_email_log_records("Reservation", @reservation, params[:recurring], @email_type, @recipients, params[:user].id, "all")
@@ -32,7 +32,7 @@ class ReservationMailer < ApplicationMailer
   def car_reservation_cancel_admin(cancel_passengers, cancel_emails, cancel_message = "", cancel_type)
     set_driver_name
     @passengers = cancel_passengers
-    subject_email_type_recurring_rule(@reservation, params[:recurring], "cancel_admin")
+    subject_email_type_recurring_rule("cancel_admin")
     if params[:recurring]
       @cancel_message = cancel_message + " scheduled '" + @recurring_rule + "' were canceled."
     else
@@ -47,7 +47,7 @@ class ReservationMailer < ApplicationMailer
     @passengers = cancel_passengers
     create_recipients_list(cancel_emails: cancel_emails)
 
-    subject_email_type_recurring_rule(@reservation, params[:recurring], "cancel_driver")
+    subject_email_type_recurring_rule("cancel_driver")
     if params[:recurring]
       @cancel_message = cancel_message + " scheduled '" + @recurring_rule + "' were canceled."
     else
@@ -62,7 +62,7 @@ class ReservationMailer < ApplicationMailer
     # admin == true - send email to admin
     create_recipients_list(admin_flag: admin)
 
-    subject_email_type_recurring_rule(@reservation, params[:recurring], "updated")
+    subject_email_type_recurring_rule("updated")
     mail(to: @recipients, subject: @subject)
     create_email_log_records("Reservation", @reservation, params[:recurring], @email_type, @recipients, params[:user].id, "following")
   end
@@ -76,7 +76,7 @@ class ReservationMailer < ApplicationMailer
     recipients << @passengers_emails if @passengers_emails.present?
     recipients << @unit_email
     @recipients = recipients.uniq.join(", ")
-    subject_email_type_recurring_rule(@reservation, params[:recurring], "drivers_edited")
+    subject_email_type_recurring_rule("drivers_edited")
     mail(to: @recipients, subject: @subject)
     create_email_log_records("Reservation", @reservation, params[:recurring], @email_type, @recipients, params[:user].id, "following")
   end
@@ -84,7 +84,7 @@ class ReservationMailer < ApplicationMailer
   def car_reservation_remove_passenger(passenger)
     @name = passenger.name
     @email = email_address(passenger)
-    subject_email_type_recurring_rule(@reservation, params[:recurring], "passenger_removed")
+    subject_email_type_recurring_rule("passenger_removed")
     mail(to: @email, subject: @subject)
     create_email_log_records("Reservation", @reservation, params[:recurring], @email_type, @email, params[:user].id, "following")
   end
@@ -92,7 +92,7 @@ class ReservationMailer < ApplicationMailer
   def car_reservation_update_passengers
     create_recipients_list(admin_flag: true)
 
-    subject_email_type_recurring_rule(@reservation, params[:recurring], "passengers_updated")
+    subject_email_type_recurring_rule("passengers_updated")
     mail(to: @recipients, subject: @subject)
     create_email_log_records("Reservation", @reservation, params[:recurring], @email_type, @recipients, params[:user].id, "following")
   end
@@ -161,7 +161,7 @@ class ReservationMailer < ApplicationMailer
     return unit_email_message
   end
 
-  def subject_email_type_recurring_rule(reservation, recurring, type)
+  def subject_email_type_recurring_rule(type)
     case type
     when "cancel_admin", "cancel_driver"
       subject = "canceled"
@@ -174,10 +174,10 @@ class ReservationMailer < ApplicationMailer
     else 
       subject = type
     end
-    if recurring
-      @subject =  "Recurring Reservation " + subject + " for program: #{reservation.program.display_name_with_title}"
+    if params[:recurring]
+      @subject =  "Recurring Reservation " + subject + " for program: #{@reservation.program.display_name_with_title}"
       @email_type = "recurring_" + type
-      @recurring_reservation = RecurringReservation.new(reservation)
+      @recurring_reservation = RecurringReservation.new(@reservation)
       @recurring_rule = @recurring_reservation.first_reservation.rule.to_s
     else
       @subject = "Reservation " + subject + " for program: #{@reservation.program.display_name_with_title}"
