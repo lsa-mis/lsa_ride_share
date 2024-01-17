@@ -8,7 +8,7 @@ class ReservationMailer < ApplicationMailer
     subject_email_type_recurring_rule("created")
     @conflict_days_message = conflict_days_message
     mail(to: @recipients, subject: @subject)
-    create_email_log_records(sent_from_model: "Reservation", recurring_type: "all")
+    create_email_log_records(recurring_type: "all")
   end
 
   def car_reservation_confirmation(conflict_days_message = "")
@@ -16,7 +16,7 @@ class ReservationMailer < ApplicationMailer
     subject_email_type_recurring_rule("confirmation")
     @conflict_days_message = conflict_days_message
     mail(to: @recipients, subject: @subject)
-    create_email_log_records(sent_from_model: "Reservation", recurring_type: "all")
+    create_email_log_records(recurring_type: "all")
   end
 
   def car_reservation_approved
@@ -38,7 +38,7 @@ class ReservationMailer < ApplicationMailer
     end
     @recipients = @unit_email
     mail(to: @recipients, subject: @subject)
-    create_email_log_records(sent_from_model: "Reservation", recurring_type: cancel_type)
+    create_email_log_records(recurring_type: cancel_type)
   end
 
   def car_reservation_cancel_driver(cancel_passengers, cancel_emails, cancel_message = "", cancel_type)
@@ -52,7 +52,7 @@ class ReservationMailer < ApplicationMailer
       @cancel_message = "Your reservation was canceled."
     end
     mail(to: @recipients, subject: @subject)
-    create_email_log_records(sent_from_model: "Reservation", recurring_type: cancel_type)
+    create_email_log_records(recurring_type: cancel_type)
   end
 
   def car_reservation_updated(admin: false)
@@ -61,7 +61,7 @@ class ReservationMailer < ApplicationMailer
     create_recipients_list(admin_flag: admin)
     subject_email_type_recurring_rule("updated")
     mail(to: @recipients, subject: @subject)
-    create_email_log_records(sent_from_model: "Reservation", recurring_type: "following")
+    create_email_log_records(recurring_type: "following")
   end
 
   def car_reservation_drivers_edited(drivers_emails)
@@ -75,7 +75,7 @@ class ReservationMailer < ApplicationMailer
     @recipients = recipients.uniq.join(", ")
     subject_email_type_recurring_rule("drivers_edited")
     mail(to: @recipients, subject: @subject)
-    create_email_log_records(sent_from_model: "Reservation", recurring_type: "following")
+    create_email_log_records(recurring_type: "following")
   end
 
   def car_reservation_remove_passenger(passenger)
@@ -83,14 +83,14 @@ class ReservationMailer < ApplicationMailer
     @recipients = email_address(passenger)
     subject_email_type_recurring_rule("passenger_removed")
     mail(to: @recipients, subject: @subject)
-    create_email_log_records(sent_from_model: "Reservation", recurring_type: "following")
+    create_email_log_records(recurring_type: "following")
   end
 
   def car_reservation_update_passengers
     create_recipients_list(admin_flag: true)
     subject_email_type_recurring_rule("passengers_updated")
     mail(to: @recipients, subject: @subject)
-    create_email_log_records(sent_from_model: "Reservation", recurring_type: "following")
+    create_email_log_records(recurring_type: "following")
   end
 
   private 
@@ -198,7 +198,7 @@ class ReservationMailer < ApplicationMailer
       all_reservations = Array(@reservation.id)
     end
     all_reservations.each do |id|
-      EmailLog.create(sent_from_model: sent_from_model, record_id: id, email_type: @email_type,
+      EmailLog.create(sent_from_model: "Reservation", record_id: id, email_type: @email_type,
         sent_to: @recipients, sent_by: params[:user].id, sent_at: DateTime.now)
     end
   end
