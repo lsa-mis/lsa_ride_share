@@ -13,7 +13,6 @@ class ReservationMailer < ApplicationMailer
 
   def car_reservation_confirmation(conflict_days_message = "")
     create_recipients_list
-
     subject_email_type_recurring_rule("confirmation")
     @conflict_days_message = conflict_days_message
     mail(to: @recipients, subject: @subject)
@@ -46,7 +45,6 @@ class ReservationMailer < ApplicationMailer
     set_driver_name
     @passengers = cancel_passengers
     create_recipients_list(cancel_emails: cancel_emails)
-
     subject_email_type_recurring_rule("cancel_driver")
     if params[:recurring]
       @cancel_message = cancel_message + " scheduled '" + @recurring_rule + "' were canceled."
@@ -61,7 +59,6 @@ class ReservationMailer < ApplicationMailer
     # admin == false - don't sent email to admin
     # admin == true - send email to admin
     create_recipients_list(admin_flag: admin)
-
     subject_email_type_recurring_rule("updated")
     mail(to: @recipients, subject: @subject)
     create_email_log_records(sent_from_model: "Reservation", recurring_type: "following")
@@ -91,7 +88,6 @@ class ReservationMailer < ApplicationMailer
 
   def car_reservation_update_passengers
     create_recipients_list(admin_flag: true)
-
     subject_email_type_recurring_rule("passengers_updated")
     mail(to: @recipients, subject: @subject)
     create_email_log_records(sent_from_model: "Reservation", recurring_type: "following")
