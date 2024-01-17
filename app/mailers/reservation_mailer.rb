@@ -4,11 +4,11 @@ class ReservationMailer < ApplicationMailer
   before_action :set_passengers, only: [:car_reservation_created, :car_reservation_approved, :car_reservation_confirmation, :car_reservation_updated, :car_reservation_remove_passenger, :car_reservation_update_passengers]
 
   def car_reservation_created(conflict_days_message = " ")
-    @recipient = @reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
+    @recipients = @reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
     subject_email_type_recurring_rule("created")
     @conflict_days_message = conflict_days_message
-    mail(to: @recipient, subject: @subject)
-    create_email_log_records("Reservation", @reservation, params[:recurring], @email_type, @recipient, params[:user].id, "all")
+    mail(to: @recipients, subject: @subject)
+    create_email_log_records(sent_from_model: "Reservation", recurring_type: "all")
   end
 
   def car_reservation_confirmation(conflict_days_message = "")
@@ -17,7 +17,7 @@ class ReservationMailer < ApplicationMailer
     subject_email_type_recurring_rule("confirmation")
     @conflict_days_message = conflict_days_message
     mail(to: @recipients, subject: @subject)
-    create_email_log_records("Reservation", @reservation, params[:recurring], @email_type, @recipients, params[:user].id, "all")
+    create_email_log_records(sent_from_model: "Reservation", recurring_type: "all")
   end
 
   def car_reservation_approved
@@ -38,8 +38,9 @@ class ReservationMailer < ApplicationMailer
     else
       @cancel_message = "The reservation was canceled."
     end
-    mail(to: @unit_email, subject: @subject)
-    create_email_log_records("Reservation", @reservation, params[:recurring], @email_type, @unit_email, params[:user].id, cancel_type)
+    @recipients = @unit_email
+    mail(to: @recipients, subject: @subject)
+    create_email_log_records(sent_from_model: "Reservation", recurring_type: cancel_type)
   end
 
   def car_reservation_cancel_driver(cancel_passengers, cancel_emails, cancel_message = "", cancel_type)
@@ -54,7 +55,7 @@ class ReservationMailer < ApplicationMailer
       @cancel_message = "Your reservation was canceled."
     end
     mail(to: @recipients, subject: @subject)
-    create_email_log_records("Reservation", @reservation, params[:recurring], @email_type, @recipients, params[:user].id, cancel_type)
+    create_email_log_records(sent_from_model: "Reservation", recurring_type: cancel_type)
   end
 
   def car_reservation_updated(admin: false)
@@ -64,7 +65,7 @@ class ReservationMailer < ApplicationMailer
 
     subject_email_type_recurring_rule("updated")
     mail(to: @recipients, subject: @subject)
-    create_email_log_records("Reservation", @reservation, params[:recurring], @email_type, @recipients, params[:user].id, "following")
+    create_email_log_records(sent_from_model: "Reservation", recurring_type: "following")
   end
 
   def car_reservation_drivers_edited(drivers_emails)
@@ -78,15 +79,15 @@ class ReservationMailer < ApplicationMailer
     @recipients = recipients.uniq.join(", ")
     subject_email_type_recurring_rule("drivers_edited")
     mail(to: @recipients, subject: @subject)
-    create_email_log_records("Reservation", @reservation, params[:recurring], @email_type, @recipients, params[:user].id, "following")
+    create_email_log_records(sent_from_model: "Reservation", recurring_type: "following")
   end
 
   def car_reservation_remove_passenger(passenger)
     @name = passenger.name
-    @email = email_address(passenger)
+    @recipients = email_address(passenger)
     subject_email_type_recurring_rule("passenger_removed")
     mail(to: @email, subject: @subject)
-    create_email_log_records("Reservation", @reservation, params[:recurring], @email_type, @email, params[:user].id, "following")
+    create_email_log_records(sent_from_model: "Reservation", recurring_type: "following")
   end
 
   def car_reservation_update_passengers
@@ -94,7 +95,7 @@ class ReservationMailer < ApplicationMailer
 
     subject_email_type_recurring_rule("passengers_updated")
     mail(to: @recipients, subject: @subject)
-    create_email_log_records("Reservation", @reservation, params[:recurring], @email_type, @recipients, params[:user].id, "following")
+    create_email_log_records(sent_from_model: "Reservation", recurring_type: "following")
   end
 
   private 
@@ -185,25 +186,25 @@ class ReservationMailer < ApplicationMailer
     end
   end
 
-  def create_email_log_records(model, reservation, recurring, email_type, recipients, user_id, recurring_type = "")
-    if recurring
-      recurring_reservation = RecurringReservation.new(reservation)
+  def create_email_log_records(sent_from_model:, recurring_type: "")
+    if params[:recurring]
+      recurring_reservation = RecurringReservation.new(@reservation)
       case recurring_type
       when "one"
-        all_reservations = Array(reservation.id)
+        all_reservations = Array(@reservation.id)
       when "following"
         all_reservations = recurring_reservation.get_following
       when "all"
         all_reservations = recurring_reservation.get_all_reservations
       else 
-        all_reservations = Array(reservation.id)
+        all_reservations = Array(@reservation.id)
       end
     else
-      all_reservations = Array(reservation.id)
+      all_reservations = Array(@reservation.id)
     end
     all_reservations.each do |id|
-      EmailLog.create(sent_from_model: model, record_id: id, email_type: email_type,
-        sent_to: recipients, sent_by: user_id, sent_at: DateTime.now)
+      EmailLog.create(sent_from_model: sent_from_model, record_id: id, email_type: @email_type,
+        sent_to: @recipients, sent_by: params[:user].id, sent_at: DateTime.now)
     end
   end
 
