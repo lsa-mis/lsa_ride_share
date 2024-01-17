@@ -66,10 +66,10 @@ class ReservationMailer < ApplicationMailer
 
   def car_reservation_drivers_edited(drivers_emails)
     @unit_email_message = get_unit_email_message(@reservation)
-    recipients = drivers_emails
-    recipients << User.find(@reservation.reserved_by).principal_name.presence
     set_passengers
     set_driver_name
+    recipients = drivers_emails
+    recipients << User.find(@reservation.reserved_by).principal_name.presence
     recipients << @passengers_emails if @passengers_emails.present?
     recipients << @unit_email
     @recipients = recipients.uniq.join(", ")
@@ -82,7 +82,7 @@ class ReservationMailer < ApplicationMailer
     @name = passenger.name
     @recipients = email_address(passenger)
     subject_email_type_recurring_rule("passenger_removed")
-    mail(to: @email, subject: @subject)
+    mail(to: @recipients, subject: @subject)
     create_email_log_records(sent_from_model: "Reservation", recurring_type: "following")
   end
 
