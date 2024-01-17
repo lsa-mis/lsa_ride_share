@@ -22,11 +22,10 @@ class ReservationMailer < ApplicationMailer
 
   def car_reservation_approved
     create_recipients_list(reserved_by_flag: false)
-
+    @email_type = "approved"
     @unit_email_message = get_unit_email_message(@reservation)
     mail(to: @recipients, subject: "Reservation approved for program: #{@reservation.program.display_name}" )
-    EmailLog.create(sent_from_model: "Reservation", record_id: @reservation.id, email_type: "approved",
-      sent_to: @recipients, sent_by: params[:user].id, sent_at: DateTime.now)
+    create_email_log_records(sent_from_model: "Reservation")
   end
 
   def car_reservation_cancel_admin(cancel_passengers, cancel_emails, cancel_message = "", cancel_type)
