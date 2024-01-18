@@ -4,9 +4,6 @@
 #
 #  id                                  :bigint           not null, primary key
 #  title                               :string
-#  subject                             :string           not null
-#  catalog_number                      :string           not null
-#  class_section                       :string           not null
 #  number_of_students                  :integer
 #  number_of_students_using_ride_share :integer
 #  pictures_required_start             :boolean          default(FALSE)
@@ -22,21 +19,24 @@
 #  term_id                             :integer
 #  add_managers                        :boolean          default(FALSE)
 #  not_course                          :boolean          default(FALSE)
+#  unit_id                             :bigint
 #
 FactoryBot.define do
   factory :program do
-    active { false }
     title { "MyString" }
-    term_start { "2023-02-14" }
-    term_end { "2023-02-14" }
-    term_code { "MyString" }
-    subject { "MyString" }
-    catalog_number { "MyString" }
-    class_section { "MyString" }
     number_of_students { 1 }
     number_of_students_using_ride_share { 1 }
     pictures_required_start { false }
     pictures_required_end { false }
     non_uofm_passengers { false }
+    add_managers { false }
+    not_course { false }
+    updated_by { Faker::Types.rb_integer }
+    mvr_link { "https://ltp.umich.edu/fleet/vehicle-use/" }
+    canvas_link { "https://umich.instructure.com/courses/187918"}
+    canvas_course_id { "187918" }
+    association :instructor
+    association :unit
+    association :term
   end
 end

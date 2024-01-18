@@ -10,7 +10,7 @@ FactoryBot.define do
   factory :course do
     subject { Faker::Educator.subject }
     catalog_number { Faker::Number.number(digits: 3) }
-    class_section { Faker::Number.number.decimal_part(digits: 2) }
+    class_section { Faker::Number.decimal_part(digits: 3) }
     association :program
   end
 end
