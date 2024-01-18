@@ -1,26 +1,36 @@
 require 'rails_helper'
-
-RSpec.describe 'Programs Index', type: :request do
-
-  # def stub_env_for_omniauth(provider = "facebook", uid = "1234567", email = "bob@contoso.com", name = "John Doe")
-  #   env = { "omniauth.auth" => { "provider" => provider, "uid" => uid, "info" => { "email" => email, "name" => name } } }
-  #   # @controller.stub!(:env).and_return(env)
-  #   env
-  # end
-  
-  describe 'programs index' do
-    it 'shows the right content' do
+#  Written with chatGPT and Jason Swett
+RSpec.describe "Programs", type: :request do
+  describe 'login success' do
+    it 'displays welcome message on programs page after successful login' do
+      user = FactoryBot.create(:user)
+ 
+      # Setup mock auth hash here or in a support file
       OmniAuth.config.test_mode = true
-      OmniAuth.config.mock_auth["omniauth.auth"] = OmniAuth::AuthHash.new({
-        :provider => 'saml',
-        :uid => '123545'
-        # etc.
+      OmniAuth.config.mock_auth[:saml] = OmniAuth::AuthHash.new({
+        provider: 'saml',
+        uid: '123456',
+        info: {
+          email: user.email,
+          name: user.display_name,
+          uniqname: user.uniqname,
+          # ... other attributes ...
+        }
       })
-      user = create(:user)
-      # session[:user_email] = user.email
-      get programs_path, session: { user_email: user.email}
-      # sleep(2)
-      expect(response.body).to include("Programs")
+
+      # Simulate login by setting session variables
+      post user_saml_omniauth_callback_path # Replace with your actual callback path
+      session[:user_email] = "Pizza"
+      session[:user_memberships] = ['some_membership_group']
+
+      # Now access the protected page
+      get programs_path
+
+      # Follow the redirect if one occurs
+      follow_redirect!
+      # puts response.body
+      expect(response.body).to include("Welcome")
     end
   end
 end
+
