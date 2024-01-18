@@ -20,8 +20,6 @@ RSpec.describe "Programs", type: :request do
 
       # Simulate login by setting session variables
       post user_saml_omniauth_callback_path # Replace with your actual callback path
-      session[:user_email] = "Pizza"
-      session[:user_memberships] = ['some_membership_group']
 
       # Now access the protected page
       get programs_path
