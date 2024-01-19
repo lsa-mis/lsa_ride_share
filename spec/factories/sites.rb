@@ -15,11 +15,12 @@
 #
 FactoryBot.define do
   factory :site do
-    title { "MyString" }
-    address1 { "MyString" }
-    address2 { "MyString" }
-    city { "MyString" }
-    state { "MyString" }
-    zip_code { "MyString" }
+    title { Faker::Address.community }
+    address1 { Faker::Address.street_address }
+    address2 { Faker::Address.secondary_address }
+    city { Faker::Address.city }
+    state { Faker::Address.state }
+    zip_code { Faker::Address.zip }
+    association :unit
   end
 end
