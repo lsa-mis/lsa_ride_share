@@ -19,10 +19,8 @@ FactoryBot.define do
     first_name { Faker::Name.first_name }
     last_name { Faker::Name.last_name }
     updated_by { Faker::Types.rb_integer }
-    mvr_status { Faker::Random.array(['Approved', 'Exp
-    ired', '']) }
+    mvr_status { ['Approved', 'Expired', '', nil].sample }
     canvas_course_complete_date { Faker::Date.between(from: 2.months.ago, to: Date.today) }
     meeting_with_admin_date { Faker::Date.between(from: 2.months.ago, to: Date.today) }
-    association :program
   end
 end
