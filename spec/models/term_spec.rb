@@ -16,7 +16,7 @@ RSpec.describe Term, type: :model do
 
   context "the Factory" do
     it 'is valid' do
-      expect(build(:car)).to be_valid
+      expect(build(:term)).to be_valid
     end
   end
 
