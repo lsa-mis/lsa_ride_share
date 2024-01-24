@@ -35,7 +35,7 @@ FactoryBot.define do
     mvr_link { "https://ltp.umich.edu/fleet/vehicle-use/" }
     canvas_link { "https://umich.instructure.com/courses/187918"}
     canvas_course_id { "187918" }
-    association :instructor
+    association :instructor, factory: :manager
     association :unit
     association :term
   end
