@@ -15,6 +15,14 @@
       <p id="car" class="body-lg-text ml-2 inline">
         <% if reservation.car.present? %>
           <%= link_to show_car(reservation), car_path(reservation.car), class: "link_to" %>
+          <div class="py-2">
+            <p class="body-lg-bold-text inline">
+              Car Location:
+            </p>
+            <p class="body-lg-text ml-2 inline">
+              <%= reservation.car.parking_spot %>
+            </p>
+          </div>
         <% else %>
           <span class="status-false">
             <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>

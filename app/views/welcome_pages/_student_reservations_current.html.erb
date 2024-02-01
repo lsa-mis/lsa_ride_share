@@ -10,6 +10,7 @@
           <th class="header_th">Drop-off</th>
           <th class="header_th">Site</th>
           <th class="header_th">Car</th>
+          <th class="header_th">Car Location</th>
           <th class="header_th">Vehicle Report</th>
         </tr>
       </thead>
@@ -45,6 +46,9 @@
             </td>
             <td class="mi_tbody_td">
               <%= show_car(reservation) %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= show_car_location(reservation) %>
             </td>
             <td class="mi_tbody_td">
               <% if reservation.vehicle_report.present? %>
@@ -111,6 +115,12 @@
           <th class="header_mobile">Car</th>
           <td class="mi_tbody_td">
             <%= show_car(reservation) %>
+          </td>
+        </tr>
+        <tr class="mi_tbody_tr">
+          <th class="header_mobile">Car Location</th>
+          <td class="mi_tbody_td">
+            <%= show_car_location(reservation) %>
           </td>
         </tr>
         <tr class="mobile_tr">
