@@ -453,7 +453,7 @@ module ApplicationHelper
     # pass in a date and time or strings
     day = Date.parse(day) if day.is_a? String 
     time = Time.parse(time) if time.is_a? String
-    if (day.to_time + 2.hour).dst?
+    if (day.to_date.to_time + 2.hour).dst?
       new_time = DateTime.new(day.year, day.month, day.day, time.hour, time.min, time.sec, 'EDT')
     else
       new_time = DateTime.new(day.year, day.month, day.day, time.hour, time.min, time.sec, 'EST')
