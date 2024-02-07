@@ -136,12 +136,12 @@
             <% if user_signed_in? %>
               <div class="text-white body-sm-text pr-2">Welcome <%= current_user.display_name.split[0] %></div>
               <%= button_to destroy_user_session_path, method: :delete, data: {turbo: "false"} do %>
-                <div class="sign_button mt-1">Log Out</div>
+                <div class="sign_button_mobile mt-1">Log Out</div>
               <% end %>
             <% else %> 
               <div>
                 <%= button_to user_saml_omniauth_authorize_path, data: {turbo: "false"} do %>
-                  <div class="sign_button mt-1">Sign In</div>
+                  <div class="sign_button_mobile mt-1">Sign In</div>
                 <% end %>
               </div>
             <% end %>
