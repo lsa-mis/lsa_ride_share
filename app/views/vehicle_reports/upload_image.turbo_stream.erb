@@ -1,7 +1,7 @@
 <%= render_flash_stream %>
 
 <%= turbo_stream.update "#{@image_field_name}" do %>
-  <%= render 'image_name', image_name: @image_name, image_field_name: "#{@image_field_name}", locals: { my_message: "nothing" } %>
+  <%= render 'image_name', image_name: @image_name, image_field_name: "#{@image_field_name}" %>
 <% end %>
 
 <%= turbo_stream.update "student_status" do %>
