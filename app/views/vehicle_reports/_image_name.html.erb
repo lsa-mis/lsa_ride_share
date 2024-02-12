@@ -1,4 +1,5 @@
 <%= turbo_frame_tag "#{image_field_name}" do %>
+  <hr>
   <p class="body-sm-bold-text">
   <%= show_image_name(image_field_name) %>
   </p>
@@ -27,11 +28,11 @@
           <span class="body-sm-text">Upload image:</span>
         <% end %>
         <%= form_with(model: @vehicle_report, url: upload_image_path, method: :post, html: { class: "sm:flex sm:items-center" }) do |form| %>
-          <div class="my-2">
+          <div class="flex items-end">
             <%= form.label image_field_name.to_sym, image_field_name.titleize, class: "hidden"  %>
             <%= form.file_field image_field_name.to_sym, class: "body-sm-text" %>
+            <%= form.submit 'Save', class: "secondary_blue_button" %>
           </div>
-          <%= form.submit 'Save', class: "secondary_blue_button" %>
         <% end %>
       </div>
     <% end %>
