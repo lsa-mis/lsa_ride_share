@@ -31,7 +31,11 @@
           <div class="flex items-end">
             <%= form.label image_field_name.to_sym, image_field_name.titleize, class: "hidden"  %>
             <%= form.file_field image_field_name.to_sym, class: "body-sm-text" %>
-            <%= form.submit 'Save', class: "secondary_blue_button" %>
+            <% if image_name.id.present? %>
+              <%= form.submit 'Replace', class: "secondary_blue_button" %>
+            <% else %>
+              <%= form.submit 'Save', class: "secondary_blue_button" %>
+            <% end %>
           </div>
         <% end %>
       </div>
