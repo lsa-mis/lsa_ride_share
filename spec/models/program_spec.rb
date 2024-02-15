@@ -28,14 +28,17 @@ require 'rails_helper'
 RSpec.describe Program, type: :model do
   context "the Factory" do
     it 'is valid' do
-      expect(build(:program)).to be_valid
+      program = build(:program)
+      # binding.pry
+      expect(program).to be_valid
     end
   end
 
   context "create program with all required fields present" do
     it 'is valid' do
       program = build(:program)
-      instructor = FactoryBot.create(:manager)
+      instructor = FactoryBot.build(:manager)
+      instructor.save
       unit = FactoryBot.create(:unit)
       program = FactoryBot.build(:program, instructor: instructor, unit: unit)
       expect(program).to be_valid
