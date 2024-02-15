@@ -39,7 +39,7 @@ class Program < ApplicationRecord
   accepts_nested_attributes_for :instructor
   accepts_nested_attributes_for :courses
 
-  validates_presence_of :title, :instructor_id, :unit_id
+  validates_presence_of :title, :instructor, :unit
   validates :term_id, uniqueness: { scope: [:title], message: "already has this program" }
 
 
