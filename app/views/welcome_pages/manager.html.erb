@@ -15,8 +15,14 @@
       </div>
       <div class="display md:hidden" data-controller='statuscard'>
         <!-- Mobile status card  -->
-        <button class="fields--display link_to -mt-6" data-statuscard-target="more_button" data-action="statuscard#showStatusCard">Show Info - Contact Us - Status ...</button>
-        <button class="fields--hide link_to -mt-6 mb-2" data-statuscard-target="less_button" data-action="statuscard#hideStatusCard">Hide Info - Contact Us - Status ...</button>
+        <button class="fields--display link_to -mt-6" data-statuscard-target="more_button" data-action="statuscard#showStatusCard">
+          Show Contact and Status information
+          <i class="fa-solid fa-caret-down"></i>
+        </button>
+        <button class="fields--hide link_to -mt-6 mb-2" data-statuscard-target="less_button" data-action="statuscard#hideStatusCard">
+          Hide Contact and Status information
+          <i class="fa-solid fa-caret-up"></i>
+        </button>
         <div class="fields--hide flex-col" data-statuscard-target="status_card">
           <p class="body-sm-text mx-2">
             To see all your programs, click on <span class="body-sm-bold-text">Programs</span> link in the header.
