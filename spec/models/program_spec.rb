@@ -29,7 +29,6 @@ RSpec.describe Program, type: :model do
   context "the Factory" do
     it 'is valid' do
       program = build(:program)
-      # binding.pry
       expect(program).to be_valid
     end
   end
@@ -37,11 +36,16 @@ RSpec.describe Program, type: :model do
   context "create program with all required fields present" do
     it 'is valid' do
       program = build(:program)
-      instructor = FactoryBot.build(:manager)
-      instructor.save
-      unit = FactoryBot.create(:unit)
-      program = FactoryBot.build(:program, instructor: instructor, unit: unit)
       expect(program).to be_valid
     end
   end
+
+  context "check validation for title uniqness for a term" do
+    it 'raise error "ActiveRecord::RecordInvalid: Term already has this program"' do
+      term = create(:term)
+      program = create(:program, term: term)
+      expect{ FactoryBot.create(:program, term: term, title: program.title) }.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: Term already has this program")
+    end
+  end
+
 end
