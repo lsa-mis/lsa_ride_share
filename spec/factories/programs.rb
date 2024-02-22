@@ -24,8 +24,6 @@
 FactoryBot.define do
   factory :program do
     title { "MyString" }
-    number_of_students { 1 }
-    number_of_students_using_ride_share { 1 }
     pictures_required_start { false }
     pictures_required_end { false }
     non_uofm_passengers { false }
