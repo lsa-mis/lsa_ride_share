@@ -12,6 +12,6 @@
 FactoryBot.define do
   factory :unit do
     name { Faker::Company.name }
-    ldap_group { Faker::String.random(length: 6..12) }
+    ldap_group { Faker::Alphanumeric.alpha(number: 10) }
   end
 end

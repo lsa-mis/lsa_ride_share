@@ -19,7 +19,7 @@
 #
 FactoryBot.define do
   factory :user do
-    uniqname { Faker::String.random(length: 3..8) }
+    uniqname { Faker::Alphanumeric.alpha(number: 8) }
     email { Faker::Internet.email }
     password { Faker::Internet.password(min_length: 10) }
     display_name { Faker::Name.name }
