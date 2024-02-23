@@ -1,16 +1,6 @@
 require 'rails_helper'
 
-def mock_login(info)
-  OmniAuth.config.test_mode = true
-  OmniAuth.config.mock_auth[:saml] = OmniAuth::AuthHash.new({
-    provider: 'saml',
-    uid: '123456',
-    info: info
-  })
-  post user_saml_omniauth_callback_path
-end
-
-RSpec.describe "Programs", type: :request do
+RSpec.describe "Controllers", type: :request do
 
   describe 'login success' do
     it 'displays welcome message on programs page' do

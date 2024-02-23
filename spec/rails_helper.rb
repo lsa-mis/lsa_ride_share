@@ -65,6 +65,8 @@ RSpec.configure do |config|
 
   config.include FactoryBot::Syntax::Methods
 
+  config.include SpecHelper
+
   config.before(:each, type: :request) do
     host! "localhost"
   end
