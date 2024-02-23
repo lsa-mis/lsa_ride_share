@@ -5,11 +5,7 @@ RSpec.describe "Controllers", type: :request do
   describe 'login success' do
     it 'displays welcome message on programs page' do
       user = FactoryBot.create(:user)
-      mock_login({
-        email: user.email,
-        name: user.display_name,
-        uniqname: user.uniqname
-      })
+      mock_login(user)
       follow_redirect!
       expect(response.body).to include("Welcome")
     end
@@ -17,12 +13,8 @@ RSpec.describe "Controllers", type: :request do
 
   describe 'login failure' do
     it 'displays welcome message on programs page' do
-      user = FactoryBot.create(:user)
-      mock_login({
-        email: "kielbasa",
-        name: user.display_name,
-        uniqname: user.uniqname
-      })
+      user = FactoryBot.build(:user, email: "kielbasa")
+      mock_login(user)
       expect(response.body).not_to include("Welcome")
     end
   end
