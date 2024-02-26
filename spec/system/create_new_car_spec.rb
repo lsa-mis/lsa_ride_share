@@ -4,8 +4,8 @@ RSpec.describe Car, type: :system do
 
 	before do
 		user = FactoryBot.create(:user)
-		unit = FactoryBot.create(:unit, name: "Psychology")
-		allow_any_instance_of(User).to receive(:unit_ids).and_return([unit.id])
+		# unit = FactoryBot.create(:unit, name: "Psychology")
+		# allow_any_instance_of(User).to receive(:unit_ids).and_return([unit.id])
 		mock_login(user)
 	end
 
