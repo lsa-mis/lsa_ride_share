@@ -320,11 +320,11 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .alert {
-    @apply text-red-umred text-sm font-normal font-montserrat;
+    @apply text-red-umred text-lg font-medium font-montserrat;
   }
 
   .notice {
-    @apply text-green-umgreen text-sm font-normal font-montserrat;
+    @apply text-green-umgreen text-lg font-medium font-montserrat;
   }
 
   .fields--hide {
