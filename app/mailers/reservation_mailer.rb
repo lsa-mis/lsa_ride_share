@@ -45,9 +45,9 @@ class ReservationMailer < ApplicationMailer
     @passengers = cancel_passengers
     subject_email_type_recurring_rule(@reservation, recurring, "cancel_admin")
     if recurring
-      @cancel_message = cancel_message + " scheduled '" + @recurring_rule + "' were canceled."
+      @cancel_message = cancel_message + " scheduled '" + @recurring_rule + "' were canceled by " + show_user_name_by_id(user.id) + "."
     else
-      @cancel_message = "The reservation was canceled."
+      @cancel_message = "The reservation was canceled by " + show_user_name_by_id(user.id) + "."
     end
     mail(to: @unit_email, subject: @subject)
     create_email_log_records("Reservation", @reservation, recurring, @email_type, @unit_email, user.id, cancel_type)
@@ -67,9 +67,9 @@ class ReservationMailer < ApplicationMailer
     @recipients = recipients.join(", ")
     subject_email_type_recurring_rule(@reservation, recurring, "cancel_driver")
     if recurring
-      @cancel_message = cancel_message + " scheduled '" + @recurring_rule + "' were canceled."
+      @cancel_message = cancel_message + " scheduled '" + @recurring_rule + "' were canceled by " + show_user_name_by_id(user.id) + "."
     else
-      @cancel_message = "Your reservation was canceled."
+      @cancel_message = "Your reservation was canceled by " + show_user_name_by_id(user.id) + "."
     end
     mail(to: @recipients, subject: @subject)
     create_email_log_records("Reservation", @reservation, recurring, @email_type, @recipients, user.id, cancel_type)

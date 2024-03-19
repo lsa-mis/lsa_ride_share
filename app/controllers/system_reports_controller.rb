@@ -93,7 +93,7 @@ class SystemReportsController < ApplicationController
     def create_query(report_type)
       if report_type == 'totals_programs'
         sql = "SELECT program_id, (SELECT programs.title FROM programs WHERE res.program_id = programs.id) AS program,
-            count(res.id) AS number_of_trips, sum(vr.mileage_end - vr.mileage_start) AS mileage, sum(number_of_people_on_trip) AS total_people_on_trips
+            count(res.id) AS number_of_trips, round(CAST(float8(sum(vr.mileage_end - vr.mileage_start)) as numeric), 2) AS mileage, sum(number_of_people_on_trip) AS total_people_on_trips
           FROM reservations AS res
           join vehicle_reports AS vr on vr.reservation_id = res.id
           JOIN programs ON programs.id = res.program_id
