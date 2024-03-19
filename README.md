@@ -13,7 +13,7 @@ The scope of this application is to support and simplify LSA departments busines
 To get a local copy up and running clone the repo, navigate to the local instance and start the application
 ```
 git clone git@github.com:lsa-mis/lsa_ride_share.git
-cd art_survey
+cd lsa_ride_share
 bundle
 bin/rails db:create
 bin/rails db:migrate
