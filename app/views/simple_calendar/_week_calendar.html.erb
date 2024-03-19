@@ -22,7 +22,9 @@
       <% date_range.slice(0, 7).each do |day| %>
         <tr class="mi_tbody_tr border">
           <th scope="row" colspan="2" class="header_th border">
-            <%= t('date.abbr_day_names')[day.wday] %> <%= day.to_formatted_s(:short) %>
+            <%= link_to day_reservations_path(day), class: "link_to", data: {turbo_frame: "_top"} do %>
+              <%= t('date.abbr_day_names')[day.wday] %> <%= day.to_formatted_s(:short) %>
+            <% end %>
           </th>
           <% @hour_begin.upto(@hour_end).each do |hour| %>
             <th colspan="4" class="header_th border border-gray-900">
