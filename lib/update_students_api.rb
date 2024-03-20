@@ -52,7 +52,7 @@ class UpdateStudentsApi
           result['data'] = response_json['getClassMembersOperResponse']['Classes']
         else
           result['errorcode'] = "API error"
-          result['error'] = "wrong format; "
+          result['error'] = "check the course name; "
         end
       end
     rescue StandardError => e
