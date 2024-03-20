@@ -108,4 +108,20 @@ class Student < ApplicationRecord
     where.not(meeting_with_admin_date: nil) 
   end
 
+  def self.to_csv
+    fields = %w{id uniqname last_name first_name}
+    header = %w{uniqname last_name first_name}
+    header.map! { |e| e.titleize.upcase }
+    CSV.generate(headers: true) do |csv|
+      csv << header
+      all.each do |a|
+        row = []
+        fields.each do |key|
+          row << a.attributes.values_at(key)[0]
+        end
+        csv << row
+      end
+    end
+  end
+
 end

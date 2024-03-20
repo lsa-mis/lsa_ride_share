@@ -9,10 +9,20 @@ class Programs::StudentsController < ApplicationController
   def index
     unless params[:update] == "false"
       unless @student_program.not_course
-        update_students(@student_program)
+        update_student_list_and_mvr
       end
     end
     authorize @students
+    if params[:format] == "csv"
+      respond_to do |format|
+        format.csv { send_data @students.to_csv, filename: "students-#{Date.today}.csv"}
+      end
+    end 
+  end
+
+  def update_student_list_and_mvr
+    update_mvr_status
+    update_students(@student_program)
   end
 
   def update_student_list
@@ -92,12 +102,14 @@ class Programs::StudentsController < ApplicationController
 
   def update_mvr_status
     @student_program.students.each do |student|
-      status = mvr_status(student.uniqname)
-      unless student.update(mvr_status: status)
-        redirect_to program_students_path(@student_program), alert: "Error updating student record."
+      if need_to_check_mvr_status?(student)
+        status = mvr_status(student.uniqname)
+        unless student.update(mvr_status: status)
+          redirect_to program_students_path(@student_program), alert: "Error updating student record."
+        end
       end
     end
-    flash.now[:notice] = "MVR status is updated."
+    flash[:notice] = "MVR status is updated."
     @students = @student_program.students.order(registered: :desc).order(:last_name)
     authorize @students
   end
