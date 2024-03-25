@@ -77,6 +77,13 @@ module ApplicationHelper
     student.uniqname + "@umich.edu"
   end
 
+  def need_to_check_mvr_status?(student)
+    return true unless student.mvr_status.present?
+    return true unless student.mvr_status.include? ("Approved until")
+    status_date = student.mvr_status.split(" ").last.to_date
+    return true if status_date < Date.today + 1.day
+  end
+
   def number_of_students(program)
     if program.number_of_students.present? && program.number_of_students > 0
       program.number_of_students

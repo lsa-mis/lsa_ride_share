@@ -108,4 +108,34 @@ class Student < ApplicationRecord
     where.not(meeting_with_admin_date: nil) 
   end
 
+  def self.to_csv
+    fields = %w{course registered uniqname last_name first_name mvr_status canvas_course_complete_date meeting_with_admin_date}
+    header = %w{course registered uniqname last_name first_name mvr_status canvas_course_complete_date in_person_orientation_date}
+    header.map! { |e| e.titleize.upcase }
+    CSV.generate(headers: true) do |csv|
+      csv << header
+      all.each do |student|
+        row = []
+        fields.each do |key|
+          if key == "course"
+            if student.course.present?
+              row << student.course.display_name
+            else
+              row << ""
+            end
+          elsif key == "registered"
+            if student.attributes.values_at(key)[0]
+              row << "yes"
+            else
+              row << "no"
+            end
+          else
+            row << student.attributes.values_at(key)[0]
+          end
+        end
+        csv << row
+      end
+    end
+  end
+
 end
