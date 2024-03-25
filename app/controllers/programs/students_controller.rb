@@ -15,7 +15,7 @@ class Programs::StudentsController < ApplicationController
     authorize @students
     if params[:format] == "csv"
       respond_to do |format|
-        format.csv { send_data @students.to_csv, filename: "students-#{Date.today}.csv"}
+        format.csv { send_data @students.to_csv, filename: "#{@student_program.title}-students-#{Date.today}.csv"}
       end
     end 
   end
