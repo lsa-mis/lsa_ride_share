@@ -9,7 +9,7 @@ class Programs::StudentsController < ApplicationController
   def index
     unless params[:update] == "false"
       unless @student_program.not_course
-        update_student_list_and_mvr
+        update_students(@student_program)
       end
     end
     authorize @students
@@ -18,11 +18,6 @@ class Programs::StudentsController < ApplicationController
         format.csv { send_data @students.to_csv, filename: "students-#{Date.today}.csv"}
       end
     end 
-  end
-
-  def update_student_list_and_mvr
-    update_mvr_status
-    update_students(@student_program)
   end
 
   def update_student_list
