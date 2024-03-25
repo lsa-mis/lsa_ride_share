@@ -35,4 +35,11 @@
   </div>
 
   <%= render "student_list" %>
+  <div class="mt-2">
+    <%= link_to program_students_path(@student_program, format: 'csv'), class: "link_to" do %>
+      Export to CSV
+    <% end %>
+  </div>
+      
+      
 </div>
