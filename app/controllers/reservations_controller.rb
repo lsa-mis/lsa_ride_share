@@ -102,7 +102,7 @@ class ReservationsController < ApplicationController
     if is_admin?(current_user)
       @sites = []
     end
-    @until_date = Term.current.pluck(:classes_end_date).min
+    @until_date = recurring_until_date(@unit_id)
     @reservation.start_time = @day_start
   end
 
@@ -165,7 +165,7 @@ class ReservationsController < ApplicationController
     if params[:until_date].present?
       @until_date = params[:until_date]
     else
-      @until_date = Term.current.pluck(:classes_end_date).min
+      @until_date = recurring_until_date(@unit_id)
     end
     authorize Reservation
   end
@@ -217,7 +217,7 @@ class ReservationsController < ApplicationController
     if params[:until_date].present?
       @until_date = params[:until_date]
     else
-      @until_date = Term.current.pluck(:classes_end_date).min
+      @until_date = recurring_until_date(@unit_id)
     end
     authorize Reservation
   end
@@ -877,6 +877,14 @@ class ReservationsController < ApplicationController
       end
       if @reservation.program.non_uofm_passengers && @reservation.non_uofm_passengers.present?
         @cancel_passengers << "Non UofM Passengers: " + @reservation.non_uofm_passengers
+      end
+    end
+
+    def recurring_until_date(unit_id)
+      if UnitPreference.where(unit_id: unit_id, name: "recurring_until").present? && UnitPreference.find_by(unit_id: unit_id, name: "recurring_until").value.present?
+        UnitPreference.find_by(unit_id: unit_id, name: "recurring_until").value.to_date
+      else
+        Term.current.pluck(:classes_end_date).min
       end
     end
 
