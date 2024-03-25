@@ -24,6 +24,16 @@ class CarsController < ApplicationController
   # GET /cars/new
   def new
     @car = Car.new
+    @parking_locations = []
+    if @units.count == 1
+      parking_prefs = UnitPreference.find_by(name: "parking_location", unit_id: @unit.first).value
+      if parking_prefs.present?
+        @parking_locations = parking_prefs.split(',')
+        @parking_locations.each(&:strip!)
+      else 
+        @other_parking = true
+      end
+    end
     authorize @car
   end
 
@@ -34,6 +44,11 @@ class CarsController < ApplicationController
   # POST /cars or /cars.json
   def create
     @car = Car.new(car_params)
+    if params[:parking_spot_select].present? && params[:parking_spot_select].downcase != "other"
+      @car.parking_spot = params[:parking_spot_select]
+    elsif params[:parking_spot].present?
+      @car.parking_spot = params[:parking_spot]
+    end
     authorize @car
     if @car.save
       redirect_to car_path(@car), notice: "A new car was added."
@@ -49,6 +64,17 @@ class CarsController < ApplicationController
     else
       render :edit, status: :unprocessable_entity
     end
+  end
+
+  def get_parking_locations
+    parking_prefs = UnitPreference.find_by(name: "parking_location", unit_id: params[:unit_id]).value
+    @parking_locations = []
+    if parking_prefs.present?
+      @parking_locations = parking_prefs.split(',')
+      @parking_locations.each(&:strip!)
+    end
+    render json: @parking_locations
+    authorize Car
   end
 
   # DELETE /cars/1 or /cars/1.json

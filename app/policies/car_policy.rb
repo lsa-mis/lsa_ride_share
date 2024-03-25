@@ -26,6 +26,10 @@ class CarPolicy < ApplicationPolicy
     update?
   end
 
+  def get_parking_locations?
+    create?
+  end
+
   def delete_file?
     user_in_access_group?
   end

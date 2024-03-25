@@ -76,6 +76,7 @@ export default class extends Controller {
     dropdown.length = 0;
     let defaultOption = document.createElement('option');
     defaultOption.value = '';
+    console.log(dropdown)
     if (data.length > 1) {
       defaultOption.text = 'Select Site ...';
       dropdown.add(defaultOption);

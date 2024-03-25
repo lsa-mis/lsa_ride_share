@@ -67,7 +67,8 @@ Rails.application.routes.draw do
   resources :cars do
     resources :notes, module: :cars
   end
-  
+  get '/cars/get_parking_locations/:unit_id', to: 'cars#get_parking_locations'
+
   resources :programs do
     resources :cars, module: :programs
   end
