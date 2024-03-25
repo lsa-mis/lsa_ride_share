@@ -881,11 +881,19 @@ class ReservationsController < ApplicationController
     end
 
     def recurring_until_date(unit_id)
-      if UnitPreference.where(unit_id: unit_id, name: "recurring_until").present? && UnitPreference.find_by(unit_id: unit_id, name: "recurring_until").value.present?
-        UnitPreference.find_by(unit_id: unit_id, name: "recurring_until").value.to_date
+      if UnitPreference.find_by(unit_id: unit_id, name: "recurring_until").present?
+        return Term.current.pluck(:classes_end_date).min unless UnitPreference.find_by(unit_id: unit_id, name: "recurring_until").value.present?
+        return Term.current.pluck(:classes_end_date).min unless is_date?(UnitPreference.find_by(unit_id: unit_id, name: "recurring_until").value)
+        return UnitPreference.find_by(unit_id: unit_id, name: "recurring_until").value.to_date
       else
-        Term.current.pluck(:classes_end_date).min
+        return Term.current.pluck(:classes_end_date).min
       end
+    end
+
+    def is_date?(string)
+      return true if string.to_date
+      rescue ArgumentError
+        false
     end
 
     # Only allow a list of trusted parameters through.
