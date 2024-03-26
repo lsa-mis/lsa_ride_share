@@ -1,4 +1,8 @@
-<%= form_with(model: car, class: "contents") do |form| %>
+<%= form_with model: [@car],
+  data: { controller: "createcar",
+          target: "form",
+          action: "submit->createcar#submitForm"
+        } do |form| %>
   <% if car.errors.any? %>
     <div id="error_explanation" class="text-red-umred px-3 py-2 font-medium rounded-lg mt-3">
       <h2><%= pluralize(car.errors.count, "error") %> prohibited this car from being saved:</h2>
@@ -10,12 +14,17 @@
     </div>
   <% end %>
 
-  <div class="grid grid-cols-1 sm:grid-cols-2" data-controller="createcar">
+  <div class="grid grid-cols-1 sm:grid-cols-2">
     <div>
-      <div class="my-5">
-        <%= form.label :unit_id, 'Unit *', class: "fancy_label" %>
-        <%= form.collection_select :unit_id, @units, :id, :name, { include_blank: "Select ...", required: true }, { class: "input_text_field", "data-createcar-target": "unit", "data-action": "change->createcar#changeUnit"} %>
-
+      <% if @unit_id.present? %>
+        <input type="hidden" id="unit_id" name="car[unit_id]" value=<%= @unit_id %> data-createcar-target="unit">
+      <% else %>
+        <div class="my-5">
+          <%= form.label :unit_id, 'Unit *', class: "fancy_label" %>
+          <%= form.collection_select :unit_id, @units, :id, :name, { include_blank: "Select ...", required: true }, { class: "input_text_field", "data-createcar-target": "unit", "data-action": "change->createcar#changeUnit"} %>
+        </div>
+      <% end %>
+      <div class="error_text" id="unit_error_place">
       </div>
 
       <div class="my-5">
@@ -50,15 +59,28 @@
 
       <div class="my-5">
       <%= form.label :gas, 'Percent of Fuel Remaining *', class: "fancy_label"  %>
-      <%= form.select(:gas, options_for_select(gas_percent, @car.gas), { include_blank: "Select ..." }, { class: "input_text_field" }) %>
+      <%= form.select(:gas, options_for_select(gas_percent, @car.gas), { include_blank: "Select ..." }, { class: "input_text_field", "data-createcar-target": "gas" }) %>
+    </div>
+
+    <div class="error_text" id="gas_error">
     </div>
 
     <% if @other_parking %>
       <div class="my-5">
-        <%= label_tag 'parking_spot', 'Other Parking Spot *', class: "fancy_label" %>
-        <%= form.text_field :parking_spot, placeholder: "Parking Spot", class: "input_text_field" %>
+        <%= label_tag 'car_parking_spot', 'Parking Spot *', class: "fancy_label" %>
+        <%= form.text_field :parking_spot, placeholder: "Parking Spot", class: "input_text_field", required: true %>
       </div>
     <% else %>
+      <% if @car.persisted? %>
+        <div class="py-2" id="current_parking">
+          <label class="body-lg-bold-text">
+            Current Parking Spot:
+          </label>
+          <p class="body-lg-text ml-2 inline-block">
+            <%= @car.parking_spot  %>
+          </p>
+        </div>
+      <% end %>
       <div data-createcar-target="parking_spot_div" class="my-5 fields--display">
         <%= label_tag 'parking_spot_select', 'Parking Spot *', class: "fancy_label" %>
         <%= select_tag "parking_spot_select", options_for_select(@parking_locations, @car.parking_spot), include_blank: "Select ...", class: "input_text_field",
@@ -69,6 +91,8 @@
         <%= text_field_tag(:parking_spot, nil, { class: "input_text_field", "data-createcar-target": "parking_other"}) %>
       </div>
     <% end %>
+      <div class="error_text" id="parking_spot_error_place">
+      </div>
       <div class="error_text" id="parking_other_error_place">
       </div>
 
