@@ -73,26 +73,14 @@ class CarsController < ApplicationController
     end
   end
 
-  def set_parking_locations(unit_id)
-    parking_prefs = UnitPreference.find_by(name: "parking_location", unit_id: unit_id).value
-    @parking_locations = []
-    if parking_prefs.present?
-      @parking_locations = parking_prefs.split(',')
-      @parking_locations.each(&:strip!)
-    else 
-      @other_parking = true
-    end
-    @parking_locations
-  end
-
   def get_parking_locations
     parking_prefs = UnitPreference.find_by(name: "parking_location", unit_id: params[:unit_id]).value
-    @parking_locations = []
+    parking_locations = []
     if parking_prefs.present?
-      @parking_locations = parking_prefs.split(',')
-      @parking_locations.each(&:strip!)
+      parking_locations = parking_prefs.split(',')
+      parking_locations.each(&:strip!)
     end
-    render json: @parking_locations
+    render json: parking_locations
     authorize Car
   end
 
@@ -119,6 +107,17 @@ class CarsController < ApplicationController
 
     def set_units
       @units = Unit.where(id: current_user.unit_ids).order(:name)
+    end
+
+    def set_parking_locations(unit_id)
+      parking_prefs = UnitPreference.find_by(name: "parking_location", unit_id: unit_id).value
+      @parking_locations = []
+      if parking_prefs.present?
+        @parking_locations = parking_prefs.split(',')
+        @parking_locations.each(&:strip!)
+      else 
+        @other_parking = true
+      end
     end
 
     # Only allow a list of trusted parameters through.
