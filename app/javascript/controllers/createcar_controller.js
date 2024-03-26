@@ -9,15 +9,12 @@ export default class extends Controller {
 
   changeUnit() {
     let unit = this.unitTarget.value
-    console.log(unit)
     if (unit) {
       fetch(`/cars/get_parking_locations/${unit}`)
         .then((response) => response.json())
         .then((data) => this.updateParkingLocations(data)
         );
-    } else {
-      console.log("no unit")
-    }
+    } 
   }
 
   updateParkingLocations(data) {
@@ -25,7 +22,6 @@ export default class extends Controller {
     dropdown.length = 0;
     let defaultOption = document.createElement('option');
     defaultOption.value = '';
-    console.log(dropdown)
 
     if (data.length > 1) {
       this.removeOtherParking()
@@ -104,21 +100,21 @@ export default class extends Controller {
 
     if (!unit) {
       unit_error_place.innerHTML = "Unit must be selected"
-    }
-
-    if(gas == null || gas == "") {
-      gas_error_place.innerHTML = "Percent of Fuel Remaining must be selected."
       submitForm = false
-    }
-
-    if((parking_spot == null || parking_spot == "") && current_parking == null){
-      parking_spot_error_place.innerHTML = "Parking Spot must be selected."
-      submitForm = false
-    } else if(parking_spot == "other" && parking_other == "") {
-      parking_other_error_place.innerHTML = "Please enter the other parking spot"
-      submitForm = false
-    } else if (parking_spot != "other"){
-      this.parking_otherTarget.value = ""
+    } else {
+      if(gas == null || gas == "") {
+        gas_error_place.innerHTML = "Percent of Fuel Remaining must be selected."
+        submitForm = false
+      }
+      if((parking_spot == null || parking_spot == "") && current_parking == null){
+        parking_spot_error_place.innerHTML = "Parking Spot must be selected."
+        submitForm = false
+      } else if(parking_spot == "other" && parking_other == "") {
+        parking_other_error_place.innerHTML = "Please enter the other parking spot"
+        submitForm = false
+      } else if (parking_spot != "other"){
+        this.parking_otherTarget.value = ""
+      }
     }
 
     if(submitForm == false) {
