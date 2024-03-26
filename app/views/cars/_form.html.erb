@@ -88,7 +88,7 @@
       </div>
       <div data-createcar-target="parking_other_div" class="my-5 fields--hide">
         <%= label_tag 'parking_spot', 'Other Parking Spot *', class: "fancy_label" %>
-        <%= text_field_tag(:parking_spot, nil, { class: "input_text_field", "data-createcar-target": "parking_other"}) %>
+        <%= text_field_tag(:parking_spot, nil, { class: "input_text_field", placeholder: "Parking Spot", "data-createcar-target": "parking_other"}) %>
       </div>
     <% end %>
       <div class="error_text" id="parking_spot_error_place">
