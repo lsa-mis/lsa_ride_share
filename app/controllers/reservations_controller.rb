@@ -712,10 +712,6 @@ class ReservationsController < ApplicationController
       result = recurring_reservation.get_following_to_delete
       recurring = true
       cancel_message = "This reservation and all the following recurring reservations "
-    when "all"
-      result = recurring_reservation.get_all_reservations
-      recurring = true
-      cancel_message = "Recurring Reservations starting on #{recurring_reservation.start_on} and "
     end
     ReservationMailer.car_reservation_cancel_admin(@reservation, @cancel_passengers, @cancel_emails, current_user, recurring, cancel_message, cancel_type).deliver_now
     if @reservation.driver_id.present? || @reservation.driver_manager_id.present? 
