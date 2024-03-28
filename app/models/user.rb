@@ -28,9 +28,21 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable, :omniauthable, omniauth_providers: [:saml]
 
   attr_accessor :membership, :unit_ids
+  has_many :mailer_subscriptions, dependent: :destroy
 
   def display_name_email
     "#{display_name} - #{email}"
   end
+
+  # @user.subscribed_to_mailer? "MarketingMailer"
+  # => true
+  def subscribed_to_mailer?(mailer)
+    MailerSubscription.find_by(
+      user: self,
+      mailer: mailer,
+      subscribed: true,
+    ).present?
+  end
+
   
 end
