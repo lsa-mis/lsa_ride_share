@@ -5,7 +5,7 @@
 #  id               :bigint           not null, primary key
 #  user_id          :bigint           not null
 #  mailer           :string           not null
-#  subscribed       :boolean
+#  unsubscribed       :boolean
 #  created_at      :datetime          not null
 #  updated_at      :datetime          not null
 # 
@@ -29,7 +29,7 @@ class MailerSubscription < ApplicationRecord
       ],
     ).freeze
 
-  validates :subscribed, inclusion: [true, false], allow_nil: true
+  validates :unsubscribed, inclusion: [true, false], allow_nil: true
   validates :mailer, presence: true
   validates :mailer, inclusion: MAILERS.items.map { |item| item[:name] }
   validates :user, uniqueness: { scope: :mailer }
@@ -53,7 +53,7 @@ class MailerSubscription < ApplicationRecord
   # @mailer_subscription.action
   # => "Subscribe to"
   def action
-    subscribed? ? "Unsubscribe from" : "Subscribe to"
+    unsubscribed? ? "Subscribe to" : "Unsubscribe from"
   end
 
   # @mailer_subscription.call_to_action

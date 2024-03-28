@@ -127,7 +127,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_28_135821) do
 
   create_table "mailer_subscriptions", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.boolean "subscribed"
+    t.boolean "unsubscribed"
     t.string "mailer", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

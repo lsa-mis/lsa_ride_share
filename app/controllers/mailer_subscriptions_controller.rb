@@ -12,7 +12,7 @@ class MailerSubscriptionsController < ApplicationController
 
   def create
     @mailer_subscription = current_user.mailer_subscriptions.build(mailer_subscription_params)
-    @mailer_subscription.subscribed = true
+    @mailer_subscription.unsubscribed = true
     if @mailer_subscription.save
       redirect_to mailer_subscriptions_path, notice: "Preferences updated."
     else
@@ -22,7 +22,7 @@ class MailerSubscriptionsController < ApplicationController
   end
 
   def update
-    if @mailer_subscription.toggle!(:subscribed)
+    if @mailer_subscription.toggle!(:unsubscribed)
       redirect_to mailer_subscriptions_path, notice: "Preferences updated."
     else
       redirect_to mailer_subscriptions_path, alter: "#{@mailer_subscription.errors.full_messages.to_sentence}"
