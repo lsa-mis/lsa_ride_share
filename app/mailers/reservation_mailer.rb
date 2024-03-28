@@ -1,7 +1,7 @@
 class ReservationMailer < ApplicationMailer
-  before_action :set_reservation, only: [:car_reservation_created, :car_reservation_approved, :car_reservation_confirmation, :car_reservation_updated, :car_reservation_remove_passenger, :car_reservation_update_passengers]
-  before_action :set_driver_name, only: [:car_reservation_created, :car_reservation_approved, :car_reservation_confirmation, :car_reservation_updated, :car_reservation_remove_passenger, :car_reservation_update_passengers]
-  before_action :set_passengers, only: [:car_reservation_created, :car_reservation_approved, :car_reservation_confirmation, :car_reservation_updated, :car_reservation_remove_passenger, :car_reservation_update_passengers]
+  before_action :set_reservation, only: [:car_reservation_created, :car_reservation_approved, :car_reservation_confirmation, :car_reservation_updated, :car_reservation_remove_passenger, :car_reservation_update_passengers, :one_hour_reminder, :vehicle_report_reminder]
+  before_action :set_driver_name, only: [:car_reservation_created, :car_reservation_approved, :car_reservation_confirmation, :car_reservation_updated, :car_reservation_remove_passenger, :car_reservation_update_passengers, :one_hour_reminder, :vehicle_report_reminder]
+  before_action :set_passengers, only: [:car_reservation_created, :car_reservation_approved, :car_reservation_confirmation, :car_reservation_updated, :car_reservation_remove_passenger, :car_reservation_update_passengers, :one_hour_reminder, :vehicle_report_reminder]
 
   def car_reservation_created(user, recurring = false, conflict_days_message = " ")
     @recipient = @reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
@@ -129,6 +129,30 @@ class ReservationMailer < ApplicationMailer
     create_email_log_records("Reservation", @reservation, recurring, @email_type, @recipients, user.id, "following")
   end
 
+  def one_hour_reminder
+    recipients = []
+    recipients << email_address(@reservation.driver) if @reservation.driver.present?
+    recipients << email_address(@reservation.driver_manager) if @reservation.driver_manager.present?
+    recipients << email_address(@reservation.backup_driver) if @reservation.backup_driver.present?
+    @recipients = recipients.uniq.join(", ")
+    recurring = false
+    subject_email_type_recurring_rule(@reservation, recurring, "one_hour_reminder")
+    mail(to: @recipients, subject: @subject)
+    create_email_log_records("Reservation", @reservation, recurring, @email_type, @recipients, User.find_by(uniqname: "cron_job").id)
+  end
+
+  def vehicle_report_reminder
+    recipients = []
+    recipients << email_address(@reservation.driver) if @reservation.driver.present?
+    recipients << email_address(@reservation.driver_manager) if @reservation.driver_manager.present?
+    recipients << email_address(@reservation.backup_driver) if @reservation.backup_driver.present?
+    @recipients = recipients.uniq.join(", ")
+    recurring = false
+    subject_email_type_recurring_rule(@reservation, recurring, "vehicle_report_reminder")
+    mail(to: @recipients, subject: @subject)
+    create_email_log_records("Reservation", @reservation, recurring, @email_type, @recipients, User.find_by(uniqname: "cron_job").id)
+  end
+
   private 
 
   def set_reservation
@@ -198,6 +222,10 @@ class ReservationMailer < ApplicationMailer
       subject = "- removed from the passengers list"
     when "passengers_updated"
       subject = "- passengers list updated"
+    when "one_hour_reminder"
+      subject = "- reminder"
+    when "vehicle_report_reminder"
+      subject = "- vehicle report reminder"
     else 
       subject = type
     end
