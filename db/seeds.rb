@@ -51,7 +51,11 @@ UnitPreference.create!([
   { name: "notification_email", description: "The email address that system notification emails are sent to", on_off: false, unit_id: test_unit.id, value: "admin@test.com", pref_type: "string"},
   { name: "faculty_survey", description: "Use faculty survey to create programs", on_off: false, unit_id: test_unit.id, value: nil, pref_type: "boolean"},
   { name: "hours_before_reservation", description: "Allow to create reservations without cars", on_off: false, unit_id: test_unit.id, value: "72", pref_type: "integer"},
-  { name: "no_car_reservations", description: "The email address that system notification emails are sent to", on_off: false, unit_id: test_unit.id, value: nil, pref_type: "boolean"}
+  { name: "no_car_reservations", description: "The email address that system notification emails are sent to", on_off: false, unit_id: test_unit.id, value: nil, pref_type: "boolean"},
+  { name: "parking_location", description: "Comma separated list of parking locations (Add 'Other' at the end of list to allow other locations)", on_off: false, unit_id: test_unit.id, value: nil, pref_type: "string"},
+  { name: "recurring_until", description: "A default date to create recurring reservations until in 'yyyy-mm-dd' format", on_off: false, unit_id: test_unit.id, value: nil, pref_type: "string"},
+  { name: "send_reminders", description: "Send reminders about upcoming reservations and not started vehicle reports", on_off: false, unit_id: test_unit.id, value: nil, pref_type: "string"},
+  { name: "unit_email_message", description: "SAdd message to reservations emails (approval and update drivers emails)", on_off: false, unit_id: test_unit.id, value: nil, pref_type: "string"}
 ])
 
 # create a manager
