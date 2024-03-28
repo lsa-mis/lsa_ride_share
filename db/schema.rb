@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_20_194638) do
+ActiveRecord::Schema[7.0].define(version: 2024_03_28_135821) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -123,6 +123,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_20_194638) do
     t.string "title"
     t.index ["term_id"], name: "index_faculty_surveys_on_term_id"
     t.index ["unit_id"], name: "index_faculty_surveys_on_unit_id"
+  end
+
+  create_table "mailer_subscriptions", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.boolean "subscribed"
+    t.string "mailer", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "mailer"], name: "index_mailer_subscriptions_on_user_id_and_mailer", unique: true
+    t.index ["user_id"], name: "index_mailer_subscriptions_on_user_id"
   end
 
   create_table "managers", force: :cascade do |t|
@@ -346,6 +356,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_20_194638) do
   add_foreign_key "contacts", "sites"
   add_foreign_key "faculty_surveys", "terms"
   add_foreign_key "faculty_surveys", "units"
+  add_foreign_key "mailer_subscriptions", "users"
   add_foreign_key "notes", "users"
   add_foreign_key "programs", "managers", column: "instructor_id"
   add_foreign_key "programs_sites", "programs"
