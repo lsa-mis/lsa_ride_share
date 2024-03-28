@@ -81,3 +81,6 @@ s3 = Student.create!(uniqname: "test_student2", last_name: "Test2", first_name: 
 
 # to create a reservation 
 reservation_test = Reservation.create!(status: "reserved", program_id: p1.id, site_id: site_test.id, start_time: DateTime.now, end_time: DateTime.now + 3.hour, driver_id: s1.id, driver_phone: "123-456-7890", number_of_people_on_trip: 1, car_id: test_car, updated_by: user_test.id, reserved_by: user_test.id)
+
+# create a user for cron job
+cron_user = User.create(uniqname: "cron_job", display_name: "Cron Job", password: "afire-XaFRm2", email: "cron@test.test")
