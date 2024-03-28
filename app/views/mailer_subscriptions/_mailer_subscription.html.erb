@@ -1,0 +1,18 @@
+<% if mailer_subscription.new_record? %>
+
+  <li style="margin-bottom: 16px;">
+    <%= button_to mailer_subscriptions_path, params: { mailer_subscription:  mailer_subscription.attributes }, class: "link_to" do %>
+      <%= mailer_subscription.call_to_action %>
+    <% end %>
+    <%= mailer_subscription.description %>
+    <hr/>
+  </li>
+<% else %>
+  <li style="margin-bottom: 16px;">
+    <%= button_to mailer_subscription_path(mailer_subscription), class: "link_to", method: :put do %>
+      <%= mailer_subscription.call_to_action %>
+    <% end %>
+    <%= mailer_subscription.description %>
+    <hr/>
+  </li>
+<% end %>
