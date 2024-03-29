@@ -100,10 +100,10 @@ class SystemReportsController < ApplicationController
         rows = []
         result = []
         program = Program.find(@program_id)
-        reservations_ids = program.reservations.ids
-        res1 = program.reservations.where("driver_id = ?", @student_id).order(:start_time)
+        reservations_ids = program.reservations.where("approved = ?", true).ids
+        res1 = program.reservations.where("approved = ? AND driver_id = ?", true, @student_id).order(:start_time)
         res1.map { |r| rows << [r.id, show_reservation_time(r), r.site.title, r.car.car_number, r.number_of_people_on_trip, "driver"] }
-        res1 = program.reservations.where("backup_driver_id = ?", @student_id).order(:start_time)
+        res1 = program.reservations.where("approved = ? AND backup_driver_id = ?", true, @student_id).order(:start_time)
         res1.map { |r| rows << [r.id, show_reservation_time(r), r.site.title, r.car.car_number, r.number_of_people_on_trip, "backup driver"] }
         res2 = Reservation.joins(:passengers).where("reservation_passengers.reservation_id in (?) AND reservation_passengers.student_id = ?", reservations_ids,  @student_id).order(:start_time)
         res2.map { |r| rows << [r.id, show_reservation_time(r), r.site.title, r.car.car_number, r.number_of_people_on_trip, "passenger"] }
