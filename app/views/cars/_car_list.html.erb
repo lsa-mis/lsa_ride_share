@@ -8,6 +8,7 @@
           <th class="header_th">Model</th>
           <th class="header_th">Color</th>
           <th class="header_th">Number of Seats</th>
+          <th class="header_th">Parking Spot</th>
           <th class="header_th">Last Vehicle Report Date</th>
           <th class="header_th">Vehicle Reports</th>
           <th class="header_th">Car Status</th>
@@ -34,6 +35,9 @@
             </td>
             <td class="mi_tbody_td">
               <%= car.number_of_seats %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= car.parking_spot %>
             </td>
             <td class="mi_tbody_td">
               <% if car.vehicle_reports_ids.present? %>
@@ -82,6 +86,12 @@
           <th class="header_mobile">Number of Seats</th>
           <td class="mi_tbody_td">
             <%= car.number_of_seats %>
+          </td>
+        </tr>
+        <tr class="mi_tbody_tr">
+          <th class="header_mobile">Parking Spot</th>
+          <td class="mi_tbody_td">
+            <%= car.parking_spot %>
           </td>
         </tr>
         <tr class="mi_tbody_tr">

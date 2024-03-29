@@ -102,7 +102,7 @@ class ReservationsController < ApplicationController
     if is_admin?(current_user)
       @sites = []
     end
-    @until_date = Term.current.pluck(:classes_end_date).min
+    @until_date = recurring_until_date(@unit_id)
     @reservation.start_time = @day_start
   end
 
@@ -165,7 +165,7 @@ class ReservationsController < ApplicationController
     if params[:until_date].present?
       @until_date = params[:until_date]
     else
-      @until_date = Term.current.pluck(:classes_end_date).min
+      @until_date = recurring_until_date(@unit_id)
     end
     authorize Reservation
   end
@@ -217,7 +217,7 @@ class ReservationsController < ApplicationController
     if params[:until_date].present?
       @until_date = params[:until_date]
     else
-      @until_date = Term.current.pluck(:classes_end_date).min
+      @until_date = recurring_until_date(@unit_id)
     end
     authorize Reservation
   end
@@ -610,7 +610,7 @@ class ReservationsController < ApplicationController
 
   def add_drivers_later
     notice = "Reservation was created, but confirmation email was not sent."
-    alert = "Send email mannualy after adding drivers. "
+    alert = "Send email manually after adding drivers. "
     if @reservation.recurring.present?
       if @reservation.recurring.present?
         recurring_reservation = RecurringReservation.new(@reservation)
@@ -712,10 +712,6 @@ class ReservationsController < ApplicationController
       result = recurring_reservation.get_following_to_delete
       recurring = true
       cancel_message = "This reservation and all the following recurring reservations "
-    when "all"
-      result = recurring_reservation.get_all_reservations
-      recurring = true
-      cancel_message = "Recurring Reservations starting on #{recurring_reservation.start_on} and "
     end
     ReservationMailer.car_reservation_cancel_admin(@reservation, @cancel_passengers, @cancel_emails, current_user, recurring, cancel_message, cancel_type).deliver_now
     if @reservation.driver_id.present? || @reservation.driver_manager_id.present? 
@@ -878,6 +874,22 @@ class ReservationsController < ApplicationController
       if @reservation.program.non_uofm_passengers && @reservation.non_uofm_passengers.present?
         @cancel_passengers << "Non UofM Passengers: " + @reservation.non_uofm_passengers
       end
+    end
+
+    def recurring_until_date(unit_id)
+      if UnitPreference.find_by(unit_id: unit_id, name: "recurring_until").present?
+        return Term.current.pluck(:classes_end_date).min unless UnitPreference.find_by(unit_id: unit_id, name: "recurring_until").value.present?
+        return Term.current.pluck(:classes_end_date).min unless is_date?(UnitPreference.find_by(unit_id: unit_id, name: "recurring_until").value)
+        return UnitPreference.find_by(unit_id: unit_id, name: "recurring_until").value.to_date
+      else
+        return Term.current.pluck(:classes_end_date).min
+      end
+    end
+
+    def is_date?(string)
+      return true if string.to_date
+      rescue ArgumentError
+        false
     end
 
     # Only allow a list of trusted parameters through.
