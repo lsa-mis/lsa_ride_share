@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["form", "format", "unit", "term", "program",
+  static targets = ["form", "format", "unit", "term", "program", 'student',
   "run_report_button", "download_report_button", "report_type"]
 
   connect() {
@@ -58,10 +58,58 @@ export default class extends Controller {
     if (program.not_course) {
       var title = program.title + ' - not a course'
     } else {
-      var title = program.title + " - " + program.subject + " " + program.catalog_number + " - " + program.class_section
+      var title = program.title
     }
     return title
   }
+
+  getStudents() {
+    let program =this.programTarget.value
+    if (program) {
+      fetch(`/programs/get_students_list/${program}`)
+        .then((response) => response.json())
+        .then((data) => this.updateStudentsSelect(data)
+        );
+    }
+  }
+
+  updateStudentsSelect(data) {
+    let dropdown = this.studentTarget;
+    dropdown.length = 0;
+
+    let defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    if (data.length > 1) {
+      defaultOption.text = 'Select Student ...';
+      dropdown.add(defaultOption);
+      dropdown.selectedIndex = 0;
+      let option;
+      for (let i = 0; i < data.length; i++) {
+        option = document.createElement('option');
+        option.value = data[i].id;
+        option.text = this.studentName(data[i])
+        dropdown.add(option);
+      }
+    } else if (data.length == 1) {
+      dropdown.selectedIndex = 0;
+      let option;
+      option = document.createElement('option');
+      option.value = data[0].id;
+      option.text = this.studentName(data[0])
+      dropdown.add(option);
+    } else {
+      defaultOption.text = 'No students for this program';
+      dropdown.add(defaultOption);
+    }
+  }
+
+  studentName(student) {
+    console.log(student.first_name)
+    var name = student.first_name + " " +student.last_name
+    return name
+  }
+
+
 
   saveLink() {
     var format = this.formatTarget.value
