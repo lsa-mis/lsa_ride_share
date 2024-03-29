@@ -853,7 +853,10 @@ module ApplicationHelper
   end
 
   def report_types
-    {"Vehicle Reports" => "vehicle_reports_all", "Totals by Program " => "totals_programs", "Approved Drivers" => "approved_drivers"}
+    {"Vehicle Reports" => "vehicle_reports_all", 
+    "Totals by Program " => "totals_programs", 
+    "Approved Drivers" => "approved_drivers",
+    "Reservations for Student" => "reservations_for_student"}
   end
 
 end

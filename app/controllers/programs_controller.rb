@@ -169,7 +169,7 @@ class ProgramsController < ApplicationController
   end
 
   def get_students_list
-    render json: Program.find(params[:program_id]).students
+    render json: Program.find(params[:program_id]).students.order(:last_name)
     authorize Program
   end
 
