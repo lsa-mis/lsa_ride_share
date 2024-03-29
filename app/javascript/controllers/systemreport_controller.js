@@ -116,6 +116,7 @@ export default class extends Controller {
     var unit = this.unitTarget.value
     var term = this.termTarget.value
     var program = this.programTarget.value
+    var student = this.studentTarget.value
     var report_type = this.report_typeTarget.value
 
     var needsAmp = false
@@ -140,6 +141,14 @@ export default class extends Controller {
         needsAmp = false
       }
       a.href = a.href + "program_id=" + program
+      needsAmp = true
+    }
+    if(student != "") {
+      if(needsAmp == true) {
+        a.href = a.href + "&"
+        needsAmp = false
+      }
+      a.href = a.href + "student_id=" + student
       needsAmp = true
     }
     if(needsAmp == true) {

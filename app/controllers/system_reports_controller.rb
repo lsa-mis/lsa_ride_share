@@ -101,14 +101,15 @@ class SystemReportsController < ApplicationController
         result = []
         program = Program.find(@program_id)
         reservations_ids = program.reservations.ids
-        res1 = program.reservations.where("driver_id = ?", @student_id)
+        res1 = program.reservations.where("driver_id = ?", @student_id).order(:start_time)
         res1.map { |r| rows << [r.id, show_reservation_time(r), r.site.title, r.car.car_number, r.number_of_people_on_trip, "driver"] }
-        res1 = program.reservations.where("backup_driver_id = ?", @student_id)
+        res1 = program.reservations.where("backup_driver_id = ?", @student_id).order(:start_time)
         res1.map { |r| rows << [r.id, show_reservation_time(r), r.site.title, r.car.car_number, r.number_of_people_on_trip, "backup driver"] }
-        res2 = Reservation.joins(:passengers).where("reservation_passengers.reservation_id in (?) AND reservation_passengers.student_id = ?", reservations_ids,  @student_id)
+        res2 = Reservation.joins(:passengers).where("reservation_passengers.reservation_id in (?) AND reservation_passengers.student_id = ?", reservations_ids,  @student_id).order(:start_time)
         res2.map { |r| rows << [r.id, show_reservation_time(r), r.site.title, r.car.car_number, r.number_of_people_on_trip, "passenger"] }
-        columns = ["id", "reservation time", "site", "car", "number of people on trip", "role"]
-        result.push({"report_name" => "#{report_type} for #{@unit} #{@term}", "total" => rows.count, "header" => columns, "rows" => rows})
+        columns = ["reservation", "reservation time", "site", "car", "number of people on trip", "role"]
+        rows = rows.sort_by { |obj| obj[1] }
+        result.push({"report_name" => "#{Student.find(@student_id).name}: reservations for #{@unit} #{@term}", "total" => rows.count, "header" => columns, "rows" => rows})
         return result
       end
 
