@@ -19,7 +19,12 @@
 
         <div class="">
           <label for="program_id" class="fancy_label">Select a Program</label>
-          <%= select_tag "program_id", options_from_collection_for_select(@programs, :id, :title, selected: params[:program_id]), include_blank: "All Programs", class: "filter_select w-96", "data-systemreport-target": "program" %>
+          <%= select_tag "program_id", options_from_collection_for_select(@programs, :id, :title, selected: params[:program_id]), include_blank: "All Programs", class: "filter_select w-96", "data-systemreport-target": "program", "data-action": "change->systemreport#getStudents" %>
+        </div>
+
+        <div class="">
+          <label for="student_id" class="fancy_label">Select a Student</label>
+          <%= select_tag "student_id", options_from_collection_for_select(@students, :id, :name, selected: params[:student_id]), include_blank: "Select ...", class: "filter_select w-96", "data-systemreport-target": "student" %>
         </div>
       </div>
       <div id="error_text" class="error_text mt-2"></div>
