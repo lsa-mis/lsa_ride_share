@@ -4,6 +4,10 @@ task automated_emails_to_drivers: :environment do
   now = DateTime.now
   units = Unit.all
 
+  puts "run cron job"
+  puts now
+  puts "--------------------------"
+
   units.each do |unit|
     puts unit.name
     if UnitPreference.find_by(unit_id: unit.id, name: "send_reminders").on_off

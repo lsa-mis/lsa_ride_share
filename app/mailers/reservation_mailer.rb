@@ -131,26 +131,54 @@ class ReservationMailer < ApplicationMailer
 
   def one_hour_reminder
     recipients = []
-    recipients << email_address(@reservation.driver) if @reservation.driver.present?
-    recipients << email_address(@reservation.driver_manager) if @reservation.driver_manager.present?
-    recipients << email_address(@reservation.backup_driver) if @reservation.backup_driver.present?
-    @recipients = recipients.uniq.join(", ")
-    recurring = false
-    subject_email_type_recurring_rule(@reservation, recurring, "one_hour_reminder")
-    mail(to: @recipients, subject: @subject)
-    create_email_log_records("Reservation", @reservation, recurring, @email_type, @recipients, User.find_by(uniqname: "cron_job").id)
+    if @reservation.driver.present?
+      if subscribed?(mailer: "one_hour_reminder", driver: @reservation.driver)
+        recipients << email_address(@reservation.driver)
+      end
+    end
+    if @reservation.driver_manager.present? 
+      if subscribed?(mailer: "one_hour_reminder", driver: @reservation.driver_manager)
+        recipients << email_address(@reservation.driver_manager)
+      end
+    end
+    if @reservation.backup_driver.present? 
+      if subscribed?(mailer: "one_hour_reminder", driver: @reservation.backup_driver)
+        recipients << email_address(@reservation.backup_driver)
+      end
+    end
+    if @recipients.present?
+      @recipients = recipients.uniq.join(", ")
+      recurring = false
+      subject_email_type_recurring_rule(@reservation, recurring, "one_hour_reminder")
+      mail(to: @recipients, subject: @subject)
+      create_email_log_records("Reservation", @reservation, recurring, @email_type, @recipients, User.find_by(uniqname: "cron_job").id)
+    end
   end
 
   def vehicle_report_reminder
     recipients = []
-    recipients << email_address(@reservation.driver) if @reservation.driver.present?
-    recipients << email_address(@reservation.driver_manager) if @reservation.driver_manager.present?
-    recipients << email_address(@reservation.backup_driver) if @reservation.backup_driver.present?
-    @recipients = recipients.uniq.join(", ")
-    recurring = false
-    subject_email_type_recurring_rule(@reservation, recurring, "vehicle_report_reminder")
-    mail(to: @recipients, subject: @subject)
-    create_email_log_records("Reservation", @reservation, recurring, @email_type, @recipients, User.find_by(uniqname: "cron_job").id)
+    if @reservation.driver.present? 
+      if subscribed?(mailer: "vehicle_report_reminder", driver: @reservation.driver)
+        recipients << email_address(@reservation.driver)
+      end
+    end
+    if @reservation.driver_manager.present? 
+      if subscribed?(mailer: "vehicle_report_reminder", driver: @reservation.driver_manager)
+        recipients << email_address(@reservation.driver_manager)
+      end
+    end
+    if @reservation.backup_driver.present? 
+      if subscribed?(mailer: "vehicle_report_reminder", driver: @reservation.backup_driver)
+        recipients << email_address(@reservation.backup_driver)
+      end
+    end
+    if @recipients.present?
+      @recipients = recipients.uniq.join(", ")
+      recurring = false
+      subject_email_type_recurring_rule(@reservation, recurring, "vehicle_report_reminder")
+      mail(to: @recipients, subject: @subject)
+      create_email_log_records("Reservation", @reservation, recurring, @email_type, @recipients, User.find_by(uniqname: "cron_job").id)
+    end
   end
 
   private 
@@ -238,6 +266,11 @@ class ReservationMailer < ApplicationMailer
       @subject = "Reservation " + subject + " for program: #{@reservation.program.display_name_with_title}"
       @email_type = type
     end
+  end
+
+  def subscribed?(mailer:, driver:)
+    puts driver.uniqname
+    MailerSubscription.find_by(mailer: mailer, user_id: User.find_by(uniqname: driver.uniqname).id).unsubscribed
   end
 
   def create_email_log_records(model, reservation, recurring, email_type, recipients, user_id, recurring_type = "")
