@@ -28,7 +28,6 @@ class VehicleReportPolicy < ApplicationPolicy
   end
   
   def update?
-    user_in_access_group? || is_vehicle_report_student? || is_vehicle_report_manager?
     return true if user_in_access_group? 
     return true if is_vehicle_report_student?
     return true if is_vehicle_report_manager?
