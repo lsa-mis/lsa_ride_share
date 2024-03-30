@@ -3,7 +3,9 @@
 class StudentPolicy < ApplicationPolicy
 
   def index?
-    user_in_access_group? || is_program_manager?
+    return true if user_in_access_group? 
+    return true if is_program_manager?
+    return false
   end
 
   def show?
@@ -11,15 +13,21 @@ class StudentPolicy < ApplicationPolicy
   end
 
   def update_student_list?
-    user_in_access_group? || is_instructor?
+    return true if user_in_access_group? 
+    return true if is_instructor?
+    return false
   end
 
   def add_students?
-    user_in_access_group? || is_instructor?
+    return true if user_in_access_group? 
+    return true if is_instructor?
+    return false
   end
 
   def create?
-    user_in_access_group? || is_instructor?
+    return true if user_in_access_group? 
+    return true if is_instructor?
+    return false
   end
 
   def new?
@@ -51,7 +59,9 @@ class StudentPolicy < ApplicationPolicy
   end
 
   def destroy?
-    user_in_access_group? || is_instructor?
+    return true if user_in_access_group? 
+    return true if is_instructor?
+    return false
   end
 
   def is_program_manager?
