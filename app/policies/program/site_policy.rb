@@ -3,7 +3,9 @@
 class Program::SitePolicy < ApplicationPolicy
 
   def create?
-    user_in_access_group? || is_program_instructor?
+    return true if user_in_access_group? 
+    return true if is_program_instructor?
+    return false
   end
 
   def new?
@@ -11,7 +13,7 @@ class Program::SitePolicy < ApplicationPolicy
   end
 
   def update?
-    user_in_access_group? || is_program_instructor?
+    create?
   end
 
   def edit?
@@ -19,11 +21,11 @@ class Program::SitePolicy < ApplicationPolicy
   end
 
   def edit_program_sites?
-    user_in_access_group? || is_program_instructor?
+    create?
   end
 
   def remove_site_from_program?
-    user_in_access_group? || is_program_instructor?
+    create?
   end
 
   def is_program_instructor?
