@@ -149,12 +149,11 @@ module ApplicationHelper
   end
 
   def is_manager?(user)
-    # Program.all.map { |p| p.all_managers.include?(user.uniqname) }.any?
-    Manager.where(uniqname: user.uniqname).present?
+    Manager.find_by(uniqname: user.uniqname).present?
   end
 
   def is_student?(user)
-    Student.where(uniqname: user.uniqname, program: Program.current_term).present?
+    Student.find_by(uniqname: user.uniqname, program: Program.current_term).present?
   end
   
   def show_car(reservation)
