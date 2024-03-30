@@ -149,7 +149,8 @@ module ApplicationHelper
   end
 
   def is_manager?(user)
-    Program.all.map { |p| p.all_managers.include?(user.uniqname) }.any?
+    # Program.all.map { |p| p.all_managers.include?(user.uniqname) }.any?
+    Manager.where(uniqname: user.uniqname).present?
   end
 
   def is_student?(user)
