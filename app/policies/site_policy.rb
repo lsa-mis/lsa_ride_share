@@ -7,11 +7,15 @@ class SitePolicy < ApplicationPolicy
   end
 
   def show?
-    user_in_access_group? || is_instructor?
+    return true if user_in_access_group? 
+    return true if is_instructor?
+    return false
   end
 
   def create?
-    user_in_access_group? || is_instructor?
+    return true if user_in_access_group? 
+    return true if is_instructor?
+    return false
   end
 
   def new?
@@ -19,7 +23,9 @@ class SitePolicy < ApplicationPolicy
   end
 
   def update?
-    user_in_access_group? || is_instructor?
+    return true if user_in_access_group? 
+    return true if is_instructor?
+    return false
   end
 
   def edit?
