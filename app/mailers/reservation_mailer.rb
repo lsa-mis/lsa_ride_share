@@ -133,8 +133,8 @@ class ReservationMailer < ApplicationMailer
 
   def set_reservation
     @reservation = params[:reservation]
-    @start_time = show_date_time(@reservation.start_time)
-    @end_time = show_date_time(@reservation.end_time)
+    @start_time = show_date_time(@reservation.start_time + 15.minute)
+    @end_time = show_date_time(@reservation.end_time - 15.minute)
     @contact_phone = @reservation.program.unit.unit_preferences.find_by(name: "contact_phone").value.presence || ""
     @unit_email = @reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
   end
