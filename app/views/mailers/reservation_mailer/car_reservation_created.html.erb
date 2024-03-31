@@ -4,9 +4,9 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-    <h3>
+    <p>
      New transportation reservation for (<%= "#{@start_time} - #{@end_time}" %>) has been submitted.
-    </h3>
+    </p>
     <% if @conflict_days_message.present? %>
       <p style="color:red">
        <%= @conflict_days_message %>
