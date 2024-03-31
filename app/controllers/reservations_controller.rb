@@ -336,7 +336,7 @@ class ReservationsController < ApplicationController
     notice = ""
     if params[:reservation][:approved].present?
       if @reservation.update(reservation_params)
-        ReservationMailer.with(reservation: @reservation).car_reservation_approved(current_user).deliver_now unless @reservation.approved == false
+        ReservationMailer.with(reservation: @reservation, user: current_user).car_reservation_approved.deliver_now unless @reservation.approved == false
         redirect_to reservation_path(@reservation), notice: "Reservation was updated."
         return
       else
@@ -360,7 +360,7 @@ class ReservationsController < ApplicationController
       else
         alert = recurring_reservation.update_this_and_following(update_params, start_time, end_time, false)
         if alert == ""
-          ReservationMailer.with(reservation: @reservation).car_reservation_updated(user: current_user, recurring: true, admin: true).deliver_now
+          ReservationMailer.with(reservation: @reservation, user: current_user, recurring: true).car_reservation_updated(admin: true).deliver_now
           @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id).order(created_at: :desc)
           redirect_to reservation_path(@reservation), notice: notice
         else
@@ -417,7 +417,7 @@ class ReservationsController < ApplicationController
       if is_admin?(current_user) || !is_admin?(current_user) && no_conflict
         if @reservation.update(reservation_params)
           unless is_admin?(current_user)
-            ReservationMailer.with(reservation: @reservation).car_reservation_updated(user: current_user, recurring: false, admin: true).deliver_now
+            ReservationMailer.with(reservation: @reservation, user: current_user, recurring: false).car_reservation_updated(admin: true).deliver_now
             @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id).order(created_at: :desc)
           end
           redirect_to reservation_path(@reservation), notice: "Reservation was successfully updated." + notice, alert: alert
@@ -522,7 +522,7 @@ class ReservationsController < ApplicationController
         else
           drivers_emails << drivers_emails_new
           drivers_emails = drivers_emails.flatten.uniq
-          ReservationMailer.car_reservation_drivers_edited(@reservation, drivers_emails, current_user, recurring).deliver_now
+          ReservationMailer.with(reservation: @reservation, user: current_user, recurring: recurring).car_reservation_drivers_edited(drivers_emails).deliver_now
           notice += " Old Drivers were removed from the trip."
         end
         redirect_to reservation_path(@reservation), notice: notice, alert: alert
@@ -549,7 +549,7 @@ class ReservationsController < ApplicationController
       recurring = false
       note = "Email about updating this reservation was sent."
     end
-    ReservationMailer.with(reservation: @reservation).car_reservation_updated(user: current_user, recurring: recurring, admin: false).deliver_now
+    ReservationMailer.with(reservation: @reservation, user: current_user, recurring: recurring).car_reservation_updated(admin: false).deliver_now
     @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id).order(created_at: :desc)
     redirect_to reservation_path(@reservation), notice: note
   end
@@ -632,8 +632,8 @@ class ReservationsController < ApplicationController
       recurring = false
       notice = "Reservation was created."
     end
-    ReservationMailer.with(reservation: @reservation).car_reservation_confirmation(current_user, recurring, conflict_days_message).deliver_now
-    ReservationMailer.with(reservation: @reservation).car_reservation_created(current_user, recurring, conflict_days_message).deliver_now
+    ReservationMailer.with(reservation: @reservation, user: current_user, recurring: recurring).car_reservation_confirmation(conflict_days_message).deliver_now
+    ReservationMailer.with(reservation: @reservation, user: current_user, recurring: recurring).car_reservation_created(conflict_days_message).deliver_now
     if recurring and conflict_days_message.present?
       alert = conflict_days_message
       if is_admin?(current_user)
@@ -662,7 +662,7 @@ class ReservationsController < ApplicationController
         end
       end
     end
-    ReservationMailer.with(reservation: @reservation).car_reservation_update_passengers(current_user, recurring).deliver_now
+    ReservationMailer.with(reservation: @reservation, user: current_user, recurring: recurring).car_reservation_update_passengers.deliver_now
     redirect_to reservation_path(@reservation), notice: notice, alert: alert
   end
 
@@ -676,9 +676,9 @@ class ReservationsController < ApplicationController
     if @reservation.passengers_managers.present?
       @reservation.passengers_managers.delete_all
     end
-    ReservationMailer.car_reservation_cancel_admin(@reservation, @cancel_passengers, @cancel_emails, current_user, recurring).deliver_now
+    ReservationMailer.with(reservation: @reservation, user: current_user, recurring: recurring).car_reservation_cancel_admin(@cancel_passengers, @cancel_emails).deliver_now
     if @reservation.driver_id.present? || @reservation.driver_manager_id.present? 
-      ReservationMailer.car_reservation_cancel_driver(@reservation, @cancel_passengers, @cancel_emails, current_user, recurring).deliver_now
+      ReservationMailer.with(reservation: @reservation, user: current_user, recurring: recurring).car_reservation_cancel_driver(@cancel_passengers, @cancel_emails).deliver_now
     end
     respond_to do |format|
       if @reservation.destroy
@@ -717,9 +717,9 @@ class ReservationsController < ApplicationController
       recurring = true
       cancel_message = "Recurring Reservations starting on #{recurring_reservation.start_on} and "
     end
-    ReservationMailer.car_reservation_cancel_admin(@reservation, @cancel_passengers, @cancel_emails, current_user, recurring, cancel_message, cancel_type).deliver_now
+    ReservationMailer.with(reservation: @reservation, user: current_user, recurring: recurring).car_reservation_cancel_admin(@cancel_passengers, @cancel_emails, cancel_message, cancel_type).deliver_now
     if @reservation.driver_id.present? || @reservation.driver_manager_id.present? 
-      ReservationMailer.car_reservation_cancel_driver(@reservation, @cancel_passengers, @cancel_emails, current_user, recurring, cancel_message, cancel_type).deliver_now
+      ReservationMailer.with(reservation: @reservation, user: current_user, recurring: recurring).car_reservation_cancel_driver(@cancel_passengers, @cancel_emails, cancel_message, cancel_type).deliver_now
     end
     recurring_reservation.destroy_passengers(result)
     authorize @reservation
@@ -744,7 +744,7 @@ class ReservationsController < ApplicationController
     note = ""
     result.each do |id|
       if Reservation.find(id).update(approved: true)
-        ReservationMailer.with(reservation: Reservation.find(id)).car_reservation_approved(current_user).deliver_now
+        ReservationMailer.with(reservation: Reservation.find(id), user: current_user).car_reservation_approved.deliver_now
       else
         note += "Reservation #{id} was not approved. "
       end
