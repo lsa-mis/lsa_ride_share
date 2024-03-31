@@ -82,7 +82,7 @@ class FacultySurveysController < ApplicationController
   end
 
   def send_faculty_survey_email
-    FacultyMailer.with(faculty_survey: @faculty_survey).send_faculty_survey(current_user).deliver_now
+    FacultyMailer.with(faculty_survey: @faculty_survey, user: current_user).send_faculty_survey.deliver_now
     @email_log_entries = EmailLog.where(sent_from_model: "FacultySurvey", record_id: @faculty_survey.id).order(created_at: :desc)
     redirect_to faculty_survey_config_questions_path(@faculty_survey), notice: 'Email was sent'
   end
