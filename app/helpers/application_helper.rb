@@ -149,11 +149,11 @@ module ApplicationHelper
   end
 
   def is_manager?(user)
-    Program.all.map { |p| p.all_managers.include?(user.uniqname) }.any?
+    Manager.find_by(uniqname: user.uniqname).present?
   end
 
   def is_student?(user)
-    Student.where(uniqname: user.uniqname, program: Program.current_term).present?
+    Student.find_by(uniqname: user.uniqname, program: Program.current_term).present?
   end
   
   def show_car(reservation)
@@ -853,7 +853,10 @@ module ApplicationHelper
   end
 
   def report_types
-    {"Vehicle Reports" => "vehicle_reports_all", "Totals by Program " => "totals_programs", "Approved Drivers" => "approved_drivers"}
+    {"Vehicle Reports" => "vehicle_reports_all", 
+    "Totals by Program " => "totals_programs", 
+    "Approved Drivers" => "approved_drivers",
+    "Reservations for Student" => "reservations_for_student"}
   end
 
 end

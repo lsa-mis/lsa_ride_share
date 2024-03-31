@@ -3,11 +3,15 @@
 class Program::CoursePolicy < ApplicationPolicy
 
   def index?
-    user_in_access_group? || is_program_instructor?
+    return true if user_in_access_group? 
+    return true if is_program_instructor?
+    return false
   end
 
   def create?
-    user_in_access_group? || is_program_instructor?
+    return true if user_in_access_group? 
+    return true if is_program_instructor?
+    return false
   end
 
   def new?
@@ -15,7 +19,9 @@ class Program::CoursePolicy < ApplicationPolicy
   end
 
   def update?
-    user_in_access_group? || is_program_instructor?
+    return true if user_in_access_group? 
+    return true if is_program_instructor?
+    return false
   end
 
   def edit?
@@ -23,7 +29,9 @@ class Program::CoursePolicy < ApplicationPolicy
   end
 
   def destroy?
-    user_in_access_group? || is_program_instructor?
+    return true if user_in_access_group? 
+    return true if is_program_instructor?
+    return false
   end
 
   def is_program_instructor?

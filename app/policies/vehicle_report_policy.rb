@@ -7,19 +7,31 @@ class VehicleReportPolicy < ApplicationPolicy
   end
 
   def show?
-    user_in_access_group? || is_vehicle_report_student? || is_vehicle_report_manager?
+    return true if user_in_access_group? 
+    return true if is_vehicle_report_student?
+    return true if is_vehicle_report_manager?
+    return false
   end
 
   def create?
-    user_in_access_group? || can_student_save_report? || can_manager_save_report?
+    return true if user_in_access_group? 
+    return true if can_student_save_report?
+    return true if can_manager_save_report?
+    return false
   end
 
   def new?
-    user_in_access_group? || can_student_create_report? || can_manager_create_report?
+    return true if user_in_access_group? 
+    return true if can_student_create_report?
+    return true if can_manager_create_report?
+    return false
   end
   
   def update?
-    user_in_access_group? || is_vehicle_report_student? || is_vehicle_report_manager?
+    return true if user_in_access_group? 
+    return true if is_vehicle_report_student?
+    return true if is_vehicle_report_manager?
+    return false
   end
 
   def edit?

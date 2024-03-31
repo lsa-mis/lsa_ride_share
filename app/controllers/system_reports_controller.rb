@@ -7,8 +7,9 @@ class SystemReportsController < ApplicationController
     @programs = []
     if params[:unit_id].present?
       @programs = Program.where(unit_id: params[:unit_id])
-      @programs = @programs.data(params[:term_id]).order(:title, :catalog_number, :class_section)
+      @programs = @programs.data(params[:term_id]).order(:title)
     end
+    @students = []
     authorize :system_report
   end
 
@@ -22,6 +23,12 @@ class SystemReportsController < ApplicationController
       @term_id = params[:term_id]
       @term = Term.find(@term_id).name
     end
+    if params[:program_id].present?
+      @program_id = params[:program_id]
+    end
+    if params[:student_id].present?
+      @student_id = params[:student_id]
+    end
 
     @title = "LSA Rideshare System Report"
     report_type = params[:report_type]
@@ -30,6 +37,11 @@ class SystemReportsController < ApplicationController
     if report_type == "vehicle_reports_all"
       @link = true
       @path = "vehicle_reports"
+    end
+
+    if report_type == "reservations_for_student"
+      @link = true
+      @path = "reservations"
     end
 
     if params[:format] == "csv"
@@ -83,6 +95,24 @@ class SystemReportsController < ApplicationController
         result.push({"report_name" => "#{report_type} for #{@unit} #{@term}", "total" => records_array1.count, "header" => columns, "rows" => rows})
         return result
       end
+
+      if report_type == "reservations_for_student"
+        rows = []
+        result = []
+        program = Program.find(@program_id)
+        reservations_ids = program.reservations.where("approved = ?", true).ids
+        res1 = program.reservations.where("approved = ? AND driver_id = ?", true, @student_id).order(:start_time)
+        res1.map { |r| rows << [r.id, show_reservation_time(r), r.site.title, r.car.car_number, r.number_of_people_on_trip, "driver"] }
+        res1 = program.reservations.where("approved = ? AND backup_driver_id = ?", true, @student_id).order(:start_time)
+        res1.map { |r| rows << [r.id, show_reservation_time(r), r.site.title, r.car.car_number, r.number_of_people_on_trip, "backup driver"] }
+        res2 = Reservation.joins(:passengers).where("reservation_passengers.reservation_id in (?) AND reservation_passengers.student_id = ?", reservations_ids,  @student_id).order(:start_time)
+        res2.map { |r| rows << [r.id, show_reservation_time(r), r.site.title, r.car.car_number, r.number_of_people_on_trip, "passenger"] }
+        columns = ["reservation", "reservation time", "site", "car", "number of people on trip", "role"]
+        rows = rows.sort_by { |obj| obj[1] }
+        result.push({"report_name" => "#{Student.find(@student_id).name}: reservations for #{@unit} #{@term}", "total" => rows.count, "header" => columns, "rows" => rows})
+        return result
+      end
+
       if report_type == 'vehicle_reports_all' || report_type == 'approved_drivers' 
         sql = create_query(report_type)
         return run_query(sql, report_type)
