@@ -108,7 +108,7 @@ class ReservationMailer < ApplicationMailer
         recipients << email_address(@reservation.backup_driver)
       end
     end
-    if @recipients.present?
+    if recipients.present?
       @recipients = recipients.uniq.join(", ")
       recurring = false
       set_subject_email_type_recurring_rule("one_hour_reminder")
@@ -134,7 +134,7 @@ class ReservationMailer < ApplicationMailer
         recipients << email_address(@reservation.backup_driver)
       end
     end
-    if @recipients.present?
+    if recipients.present?
       @recipients = recipients.uniq.join(", ")
       recurring = false
       set_subject_email_type_recurring_rule("vehicle_report_reminder")
@@ -147,8 +147,8 @@ class ReservationMailer < ApplicationMailer
 
   def set_reservation
     @reservation = params[:reservation]
-    @start_time = show_date_time(@reservation.start_time)
-    @end_time = show_date_time(@reservation.end_time)
+    @start_time = show_date_time(@reservation.start_time + 15.minute)
+    @end_time = show_date_time(@reservation.end_time - 15.minute)
     @contact_phone = @reservation.program.unit.unit_preferences.find_by(name: "contact_phone").value.presence || ""
     @unit_email = @reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
   end
@@ -237,7 +237,15 @@ class ReservationMailer < ApplicationMailer
 
   def subscribed?(mailer:, driver:)
     puts driver.uniqname
-    MailerSubscription.find_by(mailer: mailer, user_id: User.find_by(uniqname: driver.uniqname).id).unsubscribed
+    if MailerSubscription.find_by(mailer: mailer, user_id: User.find_by(uniqname: driver.uniqname).id).present?
+      if MailerSubscription.find_by(mailer: mailer, user_id: User.find_by(uniqname: driver.uniqname).id).unsubscribed
+        return false
+      else 
+        return true
+      end
+    else
+      return true
+    end
   end
 
   def create_email_log_records(recurring_type: "", user_id: params[:user].id)
