@@ -1,10 +1,10 @@
 class FacultyMailer < ApplicationMailer
-  before_action :set_faculty_survey, only: [:send_faculty_survey_email, :faculty_survey_program_created, :faculty_survey_confirmation]
+  before_action :set_faculty_survey, only: [:send_faculty_survey, :faculty_survey_program_created, :faculty_survey_confirmation]
 
-  def send_faculty_survey_email(user)
+  def send_faculty_surveyl(user)
     @recipient = @faculty_survey.uniqname + '@umich.edu'
     mail(to: @recipient, subject: "RideShare program: please fill out the survey" )
-    EmailLog.create(sent_from_model: "FacultySurvey", record_id: @faculty_survey.id, email_type: "send_faculty_survey_email",
+    EmailLog.create(sent_from_model: "FacultySurvey", record_id: @faculty_survey.id, email_type: "send_faculty_survey",
       sent_to: @recipient, sent_by: user.id, sent_at: DateTime.now)
   end
 
