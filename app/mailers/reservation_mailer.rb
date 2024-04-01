@@ -236,7 +236,6 @@ class ReservationMailer < ApplicationMailer
   end
 
   def subscribed?(mailer:, driver:)
-    puts driver.uniqname
     if MailerSubscription.find_by(mailer: mailer, user_id: User.find_by(uniqname: driver.uniqname).id).present?
       if MailerSubscription.find_by(mailer: mailer, user_id: User.find_by(uniqname: driver.uniqname).id).unsubscribed
         return false
