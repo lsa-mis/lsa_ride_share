@@ -15,6 +15,7 @@
       <table class="mi_table">
         <thead class="border border-l-0 border-r-0 border-gray-um60">
           <tr>
+            <td></td>
             <th class="header_th">Reservation Time</th>
             <th class="header_th">Car</th>
             <th class="header_th">Program</th>
@@ -28,55 +29,66 @@
           </tr>
         </thead>
         <tbody>
-          <% @day_reservations.each do |reservation| %>
-            <tr>
-              <td class="mi_tbody_td">
-                <%= link_to show_reservation_time(reservation), reservation_path(reservation), class: "link_to", data: { "turbo-frame": "_top" } %>
-              </td>
-              <td class="mi_tbody_td">
-                <% if reservation.car.present? %>
-                  <%= link_to reservation.car.car_number, car_path(reservation.car), class: "link_to", data: {turbo_frame: "_top"}  %>
-                <% else %>
-                  <span class="status-false">
-                    <%= reservation.display_name %>
-                    <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
-                  </span>
-                <% end %>
-              </td>
-              <td class="mi_tbody_td">
-                <%= reservation.program.title %>
-              </td>
-              <td class="mi_tbody_td">
-                <%= reservation.site.title %>
-              </td>
-              <td class="mi_tbody_td">
-                <%= show_driver(reservation) %>
-                <%= display_driver_status(reservation) %>
-              </td>
-              <td class="mi_tbody_td">
-                <%= reservation.number_of_people_on_trip %>
-              </td>
-              <td class="mi_tbody_td">
-                <%= show_user_name_by_id(reservation.reserved_by) %>
-              </td>
-              <td class="mi_tbody_td">
+          <%= form_with model: @res_ids, url: email_to_selected_reservations_path, method: :get, data: { turbo_frame: "_top" } do |form| %>
+            <% @day_reservations.each do |reservation| %>
+              <tr>
+                <td class="mi_tbody_td">
+                  <label for=<%= "#{reservation.id}" %> class="hidden"><%= reservation.id %></label>
+                  <%= check_box_tag "res_ids[#{reservation.id}]", 1, nil, class: "check_box" %>
+                </td>
+                <td class="mi_tbody_td">
+                  <%= link_to show_reservation_time(reservation), reservation_path(reservation), class: "link_to", data: { "turbo-frame": "_top" } %>
+                </td>
+                <td class="mi_tbody_td">
+                  <% if reservation.car.present? %>
+                    <%= link_to reservation.car.car_number, car_path(reservation.car), class: "link_to", data: {turbo_frame: "_top"}  %>
+                  <% else %>
+                    <span class="status-false">
+                      <%= reservation.display_name %>
+                      <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
+                    </span>
+                  <% end %>
+                </td>
+                <td class="mi_tbody_td">
+                  <%= reservation.program.title %>
+                </td>
+                <td class="mi_tbody_td">
+                  <%= reservation.site.title %>
+                </td>
+                <td class="mi_tbody_td">
+                  <%= show_driver(reservation) %>
+                  <%= display_driver_status(reservation) %>
+                </td>
+                <td class="mi_tbody_td">
+                  <%= reservation.number_of_people_on_trip %>
+                </td>
+                <td class="mi_tbody_td">
+                  <%= show_user_name_by_id(reservation.reserved_by) %>
+                </td>
+                <td class="mi_tbody_td">
+                  <% if reservation.vehicle_report.present? %>
+                    <%= link_to 'Vehicle report', vehicle_report_path(reservation.vehicle_report), class: "link_to", data: {turbo_frame: "_top"} %>
+                  <% else %>
+                    <%= link_to 'New vehicle report', new_reservation_vehicle_report_path(reservation), class: "link_to", data: {turbo_frame: "_top"} if reservation.car.present? %>
+                  <% end %>
+                </td>
                 <% if reservation.vehicle_report.present? %>
-                  <%= link_to 'Vehicle report', vehicle_report_path(reservation.vehicle_report), class: "link_to", data: {turbo_frame: "_top"} %>
-                <% else %>
-                  <%= link_to 'New vehicle report', new_reservation_vehicle_report_path(reservation), class: "link_to", data: {turbo_frame: "_top"} if reservation.car.present? %>
+                  <td class="mi_tbody_td status-<%= reservation.vehicle_report.approved %>">
+                    <%= reservation.vehicle_report.status %>
+                  </td>
+                  <td class="mi_tbody_td status-<%= reservation.vehicle_report.student_status %>">
+                    <%= show_vehicle_report_student_status(reservation.vehicle_report) %>
+                  </td>
                 <% end %>
-              </td>
-              <% if reservation.vehicle_report.present? %>
-                <td class="mi_tbody_td status-<%= reservation.vehicle_report.approved %>">
-                  <%= reservation.vehicle_report.status %>
                 </td>
-                <td class="mi_tbody_td status-<%= reservation.vehicle_report.student_status %>">
-                  <%= show_vehicle_report_student_status(reservation.vehicle_report) %>
                 </td>
-              <% end %>
-              </td>
-              </td>
-            </tr>
+              </tr>
+            <% end %>
+            <div class="my-4">
+        <div class="inline">
+          <%= submit_tag 'Send email', class: "secondary_blue_button" %>
+        </div>
+      <div>
           <% end %>
         </tbody>
       </table>

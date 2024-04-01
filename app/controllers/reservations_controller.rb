@@ -51,6 +51,34 @@ class ReservationsController < ApplicationController
     authorize @day_reservations
   end
 
+  def email_to_selected_reservations
+    selected_reservations = params[:res_ids].keys
+    recipients =[]
+    selected_reservations.each do |id|
+      reservation = Reservation.find(id)
+      recipients << email_address(reservation.driver) if reservation.driver.present?
+      recipients << email_address(reservation.driver_manager) if reservation.driver_manager.present?
+      recipients << email_address(reservation.backup_driver) if reservation.backup_driver.present?
+      passengers_emails = set_passengers_emails(reservation)
+      recipients << passengers_emails if passengers_emails.present?
+    end
+    @recipients = recipients.flatten.uniq.join(", ")
+    authorize Reservation
+  end
+
+  def set_passengers_emails(reservation)
+    passengers_emails =[]
+    if reservation.passengers.present? || reservation.passengers_managers.present?
+     reservation.passengers.each do |p|
+        passengers_emails << email_address(p)
+      end
+     reservation.passengers_managers.each do |p|
+        passengers_emails << email_address(p)
+      end
+    end
+    return passengers_emails
+  end
+
   # GET /reservations/1 or /reservations/1.json
   def show
     @passengers = @reservation.passengers + @reservation.passengers_managers
@@ -895,6 +923,6 @@ class ReservationsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def reservation_params
       params.require(:reservation).permit(:status, :start_time, :end_time, :recurring, :driver_id, :driver_manager_id, :driver_phone, :backup_driver_id, :backup_driver_phone, 
-      :number_of_people_on_trip, :program_id, :site_id, :car_id, :reserved_by, :approved, :non_uofm_passengers, :number_of_non_uofm_passengers, :until_date)
+      :number_of_people_on_trip, :program_id, :site_id, :car_id, :reserved_by, :approved, :non_uofm_passengers, :number_of_non_uofm_passengers, :until_date, :reservations[])
     end
 end
