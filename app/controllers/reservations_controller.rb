@@ -63,7 +63,21 @@ class ReservationsController < ApplicationController
       recipients << passengers_emails if passengers_emails.present?
     end
     @recipients = recipients.flatten.uniq.join(", ")
+    @signature = "Your Phsycology RideShare Team"
+    @day = params[:day]
     authorize Reservation
+    render :email_form, status: 422
+  end
+
+  def send_email_to_selected_reservations
+    recipients = params[:recipients]
+    subject = params[:subject]
+    message = params[:message]
+    signature = params[:signature]
+    day = params[:day].to_date
+    authorize Reservation
+    ReservationMailer.with(recipients: recipients, subject: subject, message: message, signature: signature).to_selected_reservations(current_user).deliver_now
+    redirect_to day_reservations_path(day), notice: "Email was sent." 
   end
 
   def set_passengers_emails(reservation)

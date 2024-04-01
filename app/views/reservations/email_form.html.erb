@@ -1,0 +1,29 @@
+<p> hello email form</p>
+<%= form_with url: send_email_to_selected_reservations_path, method: :get do |form| %>
+  <div class="grid grid-cols-1">
+    <div class="my-5">
+      <%= label_tag 'recipients', 'To:', class: "fancy_label, required: true " %>
+      <%= text_field_tag 'recipients', @recipients, class: "input_text_field" %>
+    </div>
+    <div class="my-5">
+      <%= label_tag 'subject', 'Subject', class: "fancy_label" %>
+      <%= text_field_tag 'subject', @subject, placeholder: "Subject", class: "input_text_field", required: true  %>
+    </div>
+
+    <div class="my-5">
+      <%= label_tag 'message', 'Email Message', class: "fancy_label" %>
+      <%= rich_text_area 'message', @message, required: true  %>
+    </div>
+
+    <div class="my-5">
+      <%= label_tag 'signature', 'Signature', class: "fancy_label" %>
+      <%= text_field_tag 'signature', @signature, placeholder: "signature", class: "input_text_field", required: true  %>
+    </div>
+    <input type="hidden" id="day" name="day" value=<%= @day %>>
+
+    <div class="inline">
+      <%= submit_tag 'Send email', class: "secondary_blue_button"  %>
+    </div>
+
+  </div>
+<% end %>

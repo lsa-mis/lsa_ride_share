@@ -12,24 +12,24 @@
   </div>
   <div>
     <%= turbo_frame_tag 'day_reservations' do %>
-      <table class="mi_table">
-        <thead class="border border-l-0 border-r-0 border-gray-um60">
-          <tr>
-            <td></td>
-            <th class="header_th">Reservation Time</th>
-            <th class="header_th">Car</th>
-            <th class="header_th">Program</th>
-            <th class="header_th">Site</th>
-            <th class="header_th">Driver</th>
-            <th class="header_th">Number of People</th>
-            <th class="header_th">Reserved By</th>
-            <th class="header_th">Vehicle Report</th>
-            <th class="header_th">Admin Status</th>
-          <th class="header_th">Student Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <%= form_with model: @res_ids, url: email_to_selected_reservations_path, method: :get, data: { turbo_frame: "_top" } do |form| %>
+      <%= form_with model: @res_ids, url: email_to_selected_reservations_path, method: :post, data: { turbo_frame: "_top" } do |form| %>
+        <table class="mi_table">
+          <thead class="border border-l-0 border-r-0 border-gray-um60">
+            <tr>
+              <td></td>
+              <th class="header_th">Reservation Time</th>
+              <th class="header_th">Car</th>
+              <th class="header_th">Program</th>
+              <th class="header_th">Site</th>
+              <th class="header_th">Driver</th>
+              <th class="header_th">Number of People</th>
+              <th class="header_th">Reserved By</th>
+              <th class="header_th">Vehicle Report</th>
+              <th class="header_th">Admin Status</th>
+            <th class="header_th">Student Status</th>
+            </tr>
+          </thead>
+          <tbody>
             <% @day_reservations.each do |reservation| %>
               <tr>
                 <td class="mi_tbody_td">
@@ -84,14 +84,13 @@
                 </td>
               </tr>
             <% end %>
-            <div class="my-4">
+          </tbody>
+        </table>
+        <input type="hidden" id="day" name="day" value=<%= @day %>>
         <div class="inline">
           <%= submit_tag 'Send email', class: "secondary_blue_button" %>
         </div>
-      <div>
-          <% end %>
-        </tbody>
-      </table>
+      <% end %>
     <% end %>
   </div>
 </div>

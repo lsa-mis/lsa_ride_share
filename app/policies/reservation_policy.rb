@@ -133,6 +133,10 @@ class ReservationPolicy < ApplicationPolicy
     user_in_access_group?
   end
 
+  def send_email_to_selected_reservations?
+    user_in_access_group?
+  end
+
   def is_in_reservation?
     if is_student?
       student = Student.find_by(program_id: @record.program, uniqname: @user.uniqname)
