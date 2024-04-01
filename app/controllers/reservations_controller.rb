@@ -51,33 +51,24 @@ class ReservationsController < ApplicationController
     authorize @day_reservations
   end
 
-  def email_to_selected_reservations
-    selected_reservations = params[:res_ids].keys
-    recipients =[]
-    selected_reservations.each do |id|
-      reservation = Reservation.find(id)
-      recipients << email_address(reservation.driver) if reservation.driver.present?
-      recipients << email_address(reservation.driver_manager) if reservation.driver_manager.present?
-      recipients << email_address(reservation.backup_driver) if reservation.backup_driver.present?
-      passengers_emails = set_passengers_emails(reservation)
-      recipients << passengers_emails if passengers_emails.present?
-    end
-    @recipients = recipients.flatten.uniq.join(", ")
-    @signature = "Your Phsycology RideShare Team"
+  def selected_reservations
+    @selected_reservations = params[:res_ids].keys.join(',')
     @day = params[:day]
     authorize Reservation
     render :email_form, status: 422
   end
 
   def send_email_to_selected_reservations
-    recipients = params[:recipients]
+    selected_reservations = params[:selected_reservations].split(',').map(&:to_i)
     subject = params[:subject]
     message = params[:message]
-    signature = params[:signature]
     day = params[:day].to_date
     authorize Reservation
-    ReservationMailer.with(recipients: recipients, subject: subject, message: message, signature: signature).to_selected_reservations(current_user).deliver_now
-    redirect_to day_reservations_path(day), notice: "Email was sent." 
+    selected_reservations.each do |id|
+      reservation = Reservation.find(id)
+      ReservationMailer.with(reservation: reservation, subject: subject, message: message, user: current_user).to_selected_reservations.deliver_now
+    end
+    redirect_to day_reservations_path(day), notice: "Emails were sent." 
   end
 
   def set_passengers_emails(reservation)

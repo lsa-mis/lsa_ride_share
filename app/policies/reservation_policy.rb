@@ -129,7 +129,7 @@ class ReservationPolicy < ApplicationPolicy
     create?
   end
 
-  def email_to_selected_reservations?
+  def selected_reservations?
     user_in_access_group?
   end
 
