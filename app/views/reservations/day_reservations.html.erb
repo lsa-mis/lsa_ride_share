@@ -45,8 +45,7 @@
             <% @day_reservations.each do |reservation| %>
               <tr>
                 <td class="mi_tbody_td">
-                  <label for=<%= "#{reservation.id}" %> class="hidden"><%= reservation.id %></label>
-                  <input type="checkbox" name="res_ids[<%= reservation.id %>]" id="res_ids_<%= reservation.id %>" value="0" class="check_box" data-checkboxselectall-target="checkbox" data-action="change->checkboxselectall#toggleCheckboxAll"  >
+                  <input type="checkbox" aria-labelledby=<%= "res_ids_#{reservation.id}" %> name="res_ids[<%= reservation.id %>]" id="res_ids_<%= reservation.id %>" value="0" class="check_box" data-checkboxselectall-target="checkbox" data-action="change->checkboxselectall#toggleCheckboxAll">
                 </td>
                 <td class="mi_tbody_td">
                   <%= link_to show_reservation_time(reservation), reservation_path(reservation), class: "link_to", data: { "turbo-frame": "_top" } %>
