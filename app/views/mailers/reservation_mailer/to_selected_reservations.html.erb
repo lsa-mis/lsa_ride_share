@@ -12,7 +12,7 @@
       Your <%= @reservation.program.unit.name %> RideShare Team
     </p>
     <p> 
-      Reservation for:  <%= link_to "#{@reservation.display_name}", reservation_url(@reservation) %> summary:
+      Reservation for  <%= link_to "#{@reservation.display_name}", reservation_url(@reservation) %> summary:
       <ul>
         <li>DATE: <%= "#{@start_time} - #{@end_time}" %></li>
         <% if @reservation.car.present? %>
