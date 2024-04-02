@@ -12,9 +12,14 @@
   </div>
   <div>
     <%= turbo_frame_tag 'day_reservations' do %>
-      <%= form_with model: @res_ids, url: selected_reservations_path, method: :post, data: { controller: "checkboxselectall", turbo_frame: "_top" } do |form| %>
+      <%= form_with model: @res_ids, url: selected_reservations_path, method: :post, 
+        data: { controller: "checkboxselectall",
+                target: "form",
+                action: "submit->checkboxselectall#submitForm",
+                turbo_frame: "_top" 
+              } do |form| %>
         <div class="flex md:flex justify-between items-center ml-2 mb-2">
-          <div class="">
+          <div class="error_text" id="checkbox_error">
           </div>
           <div>
             <%= submit_tag 'Send Email to Selected Reservations', class: "secondary_blue_button" %>
