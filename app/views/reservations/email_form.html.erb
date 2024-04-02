@@ -2,12 +2,12 @@
 <%= form_with url: send_email_to_selected_reservations_path, method: :get do |form| %>
   <div class="grid grid-cols-1">
     <div class="my-5">
-      <%= label_tag 'subject', 'Subject', class: "fancy_label" %>
+      <%= label_tag 'subject', 'Subject *', class: "fancy_label" %>
       <%= text_field_tag 'subject', @subject, placeholder: "Subject", class: "input_text_field", required: true  %>
     </div>
 
     <div class="my-5">
-      <%= label_tag 'message', 'Email Message', class: "fancy_label" %>
+      <%= label_tag 'message', 'Email Message *', class: "fancy_label" %>
       <%= form.rich_text_area :message %>
     </div>
 

@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["checkbox_all", "checkbox"]
+  static targets = ["checkbox_all", "checkbox", "form"]
 
   connect() {
     console.log("connect - checkbox select/deselect all")
@@ -28,4 +28,12 @@ export default class extends Controller {
     }
   }
 
+  submitForm(event) {
+    var checkbox_error_place = document.getElementById('checkbox_error')
+    checkbox_error_place.innerHTML = ''
+    if (!this.checkboxTargets.map(x => x.checked).includes(true)) {
+      checkbox_error_place.innerHTML = "Please select reservations."
+      event.preventDefault()
+    }
+  }
 }
