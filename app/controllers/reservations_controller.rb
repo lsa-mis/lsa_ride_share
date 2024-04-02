@@ -71,19 +71,6 @@ class ReservationsController < ApplicationController
     redirect_to day_reservations_path(day), notice: "Emails were sent." 
   end
 
-  def set_passengers_emails(reservation)
-    passengers_emails =[]
-    if reservation.passengers.present? || reservation.passengers_managers.present?
-     reservation.passengers.each do |p|
-        passengers_emails << email_address(p)
-      end
-     reservation.passengers_managers.each do |p|
-        passengers_emails << email_address(p)
-      end
-    end
-    return passengers_emails
-  end
-
   # GET /reservations/1 or /reservations/1.json
   def show
     @passengers = @reservation.passengers + @reservation.passengers_managers
@@ -928,6 +915,6 @@ class ReservationsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def reservation_params
       params.require(:reservation).permit(:status, :start_time, :end_time, :recurring, :driver_id, :driver_manager_id, :driver_phone, :backup_driver_id, :backup_driver_phone, 
-      :number_of_people_on_trip, :program_id, :site_id, :car_id, :reserved_by, :approved, :non_uofm_passengers, :number_of_non_uofm_passengers, :until_date, :reservations[])
+      :number_of_people_on_trip, :program_id, :site_id, :car_id, :reserved_by, :approved, :non_uofm_passengers, :number_of_non_uofm_passengers, :until_date)
     end
 end
