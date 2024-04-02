@@ -1,5 +1,5 @@
 <div class="min-w-full">
-  <div class="flex justify-between items-center pb-4">
+  <div class="flex justify-between items-center">
     <h1>Reservations for <%= show_date(@day) %><h1>
     <div>
       <%= link_to reservations_path do %>
@@ -15,10 +15,6 @@
       <%= form_with model: @res_ids, url: selected_reservations_path, method: :post, data: { controller: "checkboxselectall", turbo_frame: "_top" } do |form| %>
         <div class="flex md:flex justify-between items-center ml-2 mb-2">
           <div class="">
-            <label>
-              <input type="checkbox" class="check_box" data-checkboxselectall-target="checkbox_all" data-action="change->checkboxselectall#toggleCheckbox">
-              <span>Select All</span>
-            </label>
           </div>
           <div>
             <%= submit_tag 'Send Email to Selected Reservations', class: "secondary_blue_button" %>
@@ -28,7 +24,9 @@
         <table class="mi_table">
           <thead class="border border-l-0 border-r-0 border-gray-um60">
             <tr>
-              <td></td>
+              <td>
+                <input type="checkbox" aria-labelledby="select_all" class="check_box ml-2" data-checkboxselectall-target="checkbox_all" data-action="change->checkboxselectall#toggleCheckbox">
+              </td>
               <th class="header_th">Reservation Time</th>
               <th class="header_th">Car</th>
               <th class="header_th">Program</th>
