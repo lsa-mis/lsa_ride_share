@@ -1,7 +1,6 @@
 class MailerSubscriptionsController < ApplicationController
   before_action :auth_user
 	before_action :set_mailer_subscription, only: :update
-  before_action :handle_unauthorized, only: :update
 
 	def index
     @mailer_subscriptions = MailerSubscription::MAILERS.items.map do |item|
@@ -25,12 +24,12 @@ class MailerSubscriptionsController < ApplicationController
   end
 
   def update
+    authorize @mailer_subscription
     if @mailer_subscription.toggle!(:unsubscribed)
       redirect_to mailer_subscriptions_path, notice: "Preferences updated."
     else
       redirect_to mailer_subscriptions_path, alter: "#{@mailer_subscription.errors.full_messages.to_sentence}"
     end
-    authorize @mailer_subscription
   end
 
 	private
@@ -41,10 +40,6 @@ class MailerSubscriptionsController < ApplicationController
 
     def set_mailer_subscription
       @mailer_subscription = MailerSubscription.find(params[:id])
-    end
-
-    def handle_unauthorized
-      redirect_to root_path, status: :unauthorized, notice: "Unauthorized." and return if current_user != @mailer_subscription.user
     end
 
 end

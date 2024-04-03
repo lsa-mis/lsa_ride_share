@@ -9,7 +9,7 @@ class MailerSubscriptionPolicy < ApplicationPolicy
   end
 
   def update?
-    create?
+    user.id == record.user_id
   end
 
 end
