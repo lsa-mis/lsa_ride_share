@@ -18,14 +18,13 @@
       You can email <%= @unit_email %> or call the office at: <%= @contact_phone %>.
     </p>
     <p>
-      To view/modify/cancel reservations, click here
-      <%= link_to "LSA RideShare", welcome_pages_student_url %>
+      Click to <%= link_to "view/modify/cancel", all_root_url %> reservations.
     </p>
     <%= render 'garage_service' %> 
     <p>
-    That was an automated email.
-    You received it because you are a driver in the LSA RideShare application.<br>
-    You can unsubscribe from automated notifications <%= link_to "HERE", mailer_subscriptions_url %>.
-  </p>
+      That is an automated email.
+      You received it because you are a driver in the LSA RideShare application.<br>
+      Click to <%= link_to "unsubscribe", mailer_subscriptions_url %> from automated notifications.
+    </p>
   </body>
 </html>

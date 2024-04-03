@@ -53,7 +53,7 @@ class MailerSubscription < ApplicationRecord
   # @mailer_subscription.action
   # => "Subscribe to"
   def action
-    unsubscribed? ? "Subscribe to" : "Unsubscribe from"
+    unsubscribed? ? "Subscribe to:" : "Unsubscribe from:"
   end
 
   # @mailer_subscription.call_to_action

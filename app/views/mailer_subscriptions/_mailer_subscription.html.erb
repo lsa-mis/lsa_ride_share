@@ -1,18 +1,44 @@
-<% if mailer_subscription.new_record? %>
+<div data-controller='autosubmit'>
+  <% if mailer_subscription.new_record? %>
 
-  <li style="margin-bottom: 16px;">
-    <%= button_to mailer_subscriptions_path, params: { mailer_subscription:  mailer_subscription.attributes }, class: "link_to" do %>
-      <%= mailer_subscription.call_to_action %>
-    <% end %>
-    <%= mailer_subscription.description %>
-    <hr/>
-  </li>
-<% else %>
-  <li style="margin-bottom: 16px;">
-    <%= button_to mailer_subscription_path(mailer_subscription), class: "link_to", method: :put do %>
-      <%= mailer_subscription.call_to_action %>
-    <% end %>
-    <%= mailer_subscription.description %>
-    <hr/>
-  </li>
-<% end %>
+    <li style="margin-bottom: 16px;">
+      <%= form_with model: mailer_subscription, url: mailer_subscriptions_url, method: :post, html: { class: "sm:flex sm:items-center" },
+        data: { autosubmit_target: "form"
+              } do |f| %>
+        <div class="sm:col-span-4">
+          <ol class="subscription">
+            <li>
+              <%= check_box_tag "#{mailer_subscription.name}[unsubscribed]", 1, mailer_subscription.unsubscribed, "data-action": "change->autosubmit#search" %>
+              <%= label_tag "#{mailer_subscription.name}[unsubscribed]" do %>
+              <span></span>
+              <% end %>
+            </li>
+          </ol>
+        </div>
+        <%= mailer_subscription.call_to_action %> <%= mailer_subscription.description %>
+        <%= f.hidden_field :mailer, value: mailer_subscription.name %>
+      <% end %>
+      <hr/>
+    </li>
+  <% else %>
+    <li style="margin-bottom: 16px;">
+      <%= form_with model: mailer_subscription, html: { class: "sm:flex sm:items-center" },
+        data: { autosubmit_target: "form"
+              } do |f| %>
+        <div class="sm:col-span-4">
+          <ol class="subscription">
+            <li>
+              <%= check_box_tag "#{mailer_subscription.name}[unsubscribed]", 1, mailer_subscription.unsubscribed, "data-action": "change->autosubmit#search" %>
+              <%= label_tag "#{mailer_subscription.name}[unsubscribed]" do %>
+              <span></span>
+              <% end %>
+            </li>
+          </ol>
+        </div>
+          
+        <%= mailer_subscription.call_to_action %> <%= mailer_subscription.description %>
+      <% end %>
+      <hr/>
+    </li>
+  <% end %>
+</div>

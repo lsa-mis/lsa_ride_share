@@ -11,8 +11,11 @@ class MailerSubscriptionsController < ApplicationController
   end
 
   def create
-    @mailer_subscription = current_user.mailer_subscriptions.build(mailer_subscription_params)
-    @mailer_subscription.unsubscribed = true
+    @mailer_subscription = MailerSubscription.new
+    mailer = mailer_subscription_params['mailer']
+    @mailer_subscription.unsubscribed = params[mailer]['unsubscribed']
+    @mailer_subscription.mailer = mailer
+    @mailer_subscription.user_id = current_user.id
     if @mailer_subscription.save
       redirect_to mailer_subscriptions_path, notice: "Preferences updated."
     else
