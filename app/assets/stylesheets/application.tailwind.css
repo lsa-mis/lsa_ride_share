@@ -447,12 +447,6 @@ from https://tailwindcss.com/docs/adding-custom-styles
     }
   }
 
-  @media screen and (max-width: 600px) {
-    .subscription li::before {
-      display: none;
-    }
-  }
-
 }
 
 @layer utilities {
