@@ -55,7 +55,7 @@ UnitPreference.create!([
   { name: "parking_location", description: "Comma separated list of parking locations (Add 'Other' at the end of list to allow other locations)", on_off: false, unit_id: test_unit.id, value: nil, pref_type: "string"},
   { name: "recurring_until", description: "A default date to create recurring reservations until in 'yyyy-mm-dd' format", on_off: false, unit_id: test_unit.id, value: nil, pref_type: "string"},
   { name: "send_reminders", description: "Send reminders about upcoming reservations and not started vehicle reports", on_off: false, unit_id: test_unit.id, value: nil, pref_type: "string"},
-  { name: "unit_email_message", description: "SAdd message to reservations emails (approval and update drivers emails)", on_off: false, unit_id: test_unit.id, value: nil, pref_type: "string"}
+  { name: "unit_email_message", description: "Add message to reservations emails (approval and update drivers emails)", on_off: false, unit_id: test_unit.id, value: nil, pref_type: "string"}
 ])
 
 # create a manager
