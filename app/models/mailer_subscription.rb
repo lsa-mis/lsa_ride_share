@@ -35,7 +35,7 @@ class MailerSubscription < ApplicationRecord
   validates :user, uniqueness: { scope: :mailer }
 
   # @mailer_subscription.details
-  # => [{:class => "ReservationMailer", :name => "Reservation Reminder Emails", :description => "Remind drivers about next hour reservation."}]
+  # => [{:class => "ReservationMailer", :name => "one_hour_reminder", :description => "Remind drivers about next hour reservation."}]
   def details
     MailerSubscription::MAILERS.items.select { |item| item[:name] == mailer }
   end
