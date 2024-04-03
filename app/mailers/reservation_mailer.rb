@@ -110,7 +110,6 @@ class ReservationMailer < ApplicationMailer
     end
     if recipients.present?
       @recipients = recipients.uniq.join(", ")
-      recurring = false
       set_subject_email_type_recurring_rule("one_hour_reminder")
       mail(to: @recipients, subject: @subject)
       create_email_log_records(user_id: User.find_by(uniqname: "cron_job").id)
@@ -136,7 +135,6 @@ class ReservationMailer < ApplicationMailer
     end
     if recipients.present?
       @recipients = recipients.uniq.join(", ")
-      recurring = false
       set_subject_email_type_recurring_rule("vehicle_report_reminder")
       mail(to: @recipients, subject: @subject)
       create_email_log_records(user_id: User.find_by(uniqname: "cron_job").id)
