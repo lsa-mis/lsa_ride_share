@@ -6,9 +6,9 @@
         data: { autosubmit_target: "form"
               } do |f| %>
         <div class="sm:col-span-4">
-          <ol class="subscription">
+          <ol class="switches">
             <li>
-              <%= check_box_tag "#{mailer_subscription.name}[unsubscribed]", 1, mailer_subscription.unsubscribed, "data-action": "change->autosubmit#search" %>
+              <%= check_box_tag "#{mailer_subscription.name}[unsubscribed]", 1, !mailer_subscription.unsubscribed, "data-action": "change->autosubmit#search" %>
               <%= label_tag "#{mailer_subscription.name}[unsubscribed]" do %>
               <span></span>
               <% end %>
@@ -26,9 +26,9 @@
         data: { autosubmit_target: "form"
               } do |f| %>
         <div class="sm:col-span-4">
-          <ol class="subscription">
+          <ol class="switches">
             <li>
-              <%= check_box_tag "#{mailer_subscription.name}[unsubscribed]", 1, mailer_subscription.unsubscribed, "data-action": "change->autosubmit#search" %>
+              <%= check_box_tag "#{mailer_subscription.name}[unsubscribed]", 1, !mailer_subscription.unsubscribed, "data-action": "change->autosubmit#search" %>
               <%= label_tag "#{mailer_subscription.name}[unsubscribed]" do %>
               <span></span>
               <% end %>
