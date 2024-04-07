@@ -3,15 +3,6 @@ Hello,
 
 This is a reminder of your upcoming reservation for today at <%= @start_time.partition(' ').last %> going to <%= @reservation.site.title %>. 
 
-Backup driver: <%= @backup_driver_name %>
-Passengers:
-<% @passengers.each do |p| %>
-  <%= p %>
-<% end %>
-<% if @non_uofm_passengers.present?  %>
-  Non UofM Passengers: <%= @non_uofm_passengers %>
-<% end %>
-
 If you have changes or need to cancel this reservation please go <%= link_to "HERE", reservation_url(@reservation) %> to do so. 
 Also, please remember to fill out your Vehicle Report at the start of your trip.   
 
