@@ -19,12 +19,12 @@ class MailerSubscription < ApplicationRecord
         {
           class: "ReservationMailer",
           name: "one_hour_reminder",
-          description: "Remind drivers about next hour reservation.",
+          description: "Reminder email about upcoming reservation.",
         },
         {
           class: "ReservationMailer",
           name: "vehicle_report_reminder",
-          description: "Remind drivers to complete vehicle reports.",
+          description: "Reminder email to complete vehicle reports.",
         },
       ],
     ).freeze

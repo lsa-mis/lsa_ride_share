@@ -15,7 +15,7 @@
             </li>
           </ol>
         </div>
-        <%= mailer_subscription.call_to_action %> <%= mailer_subscription.description %>
+        Subscribe/Unsubscribe: <%= mailer_subscription.description %>
         <%= f.hidden_field :mailer, value: mailer_subscription.name %>
       <% end %>
       <hr/>
@@ -35,8 +35,7 @@
             </li>
           </ol>
         </div>
-          
-        <%= mailer_subscription.call_to_action %> <%= mailer_subscription.description %>
+        Subscribe/Unsubscribe: <%= mailer_subscription.description %>
       <% end %>
       <hr/>
     </li>
