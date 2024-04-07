@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <p>
+      The following email was sent to reservations with these ids <%= @selected_reservations %> for <%= @day %>:
+    </p>
+    <p>
+      <%= raw(@message) %>
+    </p>
+  </body>
+</html>
