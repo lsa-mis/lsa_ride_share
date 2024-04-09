@@ -9,6 +9,11 @@ class SystemReportsController < ApplicationController
       @programs = Program.where(unit_id: params[:unit_id])
       @programs = @programs.data(params[:term_id]).order(:title)
     end
+    if params[:term_id].present?
+      @term_id = params[:term_id]
+    else
+      @term_id = Term.current[0].id
+    end
     @students = []
     authorize :system_report
   end
@@ -28,6 +33,10 @@ class SystemReportsController < ApplicationController
     end
     if params[:student_id].present?
       @student_id = params[:student_id]
+    end
+
+    if params[:uniqname].present?
+      @uniqname = params[:uniqname]
     end
 
     @title = "LSA Rideshare System Report"
@@ -97,19 +106,33 @@ class SystemReportsController < ApplicationController
       end
 
       if report_type == "reservations_for_student"
+        if @uniqname.present?
+          programs = Program.current_term.where(unit_id: @unit_id)
+          student_ids = []
+          programs.each do |program|
+            student_ids << program.students.where(uniqname: @uniqname).ids
+          end
+          student_ids.flatten!
+          report_name = Student.find(student_ids.first).name + ": reservations for #{@unit} #{@term}"
+          res1 = Reservation.where("approved = ? AND driver_id IN (?)", true, student_ids).order(:start_time)
+          res2 = Reservation.where("approved = ? AND backup_driver_id in (?)", true, student_ids).order(:start_time)
+          res3 = Reservation.joins(:passengers).where("reservations.approved = ? AND reservation_passengers.student_id IN (?) ", true, student_ids).order(:start_time)
+        else
+          report_name = Student.find(@student_id).name + ": reservations for #{@unit} #{@term}"
+          program = Program.find(@program_id)
+          reservations_ids = program.reservations.where("approved = ?", true).ids
+          res1 = program.reservations.where("approved = ? AND driver_id = ?", true, @student_id).order(:start_time)
+          res2 = program.reservations.where("approved = ? AND backup_driver_id = ?", true, @student_id).order(:start_time)
+          res3 = Reservation.joins(:passengers).where("reservation_passengers.reservation_id in (?) AND reservation_passengers.student_id = ?", reservations_ids,  @student_id).order(:start_time)
+        end
         rows = []
         result = []
-        program = Program.find(@program_id)
-        reservations_ids = program.reservations.where("approved = ?", true).ids
-        res1 = program.reservations.where("approved = ? AND driver_id = ?", true, @student_id).order(:start_time)
-        res1.map { |r| rows << [r.id, show_reservation_time(r), r.site.title, r.car.car_number, r.number_of_people_on_trip, "driver"] }
-        res1 = program.reservations.where("approved = ? AND backup_driver_id = ?", true, @student_id).order(:start_time)
-        res1.map { |r| rows << [r.id, show_reservation_time(r), r.site.title, r.car.car_number, r.number_of_people_on_trip, "backup driver"] }
-        res2 = Reservation.joins(:passengers).where("reservation_passengers.reservation_id in (?) AND reservation_passengers.student_id = ?", reservations_ids,  @student_id).order(:start_time)
-        res2.map { |r| rows << [r.id, show_reservation_time(r), r.site.title, r.car.car_number, r.number_of_people_on_trip, "passenger"] }
-        columns = ["reservation", "reservation time", "site", "car", "number of people on trip", "role"]
+        res1.map { |r| rows << [r.car.car_number, r.program.title, show_reservation_time(r), r.site.title, r.car.car_number, r.number_of_people_on_trip, "driver"] }
+        res2.map { |r| rows << [r.car.car_number, r.program.title, show_reservation_time(r), r.site.title, r.car.car_number, r.number_of_people_on_trip, "backup driver"] }
+        res3.map { |r| rows << [r.car.car_number, r.program.title, show_reservation_time(r), r.site.title, r.car.car_number, r.number_of_people_on_trip, "passenger"] }
+        columns = ["reservation", "program", "reservation time", "site", "car", "number of people on trip", "role"]
         rows = rows.sort_by { |obj| obj[1] }
-        result.push({"report_name" => "#{Student.find(@student_id).name}: reservations for #{@unit} #{@term}", "total" => rows.count, "header" => columns, "rows" => rows})
+        result.push({"report_name" => report_name, "total" => rows.count, "header" => columns, "rows" => rows})
         return result
       end
 
