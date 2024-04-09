@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["form", "format", "unit", "term", "program", 'student',
+  static targets = ["form", "format", "unit", "term", "program", 'student', 'uniqname',
   "run_report_button", "download_report_button", "report_type"]
 
   connect() {
@@ -104,7 +104,6 @@ export default class extends Controller {
   }
 
   studentName(student) {
-    console.log(student.first_name)
     var name = student.first_name + " " +student.last_name
     return name
   }
@@ -176,13 +175,20 @@ export default class extends Controller {
   submitForm(event) {
     let term = this.termTarget.value
     let unit = this.unitTarget.value
+    let report_type = this.report_typeTarget.value
+    let student = this.studentTarget.value
+    let uniqname = this.uniqnameTarget.value
     let error_text = document.getElementById('error_text')
-
+    error_text.innerHTML = ""
     if(term == "" || unit == "") {
-      console.log("hell")
-      console.log(error_text)
       error_text.innerHTML = "Please select required fields ( * )"
       event.preventDefault()
+    }
+    else if (report_type == "reservations_for_student") {
+      if (student == "" && uniqname == "") {
+        error_text.innerHTML = "For this report please select a program and a student or type a uniqname"
+        event.preventDefault()
+      }
     }
     else {
       error_text.innerHTML = ""
