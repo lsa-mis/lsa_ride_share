@@ -5,7 +5,13 @@
   </head>
   <body>
     <p>
-      The following email was sent to reservations with these ids <%= @selected_reservations %> for <%= @day %>:
+      The following email was sent to  <%= @day %> reservations:
+      <ul>
+        <% @selected_reservations.each do |id| %>
+          <% reservation = Reservation.find(id) %>
+          <li><%= link_to "#{reservation.display_name}", reservation_url(reservation) %></li>
+        <% end %>
+      </ul>     
     </p>
     <p>
       <%= raw(@message) %>
