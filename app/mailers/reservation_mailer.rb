@@ -141,7 +141,18 @@ class ReservationMailer < ApplicationMailer
     recipients << @passengers_emails if @passengers_emails.present?
     @recipients = recipients.uniq.join(", ")
     mail(to: @recipients, subject: subject)
-    create_email_log_records("Reservation", @reservation, false, 'custom_email', @recipients, user.id)
+    create_email_log_records("Reservation", @reservation, false, 'admin', @recipients, user.id)
+  end
+
+  def to_selected_reservations_copy_to_admin(selected_reservations)
+    @selected_reservations = selected_reservations
+    reservation = Reservation.find(@selected_reservations.first)
+    @day = reservation.start_time.to_date.strftime("%A, %d %B %Y") 
+    subject = "Admin copy: " + params[:subject]
+    @message = params[:message]
+    user = params[:user]
+    unit_email = reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
+    mail(to: unit_email, subject: subject)
   end
 
   private 
