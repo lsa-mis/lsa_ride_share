@@ -16,7 +16,6 @@
             <label for="term_id" class="fancy_label">Select a Term *</label>
             <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: @term_id), include_blank: "Select ...", class: "filter_select w-48", "data-systemreport-target": "term", "data-action": "change->systemreport#changePrograms" %>
           </div>
-
           <div class="">
             <label for="program_id" class="fancy_label">Select a Program</label>
             <%= select_tag "program_id", options_from_collection_for_select(@programs, :id, :title, selected: params[:program_id]), include_blank: "All Programs", class: "filter_select w-96", "data-systemreport-target": "program", "data-action": "change->systemreport#getStudents" %>
