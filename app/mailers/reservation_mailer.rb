@@ -141,7 +141,7 @@ class ReservationMailer < ApplicationMailer
     recipients << @passengers_emails if @passengers_emails.present?
     @recipients = recipients.uniq.join(", ")
     mail(to: @recipients, subject: subject)
-    create_email_log_records("Reservation", @reservation, false, 'custom_email', @recipients, user.id)
+    create_email_log_records("Reservation", @reservation, false, 'admin', @recipients, user.id)
   end
 
   def to_selected_reservations_copy_to_admin(selected_reservations)
