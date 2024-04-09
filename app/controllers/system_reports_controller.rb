@@ -8,7 +8,10 @@ class SystemReportsController < ApplicationController
     if params[:unit_id].present?
       @programs = Program.where(unit_id: params[:unit_id])
       @programs = @programs.data(params[:term_id]).order(:title)
+    else
+      @programs = Program.where(unit_id: current_user.unit_ids)
     end
+    @programs = @programs.data(params[:term_id])
     if params[:term_id].present?
       @term_id = params[:term_id]
     else
