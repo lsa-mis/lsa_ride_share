@@ -48,14 +48,19 @@
         </div>
       </div>
 
-      <div class="my-2 fields--display" data-systemreport-target="run_report_button">
-        <%= f.submit "Run Report", data: { disable_with: false }, method: :get, class: "primary_button" %>
+      <div class="flex gap-2">
+        <div class="my-2 fields--display" data-systemreport-target="run_report_button">
+          <%= f.submit "Run Report", data: { disable_with: false }, method: :get, class: "primary_button" %>
+        </div>
+        <div class="fields--hide my-4" data-systemreport-target="download_report_button">
+          <a id="csv_link" href="" class="primary_button">Download Report</a>
+        </div>
+        <button type="button" data-action='click->systemreport#clearFilters'>
+          <span class="tertiary_button">Clear Filters
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </span>
+        </button>
       </div>
-
-      <div class="fields--hide my-4" data-systemreport-target="download_report_button">
-        <a id="csv_link" href="" class="primary_button">Download Report</a>
-      </div>
-
     <% end %>
     
     <div>
