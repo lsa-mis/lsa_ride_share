@@ -60,6 +60,9 @@ class Programs::CoursesController < ApplicationController
     end
     if @course.destroy
       @courses = @course_program.courses
+      unless @courses.present?
+        @course_program.update(not_course: true)
+      end
       @course = Course.new
       flash.now[:notice] = "Course is removed"
     else

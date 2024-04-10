@@ -45,7 +45,6 @@ class SystemReportsController < ApplicationController
     @title = "LSA Rideshare System Report"
     report_type = params[:report_type]
     @result = get_result(report_type)
-
     if report_type == "vehicle_reports_all"
       @link = true
       @path = "vehicle_reports"
@@ -116,7 +115,11 @@ class SystemReportsController < ApplicationController
             student_ids << program.students.where(uniqname: @uniqname).ids
           end
           student_ids.flatten!
-          report_name = Student.find(student_ids.first).name + ": reservations for #{@unit} #{@term}"
+          if student_ids.present?
+            report_name = Student.find(student_ids.first).name + ": reservations for #{@unit} #{@term}"
+          else
+            report_name = @uniqname + ": reservations for #{@unit} #{@term}"
+          end
           res1 = Reservation.where("approved = ? AND driver_id IN (?)", true, student_ids).order(:start_time)
           res2 = Reservation.where("approved = ? AND backup_driver_id in (?)", true, student_ids).order(:start_time)
           res3 = Reservation.joins(:passengers).where("reservations.approved = ? AND reservation_passengers.student_id IN (?) ", true, student_ids).order(:start_time)
