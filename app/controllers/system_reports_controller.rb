@@ -130,10 +130,10 @@ class SystemReportsController < ApplicationController
         end
         rows = []
         result = []
-        res1.map { |r| rows << [r.car.car_number, r.program.title, show_reservation_time(r), r.site.title, r.car.car_number, r.number_of_people_on_trip, "driver"] }
-        res2.map { |r| rows << [r.car.car_number, r.program.title, show_reservation_time(r), r.site.title, r.car.car_number, r.number_of_people_on_trip, "backup driver"] }
-        res3.map { |r| rows << [r.car.car_number, r.program.title, show_reservation_time(r), r.site.title, r.car.car_number, r.number_of_people_on_trip, "passenger"] }
-        columns = ["reservation", "program", "reservation time", "site", "car", "number of people on trip", "role"]
+        res1.map { |r| rows << [r.id, r.car.car_number, r.program.title, show_reservation_time(r), r.site.title, r.car.car_number, r.number_of_people_on_trip, "driver"] }
+        res2.map { |r| rows << [r.id, r.car.car_number, r.program.title, show_reservation_time(r), r.site.title, r.car.car_number, r.number_of_people_on_trip, "backup driver"] }
+        res3.map { |r| rows << [r.id, r.car.car_number, r.program.title, show_reservation_time(r), r.site.title, r.car.car_number, r.number_of_people_on_trip, "passenger"] }
+        columns = ["reservation", "car", "program", "reservation time", "site", "car", "number of people on trip", "role"]
         rows = rows.sort_by { |obj| obj[1] }
         result.push({"report_name" => report_name, "total" => rows.count, "header" => columns, "rows" => rows})
         return result
