@@ -195,4 +195,9 @@ export default class extends Controller {
     }
   }
 
+  clearFilters() {
+    var url = window.location.pathname
+    Turbo.visit(url)
+  }
+
 }
