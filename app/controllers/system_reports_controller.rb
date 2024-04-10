@@ -109,7 +109,8 @@ class SystemReportsController < ApplicationController
 
       if report_type == "reservations_for_student"
         if @uniqname.present?
-          programs = Program.current_term.where(unit_id: @unit_id)
+          programs = Program.where(unit_id: @unit_id)
+          programs = programs.data(@term_id)
           student_ids = []
           programs.each do |program|
             student_ids << program.students.where(uniqname: @uniqname).ids
