@@ -2,6 +2,7 @@ class ReservationMailer < ApplicationMailer
   before_action :set_reservation
   before_action :set_driver_name
   before_action :set_passengers
+  include MailerHelper
 
   def car_reservation_created(conflict_days_message = " ")
     @recipients = @reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
@@ -230,18 +231,6 @@ class ReservationMailer < ApplicationMailer
     else
       @subject = "Reservation " + subject + " for program: #{@reservation.program.display_name_with_title}"
       @email_type = type
-    end
-  end
-
-  def subscribed?(mailer:, driver:)
-    if MailerSubscription.find_by(mailer: mailer, user_id: User.find_by(uniqname: driver.uniqname)).present?
-      if MailerSubscription.find_by(mailer: mailer, user_id: User.find_by(uniqname: driver.uniqname).id).unsubscribed
-        return false
-      else 
-        return true
-      end
-    else
-      return true
     end
   end
 

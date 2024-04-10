@@ -4,6 +4,7 @@ class Programs::StudentsController < ApplicationController
   before_action :set_student_program
   before_action :set_students_list, only: %i[ index update_student_list add_students ]
   include StudentApi
+  include MailerHelper
 
   # GET /students or /students.json
   def index
