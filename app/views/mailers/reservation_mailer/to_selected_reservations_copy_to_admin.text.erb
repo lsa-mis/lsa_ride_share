@@ -1,0 +1,8 @@
+The following email was sent to <%= @day %> reservations:
+
+<% @selected_reservations.each do |id| %>
+  <% reservation = Reservation.find(id) %>
+  <%= link_to "#{reservation.display_name}", reservation_url(reservation) %>
+<% end %>
+        
+<%= strip_tags(@message) %>

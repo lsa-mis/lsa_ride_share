@@ -51,6 +51,27 @@ class ReservationsController < ApplicationController
     authorize @day_reservations
   end
 
+  def selected_reservations
+    @selected_reservations = params[:res_ids].keys.join(',')
+    @day = params[:day]
+    authorize Reservation
+    render :email_form, status: 422
+  end
+
+  def send_email_to_selected_reservations
+    @selected_reservations = params[:selected_reservations].split(',').map(&:to_i)
+    subject = params[:subject]
+    message = params[:message]
+    day = params[:day].to_date
+    authorize Reservation
+    @selected_reservations.each do |id|
+      reservation = Reservation.find(id)
+      ReservationMailer.with(reservation: reservation, subject: subject, message: message, user: current_user).to_selected_reservations.deliver_now
+    end
+    ReservationMailer.with(subject: subject, message: message, user: current_user).to_selected_reservations_copy_to_admin(@selected_reservations).deliver_now
+    redirect_to day_reservations_path(day), notice: "Emails were sent." 
+  end
+
   # GET /reservations/1 or /reservations/1.json
   def show
     @passengers = @reservation.passengers + @reservation.passengers_managers

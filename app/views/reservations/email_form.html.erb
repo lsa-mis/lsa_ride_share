@@ -1,0 +1,21 @@
+<h1>Please fill out the form to send an email to the selected reservations</h1>
+<%= form_with url: send_email_to_selected_reservations_path, method: :get do |form| %>
+  <div class="grid grid-cols-1">
+    <div class="my-5">
+      <%= label_tag 'subject', 'Subject *', class: "fancy_label" %>
+      <%= text_field_tag 'subject', @subject, placeholder: "Subject", class: "input_text_field", required: true  %>
+    </div>
+
+    <div class="my-5">
+      <%= label_tag 'message', 'Email Message *', class: "fancy_label" %>
+      <%= form.rich_text_area :message %>
+    </div>
+
+    <input type="hidden" id="day" name="day" value=<%= @day %>>
+    <input type="hidden" id="selected_reservations" name="selected_reservations" value="<%= @selected_reservations %>">
+    <div class="inline">
+      <%= submit_tag 'Send email', class: "secondary_blue_button"  %>
+    </div>
+
+  </div>
+<% end %>
