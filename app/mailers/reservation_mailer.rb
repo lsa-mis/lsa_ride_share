@@ -1,7 +1,7 @@
 class ReservationMailer < ApplicationMailer
-  before_action :set_reservation
-  before_action :set_driver_name
-  before_action :set_passengers
+  before_action :set_reservation, except: %i[ to_selected_reservations_copy_to_admin ]
+  before_action :set_driver_name, except: %i[ to_selected_reservations_copy_to_admin ]
+  before_action :set_passengers, except: %i[ to_selected_reservations_copy_to_admin ]
   include MailerHelper
 
   def car_reservation_created(conflict_days_message = " ")
@@ -145,16 +145,10 @@ class ReservationMailer < ApplicationMailer
   def to_selected_reservations
     subject = params[:subject]
     @message = params[:message]
-    user = params[:user]
-    set_reservation_data(@reservation)
-    recipients = []
-    recipients << email_address(@reservation.driver) if @reservation.driver.present?
-    recipients << email_address(@reservation.driver_manager) if @reservation.driver_manager.present?
-    recipients << email_address(@reservation.backup_driver) if @reservation.backup_driver.present?
-    recipients << @passengers_emails if @passengers_emails.present?
-    @recipients = recipients.uniq.join(", ")
+    create_recipients_list()
+    @email_type = "admin"
     mail(to: @recipients, subject: subject)
-    create_email_log_records("Reservation", @reservation, false, 'admin', @recipients, user.id)
+    create_email_log_records
   end
 
   def to_selected_reservations_copy_to_admin(selected_reservations)
