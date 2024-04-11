@@ -1,8 +1,9 @@
 desc "This will send automated emails to drivers"
 task automated_emails_to_drivers: :environment do
 
-  # now = DateTime.now
-  now = "Mon, 08 Apr 2024 15:30:00 -0400".to_datetime
+  now = DateTime.now
+  # for testing:
+  # now = "Mon, 08 Apr 2024 15:30:00 -0400".to_datetime
 
   units = Unit.all
   puts "--------------------------"
