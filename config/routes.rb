@@ -63,6 +63,8 @@ Rails.application.routes.draw do
   post '/reservations/cancel_recurring_reservation/:id', to: 'reservations#cancel_recurring_reservation', as: :cancel_recurring_reservation
   get '/send_reservation_updated_email/:id', to: 'reservations#send_reservation_updated_email', as: :send_reservation_updated_email
   get '/approve_all_recurring/:id', to: 'reservations#approve_all_recurring', as: :approve_all_recurring
+  post '/selected_reservations/', to: 'reservations#selected_reservations', as: :selected_reservations
+  get '/send_email_to_selected_reservations/', to: 'reservations#send_email_to_selected_reservations', as: :send_email_to_selected_reservations
 
   resources :cars do
     resources :notes, module: :cars
