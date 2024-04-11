@@ -4,12 +4,12 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-    <h3>RideShare program: Please fill out the following survey. </h3>
+    <h4>RideShare program: Please fill out the following survey. </h4>
     <p>
       Dear <%= "#{@faculty_survey.first_name}" %> <%= "#{@faculty_survey.last_name}" %>,
     </p>
     <p>
-      Please fill out the following form <%= link_to "#{@faculty_survey.title}", survey_url(@faculty_survey) %>
+      Please fill out the following form <%= link_to "#{@faculty_survey.title}", survey_url(@faculty_survey) %>.
     </p>
     <p>
       After submitting the survey please add sites to the program that would be created from the survey.

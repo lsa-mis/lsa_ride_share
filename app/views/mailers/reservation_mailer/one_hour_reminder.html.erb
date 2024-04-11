@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+  <p>Hello,</p>
+    <p>
+      This is a reminder of your upcoming reservation for today, <%= Date.today.strftime("%A, %d %B %Y")  %>  at <%= @start_time.partition(' ').last %> going to <%= @reservation.site.title %>.
+      <br>Remember to fill out your Vehicle Report at the start of your trip. 
+    </p>
+    
+    <p>
+      <%= link_to "Modify or cancel your reservation", reservation_url(@reservation) %>
+    </p>
+
+    <p>
+    Thank you,<br>
+    Your <%= @reservation.program.unit.name %> RideShare Team
+    </p>
+    <p>
+      You can email <%= @unit_email %> or call the office at: <%= @contact_phone %>.
+    </p>
+    <p>
+      Visit <%= link_to "LSA RideShare", all_root_url %> to view, modify, or cancel reservations.
+    </p>
+    <%= render 'garage_service' %> 
+    <p>
+      You are receiving this automated email because you are a driver in the LSA RideShare application.<br>
+      <%= link_to "Unsubscribe", mailer_subscriptions_url %> from automated notifications.
+    </p>
+  </body>
+</html>

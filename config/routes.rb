@@ -126,6 +126,8 @@ Rails.application.routes.draw do
   end
   resources :notes
 
+  resources :mailer_subscriptions, only: %i[index create update]
+
   get 'welcome_pages/student'
   get 'welcome_pages/manager'
   

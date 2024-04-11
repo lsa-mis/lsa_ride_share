@@ -1,0 +1,22 @@
+
+Hello,
+
+This is a reminder of your upcoming reservation for today at <%= @start_time.partition(' ').last %> going to <%= @reservation.site.title %>. 
+
+If you have changes or need to cancel this reservation please go <%= link_to "HERE", reservation_url(@reservation) %> to do so. 
+Also, please remember to fill out your Vehicle Report at the start of your trip.   
+
+Thank you,
+Your <%= @reservation.program.unit.name %> RideShare Team
+
+You can email <%= @unit_email %> or call the office at: <%= @contact_phone %>.
+
+Visit <%= link_to "LSA RideShare", all_root_url %> to view, modify, or cancel reservations.
+
+Vehicle problems or breakdowns?
+Mon-Fri 7:00am-12:30am call Garage Services at 734-764-2490
+Weekend or After Hours call Public Safety at 734-763-1131
+
+That was an automated email.
+You received it because you are a driver in the LSA RideShare application.
+Click to <%= link_to "unsubscribe", mailer_subscriptions_url %> from automated notifications.

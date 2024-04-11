@@ -1,0 +1,43 @@
+<div data-controller='autosubmit'>
+  <% if mailer_subscription.new_record? %>
+
+    <li style="margin-bottom: 16px;">
+      <%= form_with model: mailer_subscription, url: mailer_subscriptions_url, method: :post, html: { class: "sm:flex sm:items-center" },
+        data: { autosubmit_target: "form"
+              } do |f| %>
+        <div class="sm:col-span-4">
+          <ol class="switches">
+            <li>
+              <%= check_box_tag "#{mailer_subscription.name}[unsubscribed]", 1, !mailer_subscription.unsubscribed, "data-action": "change->autosubmit#search" %>
+              <%= label_tag "#{mailer_subscription.name}[unsubscribed]" do %>
+              <span></span>
+              <% end %>
+            </li>
+          </ol>
+        </div>
+        Subscribe/Unsubscribe: <%= mailer_subscription.description %>
+        <%= f.hidden_field :mailer, value: mailer_subscription.name %>
+      <% end %>
+      <hr/>
+    </li>
+  <% else %>
+    <li style="margin-bottom: 16px;">
+      <%= form_with model: mailer_subscription, html: { class: "sm:flex sm:items-center" },
+        data: { autosubmit_target: "form"
+              } do |f| %>
+        <div class="sm:col-span-4">
+          <ol class="switches">
+            <li>
+              <%= check_box_tag "#{mailer_subscription.name}[unsubscribed]", 1, !mailer_subscription.unsubscribed, "data-action": "change->autosubmit#search" %>
+              <%= label_tag "#{mailer_subscription.name}[unsubscribed]" do %>
+              <span></span>
+              <% end %>
+            </li>
+          </ol>
+        </div>
+        Subscribe/Unsubscribe: <%= mailer_subscription.description %>
+      <% end %>
+      <hr/>
+    </li>
+  <% end %>
+</div>
