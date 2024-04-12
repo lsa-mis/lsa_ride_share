@@ -10,4 +10,12 @@ module MailerHelper
       return true
     end
   end
+
+  def reminders_on?(program_id: nil, unit_id: nil)
+    if program_id.present?
+      unit_id = Program.find(program_id).unit.id
+    end
+    return false unless unit_id.present?
+    return UnitPreference.find_by(unit_id: unit_id, name: "send_reminders").on_off
+  end
 end
