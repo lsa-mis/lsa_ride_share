@@ -18,4 +18,12 @@ module MailerHelper
     return false unless unit_id.present?
     return UnitPreference.find_by(unit_id: unit_id, name: "send_reminders").on_off
   end
+
+  def is_checked?(subscription)
+    if subscription
+      return ""
+    else 
+      return "checked"
+    end
+  end
 end
