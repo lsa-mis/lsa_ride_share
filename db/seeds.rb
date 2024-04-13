@@ -51,7 +51,11 @@ UnitPreference.create!([
   { name: "notification_email", description: "The email address that system notification emails are sent to", on_off: false, unit_id: test_unit.id, value: "admin@test.com", pref_type: "string"},
   { name: "faculty_survey", description: "Use faculty survey to create programs", on_off: false, unit_id: test_unit.id, value: nil, pref_type: "boolean"},
   { name: "hours_before_reservation", description: "Allow to create reservations without cars", on_off: false, unit_id: test_unit.id, value: "72", pref_type: "integer"},
-  { name: "no_car_reservations", description: "The email address that system notification emails are sent to", on_off: false, unit_id: test_unit.id, value: nil, pref_type: "boolean"}
+  { name: "no_car_reservations", description: "The email address that system notification emails are sent to", on_off: false, unit_id: test_unit.id, value: nil, pref_type: "boolean"},
+  { name: "parking_location", description: "Comma separated list of parking locations (Add 'Other' at the end of list to allow other locations)", on_off: false, unit_id: test_unit.id, value: nil, pref_type: "string"},
+  { name: "recurring_until", description: "A default date to create recurring reservations until in 'yyyy-mm-dd' format", on_off: false, unit_id: test_unit.id, value: nil, pref_type: "string"},
+  { name: "send_reminders", description: "Send reminders about upcoming reservations and not started vehicle reports", on_off: false, unit_id: test_unit.id, value: nil, pref_type: "string"},
+  { name: "unit_email_message", description: "Add message to reservations emails (approval and update drivers emails)", on_off: false, unit_id: test_unit.id, value: nil, pref_type: "string"}
 ])
 
 # create a manager
@@ -77,3 +81,6 @@ s3 = Student.create!(uniqname: "test_student2", last_name: "Test2", first_name: 
 
 # to create a reservation 
 reservation_test = Reservation.create!(status: "reserved", program_id: p1.id, site_id: site_test.id, start_time: DateTime.now, end_time: DateTime.now + 3.hour, driver_id: s1.id, driver_phone: "123-456-7890", number_of_people_on_trip: 1, car_id: test_car, updated_by: user_test.id, reserved_by: user_test.id)
+
+# create a user for cron job
+cron_user = User.create(uniqname: "cron_job", display_name: "Cron Job", password: "afire-XaFRm2", email: "cron@test.test")

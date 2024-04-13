@@ -107,5 +107,11 @@
         </p>
       <% end %>
     </div>
+    <hr>
+    <% if reminders_on?(program_id: @program.id) %>
+      <div>
+        <%= link_to "Subscribe/Unsubscribe", mailer_subscriptions_url, class: "link_to" %> from automated notifications.
+      </div>
+    <% end %>
   <% end %>
 </div>

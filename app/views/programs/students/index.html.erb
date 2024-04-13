@@ -29,12 +29,10 @@
     </div>
   </div>
 
-  <div class="mb-2">
-    <label class="body-lg-bold-text">
-      Program:
-    </label>
-    <%= link_to @student_program.display_name_with_title, program_path(@student_program), class: "link_to" %>
-  </div>
+  <p class="mb-2 body-lg-bold-text inline">
+    Program:
+  </p>
+  <%= link_to @student_program.display_name_with_title, program_path(@student_program), class: "link_to" %>
 
   <%= render "student_list" %>
   <div class="mt-2">
