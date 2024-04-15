@@ -14,6 +14,7 @@
 #  mvr_status                  :string
 #  program_id                  :bigint
 #  registered                  :boolean          default(TRUE)
+#  phone_number                :string
 #
 class Student < ApplicationRecord
   belongs_to :program
