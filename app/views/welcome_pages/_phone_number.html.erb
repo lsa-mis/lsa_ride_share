@@ -8,8 +8,11 @@
       <p class="body-sm-text ml-2">
         <%= @student.phone_number %>
       </p>
-      <%= link_to 'Edit phone', edit_phone_path(@student), class: "link_to" %>
+      <%= link_to 'Edit phone', edit_phone_path(@student, edit: true), class: "link_to" %>
     <% else %>
+      <%= render "phone_form", student: @student %>
+    <% end %>
+    <% if params[:edit] == "true" %>
       <%= render "phone_form", student: @student %>
     <% end %>
   </div>

@@ -88,7 +88,8 @@ class WelcomePagesController < ApplicationController
   end
 
   def edit_phone
-    fail
+    @student = Student.find(params[:id])
+    authorize :welcome_page
   end
 
 end

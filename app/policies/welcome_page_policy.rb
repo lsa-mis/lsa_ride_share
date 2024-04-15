@@ -14,4 +14,8 @@ class WelcomePagePolicy < ApplicationPolicy
     is_student?
   end
 
+  def edit_phone?
+    is_student?
+  end
+
 end
