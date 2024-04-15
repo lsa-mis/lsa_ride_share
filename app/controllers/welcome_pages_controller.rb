@@ -73,4 +73,22 @@ class WelcomePagesController < ApplicationController
     end
   end
 
+  def add_phone
+    authorize :welcome_page
+    phone_number = params[:phone_number]
+    @student = Student.find(params[:id])
+    if @student.update(phone_number: phone_number)
+      redirect_to welcome_pages_student_path notice: "The phone was updated."
+
+      # @student = Student.find(params[:id])
+      # render turbo_stream: turbo_stream.replace("student_phone", partial: "phone_number")
+    else
+      fail
+    end
+  end
+
+  def edit_phone
+    fail
+  end
+
 end

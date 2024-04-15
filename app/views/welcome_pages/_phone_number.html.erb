@@ -1,0 +1,16 @@
+<%= turbo_frame_tag 'student_phone' do %>
+  <div class="py-2">
+    <% if @student.phone_number.present? %>
+      <i class="fa-solid fa-check"></i>
+      <p class="body-sm-semibold-text ml-2 inline">
+        Pnohe Number:
+      </p>
+      <p class="body-sm-text ml-2">
+        <%= @student.phone_number %>
+      </p>
+      <%= link_to 'Edit phone', edit_phone_path(@student), class: "link_to" %>
+    <% else %>
+      <%= render "phone_form", student: @student %>
+    <% end %>
+  </div>
+<% end %>
