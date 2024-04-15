@@ -10,6 +10,7 @@
             <th class="header_th_small">Uniqname</th>
             <th class="header_th_small">Last Name</th>
             <th class="header_th_small">First Name</th>
+            <th class="header_th_small">Phone</th>
             <th class="header_th_small">MVR Status</th>
             <th class="header_th_small">Canvas Course Complete Date</th>
             <th class="header_th_small">In Person Orientation Date</th>
@@ -17,7 +18,7 @@
             <th class="header_th_small">Notes</th>
           </tr>
           <tr>
-            <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+            <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
             <th class="header_th_small">Reservation</th>
             <th class="header_th_small">Vehicle Report</th>
             <td></td>
@@ -30,6 +31,7 @@
             <th class="header_th">Uniqname</th>
             <th class="header_th">Last Name</th>
             <th class="header_th">First Name</th>
+            <th class="header_th_small">Phone</th>
             <th class="header_th">MVR Status</th>
             <th class="header_th">Canvas Course Complete Date</th>
             <th class="header_th">In Person Orientation Date</th>
@@ -66,6 +68,9 @@
             </td>
             <td class="mi_tbody_td">
               <%= student.first_name %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= student.phone_number %>
             </td>
             <td class="mi_tbody_td">
               <%= student.mvr_status %>
