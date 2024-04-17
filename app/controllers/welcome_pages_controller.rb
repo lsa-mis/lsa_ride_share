@@ -74,11 +74,12 @@ class WelcomePagesController < ApplicationController
   end
 
   def add_phone
+    session[:return_to] = request.referer
     authorize :welcome_page
     phone_number = params[:phone_number]
     @student = Student.find(params[:id])
     if @student.update(phone_number: phone_number)
-      redirect_to welcome_pages_student_path notice: "The phone was updated."
+      redirect_back_or_default
 
       # @student = Student.find(params[:id])
       # render turbo_stream: turbo_stream.replace("student_phone", partial: "phone_number")

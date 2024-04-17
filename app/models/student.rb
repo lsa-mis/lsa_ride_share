@@ -90,11 +90,11 @@ class Student < ApplicationRecord
   end
 
   def can_reserve_car?
-    self.mvr_status.present? && self.mvr_status.include?("Approved") && self.canvas_course_complete_date.present? && self.meeting_with_admin_date.present?
+    self.mvr_status.present? && self.mvr_status.include?("Approved") && self.canvas_course_complete_date.present? && self.meeting_with_admin_date.present? && self.phone_number.present?
   end
   
   def self.eligible_drivers
-    mvr_status_pass.canvas_pass.meeting_with_admin
+    mvr_status_pass.canvas_pass.meeting_with_admin && self.phone_number.present?
   end
 
   def self.mvr_status_pass
@@ -110,8 +110,8 @@ class Student < ApplicationRecord
   end
 
   def self.to_csv
-    fields = %w{course registered uniqname last_name first_name mvr_status canvas_course_complete_date meeting_with_admin_date}
-    header = %w{course registered uniqname last_name first_name mvr_status canvas_course_complete_date in_person_orientation_date}
+    fields = %w{course registered uniqname last_name first_name phone_number mvr_status canvas_course_complete_date meeting_with_admin_date}
+    header = %w{course registered uniqname last_name first_name phone_number mvr_status canvas_course_complete_date in_person_orientation_date}
     header.map! { |e| e.titleize.upcase }
     CSV.generate(headers: true) do |csv|
       csv << header

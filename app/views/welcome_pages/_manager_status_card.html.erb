@@ -87,6 +87,22 @@
         Not completed
       </p>
     <% end %>
+    <% if @manager.meeting_with_admin_date.present? %>
+      <i class="fa-solid fa-check"></i>
+      <p class="body-sm-semibold-text ml-2 inline">
+        In Person Orientation:
+      </p>
+      <p class="body-sm-text ml-2">
+        Completed on <%= show_date(@manager.meeting_with_admin_date) %>
+      </p>
+    <% else %>
+      <p class="body-sm-semibold-text ml-2">
+        In Person Orientation:
+      </p>
+      <p class="body-sm-text ml-2">
+        Not completed
+      </p>
+    <% end %>
     <hr>
     <% if reminders_on?(program_id: params[:program_id]) %>
       <div class="py-2 body-sm-text">

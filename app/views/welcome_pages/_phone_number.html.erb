@@ -5,15 +5,19 @@
       <p class="body-sm-semibold-text ml-2 inline">
         Pnohe Number:
       </p>
-      <p class="body-sm-text ml-2">
-        <%= @student.phone_number %>
-      </p>
-      <%= link_to edit_phone_path(@student, edit: true), class: "link_to" do %>
-        <span class="body-sm-text ml-2">
-          Edit
-          <i class="fa-solid fa-pen"></i>
-        </span>
-      <% end %>
+      <div class="flex">
+        <div>
+          <p class="body-sm-text ml-2 pt-1">
+            <%= @student.phone_number %>
+          </p>
+        </div>
+        <%= link_to edit_phone_path(@student, edit: true), class: "link_to" do %>
+          <span class="body-sm-text ml-2">
+            Edit
+            <i class="fa-solid fa-pen"></i>
+          </span>
+        <% end %>
+      </div>
     <% else %>
       <%= render "phone_form", student: @student %>
     <% end %>
