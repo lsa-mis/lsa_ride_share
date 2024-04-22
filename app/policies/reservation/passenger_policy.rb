@@ -4,6 +4,10 @@ class  Reservation::PassengerPolicy < ApplicationPolicy
     user_in_access_group? || is_reservation_driver?
   end
 
+  def add_drivers_and_passengers?
+    user_in_access_group? || is_reservation_driver?
+  end
+
   def add_passenger?
     user_in_access_group? || is_reservation_driver?
   end
@@ -13,6 +17,10 @@ class  Reservation::PassengerPolicy < ApplicationPolicy
   end
 
   def remove_passenger?
+    user_in_access_group? || is_reservation_driver?
+  end
+
+  def make_driver?
     user_in_access_group? || is_reservation_driver?
   end
 

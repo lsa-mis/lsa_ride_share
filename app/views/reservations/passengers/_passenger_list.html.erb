@@ -3,8 +3,10 @@
     <thead class="border border-l-0 border-r-0 border-gray-um60">
       <tr>
         <th class="header_th">Uniqname</th>
-        <th class="header_th">First Name</th>
-        <th class="header_th">Last Name</th>
+        <th class="header_th">Name</th>
+        <th class="header_th"></th>
+        <th class="header_th">Change Role</th>
+        <th class="header_th">Remove from Trip</th>
       </tr>
     </thead>
     <tbody>
@@ -14,13 +16,15 @@
             <%= passenger.uniqname %>
           </td>
           <td class="mi_tbody_td">
-            <%= passenger.first_name %>
-          </td>
-          <td class="mi_tbody_td">
-            <%= passenger.last_name %>
+            <%= passenger.name %>
           </td>
           <td class="mi_tbody_td">
             Passenger
+          </td>
+          <td class="mi_tbody_td">
+            <% if passenger.can_reserve_car? %>
+              <%= link_to 'Make a Driver', make_driver_path(@reservation, passenger, :student, :edit => params[:edit], :recurring => params[:recurring]), class: "link_to" %>
+            <% end %>
           </td>
           <td>
             <%= link_to 'Remove', remove_passenger_path(@reservation, passenger, :student, :edit => params[:edit], :recurring => params[:recurring]), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete }, class: "link_to" %>
@@ -33,15 +37,16 @@
             <%= passenger.uniqname %>
           </td>
           <td class="mi_tbody_td">
-            <%= passenger.first_name %>
-          </td>
-          <td class="mi_tbody_td">
-            <%= passenger.last_name %>
+            <%= passenger.name %>
           </td>
           <td class="mi_tbody_td">
             Passenger
             <%= show_manager(@reservation.program, passenger.uniqname) %>
           </td>
+          <td class="mi_tbody_td">
+            <% if passenger.can_reserve_car? %>
+              <%= link_to 'Make a Driver', make_driver_path(@reservation, passenger, :manager, :edit => params[:edit], :recurring => params[:recurring]), class: "link_to" %>
+            <% end %>
           <td>
             <%= link_to 'Remove', remove_passenger_path(@reservation, passenger, :manager, :edit => params[:edit], :recurring => params[:recurring]), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete }, class: "link_to" %>
           </td>
@@ -53,13 +58,12 @@
             <%= @reservation.driver.uniqname %>
           </td>
           <td class="mi_tbody_td">
-            <%= @reservation.driver.first_name %>
-          </td>
-          <td class="mi_tbody_td">
-            <%= @reservation.driver.last_name %>
+            <%= @reservation.driver.name %>
           </td>
           <td class="mi_tbody_td">
             Driver
+          </td>
+          <td class="mi_tbody_td">
           </td>
         <% end %>
       </tr>
@@ -69,10 +73,7 @@
             <%= @reservation.driver_manager.uniqname %>
           </td>
           <td class="mi_tbody_td">
-            <%= @reservation.driver_manager.first_name %>
-          </td>
-          <td class="mi_tbody_td">
-            <%= @reservation.driver_manager.last_name %>
+            <%= @reservation.driver_manager.name %>
           </td>
           <td class="mi_tbody_td">
             Driver

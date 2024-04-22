@@ -14,6 +14,19 @@ class Reservations::PassengersController < ApplicationController
     authorize([@reservation, :passenger]) 
   end
 
+  def add_drivers_and_passengers
+    @passengers = @reservation.passengers
+    @students = @reservation.program.students.order(:last_name) - @passengers
+    @students.delete(@reservation.driver)
+    @students.delete(@reservation.backup_driver)
+    @passengers_managers = @reservation.passengers_managers
+    @managers = @reservation.program.managers.to_a
+    @managers << @reservation.program.instructor
+    @managers = @managers - @passengers_managers
+    @managers.delete(@reservation.driver_manager)
+    authorize([@reservation, :passenger]) 
+  end
+
   def add_passenger
     model = params[:model]
     passenger = model.classify.constantize.find(params[:id])
@@ -28,7 +41,7 @@ class Reservations::PassengersController < ApplicationController
         @reservation.passengers_managers << passenger
       end
     end
-    redirect_to add_passengers_path(@reservation, :edit => params[:edit], :recurring => params[:recurring])
+    redirect_to add_drivers_and_passengers_path(@reservation, :edit => params[:edit], :recurring => params[:recurring])
   end
 
   def remove_passenger
@@ -52,6 +65,53 @@ class Reservations::PassengersController < ApplicationController
       ReservationMailer.with(reservation: @reservation, user: current_user, recurring: recurring).car_reservation_remove_passenger(passenger).deliver_now
     end
     add_passengers
+  end
+
+  def make_driver
+    model = params[:model]
+    passenger = model.classify.constantize.find(params[:id])
+    authorize([@reservation, :passenger])
+    recurring = false
+    # remove from passengers
+    if model == 'student'
+      @reservation.passengers.delete(passenger)
+    else
+      @reservation.passengers_managers.delete(passenger)
+    end
+    # add current driver to poassengers
+    if @reservation.driver.present?
+      @reservation.passengers << @reservation.driver
+    elsif @reservation.driver_manager.present?
+      @reservation.managers_passengers << @reservation.driver_manager
+    end
+    #  add as a driver
+    if model == 'student'
+      unless @reservation.update(driver_id: passenger.id, driver_manager_id: nil)
+        fail
+      end
+    else
+      unless @reservation.update(driver_manager_id: passenger.id, driver_id: nil)
+        fail
+      end
+    end
+    add_passengers
+  end
+
+  def add_driver
+    model = params[:model]
+    passenger = model.classify.constantize.find(params[:id])
+    authorize([@reservation, :passenger])
+    recurring = false
+    if model == 'student'
+      @reservation.passengers.delete(passenger)
+    else
+      @reservation.passengers_managers.delete(passenger)
+    end
+    unless @reservation.update(driver_id: passenger.id)
+      fail
+    end
+    add_passengers
+
   end
 
   private
