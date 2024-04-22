@@ -286,8 +286,17 @@ class ReservationsController < ApplicationController
     # check for conflicts
     if available?(@reservation.car, @reservation.start_time..@reservation.end_time)
       if @reservation.save
+        unless is_admin?(current_user)
+          if is_student?(current_user)
+            driver = Student.find_by(program_id: @reservation.program_id, uniqname: current_user.uniqname)
+            @reservation.update(driver_id: driver.id)
+          elsif is_manager?(current_user)
+            driver_manager = Manager.find_by(uniqname: current_user.uniqname)
+            @reservation.update(driver_manager_id: driver_manager.id)
+          end
+        end
         @students = @reservation.program.students 
-        redirect_to add_drivers_path(@reservation), notice: "Please add drivers."
+        redirect_to add_drivers_and_passengers_path(@reservation), notice: "Please add drivers."
       else
         @program = Program.find(params[:reservation][:program_id])
         @term_id = params[:term_id]
