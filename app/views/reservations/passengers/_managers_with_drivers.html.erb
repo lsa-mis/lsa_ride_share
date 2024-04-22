@@ -1,19 +1,19 @@
-<%= turbo_frame_tag 'new_passenger' do %>
+<%= turbo_frame_tag 'new_passenger_manager' do %>
   <fieldset>
-    <legend class="hidden">list of students</legend>
-    <% @students.each do |student| %>
+    <legend class="hidden">list of managers</legend>
+    <% @managers.each do |manager| %>
       <div class="flex">
         <div class="inline-block">
-          <% if student.can_reserve_car? %>
+          <% if manager.can_reserve_car? %>
             <%= form_with url: add_driver_path, method: :get, class: "",
                 data: { controller: "driverspassengers", driverspassengers_target: "form" } do |form| %>
-              <%= label_tag("driver_id_#{student.id}", nil, class: "hidden") %>
-              <%= check_box_tag "id", student.id, nil, class: "check_box", id: "driver_id_#{student.id}",
+              <%= label_tag("driver_id_#{manager.id}", nil, class: "hidden") %>
+              <%= check_box_tag "id", manager.id, nil, class: "check_box", id: "driver_id_#{manager.id}",
                 disabled: @reservation.added_people == @reservation.number_of_people_on_trip,
                 :"data-action" => "change->driverspassengers#submitForm" %>
                 <input type="hidden" id="edit" name="edit" value=<%= params[:edit] %>>
                 <input type="hidden" id="recurring" name="recurring" value=<%= params[:recurring] %>>
-                <input type="hidden" id="model" name="model" value="student">
+                <input type="hidden" id="model" name="model" value="manager">
               <% end %>
             <% else %>
               <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
@@ -21,18 +21,18 @@
         </div>
         <div>
           <%= form_with url: add_passenger_path, method: :get, class: "",
-              data: { controller: "driverspassengers", driverspassengers_target: "form" } do |form| %>
-            <%= label_tag("student_id_#{student.id}", nil, class: "hidden") %>
-            <%= check_box_tag "id", student.id, nil, class: "check_box", id: "student_id_#{student.id}",
+              data: { controller: "autosubmit", autosubmit_target: "form" } do |form| %>
+            <%= label_tag("manager_id_#{manager.id}", nil, class: "hidden") %>
+            <%= check_box_tag "id", manager.id, nil, class: "check_box", id: "manager_id_#{manager.id}",
               disabled: @reservation.added_people == @reservation.number_of_people_on_trip,
-              :"data-action" => "change->driverspassengers#submitForm" %>
+              :"data-action" => "change->autosubmit#search" %>
             <input type="hidden" id="edit" name="edit" value=<%= params[:edit] %>>
             <input type="hidden" id="recurring" name="recurring" value=<%= params[:recurring] %>>
-            <input type="hidden" id="model" name="model" value="student">
+            <input type="hidden" id="model" name="model" value="manager">
           <% end %>
         </div>
         <div>
-          <span class="check_box_text"><%= student.display_name %></span>
+          <span class="check_box_text"><%= manager.display_name %><%= show_manager(@reservation.program, manager.uniqname) %></span>
         </div>
       </div>
     <% end %>

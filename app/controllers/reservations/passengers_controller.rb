@@ -78,11 +78,11 @@ class Reservations::PassengersController < ApplicationController
     else
       @reservation.passengers_managers.delete(passenger)
     end
-    # add current driver to poassengers
+    # add current driver to passengers
     if @reservation.driver.present?
       @reservation.passengers << @reservation.driver
     elsif @reservation.driver_manager.present?
-      @reservation.managers_passengers << @reservation.driver_manager
+      @reservation.passengers_managers << @reservation.driver_manager
     end
     #  add as a driver
     if model == 'student'
@@ -99,19 +99,31 @@ class Reservations::PassengersController < ApplicationController
 
   def add_driver
     model = params[:model]
-    passenger = model.classify.constantize.find(params[:id])
+    driver = model.classify.constantize.find(params[:id])
     authorize([@reservation, :passenger])
     recurring = false
-    if model == 'student'
-      @reservation.passengers.delete(passenger)
+    if model == 'student' 
+      if @reservation.driver_manager.present? || @reservation.driver.present?
+        if @reservation.update(driver_id: driver.id, driver_manager_id: nil)
+          # send email that driver was removed
+        else 
+          fail
+        end
+      else
+        unless @reservation.update(driver_id: driver.id)
+          fail
+        end
+      end
     else
-      @reservation.passengers_managers.delete(passenger)
-    end
-    unless @reservation.update(driver_id: passenger.id)
-      fail
+      if @reservation.driver_manager.present? || @reservation.driver.present?
+        if @reservation.update(driver_manager_id: driver.id, driver_id: nil)
+          # send email that driver was removed
+        else
+          fail
+        end
+      end
     end
     add_passengers
-
   end
 
   private

@@ -49,6 +49,7 @@ Rails.application.routes.draw do
   get '/reservations/add_passengers/:reservation_id', to: 'reservations/passengers#add_passengers', as: :add_passengers
   get '/reservations/add_passenger/:reservation_id', to: 'reservations/passengers#add_passenger', as: :add_passenger
   get '/reservations/make_driver/:reservation_id/:id/:model', to: 'reservations/passengers#make_driver', as: :make_driver,defaults: { format: :turbo_stream }
+  get '/reservations/add_driver/:reservation_id', to: 'reservations/passengers#add_driver', as: :add_driver
 
   get '/reservations/add_drivers_and_passengers/:reservation_id', to: 'reservations/passengers#add_drivers_and_passengers', as: :add_drivers_and_passengers
 
