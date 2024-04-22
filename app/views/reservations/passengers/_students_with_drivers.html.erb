@@ -3,22 +3,24 @@
     <legend class="hidden">list of students</legend>
     <% @students.each do |student| %>
       <div class="flex">
-        <div class="inline-block">
-          <% if student.can_reserve_car? %>
-            <%= form_with url: add_driver_path, method: :get, class: "",
-                data: { controller: "driverspassengers", driverspassengers_target: "form" } do |form| %>
-              <%= label_tag("driver_id_#{student.id}", nil, class: "hidden") %>
-              <%= check_box_tag "id", student.id, nil, class: "check_box", id: "driver_id_#{student.id}",
-                disabled: @reservation.added_people == @reservation.number_of_people_on_trip,
-                :"data-action" => "change->driverspassengers#submitForm" %>
-                <input type="hidden" id="edit" name="edit" value=<%= params[:edit] %>>
-                <input type="hidden" id="recurring" name="recurring" value=<%= params[:recurring] %>>
-                <input type="hidden" id="model" name="model" value="student">
-              <% end %>
-            <% else %>
-              <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
-          <% end %>
-        </div>
+        <% if policy([@reservation, :passenger]).add_driver? %>
+          <div class="inline-block">
+            <% if student.can_reserve_car? %>
+              <%= form_with url: add_driver_path, method: :get, class: "",
+                  data: { controller: "driverspassengers", driverspassengers_target: "form" } do |form| %>
+                <%= label_tag("driver_id_#{student.id}", nil, class: "hidden") %>
+                <%= check_box_tag "id", student.id, nil, class: "check_box", id: "driver_id_#{student.id}",
+                  disabled: @reservation.added_people == @reservation.number_of_people_on_trip,
+                  :"data-action" => "change->driverspassengers#submitForm" %>
+                  <input type="hidden" id="edit" name="edit" value=<%= params[:edit] %>>
+                  <input type="hidden" id="recurring" name="recurring" value=<%= params[:recurring] %>>
+                  <input type="hidden" id="model" name="model" value="student">
+                <% end %>
+              <% else %>
+                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>
+            <% end %>
+          </div>
+        <% end %>
         <div>
           <%= form_with url: add_passenger_path, method: :get, class: "",
               data: { controller: "driverspassengers", driverspassengers_target: "form" } do |form| %>

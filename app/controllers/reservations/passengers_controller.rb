@@ -64,6 +64,10 @@ class Reservations::PassengersController < ApplicationController
     if EmailLog.find_by(email_type: "confirmation", sent_from_model: "Reservation", record_id: @reservation) || EmailLog.find_by(email_type: "recurring_confirmation", sent_from_model: "Reservation", record_id: @reservation)
       ReservationMailer.with(reservation: @reservation, user: current_user, recurring: recurring).car_reservation_remove_passenger(passenger).deliver_now
     end
+    if current_user.uniqname == passenger.uniqname
+      redirect_to(root_path, notice: "You were removed for the reservation.")
+      return
+    end
     add_passengers
   end
 

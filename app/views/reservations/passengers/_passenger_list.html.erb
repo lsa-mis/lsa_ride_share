@@ -27,7 +27,7 @@
             <% end %>
           </td>
           <td>
-            <%= link_to 'Remove', remove_passenger_path(@reservation, passenger, :student, :edit => params[:edit], :recurring => params[:recurring]), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete }, class: "link_to" %>
+            <%= link_to 'Remove', remove_passenger_path(@reservation, passenger, :student, :edit => params[:edit], :recurring => params[:recurring]), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete, turbo_frame: "_top" }, class: "link_to" %>
           </td>
         </tr>
       <% end %>
@@ -48,7 +48,7 @@
               <%= link_to 'Make a Driver', make_driver_path(@reservation, passenger, :manager, :edit => params[:edit], :recurring => params[:recurring]), class: "link_to" %>
             <% end %>
           <td>
-            <%= link_to 'Remove', remove_passenger_path(@reservation, passenger, :manager, :edit => params[:edit], :recurring => params[:recurring]), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete }, class: "link_to" %>
+            <%= link_to 'Remove', remove_passenger_path(@reservation, passenger, :manager, :edit => params[:edit], :recurring => params[:recurring]), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete, turbo_frame: "_top" }, class: "link_to" %>
           </td>
         </tr>
       <% end %>
