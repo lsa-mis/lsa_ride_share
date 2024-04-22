@@ -132,6 +132,8 @@ Rails.application.routes.draw do
   get 'welcome_pages/manager'
   get 'welcome_pages/add_phone', to: 'welcome_pages#add_phone', as: :add_phone
   get 'welcome_pages/:id/edit_phone', to: 'welcome_pages#edit_phone', as: :edit_phone
+  get 'welcome_pages/add_manager_phone', to: 'welcome_pages#add_manager_phone', as: :add_manager_phone
+  get 'welcome_pages/:id/edit_manager_phone', to: 'welcome_pages#edit_manager_phone', as: :edit_manager_phone
 
   
   get 'static_pages/home'

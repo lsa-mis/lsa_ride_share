@@ -1,6 +1,6 @@
-<%= turbo_frame_tag 'student_phone' do %>
+<%= turbo_frame_tag 'manager_phone' do %>
   <div class="py-2">
-    <% if @student.phone_number.present? %>
+    <% if @manager.phone_number.present? %>
       <i class="fa-solid fa-check"></i>
       <p class="body-sm-semibold-text ml-2 inline">
         Pnohe Number:
@@ -8,10 +8,10 @@
       <div class="flex">
         <div>
           <p class="body-sm-text ml-2 pt-1">
-            <%= @student.phone_number %>
+            <%= @manager.phone_number %>
           </p>
         </div>
-        <%= link_to edit_phone_path(@student, edit: true), class: "link_to" do %>
+        <%= link_to edit_manager_phone_path(@manager, edit: true), class: "link_to" do %>
           <span class="body-sm-text ml-2">
             Edit
             <i class="fa-solid fa-pen"></i>
@@ -19,10 +19,10 @@
         <% end %>
       </div>
     <% else %>
-      <%= render "phone_form", student: @student %>
+      <%= render "manager_phone_form", manager: @manager %>
     <% end %>
     <% if params[:edit] == "true" %>
-      <%= render "phone_form", student: @student %>
+      <%= render "manager_phone_form", manager: @manager %>
     <% end %>
   </div>
 <% end %>

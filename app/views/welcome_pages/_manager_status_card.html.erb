@@ -104,13 +104,14 @@
       </p>
     <% end %>
     <hr>
-    <% if reminders_on?(program_id: params[:program_id]) %>
-      <div class="py-2 body-sm-text">
-        <%= link_to "Subscribe/Unsubscribe", mailer_subscriptions_url, class: "link_to" %>
-        <span class="">
-          from automated notifications.
-        </span>
-      </div>
-    <% end %>
   </div>
+  <%= render 'manager_phone_number' %>
+  <% if reminders_on?(program_id: params[:program_id]) %>
+    <div class="py-2 body-sm-text">
+      <%= link_to "Subscribe/Unsubscribe", mailer_subscriptions_url, class: "link_to" %>
+      <span class="">
+        from automated notifications.
+      </span>
+    </div>
+  <% end %>
 </div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_13_233618) do
+ActiveRecord::Schema[7.0].define(version: 2024_04_22_195705) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -146,6 +146,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_13_233618) do
     t.string "mvr_status"
     t.date "canvas_course_complete_date"
     t.date "meeting_with_admin_date"
+    t.string "phone_number"
     t.index ["program_id"], name: "index_managers_on_program_id"
   end
 

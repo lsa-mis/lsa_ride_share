@@ -13,6 +13,7 @@
 #  mvr_status                  :string
 #  canvas_course_complete_date :date
 #  meeting_with_admin_date     :date
+#  phone_number                :string
 #
 class Manager < ApplicationRecord
   has_many :managers_programs

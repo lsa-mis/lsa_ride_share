@@ -1,24 +1,24 @@
-<%= form_with url: add_phone_path, method: :get,
+<%= form_with url: add_manager_phone_path, method: :get,
   data: { controller: "phone",
           target: "form",
           action: "submit->phone#submitForm",
           turbo_frame: "_top"
         } do |form| %>
-  <% if student.errors.any? %>
+  <% if manager.errors.any? %>
     <div id="error_explanation" class="text-red-umred px-3 py-2 font-medium rounded-lg mt-3">
-      <h3><%= pluralize(student.errors.count, "error") %> prohibited this student from being saved:</h3>
+      <h3><%= pluralize(manager.errors.count, "error") %> prohibited this manager from being saved:</h3>
       <ul>
-        <% student.errors.each do |error| %>
+        <% manager.errors.each do |error| %>
           <li><%= error.full_message %></li>
         <% end %>
       </ul>
     </div>
   <% end %>
   <%= form.label :phone_number, 'Phone Number *', class: "fancy_label" %>
-  <%= form.text_field :phone_number, required: true, class: "input_text_field mb-2", placeholder: "XXX-XXX-XXXX", value: @student.phone_number, "data-phone-target": "phone_number" %>
+  <%= form.text_field :phone_number, required: true, class: "input_text_field mb-2", placeholder: "XXX-XXX-XXXX", value: @manager.phone_number, "data-phone-target": "phone_number" %>
   <div id="phone_error" class="error_text mb-2"></div>
-  <%= form.hidden_field :id, value: @student.id %>
-  <% if @student.phone_number.present? %>
+  <%= form.hidden_field :id, value: @manager.id %>
+  <% if @manager.phone_number.present? %>
     <%= form.submit 'Update phone', class: "secondary_blue_button" %>
     <%= link_to :back do %>
       <span class="tertiary_button">Cancel
