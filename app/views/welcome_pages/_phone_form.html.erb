@@ -15,8 +15,17 @@
     </div>
   <% end %>
   <%= form.label :phone_number, 'Phone Number *', class: "fancy_label" %>
-  <%= form.text_field :phone_number, required: true, class: "input_text_field mb-2", placeholder: "XXX-XXX-XXXX", "data-phone-target": "phone_number" %>
-  <div id="phone_error"></div>
+  <%= form.text_field :phone_number, required: true, class: "input_text_field mb-2", placeholder: "XXX-XXX-XXXX", value: @student.phone_number, "data-phone-target": "phone_number" %>
+  <div id="phone_error" class="error_text mb-2"></div>
   <%= form.hidden_field :id, value: @student.id %>
-  <%= form.submit 'Add phone', class: "secondary_blue_button" %>
+  <% if @student.phone_number.present? %>
+    <%= form.submit 'Update phone', class: "secondary_blue_button" %>
+    <%= link_to :back do %>
+      <span class="tertiary_button">Cancel
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </span>
+    <% end %>
+  <% else %
+    <%= form.submit 'Add phone', class: "secondary_blue_button" %>
+  <% end %>
 <% end %>
