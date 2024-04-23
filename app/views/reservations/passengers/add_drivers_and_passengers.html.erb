@@ -72,7 +72,11 @@
         List of Students
       </h3>
       <p class="body-sm-text mb-2">
-        Choose drivers & passengers from the list below
+        Choose
+        <% if is_admin?(current_user) %>
+         drivers &
+        <% end %> 
+        passengers from the list below
       </p>
       <%= render "students_with_drivers" %>
     </div>
@@ -81,7 +85,11 @@
         List of Managers
       </h3>
       <p class="body-sm-text mb-2">
-        Choose drivers & passengers from the list below
+        Choose
+        <% if is_admin?(current_user) %>
+          drivers &
+        <% end %> 
+        passengers from the list below
       </p>
       <%= render 'managers_with_drivers' %>
     </div>

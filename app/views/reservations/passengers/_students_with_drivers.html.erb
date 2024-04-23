@@ -10,7 +10,6 @@
                   data: { controller: "driverspassengers", driverspassengers_target: "form" } do |form| %>
                 <%= label_tag("driver_id_#{student.id}", nil, class: "hidden") %>
                 <%= check_box_tag "id", student.id, nil, class: "check_box", id: "driver_id_#{student.id}",
-                  disabled: @reservation.added_people == @reservation.number_of_people_on_trip,
                   :"data-action" => "change->driverspassengers#submitForm" %>
                   <input type="hidden" id="edit" name="edit" value=<%= params[:edit] %>>
                   <input type="hidden" id="recurring" name="recurring" value=<%= params[:recurring] %>>
