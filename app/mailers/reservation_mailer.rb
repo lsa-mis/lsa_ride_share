@@ -69,7 +69,7 @@ class ReservationMailer < ApplicationMailer
     @unit_email_message = get_unit_email_message(@reservation)
     recipients = drivers_emails
     recipients << User.find(@reservation.reserved_by).principal_name.presence
-    recipients << @passengers_emails if @passengers_emails.present?
+    # recipients << @passengers_emails if @passengers_emails.present?
     recipients << @unit_email
     @recipients = recipients.uniq.join(", ")
     set_subject_email_type_recurring_rule("drivers_edited")
