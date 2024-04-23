@@ -18,10 +18,8 @@
           </span>
         <% end %>
       </div>
-    <% else %>
-      <%= render "manager_phone_form", manager: @manager %>
     <% end %>
-    <% if params[:edit] == "true" %>
+    <% if params[:edit] == "true" || !@manager.phone_number.present? %>
       <%= render "manager_phone_form", manager: @manager %>
     <% end %>
   </div>
