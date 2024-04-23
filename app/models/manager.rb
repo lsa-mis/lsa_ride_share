@@ -48,11 +48,11 @@ class Manager < ApplicationRecord
   end
 
   def can_reserve_car?
-    self.mvr_status.present? && self.mvr_status.include?("Approved") && self.canvas_course_complete_date.present? && self.meeting_with_admin_date.present?
+    self.mvr_status.present? && self.mvr_status.include?("Approved") && self.canvas_course_complete_date.present? && self.meeting_with_admin_date.present? && self.phone_number.present?
   end
 
   def self.eligible_drivers
-    mvr_status_pass.canvas_pass.meeting_with_admin_pass
+    mvr_status_pass.canvas_pass.meeting_with_admin_pass && self.phone_number.present?
   end
 
   def self.mvr_status_pass
