@@ -99,18 +99,21 @@ class Reservations::PassengersController < ApplicationController
       # add as a driver
       if model == 'student'
         unless @reservation.update(driver_id: passenger.id, driver_manager_id: nil)
-          flash.now[:alert] = "Error updating reservation. Please report an issue."
+          flash.now[:alert] = " Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". Please report an issue."
         end
       else
         unless @reservation.update(driver_manager_id: passenger.id, driver_id: nil)
-          flash.now[:alert] = "Error updating reservation. Please report an issue."
+          flash.now[:alert] = " Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". Please report an issue."
         end
       end
     end
+    @reservation = Reservation.find(params[:reservation_id])
     add_passengers
   end
 
   def add_driver
+    notice = ""
+    alert == ""
     model = params[:model]
     driver = model.classify.constantize.find(params[:id])
     authorize([@reservation, :passenger])
@@ -118,21 +121,31 @@ class Reservations::PassengersController < ApplicationController
     # check if reservation is recurring only if the reservation is edited; no need to do that for new reservations
 
     # check if the reservation is old
-    if EmailLog.find_by(email_type: "confirmation", sent_from_model: "Reservation", record_id: @reservation) || EmailLog.find_by(email_type: "recurring_confirmation", sent_from_model: "Reservation", record_id: @reservation)
+    # if EmailLog.find_by(email_type: "confirmation", sent_from_model: "Reservation", record_id: @reservation) || EmailLog.find_by(email_type: "recurring_confirmation", sent_from_model: "Reservation", record_id: @reservation)
+    if params[:edit] == "true"
       # editing reservation
-      #  old drivers emails
+       #  old drivers emails
       driver_emails = reservation_drivers_emails
-      if params[:recurring] == "true"
+      if params[:recurring].empty? && @reservation.recurring.present?
+        # edit recuring reservation as a stand-alone; remove it from the recirring set
+        recurring_reservation = RecurringReservation.new(@reservation)
+        alert = recurring_reservation.remove_from_list
+        if alert == ""
+          notice += " Reservation was removed from the list of recurring reservations."
+        end
+      elsif params[:recurring] == "true"
         recurring_reservation = RecurringReservation.new(@reservation)
         recurring = true
-      end
-      if model == 'student'
-        unless @reservation.update(driver_id: driver.id, driver_manager_id: nil)
-          flash.now[:alert] = "Error updating reservation. Please report an issue."
-        end
+        notice = recurring_reservation.add_driver(driver, model)
       else
-        unless @reservation.update(driver_manager_id: driver.id, driver_id: nil)
-          flash.now[:alert] = "Error updating reservation. Please report an issue."
+        if model == 'student'
+          unless @reservation.update(driver_id: driver.id, driver_manager_id: nil)
+            notice = " Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". Please report an issue."
+          end
+        else
+          unless @reservation.update(driver_manager_id: driver.id, driver_id: nil)
+            notice = " Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". Please report an issue."
+          end
         end
       end
       #  new drivers emails
@@ -142,13 +155,16 @@ class Reservations::PassengersController < ApplicationController
       #  new reservation; no need to check if it's recurring
       if model == 'student'
         unless @reservation.update(driver_id: driver.id, driver_manager_id: nil)
-          flash.now[:alert] = "Error updating reservation. Please report an issue."
+          notice = " Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". Please report an issue."
         end
       else
         unless @reservation.update(driver_id: driver.id)
-          flash.now[:alert] = "Error updating reservation. Please report an issue."
+          notice = " Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". Please report an issue."
         end
       end
+    end
+    if notice.present?
+      flash.now[:alert] = notice
     end
     add_passengers
   end
