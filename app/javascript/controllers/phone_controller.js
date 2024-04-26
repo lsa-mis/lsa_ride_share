@@ -8,15 +8,22 @@ export default class extends Controller {
 
   submitForm(event) {
     var phone_number = this.phone_numberTarget.value
-    var phone_error_place = document.getElementById('phone_error')
-    phone_error_place.innerHTML = ''
+    if (document.getElementById('phone_error_desktop')) {
+      var phone_error_desktop_place = document.getElementById('phone_error_desktop')
+      phone_error_desktop_place.innerHTML = ''
+    }
+    if (document.getElementById('phone_error_mobile')) {
+      var phone_error_mobile_place = document.getElementById('phone_error_mobile')
+      phone_error_mobile_place.innerHTML = ''
+    }
     var regex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im
-    console.log(phone_error_place)
     if (!regex.test(phone_number)) {
-      console.log(phone_number)
-      console.log("hell")
-      phone_error_place.innerHTML += '<br>Phone number format is incorrect'
-      console.log(phone_error_place)
+      if (typeof phone_error_desktop_place !== 'undefined') {
+        phone_error_desktop_place.innerHTML = '<br>Phone number format is incorrect'
+      }
+      if (typeof phone_error_mobile_place !== 'undefined') {
+        phone_error_mobile_place.innerHTML = '<br>Phone number format is incorrect'
+      }
       event.preventDefault()
     }
 
