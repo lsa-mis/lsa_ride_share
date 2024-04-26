@@ -1,4 +1,5 @@
-<%= turbo_frame_tag 'student_phone' do %>
+<% frame_type = params[:frame_type] if params[:frame_type].present? %>
+<%= turbo_frame_tag 'student_phone_' + frame_type do %>
   <div class="py-2">
     <% if @student.phone_number.present? %>
       <i class="fa-solid fa-check"></i>
@@ -11,18 +12,16 @@
             <%= @student.phone_number %>
           </p>
         </div>
-        <%= link_to edit_phone_path(@student, edit: true), class: "link_to" do %>
+        <%= link_to edit_student_phone_path(@student, edit: true, frame_type: frame_type), class: "link_to" do %>
           <span class="body-sm-text ml-2">
             Edit
             <i class="fa-solid fa-pen"></i>
           </span>
         <% end %>
       </div>
-    <% else %>
-      <%= render "phone_form", student: @student %>
     <% end %>
-    <% if params[:edit] == "true" %>
-      <%= render "phone_form", student: @student %>
+    <% if params[:edit] == "true" || !@student.phone_number.present? %>
+      <%= render "student_phone_form", student: @student, frame_type: frame_type %>
     <% end %>
   </div>
 <% end %>

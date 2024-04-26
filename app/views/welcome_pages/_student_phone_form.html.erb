@@ -1,4 +1,4 @@
-<%= form_with url: add_phone_path, method: :get,
+<%= form_with url: add_student_phone_path, method: :get,
   data: { controller: "phone",
           target: "form",
           action: "submit->phone#submitForm",
@@ -16,7 +16,7 @@
   <% end %>
   <%= form.label :phone_number, 'Phone Number *', class: "fancy_label" %>
   <%= form.text_field :phone_number, required: true, class: "input_text_field mb-2", placeholder: "XXX-XXX-XXXX", value: @student.phone_number, "data-phone-target": "phone_number" %>
-  <div id="phone_error" class="error_text mb-2"></div>
+  <div id=<%= "phone_error_#{frame_type}" %> class="error_text mb-2"></div>
   <%= form.hidden_field :id, value: @student.id %>
   <% if @student.phone_number.present? %>
     <%= form.submit 'Update phone', class: "secondary_blue_button" %>
