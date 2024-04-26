@@ -73,7 +73,7 @@ class WelcomePagesController < ApplicationController
     end
   end
 
-  def add_phone
+  def add_student_phone
     session[:return_to] = request.referer
     authorize :welcome_page
     phone_number = params[:phone_number]
@@ -81,11 +81,11 @@ class WelcomePagesController < ApplicationController
     if @student.update(phone_number: phone_number)
       redirect_back_or_default
     else
-      fail
+      redirect_back_or_default("Error updating phone number: " + @student.errors.full_messages.join(',') + ". ", true)
     end
   end
 
-  def edit_phone
+  def edit_student_phone
     @student = Student.find(params[:id])
     authorize :welcome_page
   end
@@ -98,7 +98,7 @@ class WelcomePagesController < ApplicationController
     if @manager.update(phone_number: phone_number)
       redirect_back_or_default
     else
-      fail
+      redirect_back_or_default("Error updating phone number: " + @manager.errors.full_messages.join(',') + ". ", true)
     end
   end
 
