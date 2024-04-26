@@ -56,7 +56,7 @@ class ApplicationController < ActionController::Base
     redirect_back(fallback_location: request.referer)
   end
   
-  def redirect_back_or_default(notice = '', default = all_root_url, alert = false)
+  def redirect_back_or_default(notice = '', alert = false, default = all_root_url)
     if alert
       flash[:alert] = notice
     else
