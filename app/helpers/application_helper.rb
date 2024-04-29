@@ -634,8 +634,9 @@ module ApplicationHelper
     return false unless is_student?(current_user)
     return false unless Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program).present?
     student = Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program)
-    return false unless student.can_reserve_car?
-    if (reservation.driver == student || reservation.backup_driver == student) && reservation.end_time + 45.minute > DateTime.now
+    # return false unless student.can_reserve_car?
+    # if (reservation.driver == student || reservation.backup_driver == student) && reservation.end_time + 45.minute > DateTime.now
+    if (reservation.passengers.include?(student) || reservation.driver == student || reservation.backup_driver == student) && reservation.end_time + 45.minute > DateTime.now
       return true
     else
       return false
@@ -645,8 +646,10 @@ module ApplicationHelper
   def allow_manager_to_edit_passengers?(reservation)
     return false unless is_manager?(current_user)
     return false unless reservation.driver_manager_id.present?
-    # return true if reservation.reserved_by = current_user.id
-    if reservation.driver_manager.uniqname == current_user.uniqname && reservation.end_time + 45.minute > DateTime.now
+    return true if reservation.reserved_by = current_user.id
+    # if reservation.driver_manager.uniqname == current_user.uniqname && reservation.end_time + 45.minute > DateTime.now
+    manager = Manager.find_by(uniqname: current_user.uniqname)
+    if (reservation.driver_manager == manager || reservation.passengers_managers.include?(manager)) && reservation.end_time + 45.minute > DateTime.now
       return true
     else
       return false
