@@ -22,21 +22,19 @@
     </div>
     <% unless @vehicle_report.approved %>
       <div>
-        <% if image_name.id.present? %>
-          <span class="body-sm-text">Replace image:</span>
-        <% else %>
+        <% unless image_name.id.present? %>
           <span class="body-sm-text">Upload image:</span>
-        <% end %>
-        <%= form_with(model: @vehicle_report, url: upload_image_path, method: :post, html: { class: "sm:flex sm:items-center" }) do |form| %>
-          <div class="flex items-end">
-            <%= form.label image_field_name.to_sym, image_field_name.titleize, class: "hidden"  %>
-            <%= form.file_field image_field_name.to_sym, class: "body-sm-text" %>
-            <% if image_name.id.present? %>
-              <%= form.submit 'Replace', class: "secondary_blue_button" %>
-            <% else %>
-              <%= form.submit 'Save', class: "secondary_blue_button" %>
-            <% end %>
-          </div>
+          <%= form_with(model: @vehicle_report, url: upload_image_path, method: :post, html: { class: "sm:flex sm:items-center" }) do |form| %>
+            <div class="flex items-end">
+              <%= form.label image_field_name.to_sym, image_field_name.titleize, class: "hidden"  %>
+              <%= form.file_field image_field_name.to_sym, class: "body-sm-text" %>
+              <% if image_name.id.present? %>
+                <%= form.submit 'Replace', class: "secondary_blue_button" %>
+              <% else %>
+                <%= form.submit 'Save', class: "secondary_blue_button" %>
+              <% end %>
+            </div>
+          <% end %>
         <% end %>
       </div>
     <% end %>
