@@ -52,7 +52,7 @@ class Manager < ApplicationRecord
   end
 
   def self.eligible_drivers
-    mvr_status_pass.canvas_pass.meeting_with_admin_pass && self.phone_number.present?
+    mvr_status_pass.canvas_pass.meeting_with_admin_pass.has_phone
   end
 
   def self.mvr_status_pass
@@ -65,6 +65,10 @@ class Manager < ApplicationRecord
 
   def self.meeting_with_admin_pass
     where.not(meeting_with_admin_date: nil) 
+  end
+
+  def self.has_phone
+    where.not(phone_number: nil)
   end
 
   def passenger_current

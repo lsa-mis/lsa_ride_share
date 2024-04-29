@@ -94,7 +94,7 @@ class Student < ApplicationRecord
   end
   
   def self.eligible_drivers
-    mvr_status_pass.canvas_pass.meeting_with_admin && self.phone_number.present?
+    mvr_status_pass.canvas_pass.meeting_with_admin.has_phone
   end
 
   def self.mvr_status_pass
@@ -107,6 +107,10 @@ class Student < ApplicationRecord
 
   def self.meeting_with_admin
     where.not(meeting_with_admin_date: nil) 
+  end
+
+  def self.has_phone
+    where.not(phone_number: nil)
   end
 
   def self.to_csv
