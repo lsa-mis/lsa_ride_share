@@ -6,11 +6,15 @@ class Reservations::PassengersController < ApplicationController
     @students = @reservation.program.students.order(:last_name) - @passengers
     @students.delete(@reservation.driver)
     @students.delete(@reservation.backup_driver)
+    @drivers = []
+    @students.map { |s| @drivers << s if s.can_reserve_car? }
     @passengers_managers = @reservation.passengers_managers
     @managers = @reservation.program.managers.to_a
     @managers << @reservation.program.instructor
     @managers = @managers - @passengers_managers
     @managers.delete(@reservation.driver_manager)
+    @manager_drivers = []
+    @managers.map { |m| @manager_drivers << m if m.can_reserve_car? }
     authorize([@reservation, :passenger]) 
   end
 
@@ -19,11 +23,15 @@ class Reservations::PassengersController < ApplicationController
     @students = @reservation.program.students.order(:last_name) - @passengers
     @students.delete(@reservation.driver)
     @students.delete(@reservation.backup_driver)
+    @drivers = []
+    @students.map { |s| @drivers << s if s.can_reserve_car? }
     @passengers_managers = @reservation.passengers_managers
     @managers = @reservation.program.managers.to_a
     @managers << @reservation.program.instructor
     @managers = @managers - @passengers_managers
     @managers.delete(@reservation.driver_manager)
+    @manager_drivers = []
+    @managers.map { |m| @manager_drivers << m if m.can_reserve_car? }
     authorize([@reservation, :passenger]) 
   end
 
