@@ -107,6 +107,7 @@
         </p>
       <% end %>
     </div>
+    <%= render 'student_phone_number', frame_type: frame_type %>
     <hr>
     <% if reminders_on?(program_id: @program.id) %>
       <div>

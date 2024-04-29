@@ -277,6 +277,19 @@ module ApplicationHelper
     end
   end
 
+  def show_driver_phone_number(reservation)
+    if reservation.driver.present?
+      if reservation.driver_phone.present?
+        return reservation.driver_phone
+      elsif reservation.driver.phone_number.present?
+        return reservation.driver.phone_number
+      else
+        return ""
+      end
+    end
+    return ""
+  end
+
   def show_reservation(reservation)
     if recurring?(reservation)
       recurring = "Recurring - yes"
@@ -284,7 +297,7 @@ module ApplicationHelper
       recurring = "Recurring - no"
     end
     if reservation.driver.present? || reservation.driver_manager.present?
-      driver = "Driver: " + show_driver(reservation) + " (" + reservation.driver_phone.to_s + ")"
+      driver = "Driver: " + show_driver(reservation) + " (" + show_driver_phone_number(reservation) + ")"
       if driver_status_not_eligible?(reservation)
         driver += " - expired MVR Status"
       end

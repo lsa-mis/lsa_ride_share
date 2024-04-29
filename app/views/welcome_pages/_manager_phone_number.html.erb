@@ -1,0 +1,27 @@
+<% frame_type = params[:frame_type] if params[:frame_type].present? %>
+<%= turbo_frame_tag 'manager_phone_' + frame_type do %>
+  <div class="py-2">
+    <% if @manager.phone_number.present? %>
+      <i class="fa-solid fa-check"></i>
+      <p class="body-sm-semibold-text ml-2 inline">
+        Pnohe Number:
+      </p>
+      <div class="flex">
+        <div>
+          <p class="body-sm-text ml-2 pt-1">
+            <%= @manager.phone_number %>
+          </p>
+        </div>
+        <%= link_to edit_manager_phone_path(@manager, edit: true, frame_type: frame_type), class: "link_to" do %>
+          <span class="body-sm-text ml-2">
+            Edit
+            <i class="fa-solid fa-pen"></i>
+          </span>
+        <% end %>
+      </div>
+    <% end %>
+    <% if params[:edit] == "true" || !@manager.phone_number.present? %>
+      <%= render "manager_phone_form", manager: @manager, frame_type: frame_type %>
+    <% end %>
+  </div>
+<% end %>

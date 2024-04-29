@@ -10,4 +10,20 @@ class WelcomePagePolicy < ApplicationPolicy
     is_manager?
   end
 
+  def add_student_phone?
+    is_student?
+  end
+
+  def edit_student_phone?
+    is_student?
+  end
+
+  def add_manager_phone?
+    is_manager?
+  end
+
+  def edit_manager_phone?
+    is_manager?
+  end
+
 end
