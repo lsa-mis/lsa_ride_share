@@ -493,82 +493,82 @@ class ReservationsController < ApplicationController
     end
   end
 
-  def add_edit_drivers
-    success = true
-    recurring = false
-    notice = ""
-    alert == ""
-    note = ""
-    drivers_emails = reservation_drivers_emails
-    @reservation.attributes = reservation_params
-    if params[:recurring] == "true"
-      recurring_reservation = RecurringReservation.new(@reservation)
-      recurring = true
-    end
-    # check if a new driver is a student or a manager
-    driver_param = params[:driver_id].split("-")
-    driver_type = driver_param[1]
-    driver_id = driver_param[0].to_i
-    if driver_type == "student"
-      @reservation.driver_id = driver_id
-      @reservation.driver_manager_id = nil
-    elsif driver_type == "manager"
-      @reservation.driver_manager_id = driver_id
-      @reservation.driver_id = nil
-    end
-    if params[:edit] == "true"
-      # check if a new driver is a passenger
-      note = check_if_driver_is_passenger(@reservation, driver_type, "Driver", driver_id, recurring)
-      # check if a new backup driver is a passenger
-      if params[:reservation][:backup_driver_id].present? 
-        note += check_if_driver_is_passenger(@reservation, "student", "Backup Driver", params[:reservation][:backup_driver_id], recurring)
-      end
-    end
-    if params[:recurring] == "true"
-      list_of_params = reservation_params.to_h
-      list_of_params["driver_id"] = params[:driver_id]
-      notice = recurring_reservation.update_drivers(list_of_params) + note
-    else
-      if @reservation.update(reservation_params)
-        notice = "Drivers were updated." + note
-      else
-        success = false
-      end
-    end
-    if success
-      if params[:edit] == "true"
-        if params[:recurring].empty? && @reservation.recurring.present?
-          # edit recuring reservation as a stand-alone; remove it from the recirring set
-          recurring_reservation = RecurringReservation.new(@reservation)
-          alert = recurring_reservation.remove_from_list
-          if alert == ""
-            notice += " Reservation was removed from the list of recurring reservations."
-          end
-        end
-        @reservation = Reservation.find(params[:id])
-        drivers_emails_new = reservation_drivers_emails
-        if drivers_emails == drivers_emails_new
-          notice = "Drivers were not changed"
-        else
-          drivers_emails << drivers_emails_new
-          drivers_emails = drivers_emails.flatten.uniq
-          ReservationMailer.with(reservation: @reservation, user: current_user, recurring: recurring).car_reservation_drivers_edited(drivers_emails).deliver_now
-          notice += " Old Drivers were removed from the trip."
-        end
-        redirect_to reservation_path(@reservation), notice: notice, alert: alert
-        return
-      else
-        redirect_to add_passengers_path(@reservation)
-        return
-      end
-    else
-      @backup_drivers = @reservation.program.students.eligible_drivers
-      @all_drivers = list_of_drivers(@reservation)
-      @driver = reservation_driver(@reservation)
-      render :add_drivers, status: :unprocessable_entity
-      return
-    end
-  end
+  # def add_edit_drivers
+  #   success = true
+  #   recurring = false
+  #   notice = ""
+  #   alert == ""
+  #   note = ""
+  #   drivers_emails = reservation_drivers_emails
+  #   @reservation.attributes = reservation_params
+  #   if params[:recurring] == "true"
+  #     recurring_reservation = RecurringReservation.new(@reservation)
+  #     recurring = true
+  #   end
+  #   # check if a new driver is a student or a manager
+  #   driver_param = params[:driver_id].split("-")
+  #   driver_type = driver_param[1]
+  #   driver_id = driver_param[0].to_i
+  #   if driver_type == "student"
+  #     @reservation.driver_id = driver_id
+  #     @reservation.driver_manager_id = nil
+  #   elsif driver_type == "manager"
+  #     @reservation.driver_manager_id = driver_id
+  #     @reservation.driver_id = nil
+  #   end
+  #   if params[:edit] == "true"
+  #     # check if a new driver is a passenger
+  #     note = check_if_driver_is_passenger(@reservation, driver_type, "Driver", driver_id, recurring)
+  #     # check if a new backup driver is a passenger
+  #     if params[:reservation][:backup_driver_id].present? 
+  #       note += check_if_driver_is_passenger(@reservation, "student", "Backup Driver", params[:reservation][:backup_driver_id], recurring)
+  #     end
+  #   end
+  #   if params[:recurring] == "true"
+  #     list_of_params = reservation_params.to_h
+  #     list_of_params["driver_id"] = params[:driver_id]
+  #     notice = recurring_reservation.update_drivers(list_of_params) + note
+  #   else
+  #     if @reservation.update(reservation_params)
+  #       notice = "Drivers were updated." + note
+  #     else
+  #       success = false
+  #     end
+  #   end
+  #   if success
+  #     if params[:edit] == "true"
+  #       if params[:recurring].empty? && @reservation.recurring.present?
+  #         # edit recuring reservation as a stand-alone; remove it from the recirring set
+  #         recurring_reservation = RecurringReservation.new(@reservation)
+  #         alert = recurring_reservation.remove_from_list
+  #         if alert == ""
+  #           notice += " Reservation was removed from the list of recurring reservations."
+  #         end
+  #       end
+  #       @reservation = Reservation.find(params[:id])
+  #       drivers_emails_new = reservation_drivers_emails
+  #       if drivers_emails == drivers_emails_new
+  #         notice = "Drivers were not changed"
+  #       else
+  #         drivers_emails << drivers_emails_new
+  #         drivers_emails = drivers_emails.flatten.uniq
+  #         ReservationMailer.with(reservation: @reservation, user: current_user, recurring: recurring).car_reservation_drivers_edited(drivers_emails).deliver_now
+  #         notice += " Old Drivers were removed from the trip."
+  #       end
+  #       redirect_to reservation_path(@reservation), notice: notice, alert: alert
+  #       return
+  #     else
+  #       redirect_to add_passengers_path(@reservation)
+  #       return
+  #     end
+  #   else
+  #     @backup_drivers = @reservation.program.students.eligible_drivers
+  #     @all_drivers = list_of_drivers(@reservation)
+  #     @driver = reservation_driver(@reservation)
+  #     render :add_drivers, status: :unprocessable_entity
+  #     return
+  #   end
+  # end
 
   def send_reservation_updated_email
     authorize @reservation
@@ -609,34 +609,34 @@ class ReservationsController < ApplicationController
     end
   end
 
-  def add_drivers
-    unless is_admin?(current_user)
-      if is_student?(current_user)
-        driver = Student.find_by(program_id: @reservation.program_id, uniqname: current_user.uniqname)
-        @reservation.update(driver_id: driver.id)
-      elsif is_manager?(current_user)
-        driver_manager = Manager.find_by(uniqname: current_user.uniqname)
-        @reservation.update(driver_manager_id: driver_manager.id)
-      end
-    end
-    @backup_drivers = @reservation.program.students.eligible_drivers.reject{ |backup_driver| backup_driver ==  @reservation.driver}
-    @all_drivers = list_of_drivers(@reservation)
-    @passengers = @reservation.passengers
-    @driver = reservation_driver(@reservation)
-  end
+  # def add_drivers
+  #   unless is_admin?(current_user)
+  #     if is_student?(current_user)
+  #       driver = Student.find_by(program_id: @reservation.program_id, uniqname: current_user.uniqname)
+  #       @reservation.update(driver_id: driver.id)
+  #     elsif is_manager?(current_user)
+  #       driver_manager = Manager.find_by(uniqname: current_user.uniqname)
+  #       @reservation.update(driver_manager_id: driver_manager.id)
+  #     end
+  #   end
+  #   @backup_drivers = @reservation.program.students.eligible_drivers.reject{ |backup_driver| backup_driver ==  @reservation.driver}
+  #   @all_drivers = list_of_drivers(@reservation)
+  #   @passengers = @reservation.passengers
+  #   @driver = reservation_driver(@reservation)
+  # end
 
-  def get_drivers_list
-    driver_type = params["driver_type"]
-    driver_id = params["driver_id"]
-    if driver_id == "0"
-      backup_drivers = @reservation.program.students.eligible_drivers
-    else
-      backup_drivers = @reservation.program.students.eligible_drivers.reject{ |backup_driver| backup_driver == Student.find(driver_id)}
-    end
-      backup_drivers = backup_drivers.map { |bd| [bd.display_name, bd.id] }
-    render json: backup_drivers
-    authorize Reservation
-  end
+  # def get_drivers_list
+  #   driver_type = params["driver_type"]
+  #   driver_id = params["driver_id"]
+  #   if driver_id == "0"
+  #     backup_drivers = @reservation.program.students.eligible_drivers
+  #   else
+  #     backup_drivers = @reservation.program.students.eligible_drivers.reject{ |backup_driver| backup_driver == Student.find(driver_id)}
+  #   end
+  #     backup_drivers = backup_drivers.map { |bd| [bd.display_name, bd.id] }
+  #   render json: backup_drivers
+  #   authorize Reservation
+  # end
 
   def add_drivers_later
     notice = "Reservation was created, but confirmation email was not sent."

@@ -69,19 +69,19 @@ class ReservationPolicy < ApplicationPolicy
     create?
   end
 
-  def add_drivers?
-    return true if user_in_access_group? 
-    return true if is_reserved_by? 
-    return true if is_reservation_driver?
-    return false
-  end
+  # def add_drivers?
+  #   return true if user_in_access_group? 
+  #   return true if is_reserved_by? 
+  #   return true if is_reservation_driver?
+  #   return false
+  # end
 
-  def add_edit_drivers?
-    return true if user_in_access_group? 
-    return true if is_reserved_by? 
-    return true if is_reservation_driver?
-    return false
-  end
+  # def add_edit_drivers?
+  #   return true if user_in_access_group? 
+  #   return true if is_reserved_by? 
+  #   return true if is_reservation_driver?
+  #   return false
+  # end
 
   def add_drivers_later?
     user_in_access_group?
@@ -125,9 +125,9 @@ class ReservationPolicy < ApplicationPolicy
     user_in_access_group?
   end
 
-  def get_drivers_list?
-    create?
-  end
+  # def get_drivers_list?
+  #   create?
+  # end
 
   def selected_reservations?
     user_in_access_group?
