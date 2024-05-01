@@ -127,16 +127,12 @@ class Reservations::PassengersController < ApplicationController
     driver = model.classify.constantize.find(params[:id])
     authorize([@reservation, :passenger])
     recurring = false
-    # check if reservation is recurring only if the reservation is edited; no need to do that for new reservations
-
-    # check if the reservation is old
-    # if EmailLog.find_by(email_type: "confirmation", sent_from_model: "Reservation", record_id: @reservation) || EmailLog.find_by(email_type: "recurring_confirmation", sent_from_model: "Reservation", record_id: @reservation)
     if params[:edit] == "true"
       # editing reservation
        #  old drivers emails
       driver_emails = reservation_drivers_emails
       if params[:recurring].empty? && @reservation.recurring.present?
-        # edit recuring reservation as a stand-alone; remove it from the recirring set
+        # edit recuring reservation as a stand-alone; remove it from the recurring set
         recurring_reservation = RecurringReservation.new(@reservation)
         alert = recurring_reservation.remove_from_list
         if alert == ""
@@ -177,9 +173,9 @@ class Reservations::PassengersController < ApplicationController
         end
       end
     end
-    # if notice.present?
-    #   flash.now[:alert] = notice
-    # end
+    if notice.present?
+      flash.now[:alert] = notice
+    end
     add_passengers
   end
 
