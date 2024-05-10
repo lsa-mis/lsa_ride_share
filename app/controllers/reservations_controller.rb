@@ -1,5 +1,6 @@
 class ReservationsController < ApplicationController
   before_action :auth_user
+  before_action :set_calendar_reservations, only: %i[ index week_calendar ]
   before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger 
     finish_reservation update_passengers send_reservation_updated_email cancel_recurring_reservation 
     add_drivers_later approve_all_recurring edit_long add_edit_drivers get_drivers_list]
@@ -10,32 +11,12 @@ class ReservationsController < ApplicationController
 
   # GET /reservations or /reservations.json
   def index
-    if current_user.unit_ids.count == 1
-      @unit_id = current_user.unit_ids[0]
-      @reservations = Reservation.where(program: Program.where(unit_id: @unit_id))
-    elsif params[:unit_id].present?
-      @unit_id = params[:unit_id]
-      @reservations = Reservation.where(program: Program.where(unit_id: @unit_id))
-    else
-      @reservations = Reservation.all
-    end
     authorize @reservations
   end
 
   def week_calendar
     @no_car = false
-    session[:return_to] = request.referer
-    if current_user.unit_ids.count == 1
-      @unit_id = current_user.unit_ids[0]
-      @reservations = Reservation.where(program: Program.where(unit_id: @unit_id))
-    elsif params[:unit_id].present?
-      @unit_id = params[:unit_id]
-      @reservations = Reservation.where(program: Program.where(unit_id: @unit_id))
-    else
-      authorize Reservation
-      redirect_back_or_default("You must select a unit first.", true, reservations_url)
-      return
-    end
+    authorize Reservation
     @hour_begin = UnitPreference.find_by(name: "reservation_time_begin", unit_id: @unit_id).value.split(":").first.to_i - 1
     @hour_end = UnitPreference.find_by(name: "reservation_time_end", unit_id: @unit_id).value.split(":").first.to_i + 12
     authorize @reservations
@@ -776,6 +757,20 @@ class ReservationsController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
+
+    def set_calendar_reservations
+      start_date = params.fetch(:start_date, Date.today).to_date
+      if current_user.unit_ids.count == 1
+        @unit_id = current_user.unit_ids[0]
+        @reservations = Reservation.where(program: Program.where(unit_id: @unit_id)).where(start_time: start_date.beginning_of_month.beginning_of_week..start_date.end_of_month.end_of_week)
+      elsif params[:unit_id].present?
+        @unit_id = params[:unit_id]
+        @reservations = Reservation.where(program: Program.where(unit_id: @unit_id)).where(start_time: start_date.beginning_of_month.beginning_of_week..start_date.end_of_month.end_of_week)
+      else
+        @reservations = Reservation.where(start_time: start_date.beginning_of_month.beginning_of_week..start_date.end_of_month.end_of_week)
+      end
+    end
+    
     def set_reservation
       @reservation = Reservation.find(params[:id])
       authorize @reservation
