@@ -155,16 +155,16 @@ class Reservation < ApplicationRecord
     schedule
   end
 
-  def calendar_reservations(start)
-    if recurring.empty?
-      [self]
-    else
-      start_date = start.beginning_of_month.beginning_of_week
-      end_date = start.end_of_month.end_of_week
-      schedule(start_time).occurrences(end_date).map do |date|
-        Reservation.new(id: id, start_time: date)
-      end
-    end
-  end
+  # def calendar_reservations(start)
+  #   if recurring.empty?
+  #     [self]
+  #   else
+  #     start_date = start.beginning_of_month.beginning_of_week
+  #     end_date = start.end_of_month.end_of_week
+  #     schedule(start_time).occurrences(end_date).map do |date|
+  #       Reservation.new(id: id, start_time: date)
+  #     end
+  #   end
+  # end
 
 end
