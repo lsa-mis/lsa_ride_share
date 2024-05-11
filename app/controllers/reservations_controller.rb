@@ -762,12 +762,12 @@ class ReservationsController < ApplicationController
       start_date = params.fetch(:start_date, Date.today).to_date
       if current_user.unit_ids.count == 1
         @unit_id = current_user.unit_ids[0]
-        @reservations = Reservation.where(program: Program.where(unit_id: @unit_id)).where(start_time: start_date.beginning_of_month.beginning_of_week..start_date.end_of_month.end_of_week)
+        @reservations = Reservation.where(program: Program.where(unit_id: @unit_id)).where("start_time BETWEEN ? and ? OR end_time BETWEEN ? and ?", start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week, start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week)
       elsif params[:unit_id].present?
         @unit_id = params[:unit_id]
-        @reservations = Reservation.where(program: Program.where(unit_id: @unit_id)).where(start_time: start_date.beginning_of_month.beginning_of_week..start_date.end_of_month.end_of_week)
+        @reservations = Reservation.where(program: Program.where(unit_id: @unit_id)).where("start_time BETWEEN ? and ? OR end_time BETWEEN ? and ?", start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week, start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week)
       else
-        @reservations = Reservation.where(start_time: start_date.beginning_of_month.beginning_of_week..start_date.end_of_month.end_of_week)
+        @reservations = Reservation.where("start_time BETWEEN ? and ? OR end_time BETWEEN ? and ?", start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week, start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week)
       end
     end
     
