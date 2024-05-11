@@ -200,10 +200,10 @@ module ApplicationHelper
 
   def driver_status_not_eligible?(reservation)
     if reservation.driver.present?
-      return true unless reservation.driver.can_reserve_car?
+      return true unless reservation.driver.mvr_status.include?("Approved until")
     end
     if reservation.driver_manager.present?
-      return true unless reservation.driver_manager.can_reserve_car?
+      return true unless reservation.driver_manager.mvr_status.include?("Approved until")
     end
     return false
   end
@@ -227,7 +227,7 @@ module ApplicationHelper
 
   def backup_driver_status_not_eligible?(reservation)
     if reservation.backup_driver.present?
-      return true unless reservation.backup_driver.can_reserve_car?
+      return true unless reservation.backup_driver.mvr_status.include?("Approved until")
     end
     return false
   end

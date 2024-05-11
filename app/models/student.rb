@@ -90,7 +90,7 @@ class Student < ApplicationRecord
   end
 
   def can_reserve_car?
-    self.mvr_status.present? && self.mvr_status.include?("Approved") && self.canvas_course_complete_date.present? && self.meeting_with_admin_date.present? && self.phone_number.present?
+    self.mvr_status.present? && self.mvr_status.include?("Approved until") && self.canvas_course_complete_date.present? && self.meeting_with_admin_date.present? && self.phone_number.present?
   end
   
   def self.eligible_drivers
@@ -98,7 +98,7 @@ class Student < ApplicationRecord
   end
 
   def self.mvr_status_pass
-    where("mvr_status LIKE ?", "Approved%")
+    where("mvr_status LIKE ?", "Approved until%")
   end
 
   def self.canvas_pass
