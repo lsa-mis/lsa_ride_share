@@ -30,7 +30,7 @@ class WelcomePagesController < ApplicationController
 
   def update_status(resource, program)
     if resource.mvr_status.present?
-      unless resource.mvr_status.include?("Approved")
+      unless resource.mvr_status.include?("Approved until")
         status = mvr_status(resource.uniqname)
         resource.update(mvr_status: status)
       end
