@@ -27,7 +27,7 @@ class SitesController < ApplicationController
   # PATCH/PUT /sites/1 or /sites/1.json
   def update
     if @site.update(site_params)
-      redirect_back_or_default("The site was updated.", sites_url)
+      redirect_back_or_default("The site was updated.", false, sites_url)
     end
   end
 

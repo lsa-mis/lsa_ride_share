@@ -64,7 +64,7 @@ class CarsController < ApplicationController
     elsif params[:parking_spot].present?
       @car.parking_spot = params[:parking_spot]
     end
-    if @car.update(car_params)
+    if @car.save
       redirect_to car_path(@car), notice: "The car was updated."
     else
       @unit_id = @car.unit_id
