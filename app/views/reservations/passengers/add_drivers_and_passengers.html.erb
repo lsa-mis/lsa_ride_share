@@ -1,7 +1,7 @@
 <div class="mx-auto w-full">
   <div class="lg:flex justify-between items-center mb-4">
     <div>
-      <% if params["edit"] %>
+      <% if params["edit"] == "true" %>
         <h1>Edit Drivers and Passengers</h1>
       <% else %>
         <h1>Add Drivers and Passengers</h1>
@@ -27,6 +27,20 @@
         </div>
       <% end %>
     </div>
+    <div class="mt-4 whitespace-nowrap">
+      <% if params["edit"] == "true" %>
+        <div class="lg:flex lg:flex-col place-items-end whitespace-nowrap">
+          <%= link_to "Update Reservation", update_passengers_path(@reservation, :recurring => params[:recurring]), class: "primary_button mb-4" %>
+          <%= link_to reservation_path(@reservation) do %>
+            <span class="tertiary_button">Cancel
+              <i class="fa fa-times" aria-hidden="true"></i>
+            </span>
+          <% end %>
+        </div>
+      <% else %>
+        <%= link_to "Finish Creating Reservation", finish_reservation_path(@reservation), class: "primary_button" %>
+      <% end %>
+    </div>
     <% if is_admin?(current_user) && params["edit"] != "true" && !(@reservation.driver.present? || @reservation.driver_manager.present?) %>
       <%= link_to add_drivers_later_path(@reservation), data: { "turbo-frame": "_top" } do %>
         <span class="tertiary_button">Add Drivers Later
@@ -34,20 +48,6 @@
         </span>
       <% end %>
     <% else %>
-      <div class="mt-4 whitespace-nowrap">
-        <% if params["edit"] == "true" %>
-          <div class="lg:flex lg:flex-col place-items-end whitespace-nowrap">
-            <%= link_to "Update Reservation", update_passengers_path(@reservation, :recurring => params[:recurring]), class: "primary_button mb-4" %>
-            <%= link_to reservation_path(@reservation) do %>
-              <span class="tertiary_button">Cancel
-                <i class="fa fa-times" aria-hidden="true"></i>
-              </span>
-            <% end %>
-          </div>
-        <% else %>
-          <%= link_to "Finish Creating Reservation", finish_reservation_path(@reservation), class: "primary_button" %>
-        <% end %>
-      </div>
     <% end %>
   </div>
 
