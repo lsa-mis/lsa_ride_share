@@ -15,7 +15,6 @@ class Reservations::PassengersController < ApplicationController
     @managers.delete(@reservation.driver_manager)
     @manager_drivers = []
     @managers.map { |m| @manager_drivers << m if m.can_reserve_car? }
-    authorize([@reservation, :passenger]) 
   end
 
   def add_drivers_and_passengers

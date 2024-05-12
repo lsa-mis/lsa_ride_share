@@ -82,11 +82,11 @@ class ReservationPolicy < ApplicationPolicy
   end
 
   def add_non_uofm_passengers?
-    update?
+    user_in_access_group? || is_in_reservation?
   end
 
   def update_passengers?
-    update?
+    user_in_access_group? || is_in_reservation?
   end
 
   def destroy?
