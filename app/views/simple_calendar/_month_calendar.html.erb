@@ -1,3 +1,8 @@
+<% if @unit_id.present? %>
+<div class="mb-2">
+  <%= link_to 'Week Calendar', week_calendar_path(:unit_id => @unit_id, :start_date => start_date.beginning_of_month.beginning_of_week), class: "secondary_blue_button", data: {turbo_frame: "_top"} %>
+  <% end %>
+</div>
 <div class="simple-calendar">
   <div class="calendar-heading">
     <%= link_to calendar.url_for_previous_view do %>

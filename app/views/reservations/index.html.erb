@@ -32,11 +32,7 @@
   <% end %>
   <div class="mb-2">
     <div class="md:flex justify-between items-center whitespace-nowrap pb-4">
-      <% if @unit_id.present? %>
-        <%= link_to 'Week Calendar', week_calendar_path(:unit_id => @unit_id), class: "secondary_blue_button" %>
-      <% else %>
-        <div> </div>
-      <% end %>
+      <div> </div>
       <div class="my-2 md:flex gap-4 items-center whitespace-nowrap pr-4">
         <div>
           <i class="fa-solid fa-circle-check" style="color:#024794"></i>
