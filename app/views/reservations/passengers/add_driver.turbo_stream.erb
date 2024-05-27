@@ -17,3 +17,7 @@
     <%= render 'non_uofm_passengers' %>
   <% end %>
 <% end %>
+
+<%= turbo_stream.update "number_of_added_people_on_trip" do %>
+  <%= render "reservations/number_of_added_people_on_trip" %>
+<% end %>

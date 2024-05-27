@@ -8,14 +8,16 @@ Reservation for:  <%= link_to "#{@reservation.display_name}", reservation_url(@r
 ================================================================================================
 DATE: <%= "#{@start_time} - #{@end_time}" %>
 <% if @reservation.car.present? %>
-  VEHICLE #: <%= @reservation.car.car_number %>
+VEHICLE #: <%= @reservation.car.car_number %>
 <% else %>
-  VEHICLE #: No car selected
+VEHICLE #: No car selected
 <% end %>
 SITE: <%= @reservation.site.title %>
 PROGRAM: <%= @reservation.program.title %>
 DRIVER: <%= @driver_name %>
+<% if @reservation.backup_driver.present? %>
 BACKUP DRIVER: <%= @backup_driver_name %>
+<% end %>
 Passengers:
 <% @passengers.each do |p| %>
   <%= p %>

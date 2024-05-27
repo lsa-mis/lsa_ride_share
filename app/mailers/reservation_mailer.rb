@@ -178,11 +178,8 @@ class ReservationMailer < ApplicationMailer
     else
       @driver_name = "Not Selected"
     end
-    if @reservation.backup_driver.present?
       @backup_driver_name = show_backup_driver(@reservation)
-    else
-      @backup_driver_name = "Not Selected"
-    end
+
   end
 
   def set_passengers

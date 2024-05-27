@@ -19,10 +19,12 @@
         <% else %>
           <li>VEHICLE #: No car selected</li>
         <% end %>
-        <li>SITE: <%= @reservation.site.title %> </li>
+        <li>SITE: <%= @reservation.site.title %></li>
         <li>PROGRAM: <%= @reservation.program.title %></li>
-        <li>DRIVER: <%= @driver_name %> </li>
-        <li>BACKUP DRIVER: <%= @backup_driver_name %> </li>
+        <li>DRIVER: <%= @driver_name %></li>
+        <% if @reservation.backup_driver.present? %>
+          <li>BACKUP DRIVER: <%= @backup_driver_name %></li>
+        <% end %>
       </ul>
       Passengers:
       <ul>
