@@ -279,15 +279,28 @@ module ApplicationHelper
 
   def show_driver_phone_number(reservation)
     if reservation.driver.present?
-      if reservation.driver_phone.present?
-        return reservation.driver_phone
-      elsif reservation.driver.phone_number.present?
-        return reservation.driver.phone_number
-      else
-        return ""
-      end
+      show_student_driver_phone(reservation)
+    elsif reservation.driver_manager.present?
+      show_manager_driver_phone(reservation)
+    else
+      return ""
     end
-    return ""
+  end
+
+  def show_student_driver_phone(reservation)
+    if reservation.driver_phone.present?
+      return reservation.driver_phone
+    elsif reservation.driver.phone_number.present?
+      return reservation.driver.phone_number
+    end
+  end
+
+  def show_manager_driver_phone(reservation)
+    if reservation.driver_phone.present?
+      return reservation.driver_phone
+    elsif reservation.driver.phone_number.present?
+      return reservation.driver.phone_number
+    end
   end
 
   def show_reservation(reservation)
@@ -309,8 +322,9 @@ module ApplicationHelper
       if backup_driver_status_not_eligible?(reservation)
         backup_driver += " - expired MVR Status"
       end
+      backup_driver += "\n"
     else
-      backup_driver = "No backup driver selected"
+      backup_driver = ""
     end
     if reservation.passengers.present? || reservation.passengers_managers.present?
       passengers = "Passengers: "
@@ -330,7 +344,7 @@ module ApplicationHelper
     end
     reservation.program.title + "\n" + reservation.site.title + "\n" +
     "From: " + show_date_time(reservation.start_time + 15.minute) + "\n" +  "To: " + show_date_time(reservation.end_time - 15.minute) + "\n" +
-    recurring + "\n" + driver + "\n" + backup_driver + "\n" +
+    recurring + "\n" + driver + "\n" + backup_driver +
     reservation.number_of_people_on_trip.to_s + " people on the trip" + "\n" +
     passengers + non_uofm_passengers
   end
@@ -594,17 +608,16 @@ module ApplicationHelper
     return false
   end
 
-  def allow_student_to_edit_drivers?(reservation)
-    return false unless is_student?(current_user)
-    return false unless Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program).present?
-    student = Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program)
-    return false if reservation.backup_driver == student
-    return false unless student.can_reserve_car?
-    if reservation.driver == student && ((reservation.start_time - DateTime.now.beginning_of_day)/3600).round > minimum_hours_before_reservation(reservation.program.unit)
-      return true
-    else
-      return false
+  def is_in_reservation?(current_user, reservation)
+    if is_student?(current_user)
+      student = Student.find_by(program_id: reservation.program, uniqname: current_user.uniqname)
+      return reservation.driver == student || reservation.backup_driver == student || reservation.passengers.include?(student)
     end
+    if is_manager?(current_user)
+      manager = Manager.find_by(uniqname: current_user.uniqnam)
+      return reservation.driver_manager == manager || is_reserved_by? || reservation.passengers_managers.include?(manager)
+    end
+    return false
   end
 
   def allow_student_to_edit_reservations?(reservation)
@@ -619,7 +632,7 @@ module ApplicationHelper
     end
   end
 
-  def allow_manager_to_edit_drivers?(reservation)
+  def allow_manager_to_edit_reservations?(reservation)
     return false unless is_manager?(current_user)
     return false unless reservation.driver_manager_id.present?
     # return true if reservation.reserved_by = current_user.id

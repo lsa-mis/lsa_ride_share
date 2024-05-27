@@ -17,7 +17,9 @@ VEHICLE #: No car selected
 SITE: <%= @reservation.site.title %>
 PROGRAM: <%= @reservation.program.title %>
 DRIVER: <%= @driver_name %>
+<% if @reservation.backup_driver.present? %>
 BACKUP DRIVER: <%= @backup_driver_name %>
+<% end %>
 Passengers:
 <% @passengers.each do |p| %>
   <%= p %>
