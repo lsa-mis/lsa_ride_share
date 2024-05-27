@@ -72,7 +72,7 @@ class Reservations::PassengersController < ApplicationController
       ReservationMailer.with(reservation: @reservation, user: current_user, recurring: recurring).car_reservation_remove_passenger(passenger).deliver_now
     end
     if current_user.uniqname == passenger.uniqname
-      redirect_to(root_path, notice: "You were removed for the reservation.")
+      redirect_to(root_path, notice: "You were removed from the reservation.")
       return
     end
     add_passengers
@@ -175,7 +175,12 @@ class Reservations::PassengersController < ApplicationController
     if notice.present?
       flash.now[:alert] = notice
     end
-    add_passengers
+    if is_admin?(current_user) || is_in_reservation?(current_user, @reservation)
+      add_passengers
+    else 
+      redirect_to(root_path, notice: "You were removed from the reservation.")
+      return
+    end
   end
 
   private
