@@ -85,26 +85,6 @@
           <%= display_driver_status(reservation) %>
         </p>
       </div>
-      <% if (is_admin?(current_user) || allow_student_to_edit_drivers?(@reservation) || allow_manager_to_edit_drivers?(@reservation)) %>
-        <div class="py-2 whitespace-nowrap">
-          <%= link_to add_drivers_path(@reservation, :edit => true) do %>
-            <span class="tertiary_button"> 
-              Edit Drivers
-              <i class="fa-solid fa-pen" aria-hidden="true"></i>
-            </span>
-          <% end %>
-          <% if recurring?(@reservation) %>
-            <div>
-              <%= link_to add_drivers_path(@reservation, :edit => true, :recurring => true) do %>
-                <span class="tertiary_button"> 
-                  Edit Drivers: This and Following Reservations
-                  <i class="fa-solid fa-pen" aria-hidden="true"></i>
-                </span>
-              <% end %>
-            </div>
-          <% end %>
-        </div>
-      <% end %>
     </div>
 
     <div class="py-2">
@@ -116,24 +96,25 @@
       </p>
     </div>
 
-    <div class="py-2">
-      <p class="body-lg-bold-text inline">
-        Backup Driver:
-      </p>
-      <p class="body-lg-text ml-2 inline">
-        <%= show_backup_driver(reservation) %>
-      </p>
-      <%= display_backup_driver_status(reservation) %>
-    </div>
-
-    <div class="py-2">
-      <p class="body-lg-bold-text inline">
-        Backup driver phone:
-      </p>
-      <p class="body-lg-text ml-2 inline">
-        <%= reservation.backup_driver_phone %>
-      </p>
-    </div>
+    <% if reservation.backup_driver.present? %>
+      <div class="py-2">
+        <p class="body-lg-bold-text inline">
+          Backup Driver:
+        </p>
+        <p class="body-lg-text ml-2 inline">
+          <%= show_backup_driver(reservation) %>
+        </p>
+        <%= display_backup_driver_status(reservation) %>
+      </div>
+      <div class="py-2">
+        <p class="body-lg-bold-text inline">
+          Backup driver phone:
+        </p>
+        <p class="body-lg-text ml-2 inline">
+          <%= reservation.backup_driver_phone %>
+        </p>
+      </div>
+    <% end %>
 
     <div class="py-2">
       <p class="body-lg-bold-text inline">
@@ -149,28 +130,6 @@
       <p class="body-lg-bold-text">
         Passengers (<%= @reservation.passengers.count %>):
       </p>
-      <% if (is_admin?(current_user) || allow_student_to_edit_passengers?(@reservation) || allow_manager_to_edit_passengers?(@reservation)) %>
-        <div class="py-2">
-          <div>
-            <%= link_to add_passengers_path(@reservation, :edit => true) do %>
-              <span class="tertiary_button"> 
-                Edit Passengers
-                <i class="fa-solid fa-pen" aria-hidden="true"></i>
-              </span>
-            <% end %>
-          </div>
-          <% if recurring?(@reservation) %>
-            <div>
-              <%= link_to add_passengers_path(@reservation, :edit => true, :recurring => true) do %>
-                <span class="tertiary_button"> 
-                  Edit Passengers: This and Following Reservations
-                  <i class="fa-solid fa-pen" aria-hidden="true"></i>
-                </span>
-              <% end %>
-            </div>
-          <% end %>
-        </div>
-      <% end %>
     </div>
     <% if @passengers.present? %>
       <ul>
@@ -192,6 +151,28 @@
         </p>
       <% end %>
     </div>
+    <% if (is_admin?(current_user) || allow_student_to_edit_passengers?(@reservation) || allow_manager_to_edit_passengers?(@reservation)) %>
+      <div class="py-2">
+        <div>
+          <%= link_to add_drivers_and_passengers_path(@reservation, :edit => true) do %>
+            <span class="tertiary_button"> 
+              Edit Drivers & Passengers
+              <i class="fa-solid fa-pen" aria-hidden="true"></i>
+            </span>
+          <% end %>
+        </div>
+        <% if recurring?(@reservation) %>
+          <div>
+            <%= link_to add_drivers_and_passengers_path(@reservation, :edit => true, :recurring => true) do %>
+              <span class="tertiary_button"> 
+                Edit Drivers & Passengers: This and Following Reservations
+                <i class="fa-solid fa-pen" aria-hidden="true"></i>
+              </span>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
   </div>
 
 </div>

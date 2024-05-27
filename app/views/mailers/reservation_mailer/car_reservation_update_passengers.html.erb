@@ -4,7 +4,7 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-  <h3>The passengers list for the transportation reservation has been updated.</h3>
+  <p>The passengers list for the transportation reservation has been updated.</p>
     <h4> Reservation for:  <%= link_to "#{@reservation.display_name}", reservation_url(@reservation) %> </h4>
     <p>
      Reservation Summary:
@@ -18,10 +18,12 @@
         <% else %>
           <li>VEHICLE #: No car selected</li>
         <% end %>
-        <li>SITE: <%= @reservation.site.title %> </li>
+        <li>SITE: <%= @reservation.site.title %></li>
         <li>PROGRAM: <%= @reservation.program.title %></li>
-        <li>DRIVER: <%= @driver_name %> </li>
-        <li>BACKUP DRIVER: <%= @backup_driver_name %> </li>
+        <li>DRIVER: <%= @driver_name %></li>
+        <% if @reservation.backup_driver.present? %>
+          <li>BACKUP DRIVER: <%= @backup_driver_name %></li>
+        <% end %>
       </ul>
       Passengers:
       <ul>

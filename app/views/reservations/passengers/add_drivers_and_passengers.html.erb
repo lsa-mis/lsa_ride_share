@@ -1,10 +1,10 @@
 <div class="mx-auto w-full">
   <div class="lg:flex justify-between items-center mb-4">
     <div>
-      <% if params["edit"] %>
-        <h1>Edit Passengers</h1>
+      <% if params["edit"] == "true" %>
+        <h1>Edit Drivers and Passengers</h1>
       <% else %>
-        <h1>Add Passengers</h1>
+        <h1>Add Drivers and Passengers</h1>
       <% end %>
       <div>
         <h3>
@@ -38,8 +38,17 @@
           <% end %>
         </div>
       <% else %>
-        <%= link_to "Finish Creating Reservation", finish_reservation_path(@reservation), class: "primary_button" %>
+        <div class="lg:flex lg:flex-col place-items-end whitespace-nowrap">
+          <%= link_to "Finish Creating Reservation", finish_reservation_path(@reservation), class: "primary_button" %>
       <% end %>
+      <% if is_admin?(current_user) && params["edit"] != "true" && !(@reservation.driver.present? || @reservation.driver_manager.present?) %>
+        <%= link_to add_drivers_later_path(@reservation), data: { "turbo-frame": "_top" } do %>
+          <span class="tertiary_button">Add Drivers Later
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </span>
+        <% end %>
+      <% end %>
+      </div>
     </div>
   </div>
 
@@ -63,19 +72,13 @@
       <h3>
         List of Students
       </h3>
-      <p class="body-sm-text mb-2">
-        Choose passengers from the list below
-      </p>
-      <%= render "students" %>
+      <%= render "students_with_drivers" %>
     </div>
     <div class="m-2">
       <h3>
         List of Managers
       </h3>
-      <p class="body-sm-text mb-2">
-        Add managers to passenger list
-      </p>
-      <%= render 'managers' %>
+      <%= render 'managers_with_drivers' %>
     </div>
     <div>
       <% if @reservation.program.non_uofm_passengers %>
