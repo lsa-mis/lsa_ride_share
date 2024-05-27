@@ -9,9 +9,7 @@ class Programs::StudentsController < ApplicationController
   # GET /students or /students.json
   def index
     unless params[:update] == "false"
-      unless @student_program.not_course
-        update_students(@student_program)
-      end
+      update_mvr_and_roster
     end
     authorize @students
     if params[:format] == "csv"
@@ -19,6 +17,13 @@ class Programs::StudentsController < ApplicationController
         format.csv { send_data @students.to_csv, filename: "#{@student_program.title}-students-#{Date.today}.csv"}
       end
     end 
+  end
+
+  def update_mvr_and_roster
+    unless @student_program.not_course
+      update_student_list
+    end
+    update_mvr_status(note: false)
   end
 
   def update_student_list
@@ -73,7 +78,6 @@ class Programs::StudentsController < ApplicationController
 
   end
 
-  # GET /students/1 or /students/1.json
   def show
   end
 
@@ -96,7 +100,7 @@ class Programs::StudentsController < ApplicationController
     flash.now[:notice] = "MVR status is updated."
   end
 
-  def update_mvr_status
+  def update_mvr_status(note: true)
     @student_program.students.each do |student|
       if need_to_check_mvr_status?(student)
         status = mvr_status(student.uniqname)
@@ -105,7 +109,11 @@ class Programs::StudentsController < ApplicationController
         end
       end
     end
-    flash[:notice] = "MVR status is updated."
+    if note || @student_program.not_course
+      flash.now[:notice] = "MVR status is updated."
+    else
+      flash.now[:notice] = "Student list and MVR status are updated."
+    end
     @students = @student_program.students.order(registered: :desc).order(:last_name)
     authorize @students
   end
