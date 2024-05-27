@@ -33,10 +33,6 @@ module ApplicationHelper
     field.strftime("%m/%d/%Y %I:%M%p") unless field.blank?
   end
 
-  def show_time(field)
-    field.strftime("%I:%M%p") unless field.blank?
-  end
-
   def show_reservation_start_time(reservation, date)
     if reservation.start_time.to_date == reservation.end_time.to_date 
       (reservation.start_time + 15.minute).strftime("%I:%M%p")
@@ -480,6 +476,7 @@ module ApplicationHelper
   end
 
   def show_time(time)
+    return "" unless time.present?
     "#{time.strftime("%I:%M%p")}"
   end
 
@@ -668,10 +665,6 @@ module ApplicationHelper
       return false
     end
   end
-
-  def future_reservation?(reservation)
-    reservation.start_time > DateTime.now
-  end
   
   def render_flash_stream
     turbo_stream.update "flash", partial: "layouts/notification"
@@ -729,9 +722,6 @@ module ApplicationHelper
   def contact_phone(reservation)
     reservation.program.unit.unit_preferences.find_by(name: "contact_phone").value.presence || ""
   end 
-  def unit_email(reservation)
-    reservation.program.unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
-  end
 
   def email_was_sent?(model, record)
     EmailLog.find_by(sent_from_model: model, record_id: record).present?
@@ -831,14 +821,6 @@ module ApplicationHelper
     time_list = ["12:00AM"] + (1..11).map {|h| "#{h}:00AM"}.to_a + ["12:00PM"] + (1..11).map {|h| "#{h}:00PM"}.to_a
     time_list.shift
     return time_list
-  end
-
-  def cancel_types
-    [
-      ["This Reservation", "one"],
-      ["This and Following Reservations", "following"],
-      ["All Reservations", "all"]
-    ]
   end
 
   def recurring?(reservation)
