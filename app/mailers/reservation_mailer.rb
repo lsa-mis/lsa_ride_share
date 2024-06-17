@@ -79,9 +79,9 @@ class ReservationMailer < ApplicationMailer
 
   def car_reservation_remove_passenger(passenger)
     @name = passenger.name
-    @email = email_address(passenger)
+    @recipients = email_address(passenger)
     set_subject_email_type_recurring_rule("passenger_removed")
-    mail(to: @email, subject: @subject)
+    mail(to: @recipients, subject: @subject)
     create_email_log_records(recurring_type: "following")
   end
 
