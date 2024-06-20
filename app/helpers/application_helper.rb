@@ -294,8 +294,8 @@ module ApplicationHelper
   def show_manager_driver_phone(reservation)
     if reservation.driver_phone.present?
       return reservation.driver_phone
-    elsif reservation.driver.phone_number.present?
-      return reservation.driver.phone_number
+    elsif reservation.driver_manager.phone_number.present?
+      return reservation.driver_manager.phone_number
     end
   end
 
