@@ -164,7 +164,7 @@ class ProgramsController < ApplicationController
   end
 
   def get_programs_list
-    render json: Program.where(unit_id: params[:unit_id], term: params[:term_id]).order(:title, :catalog_number, :class_section)
+    render json: Program.where(unit_id: params[:unit_id], term: params[:term_id]).order(:title).map { |p| [p.id, p.title_and_courses] }
     authorize Program
   end
 
