@@ -24,7 +24,6 @@ export default class extends Controller {
   }
 
   updateProgramsSelect(data) {
-    console.log(data)
     let dropdown = this.programTarget;
     dropdown.length = 0;
 
@@ -46,9 +45,7 @@ export default class extends Controller {
       let option;
       option = document.createElement('option');
       option.value = data[0][0];
-        option.text = data[0][1];
-        console.log(option.value)
-        console.log(option.text)
+      option.text = data[0][1];
       dropdown.add(option);
       this.setSites()
     } else {
