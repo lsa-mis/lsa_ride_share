@@ -34,9 +34,10 @@ export default class extends Controller {
       let option;
       for (let i = 0; i < data.length; i++) {
         option = document.createElement('option');
-        option.value = data[i].id;
-        // option.text = data[i].title;
-        option.text = this.programTitle(data[i])
+        console.log(option)
+        option.value = data[i][0];
+        option.text = data[i][1];
+        //option.text = this.programTitle(data[i])
         dropdown.add(option);
       }
     } else if (data.length == 1) {
