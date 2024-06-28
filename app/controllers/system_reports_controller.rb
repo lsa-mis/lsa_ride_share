@@ -6,14 +6,14 @@ class SystemReportsController < ApplicationController
     @terms = Term.sorted
     @programs = []
     if params[:unit_id].present?
-      @programs = Program.where(unit_id: params[:unit_id])
-      @programs = @programs.data(params[:term_id]).order(:title)
+      @programs = Program.where(unit_id: params[:unit_id].to_i)
+      @programs = @programs.data(params[:term_id].to_i).order(:title)
     else
       @programs = Program.where(unit_id: current_user.unit_ids)
     end
-    @programs = @programs.data(params[:term_id])
+    @programs = @programs.data(params[:term_id].to_i)
     if params[:term_id].present?
-      @term_id = params[:term_id]
+      @term_id = params[:term_id].to_i
     else
       @term_id = Term.current[0].id
     end
@@ -24,18 +24,18 @@ class SystemReportsController < ApplicationController
   def run_report
 
     if params[:unit_id].present?
-      @unit_id = params[:unit_id]
+      @unit_id = params[:unit_id].to_i
       @unit = Unit.find(@unit_id).name
     end
     if params[:term_id].present?
-      @term_id = params[:term_id]
+      @term_id = params[:term_id].to_i
       @term = Term.find(@term_id).name
     end
     if params[:program_id].present?
-      @program_id = params[:program_id]
+      @program_id = params[:program_id].to_i
     end
     if params[:student_id].present?
-      @student_id = params[:student_id]
+      @student_id = params[:student_id].to_i
     end
 
     if params[:uniqname].present?
@@ -159,9 +159,9 @@ class SystemReportsController < ApplicationController
           JOIN programs ON programs.id = res.program_id
           JOIN terms ON terms.id = programs.term_id
           JOIN units ON units.id = programs.unit_id
-          WHERE terms.id = " + @term_id +  " AND  units.id = " + @unit_id
+          WHERE terms.id = #{@term_id} AND  units.id = #{@unit_id}"
           if params[:program_id].present?
-            sql += " AND programs.id = " + params[:program_id]
+            sql += " AND programs.id = #{params[:program_id].to_i}"
           end
           sql += " GROUP BY program_id ORDER BY program_id"
       end
@@ -186,9 +186,9 @@ class SystemReportsController < ApplicationController
           JOIN programs ON programs.id = res.program_id
           JOIN terms ON terms.id = programs.term_id
           JOIN units ON units.id = programs.unit_id
-          WHERE terms.id = " + @term_id +  " AND  units.id = " + @unit_id
+          WHERE terms.id = #{@term_id} AND  units.id = #{@unit_id}"
           if params[:program_id].present?
-            sql += " AND programs.id = " + params[:program_id]
+            sql += " AND programs.id = #{params[:program_id].to_i}"
           end
           sql += " GROUP BY program_id ORDER BY program_id"
       end
@@ -234,9 +234,9 @@ class SystemReportsController < ApplicationController
         JOIN programs ON programs.id = res.program_id
         JOIN terms ON terms.id = programs.term_id
         JOIN units ON units.id = programs.unit_id
-        WHERE terms.id = " + @term_id +  " AND units.id = " + @unit_id
+        WHERE terms.id = #{@term_id} AND  units.id = #{@unit_id}"
         if params[:program_id].present?
-          sql += " AND programs.id = " + params[:program_id]
+          sql += " AND programs.id = #{params[:program_id].to_i}"
         end
         sql += " ORDER BY program, vehicle_reports.id"
       end
@@ -250,11 +250,11 @@ class SystemReportsController < ApplicationController
           students.meeting_with_admin_date
           FROM programs AS programs
           JOIN students AS students ON programs.id = students.program_id
-          WHERE programs.term_id = " + @term_id + " AND programs.unit_id = " + @unit_id + "
+          WHERE programs.term_id = #{@term_id} AND programs.unit_id = #{@unit_id}
             AND students.mvr_status LIKE 'Approved%' 
             AND students.canvas_course_complete_date IS NOT NULL AND students.meeting_with_admin_date IS NOT NULL"
         if params[:program_id].present?
-          sql += " AND programs.id = " + params[:program_id]
+          sql += " AND programs.id = #{params[:program_id].to_i}"
         end
         sql += " UNION
           SELECT programs.title AS program, 'Instructor' AS driver_type,
@@ -265,11 +265,11 @@ class SystemReportsController < ApplicationController
           managers.meeting_with_admin_date
           FROM programs AS programs
           JOIN managers AS managers ON programs.instructor_id = managers.id
-          WHERE programs.term_id = " + @term_id + " AND programs.unit_id = " + @unit_id + "
+          WHERE programs.term_id = #{@term_id} AND programs.unit_id = #{@unit_id}
             AND managers.mvr_status LIKE 'Approved%' 
             AND managers.canvas_course_complete_date IS NOT NULL AND managers.meeting_with_admin_date IS NOT NULL"
         if params[:program_id].present?
-          sql += " AND programs.id = " + params[:program_id]
+          sql += " AND programs.id = #{params[:program_id].to_i}"
         end
         sql += " UNION
           SELECT programs.title AS program, 'Manager' AS driver_type,
@@ -281,11 +281,11 @@ class SystemReportsController < ApplicationController
           FROM programs AS programs
           JOIN managers_programs ON programs.id = managers_programs.program_id
           JOIN managers AS managers ON managers.id = managers_programs.manager_id
-          WHERE programs.term_id = " + @term_id + " AND programs.unit_id = " + @unit_id + "
+          WHERE programs.term_id = #{@term_id} AND programs.unit_id = #{@unit_id}
             AND managers.mvr_status LIKE 'Approved%'
             AND managers.canvas_course_complete_date IS NOT NULL AND managers.meeting_with_admin_date IS NOT NULL"
         if params[:program_id].present?
-          sql += " AND programs.id = " + params[:program_id]
+          sql += " AND programs.id = #{params[:program_id].to_i}"
         end
         sql += " ORDER BY program, driver_type, driver_name"
       end

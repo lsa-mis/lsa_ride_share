@@ -8,7 +8,7 @@
 
   <div>
     <% if current_user.unit_ids.count > 1 %>
-      <%= form_with url: cars_path, method: :get, class: "", data: { autosubmit_target: "form", turbo_frame: "turbo-cars" } do |form| %>
+      <%= form_with url: cars_path, method: :get, class: "", data: { controller: "autosubmit", autosubmit_target: "form", turbo_frame: "turbo-cars" } do |form| %>
         <div class="mb-4">
           <label for="unit_id" class="fancy_label">Select a Unit</label>
           <%= select_tag "unit_id", options_from_collection_for_select(@units, :id, :name, selected: params[:unit_id]), include_blank: "All Units", class: "filter_select w-48",
