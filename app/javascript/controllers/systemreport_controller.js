@@ -44,11 +44,9 @@ export default class extends Controller {
       dropdown.selectedIndex = 0;
       let option;
       option = document.createElement('option');
-      option.value = data[0].id;
-      // option.text = data[0].title;
-      option.text = this.programTitle(data[0])
+      option.value = data[0][0];
+      option.text = data[0][1];
       dropdown.add(option);
-      this.setSites()
     } else {
       defaultOption.text = 'No programs for this term';
       dropdown.add(defaultOption);
