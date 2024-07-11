@@ -42,6 +42,12 @@ class Programs::StudentsController < ApplicationController
     authorize @student
     result = get_name(uniqname)
     if result['valid']
+      # check if uniqname is not admin 
+      if is_member_of_admin_groups?(uniqname)
+        @students = @student_program.students.order(registered: :desc).order(:last_name)
+        flash.now[:alert] = "Admin uniqname can't be added to students list"
+        return
+      end
       @student.first_name = result['first_name']
       @student.last_name = result['last_name']
       if @student.save
@@ -187,6 +193,16 @@ class Programs::StudentsController < ApplicationController
 
     def set_students_list
       @students = @student_program.students.order(registered: :desc).order(:course_id).order(:last_name)
+    end
+
+    def is_member_of_admin_groups?(uniqname)
+      unit_groups = Unit.pluck(:ldap_group) + ['lsa-was-rails-devs']
+      unit_groups.each do |group|
+        if  LdapLookup.is_member_of_group?(uniqname, group)
+          return true
+        end
+      end
+      return false
     end
 
     # Only allow a list of trusted parameters through.
