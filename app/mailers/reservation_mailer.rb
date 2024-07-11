@@ -220,6 +220,9 @@ class ReservationMailer < ApplicationMailer
     recipients << @passengers_emails if @passengers_emails.present?
     recipients << cancel_emails if cancel_emails.present?
     recipients << @unit_email if admin_flag
+    unless recipients.present?
+      recipients << @unit_email
+    end
     @recipients = recipients.uniq.join(", ")
   end
 
