@@ -30,7 +30,11 @@
     <div class="mt-4 whitespace-nowrap">
       <% if params["edit"] == "true" %>
         <div class="lg:flex lg:flex-col place-items-end whitespace-nowrap">
-          <%= link_to "Update Reservation", update_passengers_path(@reservation, :recurring => params[:recurring]), class: "primary_button mb-4" %>
+          <% if params["recurring"] == "true" %>
+            <%= link_to "Update This and Following Reservations", update_passengers_path(@reservation, :recurring => params[:recurring]), class: "primary_button mb-4" %>
+          <% else %>
+            <%= link_to "Update Reservation", update_passengers_path(@reservation, :recurring => params[:recurring]), class: "primary_button mb-4" %>
+          <% end %>
           <%= link_to reservation_path(@reservation) do %>
             <span class="tertiary_button">Cancel
               <i class="fa fa-times" aria-hidden="true"></i>
