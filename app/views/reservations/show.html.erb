@@ -63,9 +63,9 @@
           <% if recurring?(@reservation) %>
             <div class="mt-2">
               <% if @reservation.start_time.to_date == @reservation.end_time.to_date %>
-                <%= link_to 'Edit Recurring Reservations', edit_reservation_path(@reservation, :recurring => true), class: "primary_button" if policy(@reservation).edit? %>
+                <%= link_to 'Edit This and Following Reservations', edit_reservation_path(@reservation, :recurring => true), class: "primary_button" if policy(@reservation).edit? %>
               <% else %>
-                <%= link_to 'Edit Recurring Reservations', edit_long_reservation_path(@reservation, :recurring => true), class: "primary_button" if policy(@reservation).edit? %>
+                <%= link_to 'Edit This and Following Reservations', edit_long_reservation_path(@reservation, :recurring => true), class: "primary_button" if policy(@reservation).edit? %>
               <% end %>
             </div>
           <% end %>

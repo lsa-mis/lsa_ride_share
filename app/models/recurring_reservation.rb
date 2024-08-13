@@ -163,13 +163,16 @@ class RecurringReservation
   def add_driver(driver, model)
     list = get_following
     note = ""
-    if model == "student"
-      unless @reservation.update(driver_id: driver.id, driver_manager_id: nil)
-        note += " Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". "
-      end
-    else
-      unless @reservation.update(driver_manager_id: driver.id, driver_id: nil)
-        note += " Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". "
+    list.each do |id|
+      reservation = Reservation.find(id)
+      if model == "student"
+        unless reservation.update(driver_id: driver.id, driver_manager_id: nil)
+          note += " Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". "
+        end
+      else
+        unless reservation.update(driver_manager_id: driver.id, driver_id: nil)
+          note += " Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". "
+        end
       end
     end
     return note
