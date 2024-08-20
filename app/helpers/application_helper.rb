@@ -870,4 +870,8 @@ module ApplicationHelper
     "Reservations for Student" => "reservations_for_student"}
   end
 
+  def car_statuses
+    [["Available", 0], ["Unavailable", 1]]
+  end
+
 end
