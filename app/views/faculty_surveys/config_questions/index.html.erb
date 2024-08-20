@@ -2,7 +2,11 @@
   <div class="lg:flex justify-between items-center mb-4">
     <h1><%= @faculty_survey.display_name %></h1>
     <% if is_admin?(current_user) %> 
-      <% unless email_was_sent?("FacultySurvey", @faculty_survey) %>
+      <% if email_was_sent?("FacultySurvey", @faculty_survey) %>
+        <% unless @faculty_survey.program_id.present? %>
+          <%= link_to 'Resend Email to Instructor', send_faculty_survey_email_path(@faculty_survey), class: "secondary_yellow_button" %>
+        <% end %>
+      <% else %>
         <%= link_to 'Send Email to Instructor', send_faculty_survey_email_path(@faculty_survey), class: "secondary_yellow_button" %>
         <%= link_to 'New Survey Question', new_faculty_survey_config_question_path(@faculty_survey), class: "secondary_blue_button" %>
       <% end %>

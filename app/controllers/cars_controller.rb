@@ -12,6 +12,9 @@ class CarsController < ApplicationController
     else
       @cars = Car.where(unit_id: current_user.unit_ids).order(:car_number)
     end
+    if params[:car_status].present?
+      @cars = @cars.where(status: params[:car_status])
+    end
     authorize @cars
     
   end
