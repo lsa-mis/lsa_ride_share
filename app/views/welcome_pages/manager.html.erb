@@ -53,7 +53,7 @@
       </div>
 
       <div class="my-8 whitespace-nowrap">
-        <% if @program.present? && max_day_for_reservation(@program) > default_reservation_for_students(@program.unit.id) %>
+        <% if @program.present? && max_day_for_reservation(@program.unit_id) > default_reservation_for_students(@program.unit.id) %>
           <%= link_to "One Day Reservation", new_reservation_path(:program_id => @program.id), class: "secondary_blue_button" if @manager.can_reserve_car? %>
           <%= link_to "Overnight Reservation", new_long_reservation_path(:program_id => @program.id), class: "secondary_blue_button" if @manager.can_reserve_car? %>
         <% end %>
