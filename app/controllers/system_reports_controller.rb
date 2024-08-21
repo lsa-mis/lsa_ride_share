@@ -15,7 +15,7 @@ class SystemReportsController < ApplicationController
     if params[:term_id].present?
       @term_id = params[:term_id].to_i
     else
-      @term_id = Term.current[0].id
+      @term_id = Term.current.present? ? Term.current[0].id : nil
     end
     @students = []
     authorize :system_report
