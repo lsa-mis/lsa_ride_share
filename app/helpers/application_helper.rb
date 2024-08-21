@@ -723,6 +723,12 @@ module ApplicationHelper
     end
   end
 
+  def is_date?(string)
+    return true if string.to_date
+    rescue ArgumentError
+      false
+  end
+
   def contact_phone(reservation)
     reservation.program.unit.unit_preferences.find_by(name: "contact_phone").value.presence || ""
   end 
