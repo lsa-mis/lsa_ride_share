@@ -63,7 +63,7 @@ class ReservationsController < ApplicationController
   # GET /reservations/new
   def new
     @reservation = Reservation.new
-    @term_id = Term.current[0].id
+    @term_id = Term.current.present? ? Term.current[0].id : nil
     authorize @reservation
     if is_student?(current_user)
       @program = Student.find(params[:student_id]).program
@@ -104,7 +104,7 @@ class ReservationsController < ApplicationController
     if is_admin?(current_user)
       @sites = []
     end
-    @until_date = recurring_until_date(@unit_id)
+    @until_date = max_day_for_reservation(@unit_id)
     @reservation.start_time = @day_start
   end
 
@@ -167,7 +167,7 @@ class ReservationsController < ApplicationController
     if params[:until_date].present?
       @until_date = params[:until_date]
     else
-      @until_date = recurring_until_date(@unit_id)
+      @until_date = max_day_for_reservation(@unit_id)
     end
     authorize Reservation
   end
@@ -219,7 +219,7 @@ class ReservationsController < ApplicationController
     if params[:until_date].present?
       @until_date = params[:until_date]
     else
-      @until_date = recurring_until_date(@unit_id)
+      @until_date = max_day_for_reservation(@unit_id)
     end
     authorize Reservation
   end
@@ -702,7 +702,7 @@ class ReservationsController < ApplicationController
       @sites = program.sites.order(:title)
       @cars = @cars.where(unit_id: @unit_id).order(:car_number)
       @min_date = default_reservation_for_students(@unit_id)
-      @max_date = max_day_for_reservation(program)
+      @max_date = max_day_for_reservation(@unit_id)
     end
 
     def reservation_drivers_emails
@@ -762,22 +762,6 @@ class ReservationsController < ApplicationController
       if @reservation.program.non_uofm_passengers && @reservation.non_uofm_passengers.present?
         @cancel_passengers << "Non UofM Passengers: " + @reservation.non_uofm_passengers
       end
-    end
-
-    def recurring_until_date(unit_id)
-      if UnitPreference.find_by(unit_id: unit_id, name: "recurring_until").present?
-        return Term.current.pluck(:classes_end_date).min unless UnitPreference.find_by(unit_id: unit_id, name: "recurring_until").value.present?
-        return Term.current.pluck(:classes_end_date).min unless is_date?(UnitPreference.find_by(unit_id: unit_id, name: "recurring_until").value)
-        return UnitPreference.find_by(unit_id: unit_id, name: "recurring_until").value.to_date
-      else
-        return Term.current.pluck(:classes_end_date).min
-      end
-    end
-
-    def is_date?(string)
-      return true if string.to_date
-      rescue ArgumentError
-        false
     end
 
     # Only allow a list of trusted parameters through.
