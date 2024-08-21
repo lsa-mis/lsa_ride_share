@@ -716,10 +716,8 @@ module ApplicationHelper
   end
 
   def max_day_for_reservation(unit_id)
-    if UnitPreference.find_by(unit_id: unit_id, name: "recurring_until").present?
-      return Term.current.pluck(:classes_end_date).min unless UnitPreference.find_by(unit_id: unit_id, name: "recurring_until").value.present?
-      return Term.current.pluck(:classes_end_date).min unless is_date?(UnitPreference.find_by(unit_id: unit_id, name: "recurring_until").value)
-      return UnitPreference.find_by(unit_id: unit_id, name: "recurring_until").value.to_date
+    if UnitPreference.find_by(unit_id: unit_id, name: "recurring_until")&.value.present? && is_date?(UnitPreference.find_by(unit_id: unit_id, name: "recurring_until").value)
+      UnitPreference.find_by(unit_id: unit_id, name: "recurring_until").value.to_date
     else
       return Term.current.pluck(:classes_end_date).min
     end
