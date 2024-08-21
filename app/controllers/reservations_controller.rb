@@ -764,12 +764,6 @@ class ReservationsController < ApplicationController
       end
     end
 
-    def is_date?(string)
-      return true if string.to_date
-      rescue ArgumentError
-        false
-    end
-
     # Only allow a list of trusted parameters through.
     def reservation_params
       params.require(:reservation).permit(:status, :start_time, :end_time, :recurring, :driver_id, :driver_manager_id, :driver_phone, :backup_driver_id, :backup_driver_phone, 
