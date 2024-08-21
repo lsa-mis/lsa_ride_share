@@ -36,7 +36,7 @@
     <% else %>
       <div>
         <%= form.label :term_id, 'Term *', class: "fancy_label" %>
-        <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: @term_id), class: "input_text_field",
+        <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: @term_id), include_blank: "Select Term ...", class: "input_text_field",
           "data-reservation-target": "term", "data-action": "change->reservation#changePrograms" %>
       </div>
 

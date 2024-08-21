@@ -715,8 +715,12 @@ module ApplicationHelper
     return day
   end
 
-  def max_day_for_reservation(program)
-    program.term.classes_end_date
+  def max_day_for_reservation(unit_id)
+    if UnitPreference.find_by(unit_id: unit_id, name: "recurring_until")&.value.present? && is_date?(UnitPreference.find_by(unit_id: unit_id, name: "recurring_until").value)
+      UnitPreference.find_by(unit_id: unit_id, name: "recurring_until").value.to_date
+    else
+      return Term.current.pluck(:classes_end_date).min
+    end
   end
 
   def contact_phone(reservation)
