@@ -8,7 +8,7 @@
               <div class="inline-block h-8 justify-self-start content-start items-start">
                 <%= image_tag 'mlsa.png', alt: 'LSA Logo', height: '35.75', width: '100', class: '' %>
               </div>
-              <span class="text-white navlogo-sm-text pl-4 hover:text-yellow-ummaze">
+              <span class="text-white navlogo-sm-text pl-4">
                 RideShare
               </span>
             </div>
@@ -48,6 +48,11 @@
               <% if is_manager?(current_user) %>
                 <div class="header_link">
                   <%= link_to "Reservations", welcome_pages_manager_path, class: "#{class_names(active: current_page?(welcome_pages_manager_path))}" %>
+                </div>
+              <% end %>
+              <% if is_student?(current_user) %>
+                <div class="header_link">
+                  <%= link_to "Reservations", welcome_pages_student_path, class: "#{class_names(active: current_page?(welcome_pages_student_path))}" %>
                 </div>
               <% end %>
               <% if is_admin?(current_user) %>
@@ -182,6 +187,11 @@
             <% if is_manager?(current_user) %>
               <div class="header_link">
                 <%= link_to "Reservations", welcome_pages_manager_path, class: "#{class_names(active: current_page?(welcome_pages_manager_path))}" %>
+              </div>
+            <% end %>
+            <% if is_student?(current_user) %>
+              <div class="header_link">
+                <%= link_to "Reservations", welcome_pages_student_path, class: "#{class_names(active: current_page?(welcome_pages_student_path))}" %>
               </div>
             <% end %>
           </div>
