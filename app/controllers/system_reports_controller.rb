@@ -7,16 +7,15 @@ class SystemReportsController < ApplicationController
     @programs = []
     if params[:unit_id].present?
       @programs = Program.where(unit_id: params[:unit_id].to_i)
-      @programs = @programs.data(params[:term_id].to_i).order(:title)
     else
       @programs = Program.where(unit_id: current_user.unit_ids)
     end
-    @programs = @programs.data(params[:term_id].to_i)
     if params[:term_id].present?
       @term_id = params[:term_id].to_i
     else
       @term_id = Term.current.present? ? Term.current[0].id : nil
     end
+    @programs = @programs.data(@term_id).order(:title)
     @students = []
     authorize :system_report
   end
