@@ -7,7 +7,9 @@ class CarPolicy < ApplicationPolicy
   end
 
   def show?
-    user_in_access_group? || is_student?
+    return true if user_in_access_group? 
+    return true if is_student?
+    return false
   end
 
   def create?
@@ -24,6 +26,10 @@ class CarPolicy < ApplicationPolicy
 
   def edit?
     update?
+  end
+
+  def get_parking_locations?
+    create?
   end
 
   def delete_file?

@@ -93,6 +93,18 @@ class Program < ApplicationRecord
     end
   end
 
+  def title_and_courses
+    if self.not_course
+      name = "#{self.title} - not a course  "
+    else
+      name = self.title + " - "
+      self.courses.each do |course|
+       name += course.display_name + "; "
+      end
+    end
+    return name[0...-2]
+  end
+
   def title_term
     "#{self.title} - #{self.term.name}"
   end

@@ -160,6 +160,55 @@ class RecurringReservation
     return note
   end
 
+  def add_driver(driver, model)
+    list = get_following
+    note = ""
+    list.each do |id|
+      reservation = Reservation.find(id)
+      if model == "student"
+        unless reservation.update(driver_id: driver.id, driver_manager_id: nil)
+          note += " Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". "
+        end
+      else
+        unless reservation.update(driver_manager_id: driver.id, driver_id: nil)
+          note += " Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". "
+        end
+      end
+    end
+    return note
+  end
+
+  def make_driver_following_reservations(passenger, model)
+    note = ""
+    list = get_following
+    list.each do |id|
+      reservation = Reservation.find(id)
+      # remove from passengers
+      if model == 'student'
+        reservation.passengers.delete(passenger)
+      else
+        reservation.passengers_managers.delete(passenger)
+      end
+      # add current driver to passengers
+      if reservation.driver.present?
+        reservation.passengers << reservation.driver
+      elsif reservation.driver_manager.present?
+        reservation.passengers_managers << reservation.driver_manager
+      end
+      # add as a driver
+      if model == 'student'
+        unless reservation.update(driver_id: passenger.id, driver_manager_id: nil)
+          note += "Error updating reservation with ID = " + reservation.id + ". Please report an issue."
+        end
+      else
+        unless reservation.update(driver_manager_id: passenger.id, driver_id: nil)
+          note += "Error updating reservation with ID = " + reservation.id + ". Please report an issue."
+        end
+      end
+    end
+    return note
+  end
+
   def add_passenger_following_reservations(passenger, model)
     list = get_following
     list.each do |id|

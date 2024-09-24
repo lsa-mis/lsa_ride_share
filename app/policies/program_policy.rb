@@ -3,11 +3,15 @@
 class ProgramPolicy < ApplicationPolicy
 
   def index?
-    user_in_access_group? || is_manager?
+    return true if user_in_access_group?
+    return true if is_manager?
+    return false
   end
 
   def show?
-    user_in_access_group? || is_program_manager?
+    return true if user_in_access_group? 
+    return true if is_program_manager?
+    return false
   end
 
   def create?
@@ -19,7 +23,9 @@ class ProgramPolicy < ApplicationPolicy
   end
 
   def update?
-    user_in_access_group? || is_instructor?
+    return true if user_in_access_group? 
+    return true if is_instructor?
+    return false
   end
 
   def edit?

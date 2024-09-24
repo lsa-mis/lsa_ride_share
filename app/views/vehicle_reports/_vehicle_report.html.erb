@@ -150,6 +150,11 @@
       <%= render 'image_name', image_name: @vehicle_report.image_back_end, image_field_name: 'image_back_end' %>
     <% end %>
 
+    <% if @reservation.program.pictures_required_start || @reservation.program.pictures_required_end %>
+      <hr>
+      <%= render 'student_status_mobile', vehicle_report: vehicle_report %>
+    <% end %>
+
     <%= render 'images_damage' %>
 
     <% if is_admin?(current_user) && @vehicle_report.image_damages.attached? %>

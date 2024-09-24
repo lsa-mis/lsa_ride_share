@@ -21,6 +21,7 @@ class Course < ApplicationRecord
   end
 
   def upcase_subject
+    self.subject = subject.strip
     self.subject = subject.upcase
   end
 

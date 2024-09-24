@@ -26,94 +26,111 @@ module StudentApi
   end
 
   def class_roster_operational(term_code, subject_code, catalog_number, class_section, access_token)
-    result = {'success' => false, 'errorcode' => '', 'error' => '', 'data' => {}}
-    url = URI("https://gw.api.it.umich.edu/um/aa/ClassRoster/Terms/#{term_code}/SubjectCode/#{subject_code}?CatalogNumber=#{catalog_number}&ClassSection=#{class_section}")
-    http = Net::HTTP.new(url.host, url.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    begin
+      result = {'success' => false, 'errorcode' => '', 'error' => '', 'data' => {}}
+      url = URI("https://gw.api.it.umich.edu/um/aa/ClassRoster/Terms/#{term_code}/SubjectCode/#{subject_code}?CatalogNumber=#{catalog_number}&ClassSection=#{class_section}")
+      http = Net::HTTP.new(url.host, url.port)
+      http.use_ssl = true
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
-    request = Net::HTTP::Get.new(url)
-    request["x-ibm-client-id"] = "#{Rails.application.credentials.um_api[:client_id]}"
-    request["authorization"] = "Bearer #{access_token}"
-    request["accept"] = 'application/json'
+      request = Net::HTTP::Get.new(url)
+      request["x-ibm-client-id"] = "#{Rails.application.credentials.um_api[:client_id]}"
+      request["authorization"] = "Bearer #{access_token}"
+      request["accept"] = 'application/json'
 
-    response = http.request(request)
-    if response.is_a?(Net::HTTPGatewayTimeout)
-      result['errorcode'] = "GatewayTimeout Error accessing Students Roster"
-      result['error'] = "Please try again later"
-    else
-      response_json = JSON.parse(response.read_body)
-      if response_json['errorCode'].present?
-        result['errorcode'] = response_json['errorCode']
-        result['error'] = response_json['errorMessage']
+      response = http.request(request)
+      if response.is_a?(Net::HTTPGatewayTimeout)
+        result['errorcode'] = "GatewayTimeout Error accessing Students Roster"
+        result['error'] = "Please try again later"
       else
-        result['success'] = true
-        result['data'] = response_json['getClassMembersOperResponse']
+        response_json = JSON.parse(response.read_body)
+        if response_json['errorCode'].present?
+          result['errorcode'] = response_json['errorCode']
+          result['error'] = response_json['errorMessage']
+        elsif response_json['getClassMembersOperResponse']['Classes'].present?
+          result['success'] = true
+          result['data'] = response_json['getClassMembersOperResponse']['Classes']
+        else
+          result['errorcode'] = "API error"
+          result['error'] = "check the course name; "
+        end
       end
+    rescue StandardError => e
+      result['errorcode'] = "Exception"
+      result['error'] = e.message
     end
     return result
   end
 
   def update_students(program)
-    # add new students and delete those who dropped the course
-    scope = "classroster"
-    token = get_auth_token(scope)
-    notice = ""
-    alert = ""
-    if token['success']
-      courses = program.courses
-      courses.each do |course|
-        result = class_roster_operational(program.term.code, course.subject, course.catalog_number, course.class_section, token['access_token'])
-        if result['success']
-          if result['data']['Classes']['Class']['ClassSections']['ClassSection']['ClassStudents'].present?
-            data = result['data']['Classes']['Class']['ClassSections']['ClassSection']['ClassStudents']['ClassStudent']
-            students_in_db_registered = program.students.registered.where(course_id: course.id).pluck(:uniqname)
-            students_in_db_added_manually = program.students.added_manually.pluck(:uniqname)
-            data.each do |student_info|
-              if student_info['EnrollmentStatus'] == "Enrolled"
-                uniqname = student_info['Uniqname']
-                if students_in_db_registered.include?(uniqname)
-                  students_in_db_registered.delete(uniqname)
-                elsif students_in_db_added_manually.include?(uniqname)
-                  unless Student.find_by(uniqname: student_info['Uniqname'], program: program, course: nil).update(registered: true, course: course)
-                  alert += "#{course.display_name}: Error updating student #{student_info['Uniqname']} record from manually added to registered."
-                  end
-                else
-                  student = Student.new(uniqname: student_info['Uniqname'], first_name: student_info['Name'].split(",").last, last_name: student_info['Name'].split(",").first, program: program, course: course)
-                  unless student.save
-                    alert += "#{course.display_name}: Student (uniqname - #{student_info['Uniqname']}) was not added: " + student.errors.full_messages.join(',')
+    begin
+      # add new students and delete those who dropped the course
+      scope = "classroster"
+      token = get_auth_token(scope)
+      notice = ""
+      alert = ""
+      if token['success']
+        courses = program.courses
+        courses.each do |course|
+          result = class_roster_operational(program.term.code, course.subject, course.catalog_number, course.class_section, token['access_token'])
+          if result['success']
+            if result['data']['Class']['ClassSections']['ClassSection']['ClassStudents'].present?
+              data = result['data']['Class']['ClassSections']['ClassSection']['ClassStudents']['ClassStudent']
+              if data.class == Hash
+                data1 = []
+                data1 << data
+                data = data1
+              end
+              students_in_db_registered = program.students.registered.where(course_id: course.id).pluck(:uniqname)
+              students_in_db_added_manually = program.students.added_manually.pluck(:uniqname)
+              data.each do |student_info|
+                if student_info['EnrollmentStatus'] == "Enrolled"
+                  uniqname = student_info['Uniqname']
+                  if students_in_db_registered.include?(uniqname)
+                    students_in_db_registered.delete(uniqname)
+                  elsif students_in_db_added_manually.include?(uniqname)
+                    unless Student.find_by(uniqname: student_info['Uniqname'], program: program, course: nil).update(registered: true, course: course)
+                    alert += "#{course.display_name}: Error updating student #{student_info['Uniqname']} record from manually added to registered."
+                    end
+                  else
+                    student = Student.new(uniqname: student_info['Uniqname'], first_name: student_info['Name'].split(",").last, last_name: student_info['Name'].split(",").first, program: program, course: course)
+                    unless student.save
+                      alert += "#{course.display_name}: Student (uniqname - #{student_info['Uniqname']}) was not added: " + student.errors.full_messages.join(',')
+                    end
                   end
                 end
               end
-            end
-            if students_in_db_registered.present?
-              # delete students who dropped the course
-              students_in_db_registered.each do |uniqname|
-                student = Student.find_by(uniqname: students_in_db_registered, program_id: program, course_id: course.id)
-                if student.reservations.present?
-                  student.update(registered: false, course_id: nil)
-                else
-                  student.delete
+              if students_in_db_registered.present?
+                # delete students who dropped the course
+                students_in_db_registered.each do |uniqname|
+                  student = Student.find_by(uniqname: students_in_db_registered, program_id: program, course_id: course.id)
+                  if student.reservations.present?
+                    student.update(registered: false, course_id: nil)
+                  else
+                    student.delete
+                  end
                 end
               end
+              notice += "#{course.display_name}: Student list is updated. "
+            else
+              notice += "The #{course.display_name} course has no students registered."
             end
-            notice += "#{course.display_name}: Student list is updated. "
           else
-            notice += "The #{course.display_name} course has no students registered."
+            alert += "#{course.display_name}: " + result['errorcode'] + ": " + result['error']
           end
-        else
-          alert += "#{course.display_name}: " + result['errorcode'] + ": " + result['error']
         end
+        unless program.update(number_of_students: program.students.count)
+          alert += "Error updating number of students."
+        end
+      else
+        flash.now[:alert] = token['error']
+        return
       end
-      unless program.update(number_of_students: program.students.count)
-        alert += "Error updating number of students."
-      end
-      flash.now[:notice] = notice
-      flash.now[:alert] = alert
-    else
-      flash.now[:alert] = token['error']
-      return
+    rescue StandardError => e
+      alert += "There is an error updating student list: " + e.message + "; "
     end
+    flash.now[:notice] = notice
+    flash.now[:alert] = alert
   end
 
   def canvas_readonly(course_id, access_token)

@@ -2,17 +2,37 @@
   <div class="min-w-full">
     <table class="mi_table">
       <thead class="border border-l-0 border-r-0 border-gray-um60">
-        <tr>
-          <td></td>
-          <th class="header_th">Uniqname</th>
-          <th class="header_th">Last name</th>
-          <th class="header_th">First name</th>
-          <th class="header_th">MVR Status</th>
-          <th class="header_th">Canvas Course Complete Date</th>
-          <th class="header_th">In Person Orientation Date</th>
-          <th class="header_th">Programs</th>
-
-        </tr>
+        <% if reminders_on?(unit_id: params[:unit_id]) %>
+          <tr>
+            <td></td>
+            <th class="header_th_small">Uniqname</th>
+            <th class="header_th_small">Last name</th>
+            <th class="header_th_small">First name</th>
+            <th class="header_th_small">Phone</th>
+            <th class="header_th_small">MVR Status</th>
+            <th class="header_th_small">Canvas Course Complete Date</th>
+            <th class="header_th_small">In Person Orientation Date</th>
+            <th class="header_th_small">Programs</th>
+            <th class="header_th_small" colspan="2">Subscription to email reminders</th>
+          </tr>
+          <tr>
+            <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+            <th class="header_th_small">Reservation</th>
+            <th class="header_th_small">Vehicle Report</th>
+          </tr>
+        <% else %>
+          <tr>
+            <td></td>
+            <th class="header_th">Uniqname</th>
+            <th class="header_th">Last name</th>
+            <th class="header_th">First name</th>
+            <th class="header_th">Phone</th>
+            <th class="header_th">MVR Status</th>
+            <th class="header_th">Canvas Course Complete Date</th>
+            <th class="header_th">In Person Orientation Date</th>
+            <th class="header_th">Programs</th>
+          </tr>
+        <% end %>
       </thead>
       <tbody>
         <% @managers.each do |manager| %>
@@ -28,6 +48,9 @@
             </td>
             <td class="mi_tbody_td">
               <%= manager.first_name %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= manager.phone_number %>
             </td>
             <td class="mi_tbody_td">
               <%= manager.mvr_status %>
@@ -48,6 +71,18 @@
                 <br>
               <% end %>
             </td>
+            <% if reminders_on?(unit_id: params[:unit_id]) %>
+              <td class="mi_tbody_td">
+                <% if subscribed?(mailer: "one_hour_reminder", driver: manager) %>
+                  <i class="fa-solid fa-check"></i>
+                <% end %>
+              </td>
+              <td class="mi_tbody_td">
+                <% if subscribed?(mailer: "vehicle_report_reminder", driver: manager) %>
+                  <i class="fa-solid fa-check"></i>
+                <% end %>
+            </td>
+            <% end %>
           </tr>
         <% end %>
       </tbody>

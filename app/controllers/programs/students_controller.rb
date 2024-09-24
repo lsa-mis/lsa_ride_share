@@ -4,15 +4,26 @@ class Programs::StudentsController < ApplicationController
   before_action :set_student_program
   before_action :set_students_list, only: %i[ index update_student_list add_students ]
   include StudentApi
+  include MailerHelper
 
   # GET /students or /students.json
   def index
     unless params[:update] == "false"
-      unless @student_program.not_course
-        update_students(@student_program)
-      end
+      update_mvr_and_roster
     end
     authorize @students
+    if params[:format] == "csv"
+      respond_to do |format|
+        format.csv { send_data @students.to_csv, filename: "#{@student_program.title}-students-#{Date.today}.csv"}
+      end
+    end 
+  end
+
+  def update_mvr_and_roster
+    unless @student_program.not_course
+      update_student_list
+    end
+    update_mvr_status(note: false)
   end
 
   def update_student_list
@@ -31,6 +42,12 @@ class Programs::StudentsController < ApplicationController
     authorize @student
     result = get_name(uniqname)
     if result['valid']
+      # check if uniqname is not admin 
+      if is_member_of_admin_groups?(uniqname)
+        @students = @student_program.students.order(registered: :desc).order(:last_name)
+        flash.now[:alert] = "Admin uniqname can't be added to students list"
+        return
+      end
       @student.first_name = result['first_name']
       @student.last_name = result['last_name']
       if @student.save
@@ -67,7 +84,6 @@ class Programs::StudentsController < ApplicationController
 
   end
 
-  # GET /students/1 or /students/1.json
   def show
   end
 
@@ -90,14 +106,20 @@ class Programs::StudentsController < ApplicationController
     flash.now[:notice] = "MVR status is updated."
   end
 
-  def update_mvr_status
+  def update_mvr_status(note: true)
     @student_program.students.each do |student|
-      status = mvr_status(student.uniqname)
-      unless student.update(mvr_status: status)
-        redirect_to program_students_path(@student_program), alert: "Error updating student record."
+      if need_to_check_mvr_status?(student)
+        status = mvr_status(student.uniqname)
+        unless student.update(mvr_status: status)
+          redirect_to program_students_path(@student_program), alert: "Error updating student record."
+        end
       end
     end
-    flash.now[:notice] = "MVR status is updated."
+    if note || @student_program.not_course
+      flash.now[:notice] = "MVR status is updated."
+    else
+      flash.now[:notice] = "Student list and MVR status are updated."
+    end
     @students = @student_program.students.order(registered: :desc).order(:last_name)
     authorize @students
   end
@@ -173,9 +195,19 @@ class Programs::StudentsController < ApplicationController
       @students = @student_program.students.order(registered: :desc).order(:course_id).order(:last_name)
     end
 
+    def is_member_of_admin_groups?(uniqname)
+      unit_groups = Unit.pluck(:ldap_group) + ['lsa-was-rails-devs']
+      unit_groups.each do |group|
+        if  LdapLookup.is_member_of_group?(uniqname, group)
+          return true
+        end
+      end
+      return false
+    end
+
     # Only allow a list of trusted parameters through.
     def student_params
-      params.require(:student).permit(:uniqname, :program_id, :registered, :last_name, :first_name, :mvr_expiration_date, :canvas_course_complete_date, :meeting_with_admin_date)
+      params.require(:student).permit(:uniqname, :program_id, :registered, :last_name, :first_name, :mvr_expiration_date, :canvas_course_complete_date, :meeting_with_admin_date, :phone_number)
     end
 
 end

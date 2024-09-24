@@ -18,10 +18,12 @@
         <% else %>
           <li>VEHICLE #: No car selected</li>
         <% end %>
-        <li>SITE: <%= @reservation.site.title %> </li>
+        <li>SITE: <%= @reservation.site.title %></li>
         <li>PROGRAM: <%= @reservation.program.title %></li>
-        <li>DRIVER: <%= @driver_name %> </li>
-        <li>BACKUP DRIVER: <%= @backup_driver_name %> </li>
+        <li>DRIVER: <%= @driver_name %></li>
+        <% if @reservation.backup_driver.present? %>
+          <li>BACKUP DRIVER: <%= @backup_driver_name %></li>
+        <% end %>
       </ul>
       Passengers:
       <ul>
@@ -41,7 +43,7 @@
     </p>
     <p>
       To view/modify/cancel reservations, click here
-      <%= link_to "LSA RideShare", welcome_pages_student_url %>
+      <%= link_to "LSA RideShare", all_root_url %>
     </p>
     <%= render 'garage_service' %> 
   </body>

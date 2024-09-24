@@ -2,7 +2,7 @@
   <h1>Welcome <%= current_user.display_name %></h1>
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
     <div class="col-span-3">
-      <div>
+      <div class="hidden md:block">
         <p class="body-sm-text mx-2">
           To see all your programs, click on <span class="body-sm-bold-text">Programs</span> link in the header.
         </p>
@@ -10,8 +10,33 @@
           To look at your surveys click on <span class="body-sm-bold-text">Program Survey</span> link in the header
         </p>
         <p class="body-sm-text mx-2">
-          You can reserve cars once you finish all the steps listed in the Status Card on the right.
+          You can reserve cars once you finish all the steps listed in the Reservation Checklist on the right.
         </p>
+      </div>
+      <div class="display md:hidden" data-controller='statuscard'>
+        <!-- Mobile status card  -->
+        <button class="fields--display link_to -mt-6" data-statuscard-target="more_button" data-action="statuscard#showStatusCard">
+          Show Contact and Status information
+          <i class="fa-solid fa-caret-down"></i>
+        </button>
+        <button class="fields--hide link_to -mt-6 mb-2" data-statuscard-target="less_button" data-action="statuscard#hideStatusCard">
+          Hide Contact and Status information
+          <i class="fa-solid fa-caret-up"></i>
+        </button>
+        <div class="fields--hide flex-col" data-statuscard-target="status_card">
+          <p class="body-sm-text mx-2">
+            To see all your programs, click on <span class="body-sm-bold-text">Programs</span> link in the header.
+          </p>
+          <p class="body-sm-text mx-2">
+            To look at your surveys click on <span class="body-sm-bold-text">Program Survey</span> link in the header
+          </p>
+          <p class="body-sm-text mx-2">
+            You can reserve cars once you finish all the steps listed in the Reservation Checklist below.
+          </p>
+          <div class="mt-2 card_area">
+            <%= render 'manager_status_card', frame_type: "mobile" %>
+          </div>
+        </div>
       </div>
       <div class="my-4">
         <%= form_with url: welcome_pages_manager_path, method: :get, class: "", data: { autosubmit_target: "form", turbo_frame: "turbo-programs" } do |form| %>
@@ -28,7 +53,7 @@
       </div>
 
       <div class="my-8 whitespace-nowrap">
-        <% if @program.present? && max_day_for_reservation(@program) > default_reservation_for_students(@program.unit.id) %>
+        <% if @program.present? && max_day_for_reservation(@program.unit_id) > default_reservation_for_students(@program.unit.id) %>
           <%= link_to "One Day Reservation", new_reservation_path(:program_id => @program.id), class: "secondary_blue_button" if @manager.can_reserve_car? %>
           <%= link_to "Overnight Reservation", new_long_reservation_path(:program_id => @program.id), class: "secondary_blue_button" if @manager.can_reserve_car? %>
         <% end %>
@@ -55,8 +80,8 @@
         </div>
       </div>
     </div>
-    <div class="order-first md:order-last card_area">
-      <%= render 'manager_status_card' %>
-    <div>
+    <div class="hidden md:block card_area">
+      <%= render 'manager_status_card', frame_type: "desktop" %>
+    </div>
   <div>
 </div>

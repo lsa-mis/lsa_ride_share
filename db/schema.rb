@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_20_194638) do
+ActiveRecord::Schema[7.0].define(version: 2024_04_22_195705) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -125,6 +125,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_20_194638) do
     t.index ["unit_id"], name: "index_faculty_surveys_on_unit_id"
   end
 
+  create_table "mailer_subscriptions", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.boolean "unsubscribed"
+    t.string "mailer", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id", "mailer"], name: "index_mailer_subscriptions_on_user_id_and_mailer", unique: true
+    t.index ["user_id"], name: "index_mailer_subscriptions_on_user_id"
+  end
+
   create_table "managers", force: :cascade do |t|
     t.string "uniqname"
     t.string "first_name"
@@ -136,6 +146,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_20_194638) do
     t.string "mvr_status"
     t.date "canvas_course_complete_date"
     t.date "meeting_with_admin_date"
+    t.string "phone_number"
     t.index ["program_id"], name: "index_managers_on_program_id"
   end
 
@@ -269,6 +280,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_20_194638) do
     t.date "meeting_with_admin_date"
     t.boolean "registered", default: true
     t.bigint "course_id"
+    t.string "phone_number"
     t.index ["course_id"], name: "index_students_on_course_id"
     t.index ["program_id"], name: "index_students_on_program_id"
   end
@@ -346,6 +358,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_20_194638) do
   add_foreign_key "contacts", "sites"
   add_foreign_key "faculty_surveys", "terms"
   add_foreign_key "faculty_surveys", "units"
+  add_foreign_key "mailer_subscriptions", "users"
   add_foreign_key "notes", "users"
   add_foreign_key "programs", "managers", column: "instructor_id"
   add_foreign_key "programs_sites", "programs"

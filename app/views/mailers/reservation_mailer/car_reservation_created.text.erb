@@ -18,7 +18,9 @@ VEHICLE #: No car selected
 SITE: <%= @reservation.site.title %> 
 PROGRAM: <%= @reservation.program.title %>
 DRIVER: <%= @driver_name %>
+<% if @reservation.backup_driver.present? %>
 BACKUP DRIVER: <%= @backup_driver_name %>
+<% end %>
 Passengers:
 <% @passengers.each do |p| %>
   <%= p %>
@@ -28,4 +30,4 @@ Non UofM Passengers: <%= @non_uofm_passengers %>
 <% end %>
 
 To view/modify/cancel reservations, click here
-<%= link_to "LSA RideShare", reservations_url  %>
+<%= link_to "LSA RideShare", all_root_url  %>

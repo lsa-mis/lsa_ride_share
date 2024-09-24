@@ -36,16 +36,16 @@ export default class extends Controller {
       let option;
       for (let i = 0; i < data.length; i++) {
         option = document.createElement('option');
-        option.value = data[i].id;
-        option.text = this.programTitle(data[i])
+        option.value = data[i][0];
+        option.text = data[i][1];
         dropdown.add(option);
       }
     } else if (data.length == 1) {
       dropdown.selectedIndex = 0;
       let option;
       option = document.createElement('option');
-      option.value = data[0].id;
-      option.text = this.programTitle(data[0])
+      option.value = data[0][0];
+      option.text = data[0][1];
       dropdown.add(option);
       this.setSites()
     } else {
@@ -58,7 +58,7 @@ export default class extends Controller {
     if (program.not_course) {
       var title = program.title + ' - not a course'
     } else {
-      var title = program.title + " - " + program.subject + " " + program.catalog_number
+      var title = program.title
     }
     return title
   }

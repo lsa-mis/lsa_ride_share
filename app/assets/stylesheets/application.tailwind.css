@@ -253,7 +253,11 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .sign_button {
-    @apply  h-6 px-4 py-1 text-sm shadow-sm rounded text-blue-umblue bg-yellow-ummaze hover:bg-gray-700 hover:text-blue-300;
+    @apply h-6 px-4 py-1 text-sm shadow-sm rounded text-blue-umblue bg-yellow-ummaze hover:bg-gray-700 hover:text-blue-300;
+  }
+
+  .sign_button_mobile {
+    @apply h-8 px-4 py-1 text-lg shadow-sm rounded text-blue-umblue bg-yellow-ummaze hover:bg-gray-700 hover:text-blue-300;
   }
 
   .link_to {
@@ -307,6 +311,10 @@ from https://tailwindcss.com/docs/adding-custom-styles
     @apply p-2 text-sm font-semibold leading-5 font-montserrat lg:table-cell text-left;
   }
 
+  .header_th_small {
+    @apply px-2 text-sm font-semibold font-montserrat lg:table-cell text-left;
+  }
+
   .header_mobile {
     @apply p-2 text-sm font-semibold leading-5 font-montserrat lg:table-cell text-left;
   }
@@ -316,11 +324,11 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .alert {
-    @apply text-red-umred text-sm font-normal font-montserrat;
+    @apply text-red-umred text-lg font-medium font-montserrat;
   }
 
   .notice {
-    @apply text-green-umgreen text-sm font-normal font-montserrat;
+    @apply text-green-umgreen text-lg font-medium font-montserrat;
   }
 
   .fields--hide {

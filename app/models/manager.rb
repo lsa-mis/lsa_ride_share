@@ -13,6 +13,7 @@
 #  mvr_status                  :string
 #  canvas_course_complete_date :date
 #  meeting_with_admin_date     :date
+#  phone_number                :string
 #
 class Manager < ApplicationRecord
   has_many :managers_programs
@@ -47,15 +48,15 @@ class Manager < ApplicationRecord
   end
 
   def can_reserve_car?
-    self.mvr_status.present? && self.mvr_status.include?("Approved") && self.canvas_course_complete_date.present? && self.meeting_with_admin_date.present?
+    self.mvr_status.present? && self.mvr_status.include?("Approved until") && self.canvas_course_complete_date.present? && self.meeting_with_admin_date.present? && self.phone_number.present?
   end
 
   def self.eligible_drivers
-    mvr_status_pass.canvas_pass.meeting_with_admin_pass
+    mvr_status_pass.canvas_pass.meeting_with_admin_pass.has_phone
   end
 
   def self.mvr_status_pass
-    where("mvr_status LIKE ?", "Approved%")
+    where("mvr_status LIKE ?", "Approved until%")
   end
 
   def self.canvas_pass
@@ -64,6 +65,10 @@ class Manager < ApplicationRecord
 
   def self.meeting_with_admin_pass
     where.not(meeting_with_admin_date: nil) 
+  end
+
+  def self.has_phone
+    where.not(phone_number: nil)
   end
 
   def passenger_current

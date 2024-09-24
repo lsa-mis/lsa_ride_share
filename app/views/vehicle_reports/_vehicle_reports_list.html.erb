@@ -9,6 +9,7 @@
           <th class="header_th">Driver</th>
           <th class="header_th">Mileage start</th>
           <th class="header_th">Mileage end</th>
+          <th class="header_th">Trip Mileage</th>
           <th class="header_th">Fuel % (depart)</th>
           <th class="header_th">Fuel % (return)</th>
           <th class="header_th">Parking spot (depart)</th>
@@ -39,6 +40,9 @@
             </td>
             <td class="mi_tbody_td">
               <%= vehicle_report.mileage_end %>
+            </td>
+            <td class="mi_tbody_td">
+            <%= calculate_mileage(vehicle_report) %>
             </td>
             <td class="mi_tbody_td">
               <%= vehicle_report.gas_start %>
@@ -111,6 +115,12 @@
           <th class="header_mobile">Mileage end</th>
           <td class="mi_tbody_td">
             <%= vehicle_report.mileage_end %>
+          </td>
+        </tr>
+        <tr class="mi_tbody_tr">
+          <th class="header_mobile">Trip Mileage</th>
+          <td class="mi_tbody_td">
+          <%= calculate_mileage(vehicle_report) %>
           </td>
         </tr>
         <tr class="mi_tbody_tr">

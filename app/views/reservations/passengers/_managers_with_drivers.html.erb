@@ -1,0 +1,41 @@
+<%= turbo_frame_tag 'new_passenger_manager' do %>
+  <% if @manager_drivers.present? && policy([@reservation, :passenger]).add_driver? %>
+    <p class="body-sm-text mb-2">Choose drivers from the list below</p>
+    <%= form_with url: add_driver_path, method: :get, class: "",
+        data: { controller: "driverspassengers", driverspassengers_target: "form" } do |form| %>
+      <fieldset>
+        <legend class="hidden">list of drivers</legend>
+        <% @manager_drivers.each do |driver| %>
+          <div>
+            <%= label_tag("driver_id_#{driver.id}", nil, class: "hidden") %>
+            <%= check_box_tag "id", driver.id, nil, class: "check_box", id: "driver_id_#{driver.id}",
+              :"data-action" => "change->driverspassengers#submitForm" %>
+            <span class="check_box_text"><%= driver.display_name %><%= show_manager(@reservation.program, driver.uniqname) %></span>
+          </div>
+        <% end %>
+      </fieldset>
+      <input type="hidden" id="edit" name="edit" value=<%= params[:edit] %>>
+      <input type="hidden" id="recurring" name="recurring" value=<%= params[:recurring] %>>
+      <input type="hidden" id="model" name="model" value="manager">
+    <% end %>
+  <% end %>
+  <p class="body-sm-text mt-2 mb-2">Choose passengers from the list below</p>
+  <%= form_with url: add_passenger_path, method: :get, class: "",
+      data: { controller: "driverspassengers", driverspassengers_target: "form" } do |form| %>
+    <fieldset>
+      <legend class="hidden">list of managers</legend>
+      <% @managers.each do |manager| %>
+        <div>
+          <%= label_tag("manager_id_#{manager.id}", nil, class: "hidden") %>
+          <%= check_box_tag "id", manager.id, nil, class: "check_box", id: "manager_id_#{manager.id}",
+            disabled: @reservation.added_people == @reservation.number_of_people_on_trip,
+            :"data-action" => "change->driverspassengers#submitForm" %>
+          <span class="check_box_text"><%= manager.display_name %><%= show_manager(@reservation.program, manager.uniqname) %></span>
+        </div>
+      <% end %>
+    </fieldset>
+    <input type="hidden" id="edit" name="edit" value=<%= params[:edit] %>>
+    <input type="hidden" id="recurring" name="recurring" value=<%= params[:recurring] %>>
+    <input type="hidden" id="model" name="model" value="manager">
+  <% end %>
+<% end %>

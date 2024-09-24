@@ -30,7 +30,7 @@ class WelcomePagesController < ApplicationController
 
   def update_status(resource, program)
     if resource.mvr_status.present?
-      unless resource.mvr_status.include?("Approved")
+      unless resource.mvr_status.include?("Approved until")
         status = mvr_status(resource.uniqname)
         resource.update(mvr_status: status)
       end
@@ -71,6 +71,40 @@ class WelcomePagesController < ApplicationController
     else
       @reservation = []
     end
+  end
+
+  def add_student_phone
+    session[:return_to] = request.referer
+    authorize :welcome_page
+    phone_number = params[:phone_number]
+    @student = Student.find(params[:id])
+    if @student.update(phone_number: phone_number)
+      redirect_back_or_default
+    else
+      redirect_back_or_default("Error updating phone number: " + @student.errors.full_messages.join(',') + ". ", true)
+    end
+  end
+
+  def edit_student_phone
+    @student = Student.find(params[:id])
+    authorize :welcome_page
+  end
+
+  def add_manager_phone
+    session[:return_to] = request.referer
+    authorize :welcome_page
+    phone_number = params[:phone_number]
+    @manager = Manager.find(params[:id])
+    if @manager.update(phone_number: phone_number)
+      redirect_back_or_default
+    else
+      redirect_back_or_default("Error updating phone number: " + @manager.errors.full_messages.join(',') + ". ", true)
+    end
+  end
+
+  def edit_manager_phone
+    @manager = Manager.find(params[:id])
+    authorize :welcome_page
   end
 
 end

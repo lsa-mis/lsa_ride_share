@@ -15,11 +15,16 @@ class ReservationPolicy < ApplicationPolicy
   end
 
   def show?
-    user_in_access_group? || is_in_reservation?
+    return true if user_in_access_group? 
+    return true if is_in_reservation?
+    return false
   end
 
   def create?
-    user_in_access_group? || is_student? || is_manager?
+    return true if user_in_access_group? 
+    return true if is_student? 
+    return true if is_manager?
+    return false
   end
 
   def new?
@@ -31,7 +36,9 @@ class ReservationPolicy < ApplicationPolicy
   end
 
   def update?
-    user_in_access_group? || is_reservation_driver?
+    return true if user_in_access_group? 
+    return true if is_reservation_driver?
+    return false
   end
 
   def edit?
@@ -62,20 +69,8 @@ class ReservationPolicy < ApplicationPolicy
     create?
   end
 
-  def add_drivers?
-    user_in_access_group? || is_reserved_by? || is_reservation_driver?
-  end
-
-  def add_edit_drivers?
-    user_in_access_group? || is_reserved_by? || is_reservation_driver?
-  end
-
   def add_drivers_later?
     user_in_access_group?
-  end
-
-  def add_non_uofm_passengers?
-    user_in_access_group? || is_reserved_by?
   end
 
   def finish_reservation?
@@ -87,27 +82,35 @@ class ReservationPolicy < ApplicationPolicy
   end
 
   def add_non_uofm_passengers?
-    update?
+    user_in_access_group? || is_in_reservation?
   end
 
   def update_passengers?
-    update?
+    user_in_access_group? || is_in_reservation?
   end
 
   def destroy?
-    user_in_access_group? || is_reservation_driver?
+    return true if user_in_access_group? 
+    return true if is_reservation_driver?
+    return false
   end
 
   def cancel_recurring_reservation?
-    user_in_access_group? || is_reservation_driver?
+    return true if user_in_access_group? 
+    return true if is_reservation_driver?
+    return false
   end
 
   def approve_all_recurring?
     user_in_access_group?
   end
 
-  def get_drivers_list?
-    create?
+  def selected_reservations?
+    user_in_access_group?
+  end
+
+  def send_email_to_selected_reservations?
+    user_in_access_group?
   end
 
   def is_in_reservation?

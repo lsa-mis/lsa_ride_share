@@ -65,7 +65,7 @@ class ManagersController < ApplicationController
     # Only allow a list of trusted parameters through.
     def manager_params
       params.require(:manager).permit(:uniqname, :first_name, :last_name, :program_id,
-        :mvr_status, :canvas_course_complete_date, :meeting_with_admin_date)
+        :mvr_status, :canvas_course_complete_date, :meeting_with_admin_date, :phone_number)
     end
 
 end

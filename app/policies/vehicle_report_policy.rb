@@ -7,19 +7,31 @@ class VehicleReportPolicy < ApplicationPolicy
   end
 
   def show?
-    user_in_access_group? || is_vehicle_report_student? || is_vehicle_report_manager?
+    return true if user_in_access_group? 
+    return true if is_vehicle_report_student?
+    return true if is_vehicle_report_manager?
+    return false
   end
 
   def create?
-    user_in_access_group? || can_student_save_report? || can_manager_save_report?
+    return true if user_in_access_group? 
+    return true if can_student_save_report?
+    return true if can_manager_save_report?
+    return false
   end
 
   def new?
-    user_in_access_group? || can_student_create_report? || can_manager_create_report?
+    return true if user_in_access_group? 
+    return true if can_student_create_report?
+    return true if can_manager_create_report?
+    return false
   end
   
   def update?
-    user_in_access_group? || is_vehicle_report_student? || is_vehicle_report_manager?
+    return true if user_in_access_group? 
+    return true if is_vehicle_report_student?
+    return true if is_vehicle_report_manager?
+    return false
   end
 
   def edit?
@@ -67,13 +79,13 @@ class VehicleReportPolicy < ApplicationPolicy
 
   def can_manager_create_report?
     reservation = Reservation.find(params[:reservation_id])
-    return false unless reservation.driver_manager_id.present?
-    managers = reservation.program.all_managers
-    if managers.include?(reservation.driver_manager.uniqname)
-      return true
-    else
-      return false
+    manager = Manager.find_by(uniqname: @user.uniqname)
+    if reservation.driver_manager_id.present?
+      return true if reservation.driver_manager == manager
     end
+    managers = reservation.program.all_managers
+    return true if reservation.passengers_managers.include?(manager)
+    return false
   end
 
   def can_student_save_report?

@@ -6,30 +6,52 @@ class SystemReportsController < ApplicationController
     @terms = Term.sorted
     @programs = []
     if params[:unit_id].present?
-      @programs = Program.where(unit_id: params[:unit_id])
-      @programs = @programs.data(params[:term_id]).order(:title, :catalog_number, :class_section)
+      @programs = Program.where(unit_id: params[:unit_id].to_i)
+    else
+      @programs = Program.where(unit_id: current_user.unit_ids)
     end
+    if params[:term_id].present?
+      @term_id = params[:term_id].to_i
+    else
+      @term_id = Term.current.present? ? Term.current[0].id : nil
+    end
+    @programs = @programs.data(@term_id).order(:title)
+    @students = []
     authorize :system_report
   end
 
   def run_report
 
     if params[:unit_id].present?
-      @unit_id = params[:unit_id]
+      @unit_id = params[:unit_id].to_i
       @unit = Unit.find(@unit_id).name
     end
     if params[:term_id].present?
-      @term_id = params[:term_id]
+      @term_id = params[:term_id].to_i
       @term = Term.find(@term_id).name
+    end
+    if params[:program_id].present?
+      @program_id = params[:program_id].to_i
+    end
+    if params[:student_id].present?
+      @student_id = params[:student_id].to_i
+    end
+
+    if params[:uniqname].present?
+      @uniqname = params[:uniqname]
     end
 
     @title = "LSA Rideshare System Report"
     report_type = params[:report_type]
     @result = get_result(report_type)
-
     if report_type == "vehicle_reports_all"
       @link = true
       @path = "vehicle_reports"
+    end
+
+    if report_type == "reservations_for_student"
+      @link = true
+      @path = "reservations"
     end
 
     if params[:format] == "csv"
@@ -83,6 +105,43 @@ class SystemReportsController < ApplicationController
         result.push({"report_name" => "#{report_type} for #{@unit} #{@term}", "total" => records_array1.count, "header" => columns, "rows" => rows})
         return result
       end
+
+      if report_type == "reservations_for_student"
+        if @uniqname.present?
+          programs = Program.where(unit_id: @unit_id)
+          programs = programs.data(@term_id)
+          student_ids = []
+          programs.each do |program|
+            student_ids << program.students.where(uniqname: @uniqname).ids
+          end
+          student_ids.flatten!
+          if student_ids.present?
+            report_name = Student.find(student_ids.first).name + ": reservations for #{@unit} #{@term}"
+          else
+            report_name = @uniqname + ": reservations for #{@unit} #{@term}"
+          end
+          res1 = Reservation.where("approved = ? AND driver_id IN (?)", true, student_ids).order(:start_time)
+          res2 = Reservation.where("approved = ? AND backup_driver_id in (?)", true, student_ids).order(:start_time)
+          res3 = Reservation.joins(:passengers).where("reservations.approved = ? AND reservation_passengers.student_id IN (?) ", true, student_ids).order(:start_time)
+        else
+          report_name = Student.find(@student_id).name + ": reservations for #{@unit} #{@term}"
+          program = Program.find(@program_id)
+          reservations_ids = program.reservations.where("approved = ?", true).ids
+          res1 = program.reservations.where("approved = ? AND driver_id = ?", true, @student_id).order(:start_time)
+          res2 = program.reservations.where("approved = ? AND backup_driver_id = ?", true, @student_id).order(:start_time)
+          res3 = Reservation.joins(:passengers).where("reservation_passengers.reservation_id in (?) AND reservation_passengers.student_id = ?", reservations_ids,  @student_id).order(:start_time)
+        end
+        rows = []
+        result = []
+        res1.map { |r| rows << [r.id, r.car.car_number, r.program.title, show_reservation_time(r), r.site.title, r.car.car_number, r.number_of_people_on_trip, "driver"] }
+        res2.map { |r| rows << [r.id, r.car.car_number, r.program.title, show_reservation_time(r), r.site.title, r.car.car_number, r.number_of_people_on_trip, "backup driver"] }
+        res3.map { |r| rows << [r.id, r.car.car_number, r.program.title, show_reservation_time(r), r.site.title, r.car.car_number, r.number_of_people_on_trip, "passenger"] }
+        columns = ["reservation", "car", "program", "reservation time", "site", "car", "number of people on trip", "role"]
+        rows = rows.sort_by { |obj| obj[1] }
+        result.push({"report_name" => report_name, "total" => rows.count, "header" => columns, "rows" => rows})
+        return result
+      end
+
       if report_type == 'vehicle_reports_all' || report_type == 'approved_drivers' 
         sql = create_query(report_type)
         return run_query(sql, report_type)
@@ -93,15 +152,15 @@ class SystemReportsController < ApplicationController
     def create_query(report_type)
       if report_type == 'totals_programs'
         sql = "SELECT program_id, (SELECT programs.title FROM programs WHERE res.program_id = programs.id) AS program,
-            count(res.id) AS number_of_trips, sum(vr.mileage_end - vr.mileage_start) AS mileage, sum(number_of_people_on_trip) AS total_people_on_trips
+            count(res.id) AS number_of_trips, round(CAST(float8(sum(vr.mileage_end - vr.mileage_start)) as numeric), 2) AS mileage, sum(number_of_people_on_trip) AS total_people_on_trips
           FROM reservations AS res
           join vehicle_reports AS vr on vr.reservation_id = res.id
           JOIN programs ON programs.id = res.program_id
           JOIN terms ON terms.id = programs.term_id
           JOIN units ON units.id = programs.unit_id
-          WHERE terms.id = " + @term_id +  " AND  units.id = " + @unit_id
+          WHERE terms.id = #{@term_id} AND  units.id = #{@unit_id}"
           if params[:program_id].present?
-            sql += " AND programs.id = " + params[:program_id]
+            sql += " AND programs.id = #{params[:program_id].to_i}"
           end
           sql += " GROUP BY program_id ORDER BY program_id"
       end
@@ -126,9 +185,9 @@ class SystemReportsController < ApplicationController
           JOIN programs ON programs.id = res.program_id
           JOIN terms ON terms.id = programs.term_id
           JOIN units ON units.id = programs.unit_id
-          WHERE terms.id = " + @term_id +  " AND  units.id = " + @unit_id
+          WHERE terms.id = #{@term_id} AND  units.id = #{@unit_id}"
           if params[:program_id].present?
-            sql += " AND programs.id = " + params[:program_id]
+            sql += " AND programs.id = #{params[:program_id].to_i}"
           end
           sql += " GROUP BY program_id ORDER BY program_id"
       end
@@ -174,9 +233,9 @@ class SystemReportsController < ApplicationController
         JOIN programs ON programs.id = res.program_id
         JOIN terms ON terms.id = programs.term_id
         JOIN units ON units.id = programs.unit_id
-        WHERE terms.id = " + @term_id +  " AND units.id = " + @unit_id
+        WHERE terms.id = #{@term_id} AND  units.id = #{@unit_id}"
         if params[:program_id].present?
-          sql += " AND programs.id = " + params[:program_id]
+          sql += " AND programs.id = #{params[:program_id].to_i}"
         end
         sql += " ORDER BY program, vehicle_reports.id"
       end
@@ -190,11 +249,11 @@ class SystemReportsController < ApplicationController
           students.meeting_with_admin_date
           FROM programs AS programs
           JOIN students AS students ON programs.id = students.program_id
-          WHERE programs.term_id = " + @term_id + " AND programs.unit_id = " + @unit_id + "
+          WHERE programs.term_id = #{@term_id} AND programs.unit_id = #{@unit_id}
             AND students.mvr_status LIKE 'Approved%' 
             AND students.canvas_course_complete_date IS NOT NULL AND students.meeting_with_admin_date IS NOT NULL"
         if params[:program_id].present?
-          sql += " AND programs.id = " + params[:program_id]
+          sql += " AND programs.id = #{params[:program_id].to_i}"
         end
         sql += " UNION
           SELECT programs.title AS program, 'Instructor' AS driver_type,
@@ -205,11 +264,11 @@ class SystemReportsController < ApplicationController
           managers.meeting_with_admin_date
           FROM programs AS programs
           JOIN managers AS managers ON programs.instructor_id = managers.id
-          WHERE programs.term_id = " + @term_id + " AND programs.unit_id = " + @unit_id + "
+          WHERE programs.term_id = #{@term_id} AND programs.unit_id = #{@unit_id}
             AND managers.mvr_status LIKE 'Approved%' 
             AND managers.canvas_course_complete_date IS NOT NULL AND managers.meeting_with_admin_date IS NOT NULL"
         if params[:program_id].present?
-          sql += " AND programs.id = " + params[:program_id]
+          sql += " AND programs.id = #{params[:program_id].to_i}"
         end
         sql += " UNION
           SELECT programs.title AS program, 'Manager' AS driver_type,
@@ -221,11 +280,11 @@ class SystemReportsController < ApplicationController
           FROM programs AS programs
           JOIN managers_programs ON programs.id = managers_programs.program_id
           JOIN managers AS managers ON managers.id = managers_programs.manager_id
-          WHERE programs.term_id = " + @term_id + " AND programs.unit_id = " + @unit_id + "
+          WHERE programs.term_id = #{@term_id} AND programs.unit_id = #{@unit_id}
             AND managers.mvr_status LIKE 'Approved%'
             AND managers.canvas_course_complete_date IS NOT NULL AND managers.meeting_with_admin_date IS NOT NULL"
         if params[:program_id].present?
-          sql += " AND programs.id = " + params[:program_id]
+          sql += " AND programs.id = #{params[:program_id].to_i}"
         end
         sql += " ORDER BY program, driver_type, driver_name"
       end

@@ -48,11 +48,10 @@ Rails.application.routes.draw do
   patch '/reservations/add_non_uofm_passengers/:reservation_id', to: 'reservations#add_non_uofm_passengers', as: :add_non_uofm_passengers
   get '/reservations/add_passengers/:reservation_id', to: 'reservations/passengers#add_passengers', as: :add_passengers
   get '/reservations/add_passenger/:reservation_id', to: 'reservations/passengers#add_passenger', as: :add_passenger
+  get '/reservations/make_driver/:reservation_id/:id/:model', to: 'reservations/passengers#make_driver', as: :make_driver, defaults: { format: :turbo_stream }
+  get '/reservations/add_driver/:reservation_id', to: 'reservations/passengers#add_driver', as: :add_driver, defaults: { format: :turbo_stream }
 
-  get '/reservations/get_drivers_list/:id/:driver_id', to: 'reservations#get_drivers_list', as: :get_drivers_list
-
-  get '/reservations/add_drivers/:id', to: 'reservations#add_drivers', as: :add_drivers
-  patch '/reservations/add_edit_drivers/:id', to: 'reservations#add_edit_drivers', as: :add_edit_drivers
+  get '/reservations/add_drivers_and_passengers/:reservation_id', to: 'reservations/passengers#add_drivers_and_passengers', as: :add_drivers_and_passengers
 
   delete 'reservations/:reservation_id/:id/:resource', to: 'reservations/passengers#remove_passenger', as: :remove_passenger
 
@@ -63,11 +62,14 @@ Rails.application.routes.draw do
   post '/reservations/cancel_recurring_reservation/:id', to: 'reservations#cancel_recurring_reservation', as: :cancel_recurring_reservation
   get '/send_reservation_updated_email/:id', to: 'reservations#send_reservation_updated_email', as: :send_reservation_updated_email
   get '/approve_all_recurring/:id', to: 'reservations#approve_all_recurring', as: :approve_all_recurring
+  post '/selected_reservations/', to: 'reservations#selected_reservations', as: :selected_reservations
+  get '/send_email_to_selected_reservations/', to: 'reservations#send_email_to_selected_reservations', as: :send_email_to_selected_reservations
 
   resources :cars do
     resources :notes, module: :cars
   end
-  
+  get '/cars/get_parking_locations/:unit_id', to: 'cars#get_parking_locations'
+
   resources :programs do
     resources :cars, module: :programs
   end
@@ -123,8 +125,15 @@ Rails.application.routes.draw do
   end
   resources :notes
 
+  resources :mailer_subscriptions, only: %i[index create update]
+
   get 'welcome_pages/student'
   get 'welcome_pages/manager'
+  get 'welcome_pages/add_student_phone', to: 'welcome_pages#add_student_phone', as: :add_student_phone
+  get 'welcome_pages/:id/edit_student_phone', to: 'welcome_pages#edit_student_phone', as: :edit_student_phone
+  get 'welcome_pages/add_manager_phone', to: 'welcome_pages#add_manager_phone', as: :add_manager_phone
+  get 'welcome_pages/:id/edit_manager_phone', to: 'welcome_pages#edit_manager_phone', as: :edit_manager_phone
+
   
   get 'static_pages/home'
 

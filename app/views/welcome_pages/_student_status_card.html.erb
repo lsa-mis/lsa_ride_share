@@ -107,5 +107,12 @@
         </p>
       <% end %>
     </div>
+    <%= render 'student_phone_number', frame_type: frame_type %>
+    <hr>
+    <% if reminders_on?(program_id: @program.id) %>
+      <div>
+        <%= link_to "Subscribe/Unsubscribe", mailer_subscriptions_url, class: "link_to" %> from automated notifications.
+      </div>
+    <% end %>
   <% end %>
 </div>

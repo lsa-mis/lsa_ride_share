@@ -50,6 +50,11 @@
                   <%= link_to "Reservations", welcome_pages_manager_path, class: "#{class_names(active: current_page?(welcome_pages_manager_path))}" %>
                 </div>
               <% end %>
+              <% if is_student?(current_user) %>
+                <div class="header_link">
+                  <%= link_to "Reservations", welcome_pages_student_path, class: "#{class_names(active: current_page?(welcome_pages_student_path))}" %>
+                </div>
+              <% end %>
               <% if is_admin?(current_user) %>
                 <div class="group relative cursor-pointer">
                   <div class="flex items-center justify-between">
@@ -136,12 +141,12 @@
             <% if user_signed_in? %>
               <div class="text-white body-sm-text pr-2">Welcome <%= current_user.display_name.split[0] %></div>
               <%= button_to destroy_user_session_path, method: :delete, data: {turbo: "false"} do %>
-                <div class="sign_button mt-1">Log Out</div>
+                <div class="sign_button_mobile mt-1">Log Out</div>
               <% end %>
             <% else %> 
               <div>
                 <%= button_to user_saml_omniauth_authorize_path, data: {turbo: "false"} do %>
-                  <div class="sign_button mt-1">Sign In</div>
+                  <div class="sign_button_mobile mt-1">Sign In</div>
                 <% end %>
               </div>
             <% end %>
@@ -182,6 +187,11 @@
             <% if is_manager?(current_user) %>
               <div class="header_link">
                 <%= link_to "Reservations", welcome_pages_manager_path, class: "#{class_names(active: current_page?(welcome_pages_manager_path))}" %>
+              </div>
+            <% end %>
+            <% if is_student?(current_user) %>
+              <div class="header_link">
+                <%= link_to "Reservations", welcome_pages_student_path, class: "#{class_names(active: current_page?(welcome_pages_student_path))}" %>
               </div>
             <% end %>
           </div>

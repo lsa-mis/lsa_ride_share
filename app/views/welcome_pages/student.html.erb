@@ -2,15 +2,39 @@
   <h1>Welcome <%= current_user.display_name %></h1>
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
     <div class="col-span-3">
-      <div>
+      <div class="hidden md:block">
         <p class="body-sm-text mx-2">
           <%= @unit_names %> Units provide vehicles for individuals and groups to use for getting to and from their site placements for specific programs.
           To be eligible, sites must not be accessible by walking, MBus, or AATA bus.
           Drivers will complete the Transportation Canvas Course that covers all the details for registering as a driver for your psychology course.
           Completing these modules & quiz will prepare you to use and reserve a vehicle to get to your site.
-          Once you’ve submitted your Motor Vehicle Report request and it’s been approved, as well as completed the Transportation Canvas Course and
-          In Person Transportation Orientation, you will be approved to reserve vehicles.
+          Once you’ve submitted your Motor Vehicle Report request and it’s been approved, as well as completed the Transportation Canvas Course,
+          In Person Transportation Orientation, and added your phone number (see the Reservation Checklist) you will be approved to reserve vehicles.
         </p>
+      </div>
+      <div class="display md:hidden" data-controller='statuscard'>
+        <!-- Mobile status card  -->
+        <button class="fields--display link_to -mt-6" data-statuscard-target="more_button" data-action="statuscard#showStatusCard">
+          Show Contact and Status information
+          <i class="fa-solid fa-caret-down"></i>
+        </button>
+        <button class="fields--hide link_to -mt-6 mb-2" data-statuscard-target="less_button" data-action="statuscard#hideStatusCard">
+          Hide Contact and Status information
+          <i class="fa-solid fa-caret-up"></i>
+        </button>
+        <div class="fields--hide flex-col" data-statuscard-target="status_card">
+          <p class="body-sm-text mx-2">
+            <%= @unit_names %> Units provide vehicles for individuals and groups to use for getting to and from their site placements for specific programs.
+            To be eligible, sites must not be accessible by walking, MBus, or AATA bus.
+            Drivers will complete the Transportation Canvas Course that covers all the details for registering as a driver for your psychology course.
+            Completing these modules & quiz will prepare you to use and reserve a vehicle to get to your site.
+            Once you’ve submitted your Motor Vehicle Report request and it’s been approved, as well as completed the Transportation Canvas Course,
+            In Person Transportation Orientation, and added your phone number (see the Reservation Checklist) you will be approved to reserve vehicles.
+          </p>
+          <div class="mt-2 card_area">
+            <%= render 'student_status_card', frame_type: "mobile" %>
+          </div>
+        </div>
       </div>
       <div class="my-4">
         <%= form_with url: welcome_pages_student_path, method: :get, class: "", data: { autosubmit_target: "form", turbo_frame: "turbo-programs" } do |form| %>
@@ -31,7 +55,7 @@
       <% end %>
       </p>
       <div class="my-8 whitespace-nowrap">
-        <% if @student.present? && max_day_for_reservation(@student.program) > default_reservation_for_students(@student.program.unit.id) %>
+        <% if @student.present? && max_day_for_reservation(@student.program.unit_id) > default_reservation_for_students(@student.program.unit.id) %>
           <%= link_to "One Day Reservation", new_reservation_path(:student_id => @student.id), class: "secondary_blue_button" if @student.can_reserve_car? %>
           <%= link_to "Overnight Reservation", new_long_reservation_path(:student_id => @student.id), class: "secondary_blue_button" if @student.can_reserve_car? %>
         <% end %>
@@ -57,8 +81,8 @@
         </div>
       </div>
     </div>
-    <div class="order-first md:order-last card_area">
-      <%= render 'student_status_card' %>
+    <div class="hidden md:block card_area">
+      <%= render 'student_status_card', frame_type: "desktop" %>
     <div>
   <div>
 </div>

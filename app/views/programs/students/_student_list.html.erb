@@ -2,19 +2,42 @@
   <div class="w-full">
     <table class="mi_table">
       <thead class="mi_thead">
-        <tr>
-          <td></td>
-          <td></td>
-          <th class="header_th">Registered</th>
-          <th class="header_th">Course</th>
-          <th class="header_th">Uniqname</th>
-          <th class="header_th">Last Name</th>
-          <th class="header_th">First Name</th>
-          <th class="header_th">MVR Status</th>
-          <th class="header_th">Canvas Course Complete Date</th>
-          <th class="header_th">In Person Orientation Date</th>
-          <th class="header_th">Notes</th>
-        </tr>
+        <% if reminders_on?(program_id: @student_program.id) %>
+          <tr>
+            <td></td><td></td>
+            <th class="header_th_small">Registered</th>
+            <th class="header_th_small">Course</th>
+            <th class="header_th_small">Uniqname</th>
+            <th class="header_th_small">Last Name</th>
+            <th class="header_th_small">First Name</th>
+            <th class="header_th_small">Phone</th>
+            <th class="header_th_small">MVR Status</th>
+            <th class="header_th_small">Canvas Course Complete Date</th>
+            <th class="header_th_small">In Person Orientation Date</th>
+            <th class="header_th_small" colspan="2">Subscription to email reminders</th>
+            <th class="header_th_small">Notes</th>
+          </tr>
+          <tr>
+            <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+            <th class="header_th_small">Reservation</th>
+            <th class="header_th_small">Vehicle Report</th>
+            <td></td>
+          </tr>
+        <% else %>
+          <tr>
+            <td></td><td></td>
+            <th class="header_th">Registered</th>
+            <th class="header_th">Course</th>
+            <th class="header_th">Uniqname</th>
+            <th class="header_th">Last Name</th>
+            <th class="header_th">First Name</th>
+            <th class="header_th">Phone</th>
+            <th class="header_th">MVR Status</th>
+            <th class="header_th">Canvas Course Complete Date</th>
+            <th class="header_th">In Person Orientation Date</th>
+            <th class="header_th">Notes</th>
+          </tr>
+        <% end %>
       </thead>
       <tbody>
         <% @students.each do |student| %>
@@ -47,6 +70,9 @@
               <%= student.first_name %>
             </td>
             <td class="mi_tbody_td">
+              <%= student.phone_number %>
+            </td>
+            <td class="mi_tbody_td">
               <%= student.mvr_status %>
             </td>
             <td class="mi_tbody_td">
@@ -55,6 +81,18 @@
             <td class="mi_tbody_td">
               <%= student.meeting_with_admin_date %>
             </td>
+            <% if reminders_on?(program_id: @student_program.id) %>
+              <td class="mi_tbody_td">
+                <% if subscribed?(mailer: "one_hour_reminder", driver: student) %>
+                  <i class="fa-solid fa-check"></i>
+                <% end %>
+              </td>
+              <td class="mi_tbody_td">
+                <% if subscribed?(mailer: "vehicle_report_reminder", driver: student) %>
+                  <i class="fa-solid fa-check"></i>
+                <% end %>
+              </td>
+            <% end %>
             <td class="mi_tbody_td">
               <% if student.notes.present? && is_admin?(current_user) %>
                 <%= link_to program_student_path(@student_program, student), class: "link_to", data: {turbo_frame: "_top"} do %>

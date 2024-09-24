@@ -15,9 +15,11 @@
             <% end %>
           <% end %>
         </div>
-        <div class="my-2">
-          <%= link_to 'Update MVR Status', update_mvr_status_path(@student_program), class: "secondary_blue_button" %>
-        </div>
+        <% if policy(Student).update_mvr_status? %>
+          <div class="my-2">
+            <%= link_to 'Update MVR Status', update_mvr_status_path(@student_program), class: "secondary_blue_button" %>
+          </div>
+        <% end %>
         <% if false %>
           <div class="my-2">
             <%= link_to 'Update Canvas Status', canvas_results_path(@student_program), class: "secondary_blue_button" %>
@@ -27,12 +29,17 @@
     </div>
   </div>
 
-  <div class="mb-2">
-    <label class="body-lg-bold-text">
-      Program:
-    </label>
-    <%= link_to @student_program.display_name_with_title, program_path(@student_program), class: "link_to" %>
-  </div>
+  <p class="mb-2 body-lg-bold-text inline">
+    Program:
+  </p>
+  <%= link_to @student_program.display_name_with_title, program_path(@student_program), class: "link_to" %>
 
   <%= render "student_list" %>
+  <div class="mt-2">
+    <%= link_to program_students_path(@student_program, format: 'csv'), class: "link_to" do %>
+      Export to CSV
+    <% end %>
+  </div>
+      
+      
 </div>

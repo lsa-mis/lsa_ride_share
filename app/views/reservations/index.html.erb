@@ -32,11 +32,7 @@
   <% end %>
   <div class="mb-2">
     <div class="md:flex justify-between items-center whitespace-nowrap pb-4">
-      <% if @unit_id.present? %>
-        <%= link_to 'Week Calendar', week_calendar_path(:unit_id => @unit_id), class: "secondary_blue_button" %>
-      <% else %>
-        <div> </div>
-      <% end %>
+      <div> </div>
       <div class="my-2 md:flex gap-4 items-center whitespace-nowrap pr-4">
         <div>
           <i class="fa-solid fa-circle-check" style="color:#024794"></i>
@@ -119,15 +115,13 @@
           </div>
         <% end %>
         <div class="">
-          <% if date >= Date.today && @unit_id.present? %>
+          <% if (is_admin?(current_user) || date >= Date.today) && @unit_id.present? %>
             <%= link_to new_reservation_path(:unit_id => @unit_id, :day_start => date), data: {turbo_frame: "_top"} do %>
               <i class="fa fa-plus" aria-hidden="true"></i>
               <span class="tertiary_button -m-4">
                 One Day Reservation
               </span>
             <% end %>
-          </div>
-          <div>
             <%= link_to new_long_reservation_path(:unit_id => @unit_id, :day_start => date), data: {turbo_frame: "_top"} do %>
               <i class="fa fa-plus" aria-hidden="true"></i>
               <span class="tertiary_button -m-4">
