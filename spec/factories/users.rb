@@ -23,11 +23,6 @@ FactoryBot.define do
     email { Faker::Internet.email }
     password { Faker::Internet.password(min_length: 10) }
     display_name { Faker::Name.name }
-
-    factory :admin_user do
-      unit = FactoryBot.create(:unit, name: "Psychology")
-		  allow_any_instance_of(User).to receive(:unit_ids).and_return([unit.id])
-    end
   end
 
 end

@@ -11,7 +11,9 @@
 
 FactoryBot.define do
   factory :unit do
-    name { Faker::Company.name }
-    ldap_group { Faker::Alphanumeric.alpha(number: 10) }
+    # name { Faker::Company.name }
+    # ldap_group { Faker::Alphanumeric.alpha(number: 10) }
+    name { "Fake Unit" }
+    ldap_group { "lsa-was-rails-devs" }
   end
 end
