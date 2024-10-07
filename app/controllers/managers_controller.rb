@@ -1,6 +1,6 @@
 class ManagersController < ApplicationController
   before_action :auth_user
-  before_action :set_manager, only: %i[ edit update ]
+  before_action :set_manager, only: %i[ edit update destroy]
   before_action :set_units
   before_action :set_managers, only: %i[ index update_managers_mvr_status ]
   include StudentApi
@@ -27,6 +27,14 @@ class ManagersController < ApplicationController
       end
     end
     flash.now[:notice] = "MVR status is updated."
+  end
+
+  def destroy
+    @manager.destroy
+    respond_to do |format|
+      format.html { redirect_to managers_url, notice: "Manager was successfully deleted." }
+      format.json { head :no_content }
+    end
   end
 
   private

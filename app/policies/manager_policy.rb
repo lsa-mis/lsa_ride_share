@@ -34,4 +34,8 @@ class ManagerPolicy < ApplicationPolicy
     user_in_access_group?
   end
 
+  def destroy?
+    user_in_access_group?
+  end
+
 end
