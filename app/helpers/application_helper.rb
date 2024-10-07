@@ -3,10 +3,12 @@ module ApplicationHelper
 
   def root_path
     if user_signed_in?
-      if is_student?(current_user)
-        welcome_pages_student_path
+      if is_admin?(current_user)
+        all_root_path
       elsif is_manager?(current_user)
         welcome_pages_manager_path
+      elsif is_student?(current_user)
+        welcome_pages_student_path
       else
         all_root_path
       end
@@ -882,6 +884,29 @@ module ApplicationHelper
 
   def car_statuses
     [["Available", 0], ["Unavailable", 1]]
+  end
+
+  def role(current_user)
+    if is_admin?(current_user)
+      " - admin"
+    elsif is_manager?(current_user)
+      " - manager"
+    elsif is_student?(current_user)
+     ""
+    else
+      "none"
+    end
+  end
+
+  def managers_without_programs
+    programs = Program.all
+    i_ids = programs.pluck(:instructor_id).uniq
+    instructors = Manager.where(id: i_ids)
+    p_ids = programs.pluck(:id)
+    managers = Manager.joins(:programs).where('managers_programs.program_id IN (?)', p_ids)
+    managers_and_instructors = (instructors + managers).uniq
+    all_managers = Manager.all
+    return all_managers - managers_and_instructors
   end
 
 end
