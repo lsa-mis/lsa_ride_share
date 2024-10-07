@@ -85,6 +85,34 @@
             <% end %>
           </tr>
         <% end %>
+        <% managers_without_programs.each do |manager| %>
+          <tr class="mi_tbody_tr">
+            <td class="mi_tbody_td">
+              <%= link_to "Edit", edit_manager_path(manager), class: "link_to", data: {turbo_frame: "_top"} %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= manager.uniqname %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= manager.last_name %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= manager.first_name %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= manager.phone_number %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= manager.mvr_status %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= manager.canvas_course_complete_date %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= manager.meeting_with_admin_date %>
+            </td>
+          </tr>
+        <% end %>
       </tbody>
     </table>
   </div>
