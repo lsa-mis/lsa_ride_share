@@ -5,6 +5,7 @@
         <% if reminders_on?(unit_id: params[:unit_id]) %>
           <tr>
             <td></td>
+            <td></td>
             <th class="header_th_small">Uniqname</th>
             <th class="header_th_small">Last name</th>
             <th class="header_th_small">First name</th>
@@ -23,6 +24,7 @@
         <% else %>
           <tr>
             <td></td>
+            <td></td>
             <th class="header_th">Uniqname</th>
             <th class="header_th">Last name</th>
             <th class="header_th">First name</th>
@@ -37,6 +39,7 @@
       <tbody>
         <% @managers.each do |manager| %>
           <tr class="mi_tbody_tr">
+            <td></td>
             <td class="mi_tbody_td">
               <%= link_to "Edit", edit_manager_path(manager), class: "link_to", data: {turbo_frame: "_top"} %>
             </td>
@@ -87,6 +90,9 @@
         <% end %>
         <% managers_without_programs.each do |manager| %>
           <tr class="mi_tbody_tr">
+            <td class="mi_tbody_td">
+              <%= link_to "Remove", manager_path(manager), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete }, class: "link_to" %>
+            </td>
             <td class="mi_tbody_td">
               <%= link_to "Edit", edit_manager_path(manager), class: "link_to", data: {turbo_frame: "_top"} %>
             </td>
