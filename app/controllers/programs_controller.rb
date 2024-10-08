@@ -15,8 +15,9 @@ class ProgramsController < ApplicationController
     else
       @programs = Program.where(unit_id: current_user.unit_ids)
     end
-    @programs = @programs.data(params[:term_id])
-    if is_manager?(current_user)
+    if is_admin?(current_user)
+      @programs = @programs.data(params[:term_id])
+    elsif is_manager?(current_user)
       @programs = Program.all.data(params[:term_id])
       programs = Manager.find_by(uniqname: current_user.uniqname).all_programs
       @programs = @programs.where(id: programs.map(&:id))
