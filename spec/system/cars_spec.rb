@@ -11,7 +11,7 @@ RSpec.describe Car, type: :system do
 
 	context "create new car" do
     it 'is valid input' do
-      VCR.use_cassette "zone" do
+      VCR.use_cassette "car" do
         unit = Unit.first
         visit cars_path
         click_on "New Car"
@@ -31,7 +31,7 @@ RSpec.describe Car, type: :system do
 
   context "edit a car" do
     it 'updates parking location' do
-      VCR.use_cassette "zone" do
+      VCR.use_cassette "car" do
         car = FactoryBot.create(:car, updated_by: User.last.id, unit: Unit.last)
         visit "cars/#{car.id}/"
         click_on "Edit Car"
