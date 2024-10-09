@@ -27,11 +27,11 @@ FactoryBot.define do
     color { Faker::Vehicle.color }
     number_of_seats { Faker::Number.within(range: 1..7) }
     mileage { Faker::Vehicle.mileage }
-    gas { 1.5 }
+    gas { 62.5 }
     parking_spot { Faker::Lorem.word }
     last_used { Faker::Date.in_date_period }
-    last_driver_id { Faker::Number.within(range: 1..7) }
-    updated_by { Faker::Types.rb_integer }
+    # last_driver_id nil
+    # updated_by { Faker::Types.rb_integer }
     # status { ['Available', 'Unvailable'].sample }
     status { Faker::Number.within(range: 0..1) }
     association :unit

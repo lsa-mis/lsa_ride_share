@@ -29,4 +29,18 @@ RSpec.describe Car, type: :system do
     end
   end
 
+  context "edit a car" do
+    it 'updates parking location' do
+      VCR.use_cassette "zone" do
+        car = FactoryBot.create(:car, updated_by: User.last.id, unit: Unit.last)
+        visit "cars/#{car.id}/"
+        click_on "Edit Car"
+        select "Thayer 1A", :from => "parking_spot_select"
+        click_on "Update Car"
+        expect(page).to have_content("Thayer 1A")
+        expect(page).to have_content("The car was updated.")
+      end
+    end
+  end
+
 end
