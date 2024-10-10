@@ -65,11 +65,11 @@ class ReservationsController < ApplicationController
     @reservation = Reservation.new
     @term_id = Term.current.present? ? Term.current[0].id : nil
     authorize @reservation
-    if is_student?(current_user)
-      @program = Student.find(params[:student_id]).program
-      get_data_for_program(@program)
-    elsif is_manager?(current_user)
+    if is_manager?(current_user)
       @program = Program.find(params[:program_id])
+      get_data_for_program(@program)
+    elsif is_student?(current_user)
+      @program = Student.find(params[:student_id]).program
       get_data_for_program(@program)
     elsif params[:unit_id].present?
       @unit_id = params[:unit_id]
