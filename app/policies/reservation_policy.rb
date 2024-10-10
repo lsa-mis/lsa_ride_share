@@ -114,13 +114,13 @@ class ReservationPolicy < ApplicationPolicy
   end
 
   def is_in_reservation?
-    if is_student?
-      student = Student.find_by(program_id: @record.program, uniqname: @user.uniqname)
-      return @record.driver == student || @record.backup_driver == student || @record.passengers.include?(student)
-    end
     if is_manager?
       manager = Manager.find_by(uniqname: @user.uniqname)
       return @record.driver_manager == manager || is_reserved_by? || @record.passengers_managers.include?(manager)
+    end
+    if is_student?
+      student = Student.find_by(program_id: @record.program, uniqname: @user.uniqname)
+      return @record.driver == student || @record.backup_driver == student || @record.passengers.include?(student)
     end
     return false
   end
