@@ -47,8 +47,7 @@
                 <div class="header_link">
                   <%= link_to "Reservations", welcome_pages_manager_path, class: "#{class_names(active: current_page?(welcome_pages_manager_path))}" %>
                 </div>
-              <% end %>
-              <% if is_student?(current_user) %>
+              <% elsif is_student?(current_user) %>
                 <div class="header_link">
                   <%= link_to "Reservations", welcome_pages_student_path, class: "#{class_names(active: current_page?(welcome_pages_student_path))}" %>
                 </div>
@@ -183,8 +182,7 @@
               <div class="header_link">
                 <%= link_to "Reservations", welcome_pages_manager_path, class: "#{class_names(active: current_page?(welcome_pages_manager_path))}" %>
               </div>
-            <% end %>
-            <% if is_student?(current_user) %>
+            <% elsif is_student?(current_user) %>
               <div class="header_link">
                 <%= link_to "Reservations", welcome_pages_student_path, class: "#{class_names(active: current_page?(welcome_pages_student_path))}" %>
               </div>
