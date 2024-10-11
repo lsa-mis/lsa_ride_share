@@ -610,8 +610,8 @@ module ApplicationHelper
 
   def is_in_reservation?(current_user, reservation)
     if is_manager?(current_user)
-      manager = Manager.find_by(uniqname: current_user.uniqnam)
-      return reservation.driver_manager == manager || is_reserved_by? || reservation.passengers_managers.include?(manager)
+      manager = Manager.find_by(uniqname: current_user.uniqname)
+      return reservation.driver_manager == manager || reservation.reserved_by = current_user.id || reservation.passengers_managers.include?(manager)
     end
     if is_student?(current_user)
       student = Student.find_by(program_id: reservation.program, uniqname: current_user.uniqname)
