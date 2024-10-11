@@ -33,13 +33,13 @@ class  Reservation::PassengerPolicy < ReservationPolicy
 
 
   def is_not_driver?
-    if is_student?
-      student = Student.find_by(program_id: @record.program, uniqname: @user.uniqname)
-      return @record.passengers.include?(student)
-    end
     if is_manager?
       manager = Manager.find_by(uniqname: @user.uniqname)
       return is_reserved_by? || @record.passengers_managers.include?(manager)
+    end
+    if is_student?
+      student = Student.find_by(program_id: @record.program, uniqname: @user.uniqname)
+      return @record.passengers.include?(student)
     end
     return false
   end

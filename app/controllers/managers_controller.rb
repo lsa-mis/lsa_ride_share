@@ -30,10 +30,15 @@ class ManagersController < ApplicationController
   end
 
   def destroy
-    @manager.destroy
-    respond_to do |format|
-      format.html { redirect_to managers_url, notice: "Manager was successfully deleted." }
-      format.json { head :no_content }
+    if @manager.destroyed?
+      respond_to do |format|
+        format.html { redirect_to managers_url, notice: "Manager was successfully deleted." }
+        format.json { head :no_content }
+      end
+    else 
+      flash.now[:alert] = "Manager has reservations and can't be removed."
+      set_managers
+      return
     end
   end
 
