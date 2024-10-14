@@ -19,7 +19,7 @@ class Manager < ApplicationRecord
   has_many :managers_programs
   has_many :programs, through: :managers_programs
   has_many :reservation_passengers_managers
-  has_many :passengers_managers, through: :reservation_passengers_managers, source: :reservation
+  has_many :passengers_managers, through: :reservation_passengers_managers, source: :reservation, dependent: :restrict_with_exception
 
   validates :uniqname, uniqueness: true
 

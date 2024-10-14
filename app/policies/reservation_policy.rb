@@ -21,9 +21,9 @@ class ReservationPolicy < ApplicationPolicy
   end
 
   def create?
-    return true if user_in_access_group? 
-    return true if is_student? 
+    return true if user_in_access_group?
     return true if is_manager?
+    return true if is_student? 
     return false
   end
 
@@ -114,24 +114,24 @@ class ReservationPolicy < ApplicationPolicy
   end
 
   def is_in_reservation?
-    if is_student?
-      student = Student.find_by(program_id: @record.program, uniqname: @user.uniqname)
-      return @record.driver == student || @record.backup_driver == student || @record.passengers.include?(student)
-    end
     if is_manager?
       manager = Manager.find_by(uniqname: @user.uniqname)
       return @record.driver_manager == manager || is_reserved_by? || @record.passengers_managers.include?(manager)
+    end
+    if is_student?
+      student = Student.find_by(program_id: @record.program, uniqname: @user.uniqname)
+      return @record.driver == student || @record.backup_driver == student || @record.passengers.include?(student)
     end
     return false
   end
 
   def is_reservation_driver?
-    if is_student?
-      student = Student.find_by(program_id: @record.program, uniqname: @user.uniqname)
-      return @record.driver == student || @record.backup_driver == student
-    elsif is_manager?
+    if is_manager?
       manager = Manager.find_by(uniqname: @user.uniqname)
       return @record.driver_manager == manager || is_reserved_by?
+    elsif is_student?
+      student = Student.find_by(program_id: @record.program, uniqname: @user.uniqname)
+      return @record.driver == student || @record.backup_driver == student
     end
     return false
   end

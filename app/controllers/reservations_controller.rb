@@ -65,11 +65,11 @@ class ReservationsController < ApplicationController
     @reservation = Reservation.new
     @term_id = Term.current.present? ? Term.current[0].id : nil
     authorize @reservation
-    if is_student?(current_user)
-      @program = Student.find(params[:student_id]).program
-      get_data_for_program(@program)
-    elsif is_manager?(current_user)
+    if is_manager?(current_user)
       @program = Program.find(params[:program_id])
+      get_data_for_program(@program)
+    elsif is_student?(current_user)
+      @program = Student.find(params[:student_id]).program
       get_data_for_program(@program)
     elsif params[:unit_id].present?
       @unit_id = params[:unit_id]
@@ -268,12 +268,12 @@ class ReservationsController < ApplicationController
     if available?(@reservation.car, @reservation.start_time..@reservation.end_time)
       if @reservation.save
         unless is_admin?(current_user)
-          if is_student?(current_user)
-            driver = Student.find_by(program_id: @reservation.program_id, uniqname: current_user.uniqname)
-            @reservation.update(driver_id: driver.id)
-          elsif is_manager?(current_user)
+          if is_manager?(current_user)
             driver_manager = Manager.find_by(uniqname: current_user.uniqname)
             @reservation.update(driver_manager_id: driver_manager.id)
+          elsif is_student?(current_user)
+            driver = Student.find_by(program_id: @reservation.program_id, uniqname: current_user.uniqname)
+            @reservation.update(driver_id: driver.id)
           end
         end
         @students = @reservation.program.students 
@@ -628,10 +628,10 @@ class ReservationsController < ApplicationController
       if Reservation.where(id: result).destroy_all
         if is_admin?(current_user)
           format.turbo_stream { redirect_to reservations_url, notice: "Selected Reservation(s) were canceled." }
-        elsif is_student?(current_user)
-          format.turbo_stream { redirect_to welcome_pages_student_url, notice: "Selected Reservation(s) were canceled." }
         elsif is_manager?(current_user)
           format.turbo_stream { redirect_to welcome_pages_manager_url, notice: "Selected Reservation(s) were canceled." }
+        elsif is_student?(current_user)
+          format.turbo_stream { redirect_to welcome_pages_student_url, notice: "Selected Reservation(s) were canceled." }
         end
       else
         render :show, status: :unprocessable_entity
