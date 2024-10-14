@@ -42,9 +42,10 @@ RSpec.describe Program, type: :model do
 
   context "check validation for title uniqness for a term" do
     it 'raise error "ActiveRecord::RecordInvalid: Term already has this program"' do
+      unit = create(:unit)
       term = create(:term)
-      program = create(:program, term: term)
-      expect{ FactoryBot.create(:program, term: term, title: program.title) }.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: Term already has this program")
+      program = create(:program, term: term, unit: unit)
+      expect{ FactoryBot.create(:program, term: term, unit: unit, title: program.title) }.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: Term already has this program")
     end
   end
 
