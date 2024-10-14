@@ -47,4 +47,37 @@ RSpec.describe Program, type: :system do
     end
   end
 
+  context "add associated courses to a program" do
+    it 'succeed with valid input' do
+      VCR.use_cassette "program" do
+        program = FactoryBot.create(:program, updated_by: User.last.id, term: Term.last, unit: Unit.last)
+        visit "programs/#{program.id}/"
+        click_on "Add Associated Courses"
+        expect(page).to have_content("Update Courses for Program")
+        fill_in "Subject", with: "Course One"
+        fill_in "Catalog Number", with: "123"
+        fill_in "Class Section", with: "001"
+        click_on "Add New Course"
+        expect(page).to have_content("Course list is updated.")
+      end
+    end
+  end
+
+  context "add associated courses to a program" do
+    it 'fails with duplicated course data' do
+      VCR.use_cassette "program" do
+        program = FactoryBot.create(:program, updated_by: User.last.id, term: Term.last, unit: Unit.last)
+        course = FactoryBot.create(:course, program: program)
+        visit "programs/#{program.id}/"
+        click_on "Edit Associated Courses"
+        expect(page).to have_content("Update Courses for Program")
+        fill_in "Subject", with: course.subject
+        fill_in "Catalog Number", with: course.catalog_number
+        fill_in "Class Section", with: course.class_section
+        click_on "Add New Course"
+        expect(page).to have_content("Program already has this course")
+      end
+    end
+  end
+
 end
