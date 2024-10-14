@@ -34,15 +34,15 @@ RSpec.describe Program, type: :system do
   end
 
   context "edit a program" do
-    it 'updates parking location' do
+    it 'updates title' do
       VCR.use_cassette "program" do
-        car = FactoryBot.create(:car, updated_by: User.last.id, unit: Unit.last)
-        visit "cars/#{car.id}/"
-        click_on "Edit Car"
-        select "Thayer 1A", :from => "parking_spot_select"
-        click_on "Update Car"
-        expect(page).to have_content("Thayer 1A")
-        expect(page).to have_content("The car was updated.")
+        program = FactoryBot.create(:program, updated_by: User.last.id, term: Term.last, unit: Unit.last)
+        visit "programs/#{program.id}/"
+        click_on "Edit Program"
+        fill_in "Title", with: "Edited Program Title"
+        click_on "Update Program"
+        expect(page).to have_content("Edited Program Title")
+        expect(page).to have_content("Program was successfully updated.")
       end
     end
   end
