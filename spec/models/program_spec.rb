@@ -26,5 +26,27 @@
 require 'rails_helper'
 
 RSpec.describe Program, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  context "the Factory" do
+    it 'is valid' do
+      program = build(:program)
+      expect(program).to be_valid
+    end
+  end
+
+  context "create program with all required fields present" do
+    it 'is valid' do
+      program = build(:program)
+      expect(program).to be_valid
+    end
+  end
+
+  context "check validation for title uniqness for a term" do
+    it 'raise error "ActiveRecord::RecordInvalid: Term already has this program"' do
+      unit = create(:unit)
+      term = create(:term)
+      program = create(:program, term: term, unit: unit)
+      expect{ FactoryBot.create(:program, term: term, unit: unit, title: program.title) }.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: Term already has this program")
+    end
+  end
+
 end

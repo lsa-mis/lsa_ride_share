@@ -65,7 +65,7 @@ Rails.application.routes.draw do
   post '/selected_reservations/', to: 'reservations#selected_reservations', as: :selected_reservations
   get '/send_email_to_selected_reservations/', to: 'reservations#send_email_to_selected_reservations', as: :send_email_to_selected_reservations
 
-  resources :cars do
+  resources :cars, except: [:destroy] do
     resources :notes, module: :cars
   end
   get '/cars/get_parking_locations/:unit_id', to: 'cars#get_parking_locations'
