@@ -26,8 +26,8 @@ class Course < ApplicationRecord
   end
 
   def course_uniqueness_in_program
-    course = Course.where("UPPER(subject) = ? AND catalog_number = ? AND class_section = ? AND program_id = ? AND id <> ?",
-      self.subject.upcase, self.catalog_number, self.class_section, self.program_id, self.id)
+    course = Course.where("UPPER(subject) = ? AND catalog_number = ? AND class_section = ? AND program_id = ?",
+      self.subject.upcase, self.catalog_number, self.class_section, self.program_id).where.not(id: self.id)
     errors.add(:program_id, "already has this course") if course.present?
   end
 
