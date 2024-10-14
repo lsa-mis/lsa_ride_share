@@ -12,24 +12,27 @@
 #  gas             :float
 #  parking_spot    :string
 #  last_used       :datetime
-#  last_driver     :integer
+#  last_driver_id  :integer
 #  updated_by      :integer
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  status          :integer
-#
+#  unit_id         :bigint
+
 FactoryBot.define do
   factory :car do
-    car_number { "MyString" }
-    make { "MyString" }
-    model { "MyString" }
-    color { "MyString" }
-    number_of_seats { 1 }
-    mileage { 1.5 }
-    gas { 1.5 }
-    parking_spot { "MyString" }
-    last_used { "2023-02-14 19:16:18" }
-    last_checked { "2023-02-14 19:16:18" }
-    last_driver { 1 }
+    car_number { "#{Faker::Vehicle.car_type} - #{Faker::Number.number(digits: 3)}" }
+    make { Faker::Vehicle.make }
+    model { Faker::Vehicle.model}
+    color { Faker::Vehicle.color }
+    number_of_seats { Faker::Number.within(range: 1..7) }
+    mileage { Faker::Vehicle.mileage }
+    gas { 62.5 }
+    parking_spot { Faker::Lorem.word }
+    last_used { Faker::Date.in_date_period }
+    # last_driver_id nil
+    updated_by { FactoryBot.create(:user).id }
+    status { Faker::Number.within(range: 0..1) }
+    association :unit
   end
 end

@@ -1,7 +1,7 @@
 class CarsController < ApplicationController
   include ActionView::RecordIdentifier
   before_action :auth_user
-  before_action :set_car, only: %i[ show edit update destroy ]
+  before_action :set_car, only: %i[ show edit update ]
   before_action :set_statuses, only: %i[ new edit create update]
   before_action :set_units
 
@@ -85,16 +85,6 @@ class CarsController < ApplicationController
     end
     render json: parking_locations
     authorize Car
-  end
-
-  # DELETE /cars/1 or /cars/1.json
-  def destroy
-    @car.destroy
-
-    respond_to do |format|
-      format.html { redirect_to cars_url, notice: "Car was successfully destroyed." }
-      format.json { head :no_content }
-    end
   end
 
   private

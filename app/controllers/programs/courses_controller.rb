@@ -32,7 +32,7 @@ class Programs::CoursesController < ApplicationController
     if @course.save
       @course_program.update(not_course: false)
       @course = Course.new
-      flash.now[:notice] = "Course list is updated"
+      flash.now[:notice] = "Course list is updated."
     end
     @courses = @course_program.courses
   end
