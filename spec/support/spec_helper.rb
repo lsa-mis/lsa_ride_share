@@ -15,7 +15,5 @@ module SpecHelper
     post user_saml_omniauth_callback_path
     
   end
-
   
-
 end
