@@ -13,7 +13,7 @@ class ApplicationController < ActionController::Base
   end
 
   def pundit_user
-    { user: current_user, params: params }
+    { user: current_user, params: params, role: session[:role], unit_ids: session[:unit_ids] }
   end
 
   def auth_user
