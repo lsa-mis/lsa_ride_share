@@ -60,7 +60,7 @@
                   <div class="invisible absolute z-50 flex w-full flex-col bg-blue-umblue py-1 group-hover:visible" onClick="">
                     <%= link_to "All Units", units_path, class: "nav-sub-link" if policy(Unit).index? %>
                     <%= link_to "Cars", cars_path, class: "nav-sub-link" %>
-                    <%= link_to "Program Surveys", faculty_surveys_path, class: "nav-sub-link" if unit_use_faculty_survey?(current_user.unit_ids) %>
+                    <%= link_to "Program Surveys", faculty_surveys_path, class: "nav-sub-link" if unit_use_faculty_survey?(session[:unit_ids]) %>
                     <%= link_to "System Reports", system_reports_path, class: "nav-sub-link" %>
                     <%= link_to "View Terms", terms_path, class: "nav-sub-link" %>
                     <%= link_to "Unit Preferences", unit_prefs_path, class: "nav-sub-link" %>
@@ -196,7 +196,7 @@
               <div class=" cursor-pointer flex flex-row flex-wrap justify-start ml-4 bg-blue-umblue py-1">
                 <%= link_to "All Units", units_path, class: "nav-sub-link-mobile" if policy(Unit).index? %>
                 <%= link_to "Cars", cars_path, class: "nav-sub-link-mobile" %>
-                <%= link_to "Program Surveys", faculty_surveys_path, class: "nav-sub-link-mobile" if unit_use_faculty_survey?(current_user.unit_ids) %>
+                <%= link_to "Program Surveys", faculty_surveys_path, class: "nav-sub-link-mobile" if unit_use_faculty_survey?(session[:unit_ids]) %>
                 <%= link_to "System Reports", system_reports_path, class: "nav-sub-link-mobile" %>
                 <%= link_to "View Terms", terms_path, class: "nav-sub-link-mobile" %>
                 <%= link_to "Unit Preferences", unit_prefs_path, class: "nav-sub-link-mobile" %>
