@@ -94,7 +94,7 @@
               </td>
             <% end %>
             <td class="mi_tbody_td">
-              <% if student.notes.present? && is_admin?(current_user) %>
+              <% if student.notes.present? && is_admin? %>
                 <%= link_to program_student_path(@student_program, student), class: "link_to", data: {turbo_frame: "_top"} do %>
                   <%= student.notes.count %>
                 <% end %>

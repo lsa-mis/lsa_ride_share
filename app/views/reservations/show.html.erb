@@ -7,7 +7,7 @@
   </h2>
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
     <div class="col-span-3">
-      <% if is_admin?(current_user) %>
+      <% if is_admin? %>
         <%= form_with model: @reservation, html: { class: "sm:flex sm:items-center" },
           data: {
                   approve_target: "form"
@@ -54,12 +54,12 @@
             <% end %>
           <% end %>
         <% end %>
-        <% if is_admin?(current_user) && recurring?(@reservation) %>
+        <% if is_admin? && recurring?(@reservation) %>
           <div>
             <%= link_to 'Approve Recurring Reservations', approve_all_recurring_path(@reservation), class: "secondary_blue_button" %>
           </div>
         <% end %>
-        <% if is_admin?(current_user) || allow_student_to_edit_reservations?(@reservation) || allow_manager_to_edit_reservations?(@reservation) %>
+        <% if is_admin? || allow_student_to_edit_reservations?(@reservation) || allow_manager_to_edit_reservations?(@reservation) %>
           <% if recurring?(@reservation) %>
             <div class="mt-2">
               <% if @reservation.start_time.to_date == @reservation.end_time.to_date %>
@@ -76,7 +76,7 @@
               <%= link_to 'Edit Reservation', edit_long_reservation_path(@reservation), class: "primary_button" if policy(@reservation).edit? %>
             <% end %>
           </div>
-          <% if is_admin?(current_user) %>
+          <% if is_admin? %>
             <% if recurring?(@reservation) %>
               <div class="mt-2">
                 <%= link_to 'Send Recurring Reservation Update', send_reservation_updated_email_path(@reservation, :recurring => true), class: "secondary_yellow_button w-1", data: { turbo_confirm: 'Are you sure?', turbo_method: :get} if policy(@reservation).edit? %>
@@ -100,7 +100,7 @@
       </div>
     </div>
   </div>
-  <% if is_admin?(current_user) %>
+  <% if is_admin? %>
     <%= render 'email_logs/email_log', email_log_entries: @email_log_entries %>
   <% end %>
 </div>

@@ -17,7 +17,7 @@
         <% if user_signed_in? %>
           <div class="hidden lg:ml-6 lg:block">
             <div class="flex space-x-4">
-              <% if is_admin?(current_user) %>
+              <% if is_admin? %>
                 <div class="group relative cursor-pointer">
                   <div class="flex items-center justify-between">
                     <%= content_tag :span, "Programs", class: "nav-top-link" %>
@@ -28,12 +28,12 @@
                     <%= link_to "Managers", managers_path, class: "nav-sub-link" %>
                   </div>
                 </div>
-              <% elsif is_manager?(current_user) %>
+              <% elsif is_manager? %>
                 <div class="header_link">
                   <%= link_to "Programs", programs_path, class: "#{class_names(active: current_page?(programs_path))}" if policy(Program).index? %>
                 </div>
               <% end %>
-              <% if is_admin?(current_user) %>
+              <% if is_admin? %>
                 <div class="group relative cursor-pointer">
                   <div class="flex items-center justify-between">
                     <%= content_tag :span, "Reservations", class: "nav-top-link" %>
@@ -43,16 +43,16 @@
                     <%= link_to "Vehicle Reports", vehicle_reports_path, class: "nav-sub-link" %>
                   </div>
                 </div>
-              <% elsif is_manager?(current_user) %>
+              <% elsif is_manager? %>
                 <div class="header_link">
                   <%= link_to "Reservations", welcome_pages_manager_path, class: "#{class_names(active: current_page?(welcome_pages_manager_path))}" %>
                 </div>
-              <% elsif is_student?(current_user) %>
+              <% elsif is_student? %>
                 <div class="header_link">
                   <%= link_to "Reservations", welcome_pages_student_path, class: "#{class_names(active: current_page?(welcome_pages_student_path))}" %>
                 </div>
               <% end %>
-              <% if is_admin?(current_user) %>
+              <% if is_admin? %>
                 <div class="group relative cursor-pointer">
                   <div class="flex items-center justify-between">
                     <%= content_tag :span, "Unit Options", class: "nav-top-link" %>
@@ -67,7 +67,7 @@
                     <%= link_to "Docs", "https://docs.google.com/document/d/e/2PACX-1vRSWQUpQqq7m4yBgevco9dXqZ-JKTFnwzxBQYQYQDUBnIXm9YNzruT1308qhzCT-C3-NJnvlh83jK61/pub", target: "_blank", class: "nav-sub-link" %>
                   </div>
                 </div>
-              <% elsif is_manager?(current_user) %>
+              <% elsif is_manager? %>
                 <div class="header_link">
                   <%= link_to "Program Surveys", surveys_index_path, class: "#{class_names(active: current_page?(surveys_index_path))}" if faculty_has_survey?(current_user) %>
                 </div>
@@ -154,7 +154,7 @@
 
         <div class="pb-3 pl-2">
           <div class="w-full flex flex-col">
-            <% if is_admin?(current_user) %>
+            <% if is_admin? %>
               <div>
                 <%= content_tag :span, "Programs", class: "nav-top-link-mobile" %>
               </div>
@@ -163,14 +163,14 @@
                 <%= link_to "Sites", sites_path, class: "nav-sub-link-mobile" %>
                 <%= link_to "Managers", managers_path, class: "nav-sub-link-mobile" %>
               </div>
-            <% elsif is_manager?(current_user) %>
+            <% elsif is_manager? %>
               <div class="header_link">
                 <%= link_to "Programs", programs_path, class: "#{class_names(active: current_page?(programs_path))}" if policy(Program).index? %>
               </div>
             <% end %>
           </div>
           <div class="w-full flex flex-col">
-            <% if is_admin?(current_user) %>
+            <% if is_admin? %>
               <div>
                 <%= content_tag :span, "Reservations", class: "nav-top-link-mobile" %>
               </div>
@@ -178,18 +178,18 @@
                 <%= link_to "Reservations", reservations_path, class:"nav-sub-link-mobile" if policy(Reservation).index? %>
                 <%= link_to "Vehicle Reports", vehicle_reports_path, class: "nav-sub-link-mobile" if policy(VehicleReport).index? %>
               </div>
-            <% elsif is_manager?(current_user) %>
+            <% elsif is_manager? %>
               <div class="header_link">
                 <%= link_to "Reservations", welcome_pages_manager_path, class: "#{class_names(active: current_page?(welcome_pages_manager_path))}" %>
               </div>
-            <% elsif is_student?(current_user) %>
+            <% elsif is_student? %>
               <div class="header_link">
                 <%= link_to "Reservations", welcome_pages_student_path, class: "#{class_names(active: current_page?(welcome_pages_student_path))}" %>
               </div>
             <% end %>
           </div>
           <div class="relative w-full flex flex-col">
-            <% if is_admin?(current_user) %>
+            <% if is_admin? %>
               <div>
                 <%= content_tag :span, "Unit Options", class: "nav-top-link-mobile" %>
               </div>
@@ -202,7 +202,7 @@
                 <%= link_to "Unit Preferences", unit_prefs_path, class: "nav-sub-link-mobile" %>
                 <%= link_to "Docs", "https://docs.google.com/document/d/e/2PACX-1vRSWQUpQqq7m4yBgevco9dXqZ-JKTFnwzxBQYQYQDUBnIXm9YNzruT1308qhzCT-C3-NJnvlh83jK61/pub", target: "_blank", class: "nav-sub-link-mobile" %>
               </div>
-            <% elsif is_manager?(current_user) %>
+            <% elsif is_manager? %>
               <div class="header_link">
                 <%= link_to "Program Surveys", surveys_index_path, class: "#{class_names(active: current_page?(surveys_index_path))}" if faculty_has_survey?(current_user) %>
               </div>
