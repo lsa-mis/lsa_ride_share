@@ -7,7 +7,7 @@ RSpec.describe "Controllers", type: :request do
       user = FactoryBot.create(:user)
       mock_login(user)
       follow_redirect!
-      expect(response.body).to include("Welcome")
+      expect(response.body).to include("Signed in successfully.")
     end
   end
 
@@ -15,7 +15,7 @@ RSpec.describe "Controllers", type: :request do
     it 'displays welcome message on programs page' do
       user = FactoryBot.build(:user, email: "kielbasa")
       mock_login(user)
-      expect(response.body).not_to include("Welcome")
+      expect(response.body).not_to include("Signed in successfully.")
     end
   end
 
