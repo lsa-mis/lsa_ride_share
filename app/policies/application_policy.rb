@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 class ApplicationPolicy
-  attr_reader :user, :params, :record
+  attr_reader :user, :params, :role, :unit_ids, :record
 
   def initialize(context, record)
     @user = context[:user]
     @params = context[:params]
+    @role = context[:role]
+    @unit_ids = context[:unit_ids]
     @record = record
   end
 
@@ -41,25 +43,29 @@ class ApplicationPolicy
     user_in_access_group?
   end
 
-  def unit_admin?
-    units_all_ids = Unit.all.pluck(:id)
-    @user.unit_ids && (@user.unit_ids & units_all_ids).any?
+  def admin?
+    # units_all_ids = Unit.all.pluck(:id)
+    # @user.unit_ids && (@user.unit_ids & units_all_ids).any?
+    @role == "admin"
   end
 
-  def user_admin?
-    @user.membership && @user.membership.include?('lsa-was-rails-devs')
+  def super_admin?
+    # @user.membership && @user.membership.include?('lsa-was-rails-devs')
+    @role == "super_admin"
   end
 
   def is_student?
-    Student.where(uniqname: user.uniqname, program: Program.current_term).present?
+    # Student.where(uniqname: user.uniqname, program: Program.current_term).present?
+    @role == "student"
   end
 
   def is_manager?
-    Manager.where(uniqname: user.uniqname).present?
+    # Manager.where(uniqname: user.uniqname).present?
+    @role == "manager"
   end
 
   def user_in_access_group?
-    unit_admin? || user_admin?
+    admin? || super_admin?
   end
 
 end
