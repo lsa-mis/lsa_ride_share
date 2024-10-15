@@ -54,7 +54,7 @@ class ManagersController < ApplicationController
       if params[:unit_id].present?
         unit_ids = [params[:unit_id]].to_a
       else
-        unit_ids = current_user.unit_ids
+        unit_ids = session[:unit_ids]
       end
       programs = Program.where(unit_id: unit_ids)
       i_ids = programs.pluck(:instructor_id).uniq
@@ -67,7 +67,7 @@ class ManagersController < ApplicationController
 
     def set_units
       if is_admin?(current_user)
-      @units = Unit.where(id: current_user.unit_ids).order(:name)
+      @units = Unit.where(id: session[:unit_ids]).order(:name)
       elsif is_manager?(current_user)
         manager = Manager.find_by(uniqname: current_user.uniqname)
         @units = Unit.where(id: manager.programs.pluck(:unit_id).uniq).order(:name)
