@@ -7,7 +7,7 @@ class FacultySurveyPolicy < ApplicationPolicy
   end
 
   def surveys_index?
-    @user.uniqname == @record[0].uniqname || @user.unit_ids.include?(@record.unit_id)
+    @user.uniqname == @record[0].uniqname || @unit_ids.include?(@record.unit_id)
   end
 
   def show?

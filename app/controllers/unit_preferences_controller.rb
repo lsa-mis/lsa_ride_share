@@ -11,12 +11,12 @@ class UnitPreferencesController < ApplicationController
   end
 
   def unit_prefs
-    @unit_prefs = UnitPreference.where(unit_id: current_user.unit_ids).order(:pref_type, :description)
+    @unit_prefs = UnitPreference.where(unit_id: session[:unit_ids]).order(:pref_type, :description)
     authorize @unit_prefs
   end
 
   def save_unit_prefs
-    @unit_prefs = UnitPreference.where(unit_id: current_user.unit_ids)
+    @unit_prefs = UnitPreference.where(unit_id: session[:unit_ids])
     authorize @unit_prefs
     @unit_prefs.where(pref_type: 'boolean').update(on_off: false)
     if params[:unit_prefs].present?
@@ -80,7 +80,7 @@ class UnitPreferencesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
 
     def set_units
-      @units = Unit.where(id: current_user.unit_ids)
+      @units = Unit.where(id: session[:unit_ids])
     end
 
     def set_pref_types
