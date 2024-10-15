@@ -65,10 +65,10 @@ class ReservationsController < ApplicationController
     @reservation = Reservation.new
     @term_id = Term.current.present? ? Term.current[0].id : nil
     authorize @reservation
-    if is_manager?(current_user)
+    if is_manager?
       @program = Program.find(params[:program_id])
       get_data_for_program(@program)
-    elsif is_student?(current_user)
+    elsif is_student?
       @program = Student.find(params[:student_id]).program
       get_data_for_program(@program)
     elsif params[:unit_id].present?
@@ -101,7 +101,7 @@ class ReservationsController < ApplicationController
         @end_time = @start_time + 15.minute
       end
     end
-    if is_admin?(current_user)
+    if is_admin?
       @sites = []
     end
     @until_date = max_day_for_reservation(@unit_id)
@@ -267,11 +267,11 @@ class ReservationsController < ApplicationController
     # check for conflicts
     if available?(@reservation.car, @reservation.start_time..@reservation.end_time)
       if @reservation.save
-        unless is_admin?(current_user)
-          if is_manager?(current_user)
+        unless is_admin?
+          if is_manager?
             driver_manager = Manager.find_by(uniqname: current_user.uniqname)
             @reservation.update(driver_manager_id: driver_manager.id)
-          elsif is_student?(current_user)
+          elsif is_student?
             driver = Student.find_by(program_id: @reservation.program_id, uniqname: current_user.uniqname)
             @reservation.update(driver_id: driver.id)
           end
@@ -365,7 +365,7 @@ class ReservationsController < ApplicationController
       start_time = params[:start_time].to_datetime - 15.minute
       end_time = params[:end_time].to_datetime + 15.minute
       notice = "This and all following recurring reservations were updated."
-      if is_admin?(current_user)
+      if is_admin?
         alert = recurring_reservation.update_this_and_following(update_params, start_time, end_time, true)
         redirect_to reservation_path(@reservation), notice: notice, alert: alert
       else
@@ -418,16 +418,16 @@ class ReservationsController < ApplicationController
       no_conflict = available_edit?(@reservation.id, @reservation.car, @reservation.start_time..@reservation.end_time)
       if no_conflict
         alert = ""
-      elsif !no_conflict && is_admin?(current_user)
+      elsif !no_conflict && is_admin?
         alert = " There is a conflict with another reservation on " + show_date_with_month_name(@reservation.start_time) + "."
       else
         alert = " There is a conflict with another reservation on " + show_date_with_month_name(@reservation.start_time) + ". Please select a different time or ask admins to edit the reservation."
       end
       # for admins - always save && display message about conflict
       # for non admins - save if there is no conflict
-      if is_admin?(current_user) || !is_admin?(current_user) && no_conflict
+      if is_admin? || !is_admin? && no_conflict
         if @reservation.update(reservation_params)
-          unless is_admin?(current_user)
+          unless is_admin?
             ReservationMailer.with(reservation: @reservation, user: current_user, recurring: false).car_reservation_updated(admin: true).deliver_now
             @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id).order(created_at: :desc)
           end
@@ -541,7 +541,7 @@ class ReservationsController < ApplicationController
     ReservationMailer.with(reservation: @reservation, user: current_user, recurring: recurring).car_reservation_created(conflict_days_message).deliver_now
     if recurring and conflict_days_message.present?
       alert = conflict_days_message
-      if is_admin?(current_user)
+      if is_admin?
         alert += " drivers and passengers are notified. Please contact them in regards to the conflicts."
       else
         alert += " an email was sent to admins, and they will be in contact with you in regards to the conflicts."
@@ -587,13 +587,13 @@ class ReservationsController < ApplicationController
     end
     respond_to do |format|
       if @reservation.destroy
-        if is_admin?(current_user)
+        if is_admin?
           format.html { redirect_to reservations_url, notice: "Reservation was canceled." }
           format.json { head :no_content }
-        elsif is_manager?(current_user)
+        elsif is_manager?
           format.html { redirect_to welcome_pages_manager_url, notice: "Reservation was canceled." }
           format.json { head :no_content }
-        elsif is_student?(current_user)
+        elsif is_student?
           format.html { redirect_to welcome_pages_student_url, notice: "Reservation was canceled." }
           format.json { head :no_content }
         end
@@ -626,11 +626,11 @@ class ReservationsController < ApplicationController
     authorize @reservation
     respond_to do |format|
       if Reservation.where(id: result).destroy_all
-        if is_admin?(current_user)
+        if is_admin?
           format.turbo_stream { redirect_to reservations_url, notice: "Selected Reservation(s) were canceled." }
-        elsif is_manager?(current_user)
+        elsif is_manager?
           format.turbo_stream { redirect_to welcome_pages_manager_url, notice: "Selected Reservation(s) were canceled." }
-        elsif is_student?(current_user)
+        elsif is_student?
           format.turbo_stream { redirect_to welcome_pages_student_url, notice: "Selected Reservation(s) were canceled." }
         end
       else
@@ -721,7 +721,7 @@ class ReservationsController < ApplicationController
 
     def list_of_drivers(reservation)
       drivers = reservation.program.students.eligible_drivers.map { |d| [d.display_name, d.id.to_s + "-student"] }
-      if is_admin?(current_user)
+      if is_admin?
         manager_drivers = reservation.program.managers.eligible_drivers.map { |d| [d.display_name + " (manager)", d.id.to_s + "-manager"] }
         if reservation.program.instructor.can_reserve_car?
           manager_drivers << [reservation.program.instructor.display_name + " (instructor)", reservation.program.instructor_id.to_s + "-manager"]

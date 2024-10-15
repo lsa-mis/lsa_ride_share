@@ -165,10 +165,10 @@ class VehicleReportsController < ApplicationController
     unless @vehicle_report.approved
       respond_to do |format|
         if @vehicle_report.destroy
-          if is_admin?(current_user)
+          if is_admin?
             format.html { redirect_to vehicle_reports_url, notice: "Vehicle report was canceled." }
             format.json { head :no_content }
-          elsif is_student?(current_user)
+          elsif is_student?
             format.html { redirect_to welcome_pages_student_url, notice: "Vehicle report was canceled." }
             format.json { head :no_content }
           end

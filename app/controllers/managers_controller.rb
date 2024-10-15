@@ -66,9 +66,9 @@ class ManagersController < ApplicationController
     end
 
     def set_units
-      if is_admin?(current_user)
+      if is_admin?
       @units = Unit.where(id: session[:unit_ids]).order(:name)
-      elsif is_manager?(current_user)
+      elsif is_manager?
         manager = Manager.find_by(uniqname: current_user.uniqname)
         @units = Unit.where(id: manager.programs.pluck(:unit_id).uniq).order(:name)
       else

@@ -13,7 +13,7 @@
 <div class="grid grid-cols-1 md:grid-cols-2">
   <div>
     <div class="">
-      <% if is_student?(current_user) && vehicle_report.approved %>
+      <% if is_student? && vehicle_report.approved %>
         <p class="body-md-text status-true">
           The report is approved by admins
         </p>
@@ -157,7 +157,7 @@
 
     <%= render 'images_damage' %>
 
-    <% if is_admin?(current_user) && @vehicle_report.image_damages.attached? %>
+    <% if is_admin? && @vehicle_report.image_damages.attached? %>
       <%= turbo_frame_tag "damage_form_frame" do %>
         <%= render 'damage_form' %>
       <% end %>

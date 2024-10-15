@@ -9,7 +9,7 @@
           <div>
             <%= label_tag("driver_id_#{driver.id}", nil, class: "hidden") %>
             <%= check_box_tag "id", driver.id, nil, class: "check_box", id: "driver_id_#{driver.id}",
-            disabled: (is_student?(current_user) || is_manager?(current_user)) && !params[:edit].present?,
+            disabled: (is_student? || is_manager?) && !params[:edit].present?,
               :"data-action" => "change->driverspassengers#submitForm" %>
             <span class="check_box_text"><%= driver.display_name %></span>
           </div>

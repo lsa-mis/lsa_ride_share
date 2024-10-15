@@ -29,7 +29,7 @@
               <% end %>
             <% end %>
           </div>
-          <% if is_admin?(current_user) %>
+          <% if is_admin? %>
             <div class="tertiary_button">
               <%= link_to duplicate_path(program), data: { "turbo-frame": "_top" } do %>
                 Duplicate
