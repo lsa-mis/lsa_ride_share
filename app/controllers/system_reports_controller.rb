@@ -2,13 +2,13 @@ class SystemReportsController < ApplicationController
   before_action :auth_user
 
   def index
-    @units = Unit.where(id: current_user.unit_ids).order(:name)
+    @units = Unit.where(id: session[:unit_ids]).order(:name)
     @terms = Term.sorted
     @programs = []
     if params[:unit_id].present?
       @programs = Program.where(unit_id: params[:unit_id].to_i)
     else
-      @programs = Program.where(unit_id: current_user.unit_ids)
+      @programs = Program.where(unit_id: session[:unit_ids])
     end
     if params[:term_id].present?
       @term_id = params[:term_id].to_i
