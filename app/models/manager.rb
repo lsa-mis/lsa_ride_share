@@ -44,6 +44,10 @@ class Manager < ApplicationRecord
   end
 
   def all_programs
+    manager_all_terms + instructor_all_terms
+  end
+
+  def all_programs
     Program.where(instructor: self) + Program.joins(:managers).where('managers_programs.manager_id = ?', self)
   end
 

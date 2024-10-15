@@ -139,19 +139,23 @@ module ApplicationHelper
   end
 
   def is_super_admin?(user)
-    user.membership.include?('lsa-was-rails-devs')
+    # user.membership.include?('lsa-was-rails-devs')
+    session[:role] == "super_admin"
   end
 
   def is_admin?(user)
-    user.membership.present?
+    # user.membership.present?
+    session[:role] == "admin" || session[:role] == "super_admin"
   end
 
   def is_manager?(user)
-    Manager.find_by(uniqname: user.uniqname).present?
+    # Manager.find_by(uniqname: user.uniqname).present?
+    session[:role] == "manager"
   end
 
   def is_student?(user)
-    Student.find_by(uniqname: user.uniqname, program: Program.current_term).present?
+    # Student.find_by(uniqname: user.uniqname, program: Program.current_term).present?
+    session[:role] == "student"
   end
   
   def show_car(reservation)
@@ -888,14 +892,16 @@ module ApplicationHelper
   end
 
   def role(current_user)
-    if is_admin?(current_user)
+    if is_super_admin?(current_user)
+      " - super admin"
+    elsif is_admin?(current_user)
       " - admin"
     elsif is_manager?(current_user)
       " - manager"
     elsif is_student?(current_user)
      ""
     else
-      "none"
+      "- none"
     end
   end
 

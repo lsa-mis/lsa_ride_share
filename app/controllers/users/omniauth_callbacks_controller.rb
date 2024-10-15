@@ -41,15 +41,33 @@ def set_user
 
   if @user
     session[:user_email] = @user.email
-
-    membership = []
-    access_groups = Unit.pluck(:ldap_group) + ['lsa-was-rails-devs']
+    uniqname = @user.uniqname
+    session[:user_memberships] = []
+    access_groups = Unit.pluck(:ldap_group)
     access_groups.each do |group|
-      if  LdapLookup.is_member_of_group?(@user.uniqname, group)
-        membership.append(group)
+      if  LdapLookup.is_member_of_group?(uniqname, group)
+        session[:user_memberships].append(group)
       end
     end
-    session[:user_memberships] = membership
+    session[:unit_ids] = []
+    if LdapLookup.is_member_of_group?(uniqname, 'lsa-was-rails-devs')
+      session[:unit_ids] = Unit.all.pluck(:id)
+      session[:role] = 'super_admin'
+      # for now:
+      session[:user_memberships].append('lsa-was-rails-devs')
+    else
+      if session[:user_memberships].present?
+        session[:role] = 'admin'
+      elsif Manager.find_by(uniqname: uniqname).present?
+        session[:role] = 'manager'
+      elsif Student.find_by(uniqname: user.uniqname, program: Program.current_term).present?
+        session[:role] = 'student'
+      else
+        session[:role] = 'none'
+      end
+      session[:unit_ids] = Unit.where(ldap_group: session[:user_memberships]).pluck(:id)
+    end
+    
   end
 end
 
