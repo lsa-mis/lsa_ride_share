@@ -686,7 +686,7 @@ module ApplicationHelper
   end
 
   def allow_add_vehicle_report?(reservation, user)
-    if is_admin?(user)
+    if is_admin?
       return true
     else
       if Reservation.no_or_not_complete_vehicle_reports.exists?(reservation.id)
