@@ -28,9 +28,9 @@ class ApplicationController < ActionController::Base
       $baseURL
     elsif session[:user_memberships].present?
       programs_path
-    elsif is_manager?(resource)
+    elsif is_manager?
       welcome_pages_manager_path
-    elsif is_student?(resource)
+    elsif is_student?
       welcome_pages_student_path
     else
       root_path

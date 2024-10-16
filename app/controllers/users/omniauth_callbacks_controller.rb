@@ -53,8 +53,7 @@ def set_user
     if LdapLookup.is_member_of_group?(uniqname, 'lsa-was-rails-devs')
       session[:unit_ids] = Unit.all.pluck(:id)
       session[:role] = 'super_admin'
-      # for now:
-      session[:user_memberships].append('lsa-was-rails-devs')
+
     else
       if session[:user_memberships].present?
         session[:role] = 'admin'
