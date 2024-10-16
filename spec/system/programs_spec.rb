@@ -5,8 +5,8 @@ RSpec.describe Program, type: :system do
 	before do
     load "#{Rails.root}/spec/test_seeds.rb" 
 		user = FactoryBot.create(:user)
-    allow(LdapLookup).to receive(:is_member_of_group?).with(anything, anything).and_return(true)
-    allow(LdapLookup).to receive(:get_simple_name).with(anything).and_return(true)
+    allow(LdapLookup).to receive(:is_member_of_group?).with(anything, "lsa-was-rails-devs").and_return(false)
+    allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, Unit.first.ldap_group).and_return(true)
 		mock_login(user)
 	end
 
@@ -15,6 +15,7 @@ RSpec.describe Program, type: :system do
       VCR.use_cassette "program" do
         unit = Unit.first
         uniqname = 'fakeuniqname'
+        # uniqname is not a member of any admin groups
         allow(LdapLookup).to receive(:is_member_of_group?).with(uniqname, anything).and_return(false)
         allow(LdapLookup).to receive(:uid_exist?).with(uniqname).and_return(true)
         allow(LdapLookup).to receive(:get_simple_name).with(uniqname).and_return("Rita Barvinok")
