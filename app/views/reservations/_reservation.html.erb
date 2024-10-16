@@ -14,7 +14,7 @@
       </p>
       <p id="car" class="body-lg-text ml-2 inline">
         <% if reservation.car.present? %>
-          <% if policy(Car).index? %>
+          <% if policy(Car).show? %>
             <%= link_to show_car(reservation), car_path(reservation.car), class: "link_to" %>
           <% else %>
             <%= show_car(reservation) %>
