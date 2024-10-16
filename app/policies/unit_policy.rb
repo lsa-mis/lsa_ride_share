@@ -3,11 +3,11 @@
 class UnitPolicy < ApplicationPolicy
 
   def index?
-    super_admin?
+    is_super_admin?
   end
 
   def create?
-    super_admin?
+    is_super_admin?
   end
 
   def new?
@@ -15,7 +15,7 @@ class UnitPolicy < ApplicationPolicy
   end
 
   def update?
-    super_admin?
+    is_super_admin?
   end
 
   def edit?
@@ -23,7 +23,7 @@ class UnitPolicy < ApplicationPolicy
   end
 
   def destroy?
-    super_admin?
+    is_super_admin?
   end
 
 end

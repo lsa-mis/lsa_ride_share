@@ -43,13 +43,13 @@ class ApplicationPolicy
     user_in_access_group?
   end
 
-  def admin?
+  def is_admin?
     # units_all_ids = Unit.all.pluck(:id)
     # @user.unit_ids && (@user.unit_ids & units_all_ids).any?
     @role == "admin"
   end
 
-  def super_admin?
+  def is_super_admin?
     # @user.membership && @user.membership.include?('lsa-was-rails-devs')
     @role == "super_admin"
   end
@@ -65,7 +65,7 @@ class ApplicationPolicy
   end
 
   def user_in_access_group?
-    admin? || super_admin?
+    is_admin? || is_super_admin?
   end
 
 end
