@@ -5,6 +5,9 @@
   </head>
   <body>
     <p>
+      Please email <%= @unit_email %> or call the office at: <%= @contact_phone %> if you have any questions.
+    </p>
+    <p>
       <%= @cancel_message %>
     </p>
     <p>
@@ -34,11 +37,7 @@
       </ul>
     </p>
     <p>
-      You can email <%= @unit_email %> or call the office at: <%= @contact_phone %>.
-    </p>
-    <p>
-      To view/modify/cancel reservations, click here
-      <%= link_to "LSA RideShare", all_root_url %>
+      Visit <%= link_to "LSA RideShare", all_root_url %> to view, modify, or cancel reservations.
     </p>
   </body>
 </html>
