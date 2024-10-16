@@ -36,10 +36,6 @@ class ProgramPolicy < ApplicationPolicy
     update?
   end
 
-  def destroy?
-    false
-  end
-
   def get_programs_list?
     create?
   end
