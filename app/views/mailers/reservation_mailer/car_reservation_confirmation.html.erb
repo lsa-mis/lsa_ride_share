@@ -5,6 +5,9 @@
   </head>
   <body>
     <p>
+      Please email <%= @unit_email %> or call the office at: <%= @contact_phone %> if you have any questions.
+    </p>
+    <p>
       Your transportation reservation for (<%= "#{@start_time} - #{@end_time}" %>) has been received and will be reviewed within 2 business days. 
       You will receive a confirmation email when approved. If it can not be approved as is, we modify the request so that you have transportation, where possible. If that 
       is not possible, your request will be cancelled. Either way, you will receive an email indicating this.
@@ -50,11 +53,7 @@
       <% end %>
     </p>
     <p>
-      You can email <%= @unit_email %> or call the office at: <%= @contact_phone %>.
-    </p>
-    <p>
-      To view/modify/cancel reservations, click here
-      <%= link_to "LSA RideShare", all_root_url %>
+      Visit <%= link_to "LSA RideShare", all_root_url %> to view, modify, or cancel reservations.
     </p>
     <%= render 'garage_service' %>
   </body>
