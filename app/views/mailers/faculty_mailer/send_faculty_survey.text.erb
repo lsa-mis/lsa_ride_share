@@ -1,9 +1,9 @@
 RideShare program: Please fill out the following survey.
 
+Please email <%= @unit_email %> or call the office at: <%= @contact_phone %> if you have any questions.
+
 Dear <%= "#{@faculty_survey.first_name}" "#{@faculty_survey.last_name}" %>,
 
 Please fill out the following form <%= link_to "#{@faculty_survey.title}", survey_url(@faculty_survey) %>
 
 After submitting the survey please add sites to the program that would be created from the survey.
-
-You can email <%= @unit_email %> or call the office at: <%= @contact_phone %>.

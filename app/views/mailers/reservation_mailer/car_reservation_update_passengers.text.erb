@@ -1,5 +1,6 @@
-
 The passengers list for the transportation reservation has been updated.
+
+Please email <%= @unit_email %> or call the office at: <%= @contact_phone %> if you have any questions.
 
 Reservation for:  <%= link_to "#{@reservation.display_name}", reservation_url(@reservation) %>
 ================================================================================================
@@ -26,8 +27,7 @@ Non UofM Passengers: <%= @non_uofm_passengers %>
 
 You can email <%= @unit_email %> or call the office at: <%= @contact_phone %>.
 
-To view/modify/cancel reservations, click here
-<%= link_to "LSA RideShare",  all_root_url %>
+Visit <%= link_to "LSA RideShare", all_root_url %> to view, modify, or cancel reservations.
 
 Vehicle problems or breakdowns?
 Mon-Fri 7:00am-12:30am call Garage Services at 734-764-2490

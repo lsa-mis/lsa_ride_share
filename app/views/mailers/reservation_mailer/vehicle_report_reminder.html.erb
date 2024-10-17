@@ -4,7 +4,10 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-  <p>Hello,</p>
+    <p>
+      Please email <%= @unit_email %> or call the office at: <%= @contact_phone %> if you have any questions.
+    </p>
+    <p>Hello,</p>
     <p>
     Our records indicate that you had a reservation for today, <%= Date.today.strftime("%A, %d %B %Y")  %> at <%= @start_time.partition(' ').last %> going to <%= @reservation.site.title %>
     and haven't yet completed a Vehicle Report. If you didn't use the vehicle please let us know so that the reservation can be canceled. 
@@ -13,9 +16,6 @@
     <p>
       Thank you,<br>
       Your <%= @reservation.program.unit.name %> RideShare Team
-    </p>
-    <p>
-      You can email <%= @unit_email %> or call the office at: <%= @contact_phone %>.
     </p>
     <p>
       Visit <%= link_to "LSA RideShare", all_root_url %> to view, modify, or cancel reservations.
