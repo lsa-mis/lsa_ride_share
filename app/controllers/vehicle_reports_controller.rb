@@ -21,11 +21,11 @@ class VehicleReportsController < ApplicationController
       program_ids = Program.current_term.pluck(:id)
     end
     reservation_ids = Reservation.where(program_id: program_ids)
-    @vehicle_reports =  @vehicle_reports.where(reservation_id: reservation_ids)
+    @vehicle_reports =  @vehicle_reports.where(reservation_id: reservation_ids).page(params[:page])
 
     if params[:car_id].present?
       ids = Reservation.where(car_id: params[:car_id]).pluck(:id)
-      @vehicle_reports = @vehicle_reports.where(reservation_id: ids)
+      @vehicle_reports = @vehicle_reports.where(reservation_id: ids).page(params[:page])
     end
     authorize @vehicle_reports
   end

@@ -68,6 +68,8 @@ gem 'simple_calendar', '~> 2.4', '>= 2.4.3'
 gem 'requestjs-rails', '~> 0.0.10'
 gem 'recurring_select', '~> 3.0', '>= 3.0.1'
 gem 'repost'
+# Use Kaminari for pagination
+gem "kaminari"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
