@@ -9,7 +9,7 @@
 #  car_id                   :bigint
 #  start_time               :datetime
 #  end_time                 :datetime
-#  recurring                :string
+#  recurring                :text
 #  driver_id                :bigint
 #  driver_phone             :string
 #  backup_driver_id         :bigint
@@ -19,15 +19,25 @@
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
 #  reserved_by              :integer
+#  approved                 :boolean          default false
+#  non_uofm_passengers      :string
+#  number_of_non_uofm_passengers :integer
+#  driver_manager_id        :bigint
+#  prev                     :bigint
+#  next                     :bigint
+#  until_date               :date
 #
+
 FactoryBot.define do
   factory :reservation do
-    status { "MyString" }
-    start_time { "2023-02-14 19:56:23" }
-    end_time { "2023-02-14 19:56:23" }
-    recurring { "MyString" }
-    driver_phone { "MyString" }
-    backup_driver_phone { "MyString" }
-    number_of_people_on_trip { 1 }
+    start_time { DateTime.now }
+    end_time { DateTime.now + 4.hour }
+    recurring { "" }
+    number_of_people_on_trip { 3 }
+    updated_by { FactoryBot.create(:user).id }
+    reserved_by { FactoryBot.create(:user).id }
+    association :program
+    association :site
+    association :car
   end
 end
