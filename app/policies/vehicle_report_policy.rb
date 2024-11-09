@@ -7,16 +7,16 @@ class VehicleReportPolicy < ApplicationPolicy
   end
 
   def show?
-    return true if user_in_access_group? 
-    return true if is_vehicle_report_student?
+    return true if user_in_access_group?
     return true if is_vehicle_report_manager?
+    return true if is_vehicle_report_student?
     return false
   end
 
   def create?
-    return true if user_in_access_group? 
-    return true if can_student_create_report?
+    return true if user_in_access_group?
     return true if can_manager_create_report?
+    return true if can_student_create_report?
     return false
   end
 
@@ -25,9 +25,9 @@ class VehicleReportPolicy < ApplicationPolicy
   end
   
   def update?
-    return true if user_in_access_group? 
-    return true if is_vehicle_report_student?
+    return true if user_in_access_group?
     return true if is_vehicle_report_manager?
+    return true if is_vehicle_report_student?
     return false
   end
 
