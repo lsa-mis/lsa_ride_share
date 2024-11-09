@@ -7,30 +7,27 @@ class VehicleReportPolicy < ApplicationPolicy
   end
 
   def show?
-    return true if user_in_access_group? 
-    return true if is_vehicle_report_student?
+    return true if user_in_access_group?
     return true if is_vehicle_report_manager?
+    return true if is_vehicle_report_student?
     return false
   end
 
   def create?
-    return true if user_in_access_group? 
-    return true if can_student_save_report?
-    return true if can_manager_save_report?
+    return true if user_in_access_group?
+    return true if can_manager_create_report?
+    return true if can_student_create_report?
     return false
   end
 
   def new?
-    return true if user_in_access_group? 
-    return true if can_student_create_report?
-    return true if can_manager_create_report?
-    return false
+    create?
   end
   
   def update?
-    return true if user_in_access_group? 
-    return true if is_vehicle_report_student?
+    return true if user_in_access_group?
     return true if is_vehicle_report_manager?
+    return true if is_vehicle_report_student?
     return false
   end
 
@@ -88,21 +85,11 @@ class VehicleReportPolicy < ApplicationPolicy
     return false
   end
 
-  def can_student_save_report?
-    program = Reservation.find(params[:vehicle_report][:reservation_id]).program
-    Student.find_by(program_id: program, uniqname: @user.uniqname).present?
-  end
-
-  def can_manager_save_report?
-    program = Reservation.find(params[:vehicle_report][:reservation_id]).program
-    managers = program.all_managers
-    managers.include?(@user.uniqname)
-  end
-
   def is_vehicle_report_student?
     report = VehicleReport.find(params[:id])
     reservation = report.reservation
     student = Student.find_by(program_id: reservation.program, uniqname: @user.uniqname)
+    return false unless student
     if reservation.passengers.include?(student) || reservation.driver == student || reservation.backup_driver == student
       return true
     else
@@ -111,9 +98,10 @@ class VehicleReportPolicy < ApplicationPolicy
   end
 
   def is_vehicle_report_manager?
-    return false unless reservation.driver_manager_id.present?
     report = VehicleReport.find(params[:id])
-    managers = report.reservation.program.all_managers
+    reservation = report.reservation
+    return false unless reservation.driver_manager_id.present?
+    managers = reservation.program.all_managers
     if managers.include?(reservation.driver_manager.uniqname)
       return true
     else
