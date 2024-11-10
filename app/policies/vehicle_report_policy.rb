@@ -15,8 +15,8 @@ class VehicleReportPolicy < ApplicationPolicy
 
   def create?
     return true if user_in_access_group?
-    return true if can_manager_create_report?
-    return true if can_student_create_report?
+    return true if can_manager_create_report?(Reservation.find(params[:reservation_id]))
+    return true if can_student_create_report?(Reservation.find(params[:reservation_id]))
     return false
   end
 
@@ -63,8 +63,7 @@ class VehicleReportPolicy < ApplicationPolicy
     user_in_access_group?
   end
 
-  def can_student_create_report?
-    reservation = Reservation.find(params[:reservation_id])
+  def can_student_create_report?(reservation)
     student = Student.find_by(program_id: reservation.program, uniqname: @user.uniqname)
     return false unless student.present?
     if reservation.passengers.include?(student) || reservation.driver == student || reservation.backup_driver == student
@@ -74,8 +73,7 @@ class VehicleReportPolicy < ApplicationPolicy
     end
   end
 
-  def can_manager_create_report?
-    reservation = Reservation.find(params[:reservation_id])
+  def can_manager_create_report?(reservation)
     manager = Manager.find_by(uniqname: @user.uniqname)
     if reservation.driver_manager_id.present?
       return true if reservation.driver_manager == manager
@@ -87,26 +85,12 @@ class VehicleReportPolicy < ApplicationPolicy
 
   def is_vehicle_report_student?
     report = VehicleReport.find(params[:id])
-    reservation = report.reservation
-    student = Student.find_by(program_id: reservation.program, uniqname: @user.uniqname)
-    return false unless student
-    if reservation.passengers.include?(student) || reservation.driver == student || reservation.backup_driver == student
-      return true
-    else
-      return false
-    end
+    can_student_create_report?(report.reservation)
   end
 
   def is_vehicle_report_manager?
     report = VehicleReport.find(params[:id])
-    reservation = report.reservation
-    return false unless reservation.driver_manager_id.present?
-    managers = reservation.program.all_managers
-    if managers.include?(reservation.driver_manager.uniqname)
-      return true
-    else
-      return false
-    end
+    can_manager_create_report?(report.reservation)
   end
 
 end
