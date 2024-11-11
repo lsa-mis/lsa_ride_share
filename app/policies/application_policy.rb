@@ -39,10 +39,6 @@ class ApplicationPolicy
     false
   end
 
-  def get_instructor_id?
-    user_in_access_group?
-  end
-
   def is_admin?
     # units_all_ids = Unit.all.pluck(:id)
     # @user.unit_ids && (@user.unit_ids & units_all_ids).any?
