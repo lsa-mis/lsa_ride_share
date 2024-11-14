@@ -603,7 +603,7 @@ class ReservationsController < ApplicationController
         return false
       end
     else
-      flash.now[:alert] = "Can not cancel the reservation because it has a vehicle report."
+      flash.now[:alert] = "The reservation has a vehicle report and can't be canceled."
       return
     end
   end
@@ -623,9 +623,9 @@ class ReservationsController < ApplicationController
     result_with_vehicle_reports = result.select { |id| Reservation.find(id).vehicle_report.present?}
     if result_with_vehicle_reports.present?
       if cancel_type == "one"
-        alert = "Can not cancel the reservation because it has a vehicle report."
+        alert = "The reservation has a vehicle report and can't be canceled."
       else
-        alert = "Can not cancel recurring reservations because reservations with #{result_with_vehicle_reports} ID(s) have vehicle reports."
+        alert = "Reservations with #{result_with_vehicle_reports} ID(s) have vehicle reports and can't be canceled."
       end
       flash.now[:alert] = alert
       return
