@@ -8,10 +8,8 @@
           <th class="header_th">Site</th>
           <th class="header_th">Program</th>
           <th class="header_th">Reserved By</th>
-          <th class="header_th">Vehicle Report Date</th>
+          <th class="header_th">Vehicle Report Update At</th>
           <th class="header_th">Status (student)</th>
-          <th class="header_th">Updated By</th>
-
         </tr>
       </thead>
       <tbody>
@@ -27,17 +25,14 @@
               <%= reservation.program.display_name %>
             </td>
             <td class="mi_tbody_td">
-              <%= reservation.reserved_by %>
+              <%= show_user_name_by_id(reservation.reserved_by) %>
             </td>
             <% if reservation.vehicle_report.present? %>
               <td class="mi_tbody_td">
-                <%= link_to show_date(reservation.vehicle_report.updated_at), reservation_vehicle_report_path(reservation.vehicle_report), class: "link_to", data: { "turbo-frame": "_top" } %>
+                <%= link_to show_date(reservation.vehicle_report.updated_at), vehicle_report_path(reservation.vehicle_report), class: "link_to", data: { "turbo-frame": "_top" } %>
               </td>
               <td class="mi_tbody_td status-<%= reservation.vehicle_report.student_status %>">
                 <%= show_vehicle_report_student_status(reservation.vehicle_report) %>
-              </td>
-              <td class="mi_tbody_td">
-                <%= show_user_name_by_id(reservation.vehicle_report.updated_by)  %>
               </td>
             <% else %>
               <tr></tr><tr></tr><tr></tr>
