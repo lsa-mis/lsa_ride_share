@@ -44,7 +44,7 @@ class Reservation < ApplicationRecord
   has_many :passengers, through: :reservation_passengers, source: :student
   has_many :reservation_passengers_managers
   has_many :passengers_managers, through: :reservation_passengers_managers, source: :manager
-  has_one :vehicle_report, dependent: :destroy
+  has_one :vehicle_report, dependent: :restrict_with_exception
   before_update :check_number_of_non_uofm_passengers
   before_create :check_recurring
   
