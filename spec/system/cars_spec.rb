@@ -12,7 +12,7 @@ RSpec.describe Car, type: :system do
 
 	context "create new car" do
     it 'is valid input' do
-      VCR.use_cassette "car" do
+      # VCR.use_cassette "car" do
         unit = Unit.first
         visit cars_path
         click_on "New Car"
@@ -26,7 +26,7 @@ RSpec.describe Car, type: :system do
         select "Thayer 1A", :from => "parking_spot_select"
         click_on "Create Car"
         expect(page).to have_content("A new car was added.")
-      end
+      # end
     end
   end
 
