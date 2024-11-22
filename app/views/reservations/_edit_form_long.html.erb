@@ -29,6 +29,7 @@
         <%= @reservation.program.display_name_with_title %>
       </p>
     </div>
+    <%= form.hidden_field :updated_by, value: current_user.id %>
     <input type="hidden" id="unit_id" name="unit_id" value=<%= @unit_id %> data-editlongreservation-target="unit">
  
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">

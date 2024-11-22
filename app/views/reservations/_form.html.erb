@@ -11,6 +11,7 @@
     </div>
   <% end %>
 
+  <%= form.hidden_field :updated_by, value: current_user.id %>
   <%= form.label :unit_id, 'Unit *', class: "hidden" %>
   <div class="error_text mt-2" id="required_fields"></div>
 
