@@ -60,15 +60,15 @@ module ApplicationHelper
   end
 
   def show_user_name_by_id(id)
-    User.find(id).display_name_email
+    id ? User.find(id).display_name_email : "unknown"
   end
 
   def updated_on_and_by(resource)
-    return "Updated on " + resource.updated_at.strftime('%m/%d/%Y') + " by " + show_user_name_by_id(resource.updated_by)
+    return "Updated on " + resource.updated_at.strftime('%m/%d/%Y at %I:%M%p') + " by " + show_user_name_by_id(resource&.updated_by)
   end
 
   def reserved_on_and_by(resource)
-    return "Reserved on " + resource.created_at.strftime('%m/%d/%Y') + " by " + show_user_name_by_id(resource.reserved_by)
+    return "Reserved on " + resource.created_at.strftime('%m/%d/%Y at %I:%M%p') + " by " + show_user_name_by_id(resource.reserved_by)
   end
 
   def email_address(student)
