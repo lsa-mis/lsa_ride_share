@@ -86,7 +86,7 @@ class Reservations::PassengersController < ApplicationController
     # remove from passengers
     if params[:recurring] == "true"
       recurring_reservation =  RecurringReservation.new(@reservation)
-      note = recurring_reservation.make_driver_following_reservations(passenger, model)
+      note = recurring_reservation.make_driver_following_reservations(passenger, model, current_user)
       recurring = true
       if note 
         flash.now[:alert] = note
@@ -105,11 +105,11 @@ class Reservations::PassengersController < ApplicationController
       end
       # add as a driver
       if model == 'student'
-        unless @reservation.update(driver_id: passenger.id, driver_manager_id: nil)
+        unless @reservation.update(driver_id: passenger.id, driver_manager_id: nil, updated_by: current_user.id)
           flash.now[:alert] = " Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". Please report an issue."
         end
       else
-        unless @reservation.update(driver_manager_id: passenger.id, driver_id: nil)
+        unless @reservation.update(driver_manager_id: passenger.id, driver_id: nil, updated_by: current_user.id)
           flash.now[:alert] = " Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". Please report an issue."
         end
       end
@@ -140,10 +140,10 @@ class Reservations::PassengersController < ApplicationController
       elsif params[:recurring] == "true"
         recurring_reservation = RecurringReservation.new(@reservation)
         recurring = true
-        notice = recurring_reservation.add_driver(driver, model)
+        notice = recurring_reservation.add_driver(driver, model, driver_emails, current_user)
       else
         if model == 'student'
-          if @reservation.update(driver_id: driver.id, driver_manager_id: nil)
+          if @reservation.update(driver_id: driver.id, driver_manager_id: nil, updated_by: current_user.id)
             #  new drivers emails
             driver_emails << reservation_drivers_emails
             ReservationMailer.with(reservation: @reservation, user: current_user, recurring: recurring).car_reservation_drivers_edited(driver_emails).deliver_now
@@ -151,7 +151,7 @@ class Reservations::PassengersController < ApplicationController
             redirect_back_or_default(" Reservation was not updated: " + @reservation.errors.full_messages.join(',') + ". Please report an issue.", true)
           end
         else
-          if @reservation.update(driver_manager_id: driver.id, driver_id: nil)
+          if @reservation.update(driver_manager_id: driver.id, driver_id: nil, updated_by: current_user.id)
             #  new drivers emails
             driver_emails << reservation_drivers_emails
             ReservationMailer.with(reservation: @reservation, user: current_user, recurring: recurring).car_reservation_drivers_edited(driver_emails).deliver_now
@@ -163,11 +163,11 @@ class Reservations::PassengersController < ApplicationController
     else
       #  new reservation; no need to check if it's recurring
       if model == 'student'
-        unless @reservation.update(driver_id: driver.id, driver_manager_id: nil)
+        unless @reservation.update(driver_id: driver.id, driver_manager_id: nil, updated_by: current_user.id)
           redirect_back_or_default(" Reservation was not updated: " + @reservation.errors.full_messages.join(',') + ". Please report an issue.", true)
         end
       else
-        unless @reservation.update(driver_manager_id: driver.id, driver_id: nil)
+        unless @reservation.update(driver_manager_id: driver.id, driver_id: nil, updated_by: current_user.id)
           redirect_back_or_default(" Reservation was not updated: " + @reservation.errors.full_messages.join(',') + ". Please report an issue.", true)
         end
       end
