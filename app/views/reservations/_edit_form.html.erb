@@ -19,6 +19,7 @@
       <%= @reservation.program.term.name %>
     </p>
   </div>
+  <%= form.hidden_field :updated_by, value: current_user.id %>
   <input type="hidden" id="unit_id" name="unit_id" value=<%= @unit_id %> data-editreservation-target="unit">
 
   <div class="py-2">
