@@ -360,6 +360,7 @@ class ReservationsController < ApplicationController
       recurring_reservation = RecurringReservation.new(@reservation)
       update_params = {}
       update_params["site_id"] = reservation_params[:site_id]
+      update_params["updated_by"] = reservation_params[:updated_by]
       update_params["car_id"] = params[:car_id]
       update_params["number_of_people_on_trip"] = params[:number_of_people_on_trip]
       start_time = params[:start_time].to_datetime - 15.minute
@@ -782,6 +783,6 @@ class ReservationsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def reservation_params
       params.require(:reservation).permit(:status, :start_time, :end_time, :recurring, :driver_id, :driver_manager_id, :driver_phone, :backup_driver_id, :backup_driver_phone, 
-      :number_of_people_on_trip, :program_id, :site_id, :car_id, :reserved_by, :approved, :non_uofm_passengers, :number_of_non_uofm_passengers, :until_date)
+      :number_of_people_on_trip, :program_id, :site_id, :car_id, :reserved_by, :approved, :non_uofm_passengers, :number_of_non_uofm_passengers, :until_date, :updated_by)
     end
 end
