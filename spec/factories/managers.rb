@@ -15,7 +15,7 @@
 
 FactoryBot.define do
   factory :manager do
-    uniqname { Faker::String.random(length: 3..8) }
+    uniqname { Faker::Alphanumeric.alpha(number: 8) }
     first_name { Faker::Name.first_name }
     last_name { Faker::Name.last_name }
     updated_by { Faker::Types.rb_integer }

@@ -3,8 +3,7 @@
 class ConfigQuestionPolicy < ApplicationPolicy
 
   def index?
-    fail
-    @user.uniqname == FacultySurvey.find(@record[0].faculty_survey_id).uniqname || @unit_ids.include?(FacultySurvey.find(@record[0].faculty_survey_id).unit_id)
+    @user.uniqname == FacultySurvey.find(@record[0].faculty_survey_id).uniqname || (@unit_ids&.include?(FacultySurvey.find(@record[0].faculty_survey_id).unit_id) && user_in_access_group?)
   end
 
   def create?
