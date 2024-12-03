@@ -22,5 +22,11 @@ FactoryBot.define do
     state { Faker::Address.state }
     zip_code { Faker::Address.zip }
     association :unit
+
+    factory :site_with_contact do
+      after(:create) do |site|
+        create(:contact, site: site)
+      end
+    end
   end
 end
