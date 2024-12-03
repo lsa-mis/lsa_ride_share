@@ -7,6 +7,7 @@ class FacultySurveyPolicy < ApplicationPolicy
   end
 
   def surveys_index?
+    return false unless is_manager?
     @user.uniqname == @record[0].uniqname || @unit_ids.include?(@record.unit_id)
   end
 
