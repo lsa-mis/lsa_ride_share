@@ -36,5 +36,11 @@ FactoryBot.define do
     association :instructor, factory: :manager
     association :unit
     association :term
+
+    factory :program_with_site do
+      after(:create) do |program|
+        create(:site, program: program)
+      end
+    end
   end
 end
