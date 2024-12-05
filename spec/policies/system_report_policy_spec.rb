@@ -20,14 +20,14 @@ RSpec.describe SystemReportPolicy, type: :policy do
   context 'with manager role' do
     subject { described_class.new({ user: user, role: "manager" }, :system_report) }
 
-    it { is_expected.to forbid_actions(%i[is_super_admin is_admin is_student index run_report]) }
+    it { is_expected.to forbid_actions(%i[is_super_admin is_admin is_student user_in_access_group index run_report]) }
     it { is_expected.to permit_only_actions(%i[is_manager]) }
   end
 
   context 'with student role' do
     subject { described_class.new({ user: user, role: "student" }, :system_report) }
 
-    it { is_expected.to forbid_actions(%i[is_super_admin is_admin is_manager index run_report]) }
+    it { is_expected.to forbid_actions(%i[is_super_admin is_admin is_manager user_in_access_group index run_report]) }
     it { is_expected.to permit_only_actions(%i[is_student]) }
   end
 

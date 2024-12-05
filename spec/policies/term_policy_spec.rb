@@ -21,14 +21,14 @@ RSpec.describe TermPolicy, type: :policy do
   context 'with manager role' do
     subject { described_class.new({ user: user, role: "manager" }, term) }
 
-    it { is_expected.to forbid_actions(%i[is_super_admin is_admin is_student index show create new update edit destroy]) }
+    it { is_expected.to forbid_actions(%i[is_super_admin is_admin is_student user_in_access_group index show create new update edit destroy]) }
     it { is_expected.to permit_only_actions(%i[is_manager]) }
   end
 
   context 'with student role' do
     subject { described_class.new({ user: user, role: "student" }, term) }
 
-    it { is_expected.to forbid_actions(%i[is_super_admin is_admin is_manager index show create new update edit destroy]) }
+    it { is_expected.to forbid_actions(%i[is_super_admin is_admin is_manager user_in_access_group index show create new update edit destroy]) }
     it { is_expected.to permit_only_actions(%i[is_student]) }
   end
 

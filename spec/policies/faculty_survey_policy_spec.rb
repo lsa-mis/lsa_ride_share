@@ -24,7 +24,7 @@ RSpec.describe FacultySurveyPolicy, type: :policy do
     let(:faculty_survey) { FactoryBot.create(:faculty_survey, uniqname: manager.uniqname) }
     subject { described_class.new({ user: manager, role: "manager", unit_ids: [faculty_survey.unit_id] }, [faculty_survey]) }
 
-    it { is_expected.to forbid_actions(%i[is_super_admin is_admin is_student index create new update edit send_faculty_survey_email destroy]) }
+    it { is_expected.to forbid_actions(%i[is_super_admin is_admin is_student user_in_access_group index create new update edit send_faculty_survey_email destroy]) }
     it { is_expected.to permit_only_actions(%i[is_manager surveys_index]) }
   end
 
@@ -34,7 +34,7 @@ RSpec.describe FacultySurveyPolicy, type: :policy do
     let(:faculty_survey) { FactoryBot.create(:faculty_survey, unit: Unit.first) }
     subject { described_class.new({ user: student, role: "student", unit_ids: [faculty_survey.unit_id] }, faculty_survey) }
 
-    it { is_expected.to forbid_actions(%i[is_super_admin is_admin is_manager index surveys_index create new update edit send_faculty_survey_email destroy]) }
+    it { is_expected.to forbid_actions(%i[is_super_admin is_admin is_manager user_in_access_group index surveys_index create new update edit send_faculty_survey_email destroy]) }
     it { is_expected.to permit_only_actions(%i[is_student]) }
   end
 

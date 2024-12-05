@@ -48,7 +48,7 @@ RSpec.describe ReservationPolicy, type: :policy do
   context 'with manager role' do
     subject { described_class.new({ user: user_manager, role: "manager", params: {unit_id: program.unit.id} }, reservation_manager) }
 
-    it { is_expected.to forbid_actions(%i[is_super_admin is_admin is_student add_drivers_later index week_calendar
+    it { is_expected.to forbid_actions(%i[is_super_admin is_admin is_student user_in_access_group add_drivers_later index week_calendar
       day_reservations approve_all_recurring selected_reservations send_email_to_selected_reservations send_reservation_updated_email]) }
     it { is_expected.to permit_only_actions(%i[is_manager show create new new_long update edit edit_long 
       get_available_cars get_available_cars_long no_car_all_times edit_change_day change_start_end_day finish_reservation 
@@ -58,7 +58,7 @@ RSpec.describe ReservationPolicy, type: :policy do
 
   context 'with student role' do
     subject { described_class.new({ user: user_student, role: "student", params: {unit_id: program.unit.id} }, reservation_student) }
-    it { is_expected.to forbid_actions(%i[is_super_admin is_admin is_manager add_drivers_later index week_calendar
+    it { is_expected.to forbid_actions(%i[is_super_admin is_admin is_manager user_in_access_group add_drivers_later index week_calendar
       day_reservations approve_all_recurring selected_reservations send_email_to_selected_reservations send_reservation_updated_email]) }
     it { is_expected.to permit_only_actions(%i[is_student show create new new_long update edit edit_long 
       get_available_cars get_available_cars_long no_car_all_times edit_change_day change_start_end_day finish_reservation 

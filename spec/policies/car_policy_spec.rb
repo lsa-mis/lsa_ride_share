@@ -21,14 +21,14 @@ RSpec.describe CarPolicy, type: :policy do
   context 'with manager role' do
     subject { described_class.new({ user: user, role: "manager" }, car) }
 
-    it { is_expected.to forbid_actions(%i[is_super_admin is_admin is_student index create new update edit get_parking_locations delete_file]) }
+    it { is_expected.to forbid_actions(%i[is_super_admin is_admin is_student user_in_access_group index create new update edit get_parking_locations delete_file]) }
     it { is_expected.to permit_only_actions(%i[is_manager show]) }
   end
 
   context 'with student role' do
     subject { described_class.new({ user: user, role: "student" }, car) }
 
-    it { is_expected.to forbid_actions(%i[is_super_admin is_admin is_manager index create new update edit get_parking_locations delete_file]) }
+    it { is_expected.to forbid_actions(%i[is_super_admin is_admin is_manager user_in_access_group index create new update edit get_parking_locations delete_file]) }
     it { is_expected.to permit_only_actions(%i[is_student show]) }
   end
 

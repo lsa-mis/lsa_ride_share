@@ -24,7 +24,7 @@ RSpec.describe ContactPolicy, type: :policy do
     let(:site_with_contacts) { FactoryBot.create(:site_with_contact) }
     subject { described_class.new({ user: manager, role: "manager", unit_ids: [site_with_contacts.unit_id] }, site_with_contacts.contacts) }
 
-    it { is_expected.to forbid_actions(%i[is_super_admin is_admin is_student index show create new update edit destroy]) }
+    it { is_expected.to forbid_actions(%i[is_super_admin is_admin is_student user_in_access_group index show create new update edit destroy]) }
     it { is_expected.to permit_only_actions(%i[is_manager]) }
   end
 
@@ -34,7 +34,7 @@ RSpec.describe ContactPolicy, type: :policy do
     let(:site_with_contacts) { FactoryBot.create(:site_with_contact, unit: Unit.first) }
     subject { described_class.new({ user: student, role: "student", unit_ids: [site_with_contacts.unit_id] }, site_with_contacts.contacts) }
 
-    it { is_expected.to forbid_actions(%i[is_super_admin is_admin is_manager index create new update edit destroy]) }
+    it { is_expected.to forbid_actions(%i[is_super_admin is_admin is_manager user_in_access_group index create new update edit destroy]) }
     it { is_expected.to permit_only_actions(%i[is_student]) }
   end
 
