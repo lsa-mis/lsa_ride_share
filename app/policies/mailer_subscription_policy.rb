@@ -8,8 +8,20 @@ class MailerSubscriptionPolicy < ApplicationPolicy
     true
   end
 
+  def new?
+    create?
+  end
+
   def update?
-    user.id == record.user_id
+    if record.persisted?
+      user.id == record.user_id
+    else 
+      false
+    end
+  end
+
+  def edit?
+    update?
   end
 
 end
