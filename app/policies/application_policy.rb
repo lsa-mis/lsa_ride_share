@@ -39,6 +39,8 @@ class ApplicationPolicy
     false
   end
 
+  private
+  
   def is_admin?
     # units_all_ids = Unit.all.pluck(:id)
     # @user.unit_ids && (@user.unit_ids & units_all_ids).any?
