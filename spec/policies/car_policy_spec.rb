@@ -7,29 +7,29 @@ RSpec.describe CarPolicy, type: :policy do
   context 'with super_admin role' do
     subject { described_class.new({ user: user, role: "super_admin" }, car) }
 
-    it { is_expected.to forbid_actions(%i[is_admin is_student is_manager]) }
-    it { is_expected.to permit_only_actions(%i[is_super_admin user_in_access_group index show create new update edit get_parking_locations delete_file]) }
+    it { is_expected.to forbid_actions(%i[]) }
+    it { is_expected.to permit_only_actions(%i[index show create new update edit get_parking_locations delete_file]) }
   end
 
   context 'with admin role' do
     subject { described_class.new({ user: user, role: "admin" }, car) }
 
-    it { is_expected.to forbid_actions(%i[is_super_admin is_student is_manager]) }
-    it { is_expected.to permit_only_actions(%i[is_admin user_in_access_group index show create new update edit get_parking_locations delete_file]) }
+    it { is_expected.to forbid_actions(%i[]) }
+    it { is_expected.to permit_only_actions(%i[index show create new update edit get_parking_locations delete_file]) }
   end
 
   context 'with manager role' do
     subject { described_class.new({ user: user, role: "manager" }, car) }
 
-    it { is_expected.to forbid_actions(%i[is_super_admin is_admin is_student user_in_access_group index create new update edit get_parking_locations delete_file]) }
-    it { is_expected.to permit_only_actions(%i[is_manager show]) }
+    it { is_expected.to forbid_actions(%i[index create new update edit get_parking_locations delete_file]) }
+    it { is_expected.to permit_only_actions(%i[show]) }
   end
 
   context 'with student role' do
     subject { described_class.new({ user: user, role: "student" }, car) }
 
-    it { is_expected.to forbid_actions(%i[is_super_admin is_admin is_manager user_in_access_group index create new update edit get_parking_locations delete_file]) }
-    it { is_expected.to permit_only_actions(%i[is_student show]) }
+    it { is_expected.to forbid_actions(%i[index create new update edit get_parking_locations delete_file]) }
+    it { is_expected.to permit_only_actions(%i[show]) }
   end
 
   context 'with no role' do

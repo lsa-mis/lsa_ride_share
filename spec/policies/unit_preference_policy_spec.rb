@@ -7,31 +7,31 @@ RSpec.describe UnitPreferencePolicy, type: :policy do
   context 'with super_admin role' do
     subject { described_class.new({ user: user, role: "super_admin" }, unit_preference) }
 
-    it { is_expected.to forbid_actions(%i[is_admin is_student is_manager]) }
-    it { is_expected.to permit_only_actions(%i[is_super_admin user_in_access_group index unit_prefs save_unit_prefs create new delete_preference]) }
+    it { is_expected.to forbid_actions(%i[]) }
+    it { is_expected.to permit_only_actions(%i[index unit_prefs save_unit_prefs create new delete_preference]) }
   end
 
   context 'with admin role' do
     subject { described_class.new({ user: user, role: "admin" }, unit_preference) }
 
-    it { is_expected.to forbid_actions(%i[is_super_admin is_student is_manager index create delete_preference]) }
-    it { is_expected.to permit_only_actions(%i[is_admin user_in_access_group unit_prefs save_unit_prefs]) }
+    it { is_expected.to forbid_actions(%i[index create delete_preference]) }
+    it { is_expected.to permit_only_actions(%i[unit_prefs save_unit_prefs]) }
   end
 
   context 'with manager role' do
     let(:manager) { FactoryBot.create(:manager, uniqname: user.uniqname) }
     subject { described_class.new({ user: user, role: "manager" }, unit_preference) }
 
-    it { is_expected.to forbid_actions(%i[is_super_admin is_admin is_student user_in_access_group index unit_prefs save_unit_prefs create new delete_preference]) }
-    it { is_expected.to permit_only_actions(%i[is_manager]) }
+    it { is_expected.to forbid_actions(%i[index unit_prefs save_unit_prefs create new delete_preference]) }
+    it { is_expected.to permit_only_actions(%i[]) }
   end
 
   context 'with student role' do
     let(:student) { FactoryBot.create(:student, uniqname: user.uniqname) }
     subject { described_class.new({ user: user, role: "student" }, unit_preference) }
 
-    it { is_expected.to forbid_actions(%i[is_super_admin is_admin is_manager user_in_access_group index unit_prefs save_unit_prefs create new delete_preference]) }
-    it { is_expected.to permit_only_actions(%i[is_student]) }
+    it { is_expected.to forbid_actions(%i[index unit_prefs save_unit_prefs create new delete_preference]) }
+    it { is_expected.to permit_only_actions(%i[]) }
   end
 
   context 'with no role' do

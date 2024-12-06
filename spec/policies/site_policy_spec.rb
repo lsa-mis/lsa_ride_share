@@ -9,22 +9,22 @@ RSpec.describe SitePolicy, type: :policy do
   context 'with super_admin role' do
     subject { described_class.new({ user: user, role: "super_admin" }, program_with_site.sites) }
 
-    it { is_expected.to forbid_actions(%i[is_admin is_student is_manager is_instructor]) }
-    it { is_expected.to permit_only_actions(%i[is_super_admin user_in_access_group index show create new update edit]) }
+    it { is_expected.to forbid_actions(%i[]) }
+    it { is_expected.to permit_only_actions(%i[index show create new update edit]) }
   end
 
   context 'with admin role' do
     subject { described_class.new({ user: user, role: "admin" }, program_with_site.sites) }
 
-    it { is_expected.to forbid_actions(%i[is_super_admin is_student is_manager is_instructor]) }
-    it { is_expected.to permit_only_actions(%i[is_admin user_in_access_group index show create new update edit]) }
+    it { is_expected.to forbid_actions(%i[]) }
+    it { is_expected.to permit_only_actions(%i[index show create new update edit]) }
   end
 
   context 'with manager role' do
     subject { described_class.new({ user: user_manager, role: "manager" }, program_with_site.sites) }
 
-    it { is_expected.to forbid_actions(%i[is_super_admin is_admin is_student user_in_access_group index]) }
-    it { is_expected.to permit_only_actions(%i[is_manager is_instructor show create new update edit]) }
+    it { is_expected.to forbid_actions(%i[index]) }
+    it { is_expected.to permit_only_actions(%i[show create new update edit]) }
   end
 
   context 'with student role' do
@@ -32,8 +32,8 @@ RSpec.describe SitePolicy, type: :policy do
     let(:user_student) { FactoryBot.create(:student, uniqname: user1.uniqname, program: program_with_site) }
     subject { described_class.new({ user: user_student, role: "student" }, program_with_site.sites) }
 
-    it { is_expected.to forbid_actions(%i[is_super_admin is_admin is_manager is_instructor user_in_access_group index show create new update edit]) }
-    it { is_expected.to permit_only_actions(%i[is_student]) }
+    it { is_expected.to forbid_actions(%i[index show create new update edit]) }
+    it { is_expected.to permit_only_actions(%i[]) }
   end
 
   context 'with no role' do
