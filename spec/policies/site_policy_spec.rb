@@ -4,7 +4,7 @@ RSpec.describe SitePolicy, type: :policy do
   let(:user) { FactoryBot.create(:user) }
   let(:user_manager) { FactoryBot.create(:user) }
   let(:manager) { FactoryBot.create(:manager, uniqname: user_manager.uniqname) }
-  let(:program_with_site) { FactoryBot.create(:program, instructor: manager) }
+  let(:program_with_site) { FactoryBot.create(:program_with_site, instructor: manager) }
 
   context 'with super_admin role' do
     subject { described_class.new({ user: user, role: "super_admin" }, program_with_site.sites) }
