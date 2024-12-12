@@ -9,7 +9,7 @@
 #  color           :string
 #  number_of_seats :integer
 #  mileage         :float
-#  gas             :float
+#  gas             :decimal(, )
 #  parking_spot    :string
 #  last_used       :datetime
 #  last_driver_id  :integer
@@ -18,6 +18,8 @@
 #  updated_at      :datetime         not null
 #  status          :integer
 #  unit_id         :bigint
+#  parking_notes   :text
+#
 
 FactoryBot.define do
   factory :car do
