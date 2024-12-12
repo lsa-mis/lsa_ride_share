@@ -9,7 +9,10 @@
       <% end %>
       <% if policy(Program).show? %>
         <div class="py-2">
-          <%= link_to 'Students List', program_students_path(@program), class: "secondary_blue_button" %>
+          <%= link_to 'Students List - Update MVR & Roster', program_students_path(@program, :update => "mvr_roster"), class: "secondary_blue_button" %>
+        </div>
+        <div class="py-2">
+          <%= link_to 'Students List - Update Roster', program_students_path(@program, :update => "roster"), class: "secondary_blue_button" %>
         </div>
       <% end %>
     </div>
