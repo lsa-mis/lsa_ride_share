@@ -8,9 +8,13 @@ class Programs::StudentsController < ApplicationController
 
   # GET /students or /students.json
   def index
-    unless params[:update] == "false"
+    update = params[:update]
+    if update == "mvr_roster"
       update_mvr_and_roster
+    elsif update == "roster"
+      update_student_list
     end
+
     authorize @students
     if params[:format] == "csv"
       respond_to do |format|
