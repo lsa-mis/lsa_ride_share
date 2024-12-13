@@ -18,7 +18,7 @@
 #  updated_at      :datetime         not null
 #  status          :integer
 #  unit_id         :bigint
-#  parking_notes   :text
+#  parking_note    :text
 #
 
 FactoryBot.define do

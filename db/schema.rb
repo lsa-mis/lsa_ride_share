@@ -68,7 +68,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_12_221643) do
     t.datetime "updated_at", null: false
     t.integer "status"
     t.bigint "unit_id"
-    t.text "parking_notes"
+    t.text "parking_note"
     t.index ["unit_id"], name: "index_cars_on_unit_id"
   end
 
@@ -351,7 +351,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_12_221643) do
     t.boolean "student_status", default: false
     t.boolean "approved", default: false
     t.string "parking_spot_return"
-    t.text "parking_notes"
+    t.text "parking_note"
+    t.text "parking_note_return"
     t.index ["reservation_id"], name: "index_vehicle_reports_on_reservation_id"
   end
 

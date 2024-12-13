@@ -17,7 +17,8 @@
 #  student_status      :boolean          default(FALSE)
 #  approved            :boolean          default(FALSE)
 #  parking_spot_return :string
-#  parking_notes       :text
+#  parking_note        :text
+#  parking_note_return :text
 #
 FactoryBot.define do
   factory :vehicle_report do
