@@ -73,6 +73,13 @@
         <%= form.text_field :parking_spot, placeholder: "Parking Spot (depart)", class: "input_text_field" %>
       </div>
 
+      <% if @vehicle_report.parking_note.present? %>
+        <div class="my-5">
+          <%= label_tag 'Parking Note (depart)', nil, class: "fancy_label" %>
+          <%= form.text_field :parking_note, placeholder: "Parking Note", class: "input_text_field" %>
+        </div>
+      <% end %>
+
       <div class="my-5">
         <% if @parking_locations.present? %>
           <% if @vehicle_report.persisted? && @current_parking_return.present? %>
@@ -100,6 +107,11 @@
         <% end %>
       </div>
 
+    </div>
+
+    <div class="my-5">
+      <%= label_tag 'Parking Note (return)', nil, class: "fancy_label" %>
+      <%= form.text_field :parking_note_return, placeholder: "Parking Note", class: "input_text_field" %>
     </div>
 
   </div>
