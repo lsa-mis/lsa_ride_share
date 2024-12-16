@@ -122,9 +122,17 @@
   <div class="inline">
     <%= form.submit class: "primary_button" %>
   </div>
-  <%= link_to car_path(@car) do %>
-    <span class="tertiary_button">Cancel
-      <i class="fa fa-times" aria-hidden="true"></i>
-    </span>
+  <% if car.persisted? %>
+    <%= link_to car_path(car) do %>
+      <span class="tertiary_button">Cancel
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </span>
+    <% end %>
+  <% else %>
+    <%= link_to cars_path, data: {turbo_frame: "_top"}  do %>
+      <span class="tertiary_button">Cancel
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </span>
+    <% end %>
   <% end %>
 <% end %>
