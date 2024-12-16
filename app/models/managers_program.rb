@@ -3,8 +3,8 @@
 # Table name: managers_programs
 #
 #  id         :bigint           not null, primary key
-#  program_id :bigint           not null
-#  manager_id :bigint           not null
+#  manager_id :bigint
+#  program_id :bigint
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #

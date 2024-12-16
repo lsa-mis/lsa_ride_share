@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: contacts
+#
+#  id           :bigint           not null, primary key
+#  title        :string
+#  first_name   :string
+#  last_name    :string
+#  phone_number :string
+#  email        :string
+#  site_id      :bigint           not null
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#
 require 'rails_helper'
 
 RSpec.describe Contact, type: :model do

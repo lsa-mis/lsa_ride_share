@@ -39,6 +39,7 @@ class VehicleReportsController < ApplicationController
   def new
     @vehicle_report = VehicleReport.new
     @vehicle_report.parking_spot = @reservation.car.parking_spot
+    @vehicle_report.parking_note = @reservation.car.parking_note
     unit = @reservation.program.unit
     parking_prefs = UnitPreference.find_by(name: "parking_location", unit_id: unit).value
     if parking_prefs.present?
@@ -93,7 +94,7 @@ class VehicleReportsController < ApplicationController
           car.update(gas: @vehicle_report.gas_end)
         end
         if @vehicle_report.parking_spot_return.present?
-          car.update(parking_spot: @vehicle_report.parking_spot_return, last_used: DateTime.now, last_driver_id: @reservation.driver_id)
+          car.update(parking_spot: @vehicle_report.parking_spot_return, parking_note: @vehicle_report.parking_note_return, last_used: DateTime.now, last_driver_id: @reservation.driver_id)
         end
         format.html { redirect_to vehicle_report_url(@vehicle_report), notice: "Vehicle report was successfully created." }
         format.json { render :show, status: :created, location: @vehicle_report }
@@ -123,7 +124,7 @@ class VehicleReportsController < ApplicationController
           car.update(gas: @vehicle_report.gas_end)
         end
         if @vehicle_report.parking_spot_return.present?
-          car.update(parking_spot: @vehicle_report.parking_spot_return, last_used: DateTime.now, last_driver_id: @reservation.driver_id)
+          car.update(parking_spot: @vehicle_report.parking_spot_return, parking_note: @vehicle_report.parking_note_return, last_used: DateTime.now, last_driver_id: @reservation.driver_id)
         end
         format.html { redirect_to vehicle_report_url(@vehicle_report), notice: "Vehicle report was successfully updated." }
         format.json { render :show, status: :ok, location: @vehicle_report }
@@ -222,6 +223,6 @@ class VehicleReportsController < ApplicationController
                     :gas_start, :gas_end, :parking_spot, :parking_spot_return, :parking_spot_return_select, :image_front_start, :image_driver_start, 
                     :image_passenger_start, :image_back_start, :image_front_end, :image_driver_end, 
                     :image_passenger_end, :image_back_end, :created_by, :updated_by, :status, :comment,
-                    :approved, :damage_form, image_damages: [] )
+                    :approved, :parking_note, :parking_note_return, :damage_form, image_damages: [] )
     end
 end

@@ -166,11 +166,14 @@ module ApplicationHelper
   end
 
   def show_car_location(reservation)
+    location = ""
     if reservation.car.present?
-      reservation.car.parking_spot
-    else
-      ""
+      location = reservation.car.parking_spot
+      if reservation.car.parking_note.present?
+        location += " - " + reservation.car.parking_note
+      end
     end
+    return location
   end
 
   def show_driver(reservation)
