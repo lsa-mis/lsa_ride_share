@@ -42,7 +42,7 @@ FactoryBot.define do
 
     factory :program_with_site do
       after(:create) do |program|
-        create(:site, unit: program.unit, program: program)
+        create(:site, unit: program.unit)
       end
     end
 
@@ -52,11 +52,13 @@ FactoryBot.define do
       end
     end
 
-    factory :program_with_student_and_manager do
-      after(:create) do |program|
-        create(:student, program: program)
-        create(:manager, program: program)
-      end
-    end
+    # factory :managers_program do
+    #   manager
+    #   association :program
+    # end
+
+    # factory :program_with_student_and_manager, parent: program_with_student do
+    #   after(:create) { |program_with_student| create(:managers_program, program: program_with_student) }
+    # end
   end
 end

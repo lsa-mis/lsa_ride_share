@@ -67,7 +67,6 @@ class StudentPolicy < ApplicationPolicy
   private
 
   def is_program_manager?
-    binding.pry
     program = Program.find(params[:program_id])
     program.all_managers.include?(@user.uniqname)
   end
