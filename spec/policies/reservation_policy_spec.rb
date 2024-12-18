@@ -18,27 +18,27 @@ RSpec.describe ReservationPolicy, type: :policy do
   context 'with super_admin role' do
     subject { described_class.new({ user: user, role: "super_admin", params: {unit_id: program.unit.id} }, reservation_admin) }
 
-    it { is_expected.to forbid_actions(%i[is_in_reservation is_reservation_driver]) }
+    it { is_expected.to forbid_actions(%i[]) }
     it { is_expected.to permit_only_actions(%i[index week_calendar day_reservations show create new new_long update edit edit_long 
       get_available_cars get_available_cars_long no_car_all_times edit_change_day change_start_end_day add_drivers_later finish_reservation 
       send_reservation_updated_email add_non_uofm_passengers update_passengers destroy cancel_recurring_reservation approve_all_recurring
-      selected_reservations send_email_to_selected_reservations is_reserved_by]) }
+      selected_reservations send_email_to_selected_reservations]) }
   end
 
   context 'with admin role and reservation created by admin' do
     subject { described_class.new({ user: user, role: "admin", params: {unit_id: program.unit.id} }, reservation_admin) }
 
-    it { is_expected.to forbid_actions(%i[is_in_reservation is_reservation_driver]) }
+    it { is_expected.to forbid_actions(%i[]) }
     it { is_expected.to permit_only_actions(%i[index week_calendar day_reservations show create new new_long update edit edit_long 
       get_available_cars get_available_cars_long no_car_all_times edit_change_day change_start_end_day add_drivers_later finish_reservation 
       send_reservation_updated_email add_non_uofm_passengers update_passengers destroy cancel_recurring_reservation approve_all_recurring
-      selected_reservations send_email_to_selected_reservations is_reserved_by]) }
+      selected_reservations send_email_to_selected_reservations]) }
   end
 
   context 'with admin role and reservation created by student' do
     subject { described_class.new({ user: user, role: "admin", params: {unit_id: program.unit.id} }, reservation_student) }
 
-    it { is_expected.to forbid_actions(%i[is_in_reservation is_reservation_driver]) }
+    it { is_expected.to forbid_actions(%i[]) }
     it { is_expected.to permit_only_actions(%i[index week_calendar day_reservations show create new new_long update edit edit_long 
       get_available_cars get_available_cars_long no_car_all_times edit_change_day change_start_end_day add_drivers_later finish_reservation 
       send_reservation_updated_email add_non_uofm_passengers update_passengers destroy cancel_recurring_reservation approve_all_recurring
@@ -53,7 +53,7 @@ RSpec.describe ReservationPolicy, type: :policy do
     it { is_expected.to permit_only_actions(%i[show create new new_long update edit edit_long 
       get_available_cars get_available_cars_long no_car_all_times edit_change_day change_start_end_day finish_reservation 
       add_non_uofm_passengers update_passengers destroy cancel_recurring_reservation 
-      is_in_reservation is_reservation_driver is_reserved_by]) }
+      ]) }
   end
 
   context 'with student role' do
@@ -63,7 +63,7 @@ RSpec.describe ReservationPolicy, type: :policy do
     it { is_expected.to permit_only_actions(%i[show create new new_long update edit edit_long 
       get_available_cars get_available_cars_long no_car_all_times edit_change_day change_start_end_day finish_reservation 
       add_non_uofm_passengers update_passengers destroy cancel_recurring_reservation 
-      is_in_reservation is_reservation_driver is_reserved_by]) }
+      ]) }
   end
 
   context 'with no role' do
