@@ -7,9 +7,11 @@
 #  first_name   :string
 #  last_name    :string
 #  phone_number :string
-#  email       :string
-#  site_id      :bigint
-# 
+#  email        :string
+#  site_id      :bigint           not null
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#
 
 FactoryBot.define do
   factory :contact do

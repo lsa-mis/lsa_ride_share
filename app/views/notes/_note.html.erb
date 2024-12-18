@@ -13,15 +13,17 @@
           by
           <%= note.user.display_name %>
         </p>
-        <%= link_to edit_note_path(note) do %>
-          <span class="tertiary_button">Edit
-            <i class="fa-solid fa-pen"></i>
-          </span>
-        <% end %>
-        <%= link_to note_path(note), data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' } do %>
-          <span class="tertiary_button">Delete
-            <i class="fa fa-times" aria-hidden="true"></i>
-          </span>
+        <% if policy(note).edit? %>
+          <%= link_to edit_note_path(note) do %>
+            <span class="tertiary_button">Edit
+              <i class="fa-solid fa-pen"></i>
+            </span>
+          <% end %>
+          <%= link_to note_path(note), data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' } do %>
+            <span class="tertiary_button">Delete
+              <i class="fa fa-times" aria-hidden="true"></i>
+            </span>
+          <% end %>
         <% end %>
       </div>
     </div>

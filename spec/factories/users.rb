@@ -3,7 +3,6 @@
 # Table name: users
 #
 #  id                     :bigint           not null, primary key
-#  uniqname               :string           not null
 #  email                  :string           default(""), not null
 #  encrypted_password     :string           default(""), not null
 #  reset_password_token   :string
@@ -16,6 +15,11 @@
 #  last_sign_in_ip        :string
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  uid                    :string
+#  uniqname               :string
+#  principal_name         :string
+#  display_name           :string
+#  person_affiliation     :string
 #
 FactoryBot.define do
   factory :user do

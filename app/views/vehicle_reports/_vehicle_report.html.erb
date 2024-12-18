@@ -77,21 +77,43 @@
 
     <div class="py-2">
       <p class="body-lg-bold-text inline">
-        Parking spot (depart):
+        Parking Spot (depart):
       </p>
       <p class="body-lg-text ml-2 inline">
         <%= vehicle_report.parking_spot %>
       </p>
     </div>
 
+    <% if vehicle_report.parking_note.present? %>
+      <div class="py-2">
+        <p class="body-lg-bold-text inline">
+          Parking Note (depart):
+        </p>
+        <p class="body-lg-text ml-2 inline">
+          <%= vehicle_report.parking_note %>
+        </p>
+      </div>
+    <% end %>
+
     <div class="py-2">
       <p class="body-lg-bold-text inline">
-        Parking spot (return):
+        Parking Spot (return):
       </p>
       <p class="body-lg-text ml-2 inline">
         <%= vehicle_report.parking_spot_return %>
       </p>
     </div>
+
+    <% if vehicle_report.parking_note_return.present? %>
+      <div class="py-2">
+        <p class="body-lg-bold-text inline">
+          Parking Note (return):
+        </p>
+        <p class="body-lg-text ml-2 inline">
+          <%= vehicle_report.parking_note_return %>
+        </p>
+      </div>
+    <% end %>
 
     <div class="py-2">
       <p class="body-lg-bold-text inline">

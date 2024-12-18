@@ -4,6 +4,9 @@
 #
 #  id                                  :bigint           not null, primary key
 #  title                               :string
+#  subject                             :string
+#  catalog_number                      :string
+#  class_section                       :string
 #  number_of_students                  :integer
 #  number_of_students_using_ride_share :integer
 #  pictures_required_start             :boolean          default(FALSE)
@@ -18,7 +21,7 @@
 #  canvas_course_id                    :integer
 #  term_id                             :integer
 #  add_managers                        :boolean          default(FALSE)
-#  not_course                          :boolean          default(FALSE)
+#  not_course                          :boolean          default(TRUE)
 #  unit_id                             :bigint
 #
 FactoryBot.define do

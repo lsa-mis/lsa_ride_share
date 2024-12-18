@@ -12,7 +12,7 @@
 #  updated_by :integer
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  unit_id    :bigint           not_null
+#  unit_id    :bigint
 #
 class Site < ApplicationRecord
   has_many :programs_sites

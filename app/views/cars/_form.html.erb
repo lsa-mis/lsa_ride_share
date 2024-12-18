@@ -96,6 +96,11 @@
       <div class="error_text" id="parking_other_error_place">
       </div>
 
+      <div class="my-5">
+        <%= form.label :parking_note, class: "fancy_label"  %>
+        <%= form.text_field :parking_note, placeholder: "Parking Notes", class: "input_text_field" %>
+      </div>
+
       <%= form.hidden_field :updated_by, value: current_user.id %>
 
       <div class="my-5">
@@ -117,9 +122,17 @@
   <div class="inline">
     <%= form.submit class: "primary_button" %>
   </div>
-  <%= link_to cars_path do %>
-    <span class="tertiary_button">Cancel
-      <i class="fa fa-times" aria-hidden="true"></i>
-    </span>
+  <% if car.persisted? %>
+    <%= link_to car_path(car) do %>
+      <span class="tertiary_button">Cancel
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </span>
+    <% end %>
+  <% else %>
+    <%= link_to cars_path, data: {turbo_frame: "_top"}  do %>
+      <span class="tertiary_button">Cancel
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </span>
+    <% end %>
   <% end %>
 <% end %>

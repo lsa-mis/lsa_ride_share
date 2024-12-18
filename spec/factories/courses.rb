@@ -1,10 +1,15 @@
+# == Schema Information
+#
 # Table name: courses
 #
-#  subject                             :string           not null
-#  catalog_number                      :string           not null
-#  class_section                       :string           not null
-#  program_id                          :integer
-# 
+#  id             :bigint           not null, primary key
+#  subject        :string           not null
+#  catalog_number :string           not null
+#  class_section  :string           not null
+#  program_id     :bigint
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#
 
 FactoryBot.define do
   factory :course do
