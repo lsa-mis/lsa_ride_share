@@ -9,15 +9,16 @@
 #  color           :string
 #  number_of_seats :integer
 #  mileage         :float
-#  gas             :decimal
+#  gas             :decimal(, )
 #  parking_spot    :string
 #  last_used       :datetime
-#  last_driver     :integer
+#  last_driver_id  :integer
 #  updated_by      :integer
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  status          :integer
 #  unit_id         :bigint
+#  parking_note    :text
 #
 class Car < ApplicationRecord
   belongs_to :unit

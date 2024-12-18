@@ -2,13 +2,13 @@
 #
 # Table name: mailer_subscriptions
 #
-#  id               :bigint           not null, primary key
-#  user_id          :bigint           not null
-#  mailer           :string           not null
-#  unsubscribed       :boolean
-#  created_at      :datetime          not null
-#  updated_at      :datetime          not null
-# 
+#  id           :bigint           not null, primary key
+#  user_id      :bigint           not null
+#  unsubscribed :boolean
+#  mailer       :string           not null
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#
 
 class MailerSubscription < ApplicationRecord
   belongs_to :user
