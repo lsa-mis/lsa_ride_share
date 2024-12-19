@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe UnitPolicy, type: :policy do
   let!(:user) { FactoryBot.create(:user) }
-  let!(:unit) { Unit.new }
+  let!(:unit) { FactoryBot.create(:unit)}
 
   context 'with super_admin role' do
     subject { described_class.new({ user: user, role: "super_admin" }, unit) }
