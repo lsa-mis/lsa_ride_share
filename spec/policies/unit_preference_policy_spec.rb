@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe UnitPreferencePolicy, type: :policy do
-  let(:user) { FactoryBot.create(:user) }
-  let(:unit_preference) { UnitPreference.new }
+  let!(:user) { FactoryBot.create(:user) }
+  let!(:unit_preference) { UnitPreference.new }
 
   context 'with super_admin role' do
     subject { described_class.new({ user: user, role: "super_admin" }, unit_preference) }
@@ -19,7 +19,7 @@ RSpec.describe UnitPreferencePolicy, type: :policy do
   end
 
   context 'with manager role' do
-    let(:manager) { FactoryBot.create(:manager, uniqname: user.uniqname) }
+    let!(:manager) { FactoryBot.create(:manager, uniqname: user.uniqname) }
     subject { described_class.new({ user: user, role: "manager" }, unit_preference) }
 
     it { is_expected.to forbid_actions(%i[index unit_prefs save_unit_prefs create new delete_preference]) }
@@ -27,7 +27,7 @@ RSpec.describe UnitPreferencePolicy, type: :policy do
   end
 
   context 'with student role' do
-    let(:student) { FactoryBot.create(:student, uniqname: user.uniqname) }
+    let!(:student) { FactoryBot.create(:student, uniqname: user.uniqname) }
     subject { described_class.new({ user: user, role: "student" }, unit_preference) }
 
     it { is_expected.to forbid_actions(%i[index unit_prefs save_unit_prefs create new delete_preference]) }

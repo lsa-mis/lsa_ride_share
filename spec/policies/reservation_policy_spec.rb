@@ -1,19 +1,19 @@
 require 'rails_helper'
 
 RSpec.describe ReservationPolicy, type: :policy do
-  let(:user) { FactoryBot.create(:user) }
-  let(:user_manager) { FactoryBot.create(:user) }
-  let(:manager) { FactoryBot.create(:manager, uniqname: user_manager.uniqname) }
-  let(:unit) { FactoryBot.create(:unit) }
-  let(:car) { FactoryBot.create(:car, unit: unit) }
-  let(:site) { FactoryBot.create(:site, unit: unit) }
-  let(:program) { FactoryBot.create(:program, unit: unit, instructor: manager) }
-  let(:user_student) { FactoryBot.create(:user) }
-  let(:student) { FactoryBot.create(:student, uniqname: user_student.uniqname, program: program) }
-  let(:reservation_admin) { FactoryBot.create(:reservation, program: program, site: site, car: car, reserved_by: user.id) }
-  let(:reservation_manager) { FactoryBot.create(:reservation, program: program, site: site, car: car, reserved_by: user_manager.id) }
-  let(:reservation_student) { FactoryBot.create(:reservation, program: program, site: site, car: car, driver_id: student.id, reserved_by: user_student.id) }
-  let(:user_none) { FactoryBot.create(:user) }
+  let!(:user) { FactoryBot.create(:user) }
+  let!(:user_manager) { FactoryBot.create(:user) }
+  let!(:manager) { FactoryBot.create(:manager, uniqname: user_manager.uniqname) }
+  let!(:unit) { FactoryBot.create(:unit) }
+  let!(:car) { FactoryBot.create(:car, unit: unit) }
+  let!(:site) { FactoryBot.create(:site, unit: unit) }
+  let!(:program) { FactoryBot.create(:program, unit: unit, instructor: manager) }
+  let!(:user_student) { FactoryBot.create(:user) }
+  let!(:student) { FactoryBot.create(:student, uniqname: user_student.uniqname, program: program) }
+  let!(:reservation_admin) { FactoryBot.create(:reservation, program: program, site: site, car: car, reserved_by: user.id) }
+  let!(:reservation_manager) { FactoryBot.create(:reservation, program: program, site: site, car: car, reserved_by: user_manager.id) }
+  let!(:reservation_student) { FactoryBot.create(:reservation, program: program, site: site, car: car, driver_id: student.id, reserved_by: user_student.id) }
+  let!(:user_none) { FactoryBot.create(:user) }
 
   context 'with super_admin role' do
     subject { described_class.new({ user: user, role: "super_admin", params: {unit_id: program.unit.id} }, reservation_admin) }

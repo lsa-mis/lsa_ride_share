@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe WelcomePagePolicy, type: :policy do
-  let(:user) { FactoryBot.create(:user) }
+  let!(:user) { FactoryBot.create(:user) }
 
   context 'with super_admin role' do
     subject { described_class.new({ user: user, role: "super_admin" }, :welcome_page) }

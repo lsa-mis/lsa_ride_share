@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe TermPolicy, type: :policy do
-  let(:user) { FactoryBot.create(:user) }
-  let(:term) { Term.new }
+  let!(:user) { FactoryBot.create(:user) }
+  let!(:term) { Term.new }
 
   context 'with super_admin role' do
     subject { described_class.new({ user: user, role: "super_admin" }, term) }

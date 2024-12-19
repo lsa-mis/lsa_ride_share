@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe CarPolicy, type: :policy do
-  let(:user) { FactoryBot.create(:user) }
-  let(:car) { Car.new }
+  let!(:user) { FactoryBot.create(:user) }
+  let!(:car) { FactoryBot.create(:car)}
 
   context 'with super_admin role' do
     subject { described_class.new({ user: user, role: "super_admin" }, car) }

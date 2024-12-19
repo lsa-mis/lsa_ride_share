@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe StudentPolicy, type: :policy do
-  let(:user) { FactoryBot.create(:user) }
-  let(:user_manager) { FactoryBot.create(:user) }
-  let(:manager) { FactoryBot.create(:manager, uniqname: user_manager.uniqname) }
-  let(:program_with_student) { FactoryBot.create(:program_with_student, instructor: manager) }
+  let!(:user) { FactoryBot.create(:user) }
+  let!(:user_manager) { FactoryBot.create(:user) }
+  let!(:manager) { FactoryBot.create(:manager, uniqname: user_manager.uniqname) }
+  let!(:program_with_student) { FactoryBot.create(:program_with_student, instructor: manager) }
 
   context 'with super_admin role' do
     subject { described_class.new({ user: user, role: "super_admin" }, program_with_student.students) }
@@ -28,9 +28,9 @@ RSpec.describe StudentPolicy, type: :policy do
   end
 
   # context 'with manager role who is a program manager' do
-  #   let(:user_program_manager) { FactoryBot.create(:user) }
-  #   let(:program_manager) { FactoryBot.create(:manager, uniqname: user_program_manager.uniqname) }
-  #   let(:program_with_student_and_manager) { FactoryBot.create(:program_with_student_and_manager) }
+  #   let!(:user_program_manager) { FactoryBot.create(:user) }
+  #   let!(:program_manager) { FactoryBot.create(:manager, uniqname: user_program_manager.uniqname) }
+  #   let!(:program_with_student_and_manager) { FactoryBot.create(:program_with_student_and_manager) }
   #   subject { described_class.new({ user: program_manager, params: {program_id: program_with_student_and_manager.id }, role: "manager" }, program_with_student_and_manager.students) }
 
   #   it do
@@ -41,8 +41,8 @@ RSpec.describe StudentPolicy, type: :policy do
   # end
 
   # context 'with student role' do
-  #   let(:user1) { FactoryBot.create(:user) }
-  #   let(:user_student) { FactoryBot.create(:student, uniqname: user1.uniqname, program: program_with_site) }
+  #   let!(:user1) { FactoryBot.create(:user) }
+  #   let!(:user_student) { FactoryBot.create(:student, uniqname: user1.uniqname, program: program_with_site) }
   #   subject { described_class.new({ user: user_student, role: "student" }, program_with_student.students) }
 
   #   it { is_expected.to forbid_actions(%i[index show create new update edit]) }

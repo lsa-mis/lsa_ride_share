@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe ProgramPolicy, type: :policy do
-  let(:user) { FactoryBot.create(:user) }
-  let(:user_manager) { FactoryBot.create(:user) }
-  let(:manager) { FactoryBot.create(:manager, uniqname: user_manager.uniqname) }
-  let(:program) { FactoryBot.create(:program, instructor: manager) }
+  let!(:user) { FactoryBot.create(:user) }
+  let!(:user_manager) { FactoryBot.create(:user) }
+  let!(:manager) { FactoryBot.create(:manager, uniqname: user_manager.uniqname) }
+  let!(:program) { FactoryBot.create(:program, instructor: manager) }
 
   context 'with super_admin role' do
     subject { described_class.new({ user: user, role: "super_admin", params: {id: program.id} }, program) }

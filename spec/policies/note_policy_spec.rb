@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe NotePolicy, type: :policy do
-  let(:user) { FactoryBot.create(:user) }
-  let(:note) { Note.new }
+  let!(:user) { FactoryBot.create(:user) }
+  let!(:note) { Note.new }
 
   context 'with super_admin role' do
     subject { described_class.new({ user: user, role: "super_admin" }, note) }
@@ -19,7 +19,7 @@ RSpec.describe NotePolicy, type: :policy do
   end
 
   context 'with manager role' do
-    let(:user_manager) { FactoryBot.create(:manager, uniqname: user.uniqname) }
+    let!(:user_manager) { FactoryBot.create(:manager, uniqname: user.uniqname) }
     subject { described_class.new({ user: user_manager, role: "manager" }, note) }
 
     it { is_expected.to forbid_actions(%i[index show create new update edit destroy]) }
@@ -27,7 +27,7 @@ RSpec.describe NotePolicy, type: :policy do
   end
 
   context 'with student role' do
-    let(:user_student) { FactoryBot.create(:student, uniqname: user.uniqname) }
+    let!(:user_student) { FactoryBot.create(:student, uniqname: user.uniqname) }
     subject { described_class.new({ user: user_student, role: "student" }, note) }
 
     it { is_expected.to forbid_actions(%i[index show create new update edit destroy]) }
