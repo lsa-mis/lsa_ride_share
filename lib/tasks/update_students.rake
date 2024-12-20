@@ -1,6 +1,6 @@
 desc "This will update students lists and MVR status"
 task update_students: :environment do
-
+  include ApplicationHelper
   @log = ApiLog.new
   api = UpdateStudentsApi.new
   @log.api_logger.info "#{Date.today}"
@@ -16,8 +16,10 @@ task update_students: :environment do
   programs = Program.current_term
   programs.each do |program|
     program.students.each do |student|
-      status = api.mvr_status(student.uniqname)
-      student.update(mvr_status: status)
+      if need_to_check_mvr_status?(student)
+        status = api.mvr_status(student.uniqname)
+        student.update(mvr_status: status)
+      end
     end
     @log.api_logger.info "#{program.title} program updated"
   end
