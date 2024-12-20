@@ -136,10 +136,8 @@ module StudentApi
 
   def canvas_readonly(course_id, access_token)
     begin
-      index = 0
       page = "first"
       per_page = 100
-      students = 0
       students_with_pass_score = {}
       next_page = true
       result = {'success' => false, 'error' => '', 'data' => []}
@@ -160,7 +158,6 @@ module StudentApi
         if link.include? 'rel=\"next\"'
           next_link = link.split(",").second
           page = "bookmark" + next_link.split("page=bookmark").last.split("&per_page").first
-          index += 1
         else
           next_page = false
         end
@@ -172,7 +169,6 @@ module StudentApi
               end
             end
             result['success'] = true
-            students += response_json.count
           else
             result['error'] = " course id #{course_id} - empty result"
           end
