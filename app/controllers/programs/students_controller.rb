@@ -144,7 +144,7 @@ class Programs::StudentsController < ApplicationController
         unless @student.update(canvas_course_complete_date: students_with_good_score[@student.uniqname])
           redirect_to program_student_path(@student_program, @student), alert: "Error updating student record."
         end
-        flash.now[:notice] = "Student pass the course."
+        flash.now[:notice] = "Canvas course status is updated."
       else
         flash.now[:notice] = "Student did not pass the course."
       end
@@ -167,20 +167,21 @@ class Programs::StudentsController < ApplicationController
     if result['success']
       students_with_good_score = result['data']
       uniqnames = students_with_good_score.keys
-      @student_program.students.each do |student|
+      students_without_canvas_results = @student_program.students.where(canvas_course_complete_date: nil)
+      students_without_canvas_results.each do |student|
         if uniqnames.include?(student.uniqname)
           unless student.update(canvas_course_complete_date: students_with_good_score[student.uniqname])
             flash.now[:alert] = "Error updating student record."
-            @students = @student_program.students.order(registered: :desc).order(:last_name)
+            @students = @student_program.students.order(registered: :desc).order(:course_id).order(:last_name)
             return
           end
         end
       end
-      flash.now[:notice] = "Canvas results are updated."
+      flash.now[:notice] = "Canvas course results are updated."
     else
       flash.now[:alert] = result['error']
     end
-    @students = @student_program.students.order(registered: :desc).order(:last_name)
+    @students = @student_program.students.order(registered: :desc).order(:course_id).order(:last_name)
     authorize @students
   end
 

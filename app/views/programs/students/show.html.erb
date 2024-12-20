@@ -10,11 +10,9 @@
         <div class="py-2">
           <%= link_to 'Update MVR Status', update_student_mvr_status_path(@student_program, @student), class: "secondary_blue_button" %>
         </div>
-        <% if false %>
-          <div class="py-2">
-            <%= link_to 'Update Canvas Status', student_canvas_result_path(@student_program, @student), class: "secondary_blue_button" %>
-          </div>
-        <% end %>
+        <div class="py-2">
+          <%= link_to 'Update Canvas Status', student_canvas_result_path(@student_program, @student), class: "secondary_blue_button" %>
+        </div>
       <% end %>
       <div class="py-2">
         <%= link_to 'Back to Student List', program_students_path(@student_program, :update => 'no_update'), class: "secondary_blue_button" %>
