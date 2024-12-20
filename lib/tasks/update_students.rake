@@ -32,7 +32,6 @@ task update_students: :environment do
   @log.api_logger.info "Update Canvas courses status ***********************************"
   programs = Program.current_term
   programs.each do |program|
-    puts "#{program.title} program updated"
     @log.api_logger.info "#{program.title} program updated"
     api.update_canvas_results(program, @log)
   end
