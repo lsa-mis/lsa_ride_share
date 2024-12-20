@@ -6,7 +6,6 @@ task update_students: :environment do
   @log.api_logger.info "#{Date.today}"
 
   @log.api_logger.info "Update students lists ******************************"
-
   programs = Program.current_term.where(not_course: false)
   programs.each do |program|
     @log.api_logger.info "#{program.title} program updated"
@@ -14,7 +13,7 @@ task update_students: :environment do
   end
 
   @log.api_logger.info "Update students MVR status ***********************************"
-  programs = Program.current_term.where(not_course: false)
+  programs = Program.current_term
   programs.each do |program|
     program.students.each do |student|
       status = api.mvr_status(student.uniqname)
@@ -28,6 +27,14 @@ task update_students: :environment do
   managers.each do |manager|
     status = api.mvr_status(manager.uniqname)
     manager.update(mvr_status: status)
+  end
+
+  @log.api_logger.info "Update Canvas courses status ***********************************"
+  programs = Program.current_term
+  programs.each do |program|
+    puts "#{program.title} program updated"
+    @log.api_logger.info "#{program.title} program updated"
+    api.update_canvas_results(program, @log)
   end
 
 end

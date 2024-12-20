@@ -1,6 +1,7 @@
 module StudentApi
   require 'uri'
   require 'net/http'
+  OK_CODE = "200"
 
   def mvr_status(uniqname)
     mvr_status = ''
@@ -134,34 +135,59 @@ module StudentApi
   end
 
   def canvas_readonly(course_id, access_token)
-    result = {'success' => false, 'error' => '', 'data' => []}
-    url = URI("https://gw.api.it.umich.edu/um/aa/CanvasReadOnly/courses/#{course_id}/enrollments")
-    http = Net::HTTP.new(url.host, url.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    begin
+      index = 0
+      page = "first"
+      per_page = 100
+      students = 0
+      students_with_pass_score = {}
+      next_page = true
+      result = {'success' => false, 'error' => '', 'data' => []}
+      while next_page do
+        url = URI("https://gw.api.it.umich.edu/um/aa/CanvasReadOnly/courses/#{course_id}/enrollments?page=#{page}&per_page=#{per_page}")
+        http = Net::HTTP.new(url.host, url.port)
+        http.use_ssl = true
+        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
-    request = Net::HTTP::Get.new(url)
-    request["x-ibm-client-id"] = "#{Rails.application.credentials.um_api[:client_id]}"
-    request["authorization"] = "Bearer #{access_token}"
-    request["accept"] = 'application/json'
+        request = Net::HTTP::Get.new(url)
+        request["x-ibm-client-id"] = "#{Rails.application.credentials.um_api[:client_id]}"
+        request["authorization"] = "Bearer #{access_token}"
+        request["accept"] = 'application/json'
 
-    response = http.request(request)
-    response_json = JSON.parse(response.read_body)
-    if response_json.is_a?(Hash) && response_json['errors'].present?
-      result['error'] = "course id #{course_id} - " + response_json['errors'][0]['message']
-    else
-      if response_json.present?
-        students_with_pass_score = {}
-        response_json.each do |student|
-          if student['grades'].present? and student['grades']['final_score'] == 100.00
-            students_with_pass_score.merge! Hash[student['user']['login_id'], student['last_activity_at']]
+        response = http.request(request)
+        response_json = JSON.parse(response.read_body)
+        link = response.to_hash["link"].to_s
+        if link.include? 'rel=\"next\"'
+          next_link = link.split(",").second
+          page = "bookmark" + next_link.split("page=bookmark").last.split("&per_page").first
+          index += 1
+        else
+          next_page = false
+        end
+        if response.code == OK_CODE
+          if response_json.present?
+            response_json.each do |student|
+              if student['grades'].present? && student['grades']['current_score'] == 100
+                students_with_pass_score.merge! Hash[student['user']['login_id'], student['updated_at']]
+              end
+            end
+            result['success'] = true
+            students += response_json.count
+          else
+            result['error'] = " course id #{course_id} - empty result"
+          end
+        else
+          if response_json.is_a?(Hash) && response_json['errors'].present?
+            result['error'] = "course id #{course_id} - " + response_json['errors'][0]['message']
+          else
+            result['error'] = "course id #{course_id} - " + "unknown error"
           end
         end
-        result['success'] = true
-        result['data'] = students_with_pass_score
-      else
-        result['error'] = " course id #{course_id} - empty result"
       end
+      result['data'] = students_with_pass_score
+    rescue => error
+      result['error'] = error.message
+      return result
     end
     return result
   end
