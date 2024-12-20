@@ -1,6 +1,7 @@
 class UpdateStudentsApi
   require 'uri'
   require 'net/http'
+  OK_CODE = "200"
 
   def mvr_status(uniqname)
     mvr_status = ''
@@ -136,6 +137,98 @@ class UpdateStudentsApi
       log.api_logger.debug "There is an error updating student list: " + e.message
       return
     end
+  end
+
+  def update_canvas_results(program, log)
+    begin
+      # update students canvas courses results
+      scope = "canvasreadonly"
+      token = get_auth_token(scope)
+      notice = ""
+      alert = ""
+      if token['success']
+        result = canvas_readonly(program.canvas_course_id, token['access_token'])
+        if result['success']
+          students_with_good_score = result['data']
+          uniqnames = students_with_good_score.keys
+          students_without_canvas_results = program.students.where(canvas_course_complete_date: nil)
+          students_without_canvas_results.each do |student|
+            if uniqnames.include?(student.uniqname)
+              unless student.update(canvas_course_complete_date: students_with_good_score[student.uniqname])
+                log.api_logger.debug "#{program.display_name}: Error updating student - uniqname: #{student_info['Uniqname']}."
+              end
+            end
+          end
+          log.api_logger.info "Canvas course results are updated."
+        else
+          log.api_logger.debug "#{program.display_name}: #{result['error']}"
+        end
+      else
+        log.api_logger.debug "#{token['error']}"
+        return
+      end
+    rescue StandardError => e
+      log.api_logger.debug "There is an error updating canvas results: " + e.message
+      return
+    end
+  end
+
+  def canvas_readonly(course_id, access_token)
+    begin
+      index = 0
+      page = "first"
+      per_page = 100
+      students = 0
+      students_with_pass_score = {}
+      next_page = true
+      result = {'success' => false, 'error' => '', 'data' => []}
+      while next_page do
+        url = URI("https://gw.api.it.umich.edu/um/aa/CanvasReadOnly/courses/#{course_id}/enrollments?page=#{page}&per_page=#{per_page}")
+        http = Net::HTTP.new(url.host, url.port)
+        http.use_ssl = true
+        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+        request = Net::HTTP::Get.new(url)
+        request["x-ibm-client-id"] = "#{Rails.application.credentials.um_api[:client_id]}"
+        request["authorization"] = "Bearer #{access_token}"
+        request["accept"] = 'application/json'
+
+        response = http.request(request)
+        response_json = JSON.parse(response.read_body)
+        link = response.to_hash["link"].to_s
+        if link.include? 'rel=\"next\"'
+          next_link = link.split(",").second
+          page = "bookmark" + next_link.split("page=bookmark").last.split("&per_page").first
+          index += 1
+        else
+          next_page = false
+        end
+        if response.code == OK_CODE
+          if response_json.present?
+            response_json.each do |student|
+              if student['grades'].present? && student['grades']['current_score'] == 100
+                students_with_pass_score.merge! Hash[student['user']['login_id'], student['updated_at']]
+              end
+            end
+            result['success'] = true
+            students += response_json.count
+          else
+            result['error'] = " course id #{course_id} - empty result"
+          end
+        else
+          if response_json.is_a?(Hash) && response_json['errors'].present?
+            result['error'] = "course id #{course_id} - " + response_json['errors'][0]['message']
+          else
+            result['error'] = "course id #{course_id} - " + "unknown error"
+          end
+        end
+      end
+      result['data'] = students_with_pass_score
+    rescue => error
+      result['error'] = error.message
+      return result
+    end
+    return result
   end
 
   def get_auth_token(scope)
