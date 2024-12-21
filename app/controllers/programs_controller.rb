@@ -149,16 +149,6 @@ class ProgramsController < ApplicationController
     return result
   end
 
-  # # DELETE /programs/1 or /programs/1.json
-  # def destroy
-  #   @program.destroy
-
-  #   respond_to do |format|
-  #     format.html { redirect_to programs_url, notice: "Program was successfully destroyed." }
-  #     format.json { head :no_content }
-  #   end
-  # end
-
   def remove_site
     @program.sites.delete(Site.find(params[:site_id]))
     redirect_to @program

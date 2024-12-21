@@ -138,23 +138,19 @@ module ApplicationHelper
     Site.where(unit_id: program.unit) - sites
   end
 
-  def is_super_admin?(user)
-    # user.membership.include?('lsa-was-rails-devs')
+  def is_super_admin?
     session[:role] == "super_admin"
   end
 
   def is_admin?
-    # user.membership.present?
     session[:role] == "admin" || session[:role] == "super_admin"
   end
 
   def is_manager?
-    # Manager.find_by(uniqname: user.uniqname).present?
     session[:role] == "manager"
   end
 
   def is_student?
-    # Student.find_by(uniqname: user.uniqname, program: Program.current_term).present?
     session[:role] == "student"
   end
   
@@ -894,8 +890,8 @@ module ApplicationHelper
     [["Available", 0], ["Unavailable", 1]]
   end
 
-  def role(current_user)
-    if is_super_admin?(current_user)
+  def user_role
+    if is_super_admin?
       " - super admin"
     elsif is_admin?
       " - admin"
