@@ -6,7 +6,7 @@ RSpec.describe Car, type: :system do
     load "#{Rails.root}/spec/test_seeds.rb" 
 		user = FactoryBot.create(:user)
     allow(LdapLookup).to receive(:is_member_of_group?).with(anything, "lsa-was-rails-devs").and_return(false)
-    allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, Unit.first.ldap_group).and_return(true)
+    allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, anything).and_return(true)
 		mock_login(user)
 	end
 
