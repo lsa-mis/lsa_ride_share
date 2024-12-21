@@ -32,6 +32,8 @@ class SitePolicy < ApplicationPolicy
     update?
   end
 
+  private
+
   def is_instructor?
     manager = Manager.find_by(uniqname: @user.uniqname)
     Program.where(instructor_id: manager).present?

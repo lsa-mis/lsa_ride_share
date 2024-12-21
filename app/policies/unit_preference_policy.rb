@@ -3,7 +3,7 @@
 class UnitPreferencePolicy < ApplicationPolicy
 
   def index?
-    user_admin?
+    is_super_admin?
   end
 
   def unit_prefs?
@@ -15,7 +15,7 @@ class UnitPreferencePolicy < ApplicationPolicy
   end
 
   def create?
-    user_admin?
+    is_super_admin?
   end
 
   def new?
@@ -23,7 +23,7 @@ class UnitPreferencePolicy < ApplicationPolicy
   end
 
   def delete_preference?
-    user_admin?
+    is_super_admin?
   end
 
 end

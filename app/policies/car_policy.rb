@@ -7,7 +7,8 @@ class CarPolicy < ApplicationPolicy
   end
 
   def show?
-    return true if user_in_access_group? 
+    return true if user_in_access_group?
+    return true if is_manager?
     return true if is_student?
     return false
   end

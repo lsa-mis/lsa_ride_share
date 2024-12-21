@@ -63,6 +63,8 @@ class VehicleReportPolicy < ApplicationPolicy
     user_in_access_group?
   end
 
+  private
+
   def can_student_create_report?(reservation)
     student = Student.find_by(program_id: reservation.program, uniqname: @user.uniqname)
     return false unless student.present?

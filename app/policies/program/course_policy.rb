@@ -34,6 +34,8 @@ class Program::CoursePolicy < ApplicationPolicy
     return false
   end
 
+  private
+
   def is_program_instructor?
     Program.find(@params[:program_id]).instructor == Manager.find_by(uniqname: @user.uniqname)
   end

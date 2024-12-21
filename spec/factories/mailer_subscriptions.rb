@@ -11,8 +11,8 @@
 #
 FactoryBot.define do
   factory :mailer_subscription do
-    user { nil }
-    subscribed { false }
-    mailer { "MyString" }
+    unsubscribed { true }
+    mailer { "one_hour_reminder" }
+    association :user
   end
 end

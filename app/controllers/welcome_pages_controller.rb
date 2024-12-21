@@ -7,7 +7,7 @@ class WelcomePagesController < ApplicationController
     @students = Student.where(uniqname: current_user.uniqname, program: Program.current_term)
     @students_data = @students.map { |s| [s.program.display_name_with_title_and_unit, s.id] }
     program_ids = @students.map { |p| p.program.id }
-    unit_ids = Program.where(id: program_ids).pluck(:unit_id)
+    unit_ids = Program.where(id: program_ids).pluck(:unit_id).uniq
     @unit_names =  Unit.all.pluck(:name).join(", ").reverse.sub(',', ' dna ,').reverse
     if params[:student_id].present?
       @student = Student.find(params[:student_id])
@@ -25,6 +25,7 @@ class WelcomePagesController < ApplicationController
     else
       @reservation = []
     end
+    session[:unit_ids] = unit_ids
     @contact_data = UnitPreference.select(:unit_id, :name, :value).where(unit_id: unit_ids).where("name = 'unit_office' OR name = 'contact_phone' OR name = 'notification_email'").group_by(&:unit_id).to_a
   end
 
@@ -49,7 +50,7 @@ class WelcomePagesController < ApplicationController
   def manager
     authorize :welcome_page
     @manager = Manager.find_by(uniqname: current_user.uniqname)
-    unit_ids = @manager.programs.pluck(:unit_id).uniq
+    unit_ids = @manager.all_programs.pluck(:unit_id).uniq
     @programs = @manager.programs.sort_by(&:title)
     if @programs.count == 1
       @program = @programs.first
@@ -58,7 +59,6 @@ class WelcomePagesController < ApplicationController
       @program = Program.find(params[:program_id])
       @unit_id = @program.unit.id
     end
-    @contact_data = UnitPreference.select(:unit_id, :name, :value).where(unit_id: unit_ids).where("name = 'unit_office' OR name = 'contact_phone' OR name = 'notification_email'").group_by(&:unit_id).to_a
     if @program.present?
       update_status(@manager, @program)
       @reservations_current = (@manager.passenger_current.where(program_id: @program.id) + 
@@ -71,6 +71,8 @@ class WelcomePagesController < ApplicationController
     else
       @reservation = []
     end
+    session[:unit_ids] = unit_ids
+    @contact_data = UnitPreference.select(:unit_id, :name, :value).where(unit_id: unit_ids).where("name = 'unit_office' OR name = 'contact_phone' OR name = 'notification_email'").group_by(&:unit_id).to_a
   end
 
   def add_student_phone

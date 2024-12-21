@@ -3,7 +3,7 @@
     <h2>Managers</h2>
   </div>
   <div>
-    <% if is_admin?(current_user) %>
+    <% if is_admin? %>
       <%= link_to edit_program_managers_path(@program), data: { "turbo-frame": "_top" }  do %>
         <span class="tertiary_button">
           <% if @program.managers.present? %>

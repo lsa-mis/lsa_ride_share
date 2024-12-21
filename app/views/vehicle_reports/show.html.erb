@@ -2,7 +2,7 @@
   <div class="grid grid-cols-1 lg:grid-cols-2 items-center">
     <div>
       <h1>Vehicle Report: <%= @vehicle_report.id %></h1>
-      <% if is_admin?(current_user) %>
+      <% if is_admin? %>
         <%= form_with model: @vehicle_report, html: { class: "sm:flex sm:items-center" },
           data: { controller: "autosubmit",
                   autosubmit_target: "form"
@@ -35,7 +35,7 @@
         </div>
       <% end %>
       <div class="mt-2">
-        <% if is_admin?(current_user) && @vehicle_report.image_damages.attached? %>
+        <% if is_admin? && @vehicle_report.image_damages.attached? %>
           <%= link_to "Download Fleet Services Damage Form (PDF)", download_vehicle_damage_form_url, class: "secondary_blue_button" %>
         <% end %>
       </div>
@@ -47,7 +47,7 @@
     </div>
   </div>
 
-  <% if user_signed_in? && is_admin?(current_user) %>
+  <% if user_signed_in? && is_admin? %>
     <div class="container p-2 rounded-lg shadow-lg text-xl mb-20 bg-gray-50">
       <h2 class="mb-4">Admin Comments:</h2>
       <%= render partial: "notes/form", locals: { note: Note.new, noteable: @vehicle_report } %>

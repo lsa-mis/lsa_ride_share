@@ -12,8 +12,16 @@ class NotePolicy < ApplicationPolicy
     user_in_access_group?
   end
 
+  def new?
+    create?
+  end
+
   def update?
     user_in_access_group?
+  end
+
+  def edit?
+    update?
   end
 
   def destroy?

@@ -16,7 +16,7 @@
   <div class="error_text mt-2" id="required_fields"></div>
 
   <input type="hidden" id="unit_id" name="unit_id" value=<%= @unit_id %> data-reservation-target="unit">
-  <% if is_student?(current_user) || is_manager?(current_user) %>
+  <% if is_student? || is_manager? %>
     <p class="body-lg-text mt-2">
       Program:
       <%= @program.display_name_with_title %>
@@ -107,19 +107,19 @@
     <%= form.submit class: "primary_button" %>
   </div>
 
-  <% if is_admin?(current_user) %>
+  <% if is_admin? %>
     <%= link_to reservations_path do %>
       <span class="tertiary_button">Cancel
       <i class="fa fa-times" aria-hidden="true"></i>
       </span>
     <% end %>
-  <% elsif is_manager?(current_user) %>
+  <% elsif is_manager? %>
     <%= link_to welcome_pages_manager_path do %>
       <span class="tertiary_button">Cancel
         <i class="fa fa-times" aria-hidden="true"></i>
       </span>
     <% end %>
-  <% elsif is_student?(current_user) %>
+  <% elsif is_student? %>
     <%= link_to welcome_pages_student_path do %>
       <span class="tertiary_button">Cancel
         <i class="fa fa-times" aria-hidden="true"></i>

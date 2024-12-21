@@ -19,11 +19,12 @@
 #
 FactoryBot.define do
   factory :student do
-    uniqname { "MyString" }
-    last_name { "MyString" }
-    first_name { "MyString" }
-    mvr_expiration_date { "2023-02-14" }
-    canvas_course_complete_date { "2023-02-14" }
-    meeting_with_admin_date { "MyString" }
+    uniqname { Faker::String.random(length: 3..8) }
+    last_name { Faker::Name.last_name }
+    first_name { Faker::Name.first_name }
+    mvr_status { ['Approved', 'Expired', '', nil].sample }
+    canvas_course_complete_date { Faker::Date.between(from: 2.months.ago, to: Date.today) }
+    meeting_with_admin_date { Faker::Date.between(from: 2.months.ago, to: Date.today) }
+    association :program
   end
 end

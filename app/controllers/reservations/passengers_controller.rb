@@ -175,7 +175,7 @@ class Reservations::PassengersController < ApplicationController
     if notice.present?
       flash.now[:alert] = notice
     end
-    if is_admin?(current_user) || is_in_reservation?(current_user, @reservation)
+    if is_admin? || is_in_reservation?(current_user, @reservation)
       add_passengers
     else 
       redirect_to(root_path, notice: "You were removed from the reservation.")

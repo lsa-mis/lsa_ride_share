@@ -9,7 +9,7 @@ class VehicleReportsController < ApplicationController
     if params[:unit_id].present?
       @cars = Car.where(unit_id: params[:unit_id]).order(:car_number)
     else
-      @cars = Car.where(unit_id: current_user.unit_ids).order(:car_number)
+      @cars = Car.where(unit_id: session[:unit_ids]).order(:car_number)
     end
     car_ids = @cars.pluck(:id)
     reservation_ids = Reservation.where(car_id: car_ids)
@@ -166,14 +166,14 @@ class VehicleReportsController < ApplicationController
     unless @vehicle_report.approved
       respond_to do |format|
         if @vehicle_report.destroy
-          if is_admin?(current_user)
+          if is_admin?
             format.html { redirect_to vehicle_reports_url, notice: "Vehicle report was canceled." }
             format.json { head :no_content }
-          elsif is_student?(current_user)
-            format.html { redirect_to welcome_pages_student_url, notice: "Vehicle report was canceled." }
-            format.json { head :no_content }
-          elsif is_manager?(current_user)
+          elsif is_manager?
             format.html { redirect_to welcome_pages_manager_url, notice: "Vehicle report was canceled." }
+            format.json { head :no_content }
+          elsif is_student?
+            format.html { redirect_to welcome_pages_student_url, notice: "Vehicle report was canceled." }
             format.json { head :no_content }
           end
         else
@@ -214,7 +214,7 @@ class VehicleReportsController < ApplicationController
     end
 
     def set_units
-      @units = Unit.where(id: current_user.unit_ids).order(:name)
+      @units = Unit.where(id: session[:unit_ids]).order(:name)
     end
 
     # Only allow a list of trusted parameters through.
