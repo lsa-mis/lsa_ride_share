@@ -19,9 +19,11 @@
           <div class="my-2">
             <%= link_to 'Update MVR Status', update_mvr_status_path(@student_program), data: { turbo_stream: true }, class: "secondary_blue_button" %>
           </div>
-          <div class="my-2">
-            <%= link_to 'Update Canvas Status', canvas_results_path(@student_program), data: { turbo_stream: true }, class: "secondary_blue_button" %>
-          </div>
+          <% if policy(Student).canvas_results? %>
+            <div class="my-2">
+              <%= link_to 'Update Canvas Status', canvas_results_path(@student_program), data: { turbo_stream: true }, class: "secondary_blue_button" %>
+            </div>
+          <% end %>
         <% end %>
       <% end %>
     </div>
