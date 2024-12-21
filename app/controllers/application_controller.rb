@@ -26,7 +26,7 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(resource)
     if $baseURL.present?
       $baseURL
-    elsif session[:user_memberships].present?
+    elsif is_admin?
       programs_path
     elsif is_manager?
       welcome_pages_manager_path

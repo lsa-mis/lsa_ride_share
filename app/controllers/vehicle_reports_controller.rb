@@ -169,11 +169,11 @@ class VehicleReportsController < ApplicationController
           if is_admin?
             format.html { redirect_to vehicle_reports_url, notice: "Vehicle report was canceled." }
             format.json { head :no_content }
+          elsif is_manager?
+            format.html { redirect_to welcome_pages_manager_url, notice: "Vehicle report was canceled." }
+            format.json { head :no_content }
           elsif is_student?
             format.html { redirect_to welcome_pages_student_url, notice: "Vehicle report was canceled." }
-            format.json { head :no_content }
-          elsif is_manager?(current_user)
-            format.html { redirect_to welcome_pages_manager_url, notice: "Vehicle report was canceled." }
             format.json { head :no_content }
           end
         else
