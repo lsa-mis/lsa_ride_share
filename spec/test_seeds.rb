@@ -20,7 +20,7 @@ terms = Term.create!([
   {code: "2510", name: "Fall 2024", classes_begin_date: DateTime.new(2024, 8, 26), classes_end_date: DateTime.new(2025, 01, 7)}
 ])
 
-Unit.create(name: "Fake Unit", ldap_group: "lsa-was-rails-devs")
+Unit.create(name: "Fake Unit", ldap_group: "fake_group")
 
 test_unit = Unit.first
 

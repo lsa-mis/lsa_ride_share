@@ -82,7 +82,6 @@ group :development, :test do
   gem 'pry'
   gem 'pundit-matchers', '~> 3.1', '>= 3.1.2'
   gem "webmock"
-  gem 'vcr'
 end
 
 group :development do

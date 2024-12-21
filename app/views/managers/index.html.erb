@@ -11,7 +11,7 @@
   </div>
 
   <div>
-    <% if current_user.unit_ids.count > 1 %>
+    <% if session[:unit_ids].count > 1 %>
       <%= form_with url: managers_path, method: :get, class: "", data: { autosubmit_target: "form", turbo_frame: "turbo-managers" } do |form| %>
         <div class="mb-4">
           <label for="unit_id" class="fancy_label">Select a Unit</label>

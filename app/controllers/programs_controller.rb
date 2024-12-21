@@ -13,11 +13,11 @@ class ProgramsController < ApplicationController
     if params[:unit_id].present?
       @programs = Program.where(unit_id: params[:unit_id])
     else
-      @programs = Program.where(unit_id: current_user.unit_ids)
+      @programs = Program.where(unit_id: session[:unit_ids])
     end
-    if is_admin?(current_user)
+    if is_admin?
       @programs = @programs.data(params[:term_id])
-    elsif is_manager?(current_user)
+    elsif is_manager?
       @programs = Program.all.data(params[:term_id])
       programs = Manager.find_by(uniqname: current_user.uniqname).all_programs
       @programs = @programs.where(id: programs.map(&:id))
@@ -149,16 +149,6 @@ class ProgramsController < ApplicationController
     return result
   end
 
-  # DELETE /programs/1 or /programs/1.json
-  def destroy
-    @program.destroy
-
-    respond_to do |format|
-      format.html { redirect_to programs_url, notice: "Program was successfully destroyed." }
-      format.json { head :no_content }
-    end
-  end
-
   def remove_site
     @program.sites.delete(Site.find(params[:site_id]))
     redirect_to @program
@@ -187,9 +177,9 @@ class ProgramsController < ApplicationController
     end
 
     def set_units
-      if is_admin?(current_user)
-      @units = Unit.where(id: current_user.unit_ids).order(:name)
-      elsif is_manager?(current_user)
+      if is_admin?
+      @units = Unit.where(id: session[:unit_ids]).order(:name)
+      elsif is_manager?
         manager = Manager.find_by(uniqname: current_user.uniqname)
         @units = Unit.where(id: manager.programs.pluck(:unit_id).uniq).order(:name)
       else

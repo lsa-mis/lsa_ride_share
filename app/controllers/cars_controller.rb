@@ -10,7 +10,7 @@ class CarsController < ApplicationController
     if params[:unit_id].present?
       @cars = Car.where(unit_id: params[:unit_id]).order(:car_number)
     else
-      @cars = Car.where(unit_id: current_user.unit_ids).order(:car_number)
+      @cars = Car.where(unit_id: session[:unit_ids]).order(:car_number)
     end
     if params[:car_status].present?
       @cars = @cars.where(status: params[:car_status])
@@ -99,7 +99,7 @@ class CarsController < ApplicationController
     end
 
     def set_units
-      @units = Unit.where(id: current_user.unit_ids).order(:name)
+      @units = Unit.where(id: session[:unit_ids]).order(:name)
     end
 
     def set_parking_locations(unit_id)

@@ -27,14 +27,17 @@
 #  next                          :integer
 #  until_date                    :date
 #
+
 FactoryBot.define do
   factory :reservation do
-    status { "MyString" }
-    start_time { "2023-02-14 19:56:23" }
-    end_time { "2023-02-14 19:56:23" }
-    recurring { "MyString" }
-    driver_phone { "MyString" }
-    backup_driver_phone { "MyString" }
-    number_of_people_on_trip { 1 }
+    start_time { DateTime.now }
+    end_time { DateTime.now + 4.hour }
+    recurring { "" }
+    number_of_people_on_trip { 3 }
+    updated_by { FactoryBot.create(:user).id }
+    reserved_by { FactoryBot.create(:user).id }
+    association :program
+    association :site
+    association :car
   end
 end

@@ -64,6 +64,8 @@ class StudentPolicy < ApplicationPolicy
     return false
   end
 
+  private
+
   def is_program_manager?
     program = Program.find(params[:program_id])
     program.all_managers.include?(@user.uniqname)

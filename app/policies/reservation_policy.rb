@@ -113,6 +113,8 @@ class ReservationPolicy < ApplicationPolicy
     user_in_access_group?
   end
 
+  private
+
   def is_in_reservation?
     if is_manager?
       manager = Manager.find_by(uniqname: @user.uniqname)
