@@ -68,7 +68,7 @@ module ApplicationHelper
   end
 
   def reserved_on_and_by(resource)
-    return "Reserved on " + resource.created_at.strftime('%m/%d/%Y at %I:%M%p') + " by " + show_user_name_by_id(resource.reserved_by)
+    return "Reserved on " + resource.created_at.strftime('%m/%d/%Y at %I:%M%p') + " by " + show_user_name_by_id(resource&.reserved_by)
   end
 
   def email_address(student)
