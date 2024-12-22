@@ -679,7 +679,7 @@ class ReservationsController < ApplicationController
 
     def set_calendar_reservations
       start_date = params.fetch(:start_date, Date.today).to_date
-      if session[:unit_ids] == 1
+      if session[:unit_ids].count == 1
         @unit_id = session[:unit_ids][0]
         @reservations = Reservation.where(program: Program.where(unit_id: @unit_id)).where("start_time BETWEEN ? and ? OR end_time BETWEEN ? and ?", start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week, start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week)
       elsif params[:unit_id].present?
