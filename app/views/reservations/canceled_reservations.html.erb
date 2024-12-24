@@ -1,0 +1,56 @@
+<div class="min-w-full">
+  <div class="flex justify-between items-center">
+    <h1>Canceled Reservations for Current Term<h1>
+  </div>
+  <div>
+    <table class="mi_table">
+      <thead class="border border-l-0 border-r-0 border-gray-um60">
+        <tr>
+          <th class="header_th">Reservation Time</th>
+          <th class="header_th">Car</th>
+          <th class="header_th">Program</th>
+          <th class="header_th">Site</th>
+          <th class="header_th">Driver</th>
+          <th class="header_th">Number of People</th>
+          <th class="header_th">Reserved By</th>
+          <th class="header_th">Reason for Canceletion</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @canceled_reservations.each do |reservation| %>
+          <tr>
+            <td class="mi_tbody_td">
+              <%= link_to show_reservation_time(reservation), reservation_path(reservation), class: "link_to", data: { "turbo-frame": "_top" } %>
+            </td>
+            <td class="mi_tbody_td">
+              <% if reservation.car.present? %>
+                <%= link_to reservation.car.car_number, car_path(reservation.car), class: "link_to", data: {turbo_frame: "_top"}  %>
+              <% else %>
+                <span class="status-false">
+                  <%= reservation.display_name %>
+                  <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
+                </span>
+              <% end %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= reservation.program.title %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= reservation.site.title %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= show_driver(reservation) %>
+              <%= display_driver_status(reservation) %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= reservation.number_of_people_on_trip %>
+            </td>
+            <td class="mi_tbody_td">
+              <%= show_user_name_by_id(reservation.reserved_by) %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

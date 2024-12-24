@@ -32,6 +32,11 @@ class ReservationsController < ApplicationController
     authorize @day_reservations
   end
 
+  def canceled_reservations
+    @canceled_reservations = Reservation.canceled.where(program_id: Program.current_term.ids)
+    authorize @canceled_reservations
+  end
+
   def selected_reservations
     @selected_reservations = params[:res_ids].keys.join(',')
     @day = params[:day]
@@ -588,7 +593,7 @@ class ReservationsController < ApplicationController
         ReservationMailer.with(reservation: @reservation, user: current_user, recurring: recurring).car_reservation_cancel_driver(@cancel_passengers, @cancel_emails).deliver_now
       end
       begin
-        @reservation.destroy
+        @reservation.update(canceled: true)
         if is_admin?
           redirect_to reservations_url, notice: "Reservation was canceled."
           

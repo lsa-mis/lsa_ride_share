@@ -14,6 +14,10 @@ class ReservationPolicy < ApplicationPolicy
     user_in_access_group?
   end
 
+  def canceled_reservations?
+    user_in_access_group?
+  end
+
   def show?
     return true if user_in_access_group? 
     return true if is_in_reservation?
