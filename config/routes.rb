@@ -65,6 +65,8 @@ Rails.application.routes.draw do
   post '/selected_reservations/', to: 'reservations#selected_reservations', as: :selected_reservations
   get '/send_email_to_selected_reservations/', to: 'reservations#send_email_to_selected_reservations', as: :send_email_to_selected_reservations
   get '/canceled_reservations/', to: 'reservations#canceled_reservations', as: :canceled_reservations
+  get '/cancel_reason/:id', to: 'reservations#cancel_reason', as: :cancel_reason
+  get '/cancel_reservation/:id', to: 'reservations#cancel_reservation', as: :cancel_reservation
 
   resources :cars, except: [:destroy] do
     resources :notes, module: :cars

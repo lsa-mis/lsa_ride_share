@@ -1,0 +1,40 @@
+<%= turbo_frame_tag "modal" do %>
+  <div class="modal">
+    <h1>Cancel</h1>
+    <%= form_with url: cancel_reservation_path, method: :get do |form| %>
+      <% if @reservation.errors.any? %>
+        <div style="color: red">
+          <h2><%= pluralize(@reservation.errors.count, "error") %> prohibited this @reservation from being saved:</h2>
+    
+          <ul>
+            <% @reservation.errors.each do |error| %>
+              <li><%= error.full_message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+    
+      <div>
+        <%= form.label :reason_for_cancellation, style: "display: block" %>
+        <%= form.text_field :reason_for_cancellation, required: true %>
+      </div>
+      <div>
+        <%= form.submit class: "primary_button" %>
+      </div>
+    <% end %>
+    <br>
+    <div>
+
+
+
+
+      <%= link_to programs_path, data: {controller: "modals", action: "modals#close"}  do %>
+        <span class="tertiary_button">Cancel
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </span>
+      <% end %>
+
+
+    </div>
+  </div>
+<% end %>

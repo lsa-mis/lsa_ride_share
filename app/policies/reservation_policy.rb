@@ -93,7 +93,13 @@ class ReservationPolicy < ApplicationPolicy
     user_in_access_group? || is_in_reservation?
   end
 
-  def destroy?
+  def cancel_reason?
+    return true if user_in_access_group? 
+    return true if is_reservation_driver?
+    return false
+  end
+
+  def cancel_reservation?
     return true if user_in_access_group? 
     return true if is_reservation_driver?
     return false

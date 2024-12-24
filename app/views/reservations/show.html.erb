@@ -47,6 +47,7 @@
               <% end %>
             </div>
           <% else %>
+            <%= link_to 'Cancel', cancel_reason_path(@reservation), data: { turbo_frame: "modal" } %>
             <%= link_to reservation_path(@reservation), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete} do %>
               <span class="tertiary_button">Cancel Reservation
                 <i class="fa fa-times" aria-hidden="true"></i>
