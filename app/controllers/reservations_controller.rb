@@ -577,7 +577,7 @@ class ReservationsController < ApplicationController
     redirect_to reservation_path(@reservation), notice: notice, alert: alert
   end
 
-  # DELETE /reservations/1 or /reservations/1.json
+  # soft cancel reservations - set canceled field to true, delete drivers and passengers
   def destroy
     unless @reservation.vehicle_report.present?
       recurring = false
@@ -593,7 +593,7 @@ class ReservationsController < ApplicationController
         ReservationMailer.with(reservation: @reservation, user: current_user, recurring: recurring).car_reservation_cancel_driver(@cancel_passengers, @cancel_emails).deliver_now
       end
       begin
-        @reservation.update(canceled: true)
+        @reservation.update(canceled: true, driver_id: nil, driver_manager_id: nil)
         if is_admin?
           redirect_to reservations_url, notice: "Reservation was canceled."
           
@@ -645,7 +645,7 @@ class ReservationsController < ApplicationController
       recurring_reservation.destroy_passengers(result)
       authorize @reservation
       respond_to do |format|
-        if Reservation.where(id: result).destroy_all
+        if Reservation.where(id: result).update_all(canceled: true, driver_id: nil, driver_manager_id: nil)
           if is_admin?
             format.turbo_stream { redirect_to reservations_url, notice: "Selected Reservation(s) were canceled." }
           elsif is_manager?
