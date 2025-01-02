@@ -36,10 +36,6 @@ class ProgramPolicy < ApplicationPolicy
     update?
   end
 
-  def destroy?
-    false
-  end
-
   def get_programs_list?
     create?
   end
@@ -51,6 +47,8 @@ class ProgramPolicy < ApplicationPolicy
   def get_sites_list?
     create?
   end
+
+  private
 
   def is_manager?
     Program.all.map { |p| p.all_managers.include?(@user.uniqname) }.any?

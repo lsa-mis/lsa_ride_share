@@ -22,14 +22,13 @@
 #
 FactoryBot.define do
   factory :vehicle_report do
-    reservation { nil }
-    mileage_start { 1.5 }
-    mileage_end { 1.5 }
-    gas_start { 1.5 }
-    gas_end { 1.5 }
-    parking_spot { "MyString" }
-    created_by { 1 }
-    updated_by { 1 }
-    status { "MyString" }
+    mileage_start { Faker::Vehicle.mileage }
+    mileage_end { Faker::Vehicle.mileage }
+    gas_start { 62.5 }
+    gas_end { 62.5 }
+    parking_spot { Faker::Lorem.word }
+    created_by { FactoryBot.create(:user).id }
+    updated_by { FactoryBot.create(:user).id }
+    association :reservation
   end
 end

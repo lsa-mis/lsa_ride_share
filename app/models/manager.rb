@@ -44,7 +44,7 @@ class Manager < ApplicationRecord
   end
 
   def all_programs
-    Program.where(instructor: self) + Program.joins(:managers).where('managers_programs.manager_id = ?', self)
+    manager_all_terms + instructor_all_terms
   end
 
   def can_reserve_car?

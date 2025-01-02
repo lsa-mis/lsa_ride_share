@@ -196,7 +196,7 @@ class VehicleReport < ApplicationRecord
   end
 
   def all_fields?
-    self.attributes.except("id", "created_at", "updated_at", "updated_by", "created_by", "status", "note", "student_status", "approved", "parking_spot").all? {|k, v| v.present?} ? true : false
+    self.attributes.except("id", "created_at", "updated_at", "updated_by", "created_by", "status", "note", "student_status", "approved", "parking_spot", "parking_note", "parking_note_return").all? {|k, v| v.present?} ? true : false
   end
 
   def set_admin_status

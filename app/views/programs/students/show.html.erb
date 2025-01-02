@@ -21,7 +21,7 @@
   </div>
   
 </div>
-<% if is_admin?(current_user) %>
+<% if is_admin? %>
   <div class="container p-2 rounded-lg shadow-lg text-xl mb-20 bg-gray-50">
     <h2 class="mb-4">Notes:</h2>
     <%= render partial: "notes/form", locals: { note: Note.new, noteable: @student } %>

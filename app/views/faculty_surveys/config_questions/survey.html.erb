@@ -24,7 +24,7 @@
           <%= item.question %>
         </div>
         <%= label_tag("survey[item_#{item.id}_#{index+1}]", nil, class: "hidden") %>
-        <%= rich_text_area_tag "survey[item_#{item.id}_#{index+1}]", "#{item.answer}", required: true %>
+        <%= rich_text_area_tag "survey[item_#{item.id}_#{index+1}]", "#{item.answer}", index < 2 ? {required: true} : {} %>
       <% end %>
     <% end %>
 

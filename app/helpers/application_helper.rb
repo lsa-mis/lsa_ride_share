@@ -3,11 +3,11 @@ module ApplicationHelper
 
   def root_path
     if user_signed_in?
-      if is_admin?(current_user)
+      if is_admin?
         all_root_path
-      elsif is_manager?(current_user)
+      elsif is_manager?
         welcome_pages_manager_path
-      elsif is_student?(current_user)
+      elsif is_student?
         welcome_pages_student_path
       else
         all_root_path
@@ -68,7 +68,7 @@ module ApplicationHelper
   end
 
   def reserved_on_and_by(resource)
-    return "Reserved on " + resource.created_at.strftime('%m/%d/%Y at %I:%M%p') + " by " + show_user_name_by_id(resource.reserved_by)
+    return "Reserved on " + resource.created_at.strftime('%m/%d/%Y at %I:%M%p') + " by " + show_user_name_by_id(resource&.reserved_by)
   end
 
   def email_address(student)
@@ -138,20 +138,20 @@ module ApplicationHelper
     Site.where(unit_id: program.unit) - sites
   end
 
-  def is_super_admin?(user)
-    user.membership.include?('lsa-was-rails-devs')
+  def is_super_admin?
+    session[:role] == "super_admin"
   end
 
-  def is_admin?(user)
-    user.membership.present?
+  def is_admin?
+    session[:role] == "admin" || session[:role] == "super_admin"
   end
 
-  def is_manager?(user)
-    Manager.find_by(uniqname: user.uniqname).present?
+  def is_manager?
+    session[:role] == "manager"
   end
 
-  def is_student?(user)
-    Student.find_by(uniqname: user.uniqname, program: Program.current_term).present?
+  def is_student?
+    session[:role] == "student"
   end
   
   def show_car(reservation)
@@ -594,14 +594,14 @@ module ApplicationHelper
   end
 
   def allow_user_to_cancel_reservation?(reservation)
-    if is_admin?(current_user)
+    if is_admin?
       return true
-    elsif is_manager?(current_user)
+    elsif is_manager?
       manager = Manager.find_by(uniqname: current_user.uniqname)
       if reservation.driver_manager == manager && reservation.end_time > Date.today.beginning_of_day
         return true
       end 
-    elsif is_student?(current_user)
+    elsif is_student?
       student = Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program)
       if (reservation.driver == student || reservation.backup_driver == student) && reservation.end_time > Date.today.beginning_of_day
         return true
@@ -612,11 +612,11 @@ module ApplicationHelper
   end
 
   def is_in_reservation?(current_user, reservation)
-    if is_manager?(current_user)
+    if is_manager?
       manager = Manager.find_by(uniqname: current_user.uniqname)
       return reservation.driver_manager == manager || reservation.reserved_by = current_user.id || reservation.passengers_managers.include?(manager)
     end
-    if is_student?(current_user)
+    if is_student?
       student = Student.find_by(program_id: reservation.program, uniqname: current_user.uniqname)
       return reservation.driver == student || reservation.backup_driver == student || reservation.passengers.include?(student)
     end
@@ -624,7 +624,7 @@ module ApplicationHelper
   end
 
   def allow_student_to_edit_reservations?(reservation)
-    return false unless is_student?(current_user)
+    return false unless is_student?
     return false unless Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program).present?
     student = Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program)
     return false unless student.can_reserve_car?
@@ -636,7 +636,7 @@ module ApplicationHelper
   end
 
   def allow_manager_to_edit_reservations?(reservation)
-    return false unless is_manager?(current_user)
+    return false unless is_manager?
     return false unless reservation.driver_manager_id.present?
     # return true if reservation.reserved_by = current_user.id
     if reservation.driver_manager.uniqname == current_user.uniqname && ((reservation.start_time - DateTime.now.beginning_of_day)/3600).round > minimum_hours_before_reservation(reservation.program.unit)
@@ -647,7 +647,7 @@ module ApplicationHelper
   end
 
   def allow_student_to_edit_passengers?(reservation)
-    return false unless is_student?(current_user)
+    return false unless is_student?
     return false unless Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program).present?
     student = Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program)
     # return false unless student.can_reserve_car?
@@ -660,7 +660,7 @@ module ApplicationHelper
   end
 
   def allow_manager_to_edit_passengers?(reservation)
-    return false unless is_manager?(current_user)
+    return false unless is_manager?
     return false unless reservation.driver_manager_id.present?
     return true if reservation.reserved_by = current_user.id
     # if reservation.driver_manager.uniqname == current_user.uniqname && reservation.end_time + 45.minute > DateTime.now
@@ -685,7 +685,7 @@ module ApplicationHelper
   end
 
   def allow_add_vehicle_report?(reservation, user)
-    if is_admin?(user)
+    if is_admin?
       return true
     else
       if Reservation.no_or_not_complete_vehicle_reports.exists?(reservation.id)
@@ -890,15 +890,17 @@ module ApplicationHelper
     [["Available", 0], ["Unavailable", 1]]
   end
 
-  def role(current_user)
-    if is_admin?(current_user)
+  def user_role
+    if is_super_admin?
+      " - super admin"
+    elsif is_admin?
       " - admin"
-    elsif is_manager?(current_user)
+    elsif is_manager?
       " - manager"
-    elsif is_student?(current_user)
+    elsif is_student?
      ""
     else
-      "none"
+      "- none"
     end
   end
 

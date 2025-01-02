@@ -1,7 +1,7 @@
 <div class="w-full">
   <div class="lg:flex justify-between items-center mb-4">
     <h1><%= @faculty_survey.display_name %></h1>
-    <% if is_admin?(current_user) %> 
+    <% if is_admin? %> 
       <% if email_was_sent?("FacultySurvey", @faculty_survey) %>
         <% unless @faculty_survey.program_id.present? %>
           <%= link_to 'Resend Email to Instructor', send_faculty_survey_email_path(@faculty_survey), class: "secondary_yellow_button" %>
@@ -23,7 +23,7 @@
           <%= link_to Program.find_by(id: @faculty_survey.program_id).display_name_with_title, program_path(Program.find_by(id: @faculty_survey.program_id)), class: "link_to" %>
           was created for this survey. Follow the link to edit the program
         </p>
-        <%= link_to 'Add Sites to Program', edit_program_sites_path(@faculty_survey.program_id), class: "secondary_blue_button" unless is_admin?(current_user) %> 
+        <%= link_to 'Add Sites to Program', edit_program_sites_path(@faculty_survey.program_id), class: "secondary_blue_button" unless is_admin? %> 
       </div>
     <% else %>
       <p class="body-sm-text mb-2">
@@ -34,7 +34,7 @@
 
     <%= render 'config_question', locals: { faculty_survey: @faculty_survey } %>
     
-    <% if is_admin?(current_user) %>
+    <% if is_admin? %>
       <%= render 'email_logs/email_log', email_log_entries: @email_log_entries %>
     <% end %>
 </div>
