@@ -47,10 +47,6 @@ class Manager < ApplicationRecord
     manager_all_terms + instructor_all_terms
   end
 
-  def all_programs
-    Program.where(instructor: self) + Program.joins(:managers).where('managers_programs.manager_id = ?', self)
-  end
-
   def can_reserve_car?
     self.mvr_status.present? && self.mvr_status.include?("Approved until") && self.canvas_course_complete_date.present? && self.meeting_with_admin_date.present? && self.phone_number.present?
   end
