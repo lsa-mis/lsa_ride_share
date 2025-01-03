@@ -630,10 +630,10 @@ class ReservationsController < ApplicationController
     reason_for_cancellation = params[:reason_for_cancellation]
     case cancel_type
     when "one"
-      result = recurring_reservation.get_one_to_delete
+      result = recurring_reservation.get_one_to_cancel
       recurring = false
     when "following"
-      result = recurring_reservation.get_following_to_delete
+      result = recurring_reservation.get_following_to_cancel
       recurring = true
       cancel_message = "This reservation and all the following recurring reservations "
     end
