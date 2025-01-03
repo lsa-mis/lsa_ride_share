@@ -1,8 +1,20 @@
-<div class="min-w-full">
+<div class="min-w-full" data-controller='autosubmit'>
   <div class="flex justify-between items-center">
-    <h1>Canceled Reservations for Current Term<h1>
+    <h1>Canceled Reservations for Current Term</h1>
   </div>
-  <div>
+  <%= form_with url: canceled_reservations_path, method: :get, class: "", data: { autosubmit_target: "form", turbo_frame: "canceled_reservations" } do |form| %>
+    <% if session[:unit_ids].count > 1 %>
+      <div class="my-2">
+        <label for="unit_id" class="fancy_label">Select a Unit</label>
+        <%= select_tag "unit_id", options_from_collection_for_select(@units, :id, :name, selected: params[:unit_id]), include_blank: "All Units", class: "filter_select w-48",
+          :"data-action" => "change->autosubmit#search" %>
+      </div>
+    <% else %>
+      <%= form.label :unit_id, 'Unit *', class: "hidden" %>
+      <input type="hidden" id="unit_id" name="unit_id" value=<%= @unit_id %>>
+    <% end %>
+  <% end %>
+  <%= turbo_frame_tag 'canceled_reservations' do %>
     <table class="mi_table">
       <thead class="border border-l-0 border-r-0 border-gray-um60">
         <tr>
@@ -11,8 +23,8 @@
           <th class="header_th">Program</th>
           <th class="header_th">Site</th>
           <th class="header_th">Driver</th>
-          <th class="header_th">Number of People</th>
-          <th class="header_th">Reserved By</th>
+          <th class="header_th">Canceled On</th>
+          <th class="header_th">Canceled By</th>
           <th class="header_th">Reason for Canceletion</th>
         </tr>
       </thead>
@@ -43,14 +55,18 @@
               <%= display_driver_status(reservation) %>
             </td>
             <td class="mi_tbody_td">
-              <%= reservation.number_of_people_on_trip %>
+              <%= show_date_time(reservation.updated_at) %>
             </td>
             <td class="mi_tbody_td">
-              <%= show_user_name_by_id(reservation.reserved_by) %>
+              <%= show_user_name_by_id(reservation.updated_by) %>
             </td>
+            <td class="mi_tbody_td">
+            <%= reservation.reason_for_cancellation %>
+          </td>
           </tr>
         <% end %>
       </tbody>
     </table>
-  </div>
+  <% end %>
+
 </div>

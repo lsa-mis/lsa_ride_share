@@ -33,7 +33,11 @@ class ReservationsController < ApplicationController
   end
 
   def canceled_reservations
-    @canceled_reservations = Reservation.canceled.where(program_id: Program.current_term.ids)
+    if params[:unit_id].present?
+      @canceled_reservations = Reservation.canceled.where(program: Program.current_term.where(unit_id: params[:unit_id])).order(updated_at: :desc)
+    else
+      @canceled_reservations = Reservation.canceled.where(program_id: Program.current_term.ids).order(updated_at: :desc)
+    end
     authorize @canceled_reservations
   end
 
@@ -579,10 +583,10 @@ class ReservationsController < ApplicationController
 
   # soft cancel reservations - set canceled field to true, delete drivers and passengers
   def cancel_reason
+    @cancel_type = params[:cancel_type]
   end
 
   def cancel_reservation
-    fail
     unless @reservation.vehicle_report.present?
       recurring = false
       create_cancel_emails
@@ -592,12 +596,13 @@ class ReservationsController < ApplicationController
       if @reservation.passengers_managers.present?
         @reservation.passengers_managers.delete_all
       end
-      ReservationMailer.with(reservation: @reservation, user: current_user, recurring: recurring).car_reservation_cancel_admin(@cancel_passengers, @cancel_emails).deliver_now
+      reason_for_cancellation = params[:reason_for_cancellation]
+      ReservationMailer.with(reservation: @reservation, user: current_user, recurring: recurring).car_reservation_cancel_admin(@cancel_passengers, @cancel_emails, reason_for_cancellation).deliver_now
       if @reservation.driver_id.present? || @reservation.driver_manager_id.present? 
-        ReservationMailer.with(reservation: @reservation, user: current_user, recurring: recurring).car_reservation_cancel_driver(@cancel_passengers, @cancel_emails).deliver_now
+        ReservationMailer.with(reservation: @reservation, user: current_user, recurring: recurring).car_reservation_cancel_driver(@cancel_passengers, @cancel_emails, reason_for_cancellation).deliver_now
       end
       begin
-        @reservation.update(canceled: true, driver_id: nil, driver_manager_id: nil)
+        @reservation.update(canceled: true, reason_for_cancellation: reason_for_cancellation, driver_id: nil, driver_manager_id: nil, updated_by: current_user.id)
         if is_admin?
           redirect_to reservations_url, notice: "Reservation was canceled."
           
@@ -614,13 +619,15 @@ class ReservationsController < ApplicationController
       end
     else
       flash.now[:alert] = "The reservation has a vehicle report and can't be canceled."
-      return
+      @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id).order(created_at: :desc)
+      render :show, status: :unprocessable_entity
     end
   end
 
   def cancel_recurring_reservation
     recurring_reservation = RecurringReservation.new(@reservation)
     cancel_type = params[:cancel_type]
+    reason_for_cancellation = params[:reason_for_cancellation]
     case cancel_type
     when "one"
       result = recurring_reservation.get_one_to_delete
@@ -638,28 +645,29 @@ class ReservationsController < ApplicationController
         alert = "Reservations with #{result_with_vehicle_reports} ID(s) have vehicle reports and can't be canceled."
       end
       flash.now[:alert] = alert
-      return
+      @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id).order(created_at: :desc)
+      render :show, status: :unprocessable_entity
     else
       create_cancel_emails
       cancel_message = ""
-      ReservationMailer.with(reservation: @reservation, user: current_user, recurring: recurring).car_reservation_cancel_admin(@cancel_passengers, @cancel_emails, cancel_message, cancel_type).deliver_now
+      ReservationMailer.with(reservation: @reservation, user: current_user, recurring: recurring).car_reservation_cancel_admin(@cancel_passengers, @cancel_emails, reason_for_cancellation, cancel_message, cancel_type).deliver_now
       if @reservation.driver_id.present? || @reservation.driver_manager_id.present? 
-        ReservationMailer.with(reservation: @reservation, user: current_user, recurring: recurring).car_reservation_cancel_driver(@cancel_passengers, @cancel_emails, cancel_message, cancel_type).deliver_now
+        ReservationMailer.with(reservation: @reservation, user: current_user, recurring: recurring).car_reservation_cancel_driver(@cancel_passengers, @cancel_emails, reason_for_cancellation, cancel_message, cancel_type).deliver_now
       end
       recurring_reservation.destroy_passengers(result)
       authorize @reservation
-      respond_to do |format|
-        if Reservation.where(id: result).update_all(canceled: true, driver_id: nil, driver_manager_id: nil)
-          if is_admin?
-            format.turbo_stream { redirect_to reservations_url, notice: "Selected Reservation(s) were canceled." }
-          elsif is_manager?
-            format.turbo_stream { redirect_to welcome_pages_manager_url, notice: "Selected Reservation(s) were canceled." }
-          elsif is_student?
-            format.turbo_stream { redirect_to welcome_pages_student_url, notice: "Selected Reservation(s) were canceled." }
-          end
-        else
-          render :show, status: :unprocessable_entity
+      if Reservation.where(id: result).update_all(canceled: true, reason_for_cancellation: reason_for_cancellation, driver_id: nil, driver_manager_id: nil, updated_by: current_user.id, prev: nil, next: nil, updated_at: Time.now)
+        if is_admin?
+          redirect_to reservations_url, notice: "Selected Reservation(s) were canceled."
+        elsif is_manager?
+          redirect_to welcome_pages_manager_url, notice: "Selected Reservation(s) were canceled."
+        elsif is_student?
+          redirect_to welcome_pages_student_url, notice: "Selected Reservation(s) were canceled."
         end
+      else
+        flash.now[:alert] = "Error canceling reservations"
+        @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id).order(created_at: :desc)
+        render :show, status: :unprocessable_entity
       end
     end
   end
@@ -700,7 +708,7 @@ class ReservationsController < ApplicationController
     end
     
     def set_reservation
-      @reservation = Reservation.find(params[:id])
+      @reservation = Reservation.unscoped.find(params[:id])
       authorize @reservation
     end
 
@@ -792,6 +800,6 @@ class ReservationsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def reservation_params
       params.require(:reservation).permit(:status, :start_time, :end_time, :recurring, :driver_id, :driver_manager_id, :driver_phone, :backup_driver_id, :backup_driver_phone, 
-      :number_of_people_on_trip, :program_id, :site_id, :car_id, :reserved_by, :approved, :non_uofm_passengers, :number_of_non_uofm_passengers, :until_date, :updated_by)
+      :number_of_people_on_trip, :program_id, :site_id, :car_id, :reserved_by, :approved, :non_uofm_passengers, :number_of_non_uofm_passengers, :until_date, :updated_by, :canceled, :reason_for_cancellation)
     end
 end
