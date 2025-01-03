@@ -19,7 +19,8 @@ class ReservationPolicy < ApplicationPolicy
   end
 
   def show?
-    return true if user_in_access_group? 
+    return true if user_in_access_group?
+    return false if @record.canceled
     return true if is_in_reservation?
     return false
   end
@@ -40,6 +41,7 @@ class ReservationPolicy < ApplicationPolicy
   end
 
   def update?
+    return false if @record.canceled
     return true if user_in_access_group? 
     return true if is_reservation_driver?
     return false
@@ -86,10 +88,12 @@ class ReservationPolicy < ApplicationPolicy
   end
 
   def add_non_uofm_passengers?
+    return false if @record.canceled
     user_in_access_group? || is_in_reservation?
   end
 
   def update_passengers?
+    return false if @record.canceled
     user_in_access_group? || is_in_reservation?
   end
 
