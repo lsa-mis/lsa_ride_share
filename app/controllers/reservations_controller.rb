@@ -581,11 +581,12 @@ class ReservationsController < ApplicationController
     redirect_to reservation_path(@reservation), notice: notice, alert: alert
   end
 
-  # soft cancel reservations - set canceled field to true, delete drivers and passengers
+  # add a reson to canceled reservations - modal form
   def cancel_reason
     @cancel_type = params[:cancel_type]
   end
 
+  # soft cancel reservations - set canceled field to true, delete drivers and passengers, send email
   def cancel_reservation
     unless @reservation.vehicle_report.present?
       recurring = false
@@ -631,6 +632,7 @@ class ReservationsController < ApplicationController
     case cancel_type
     when "one"
       result = recurring_reservation.get_one_to_cancel
+      cancel_message = ""
       recurring = false
     when "following"
       result = recurring_reservation.get_following_to_cancel
@@ -649,7 +651,6 @@ class ReservationsController < ApplicationController
       render :show, status: :unprocessable_entity
     else
       create_cancel_emails
-      cancel_message = ""
       ReservationMailer.with(reservation: @reservation, user: current_user, recurring: recurring).car_reservation_cancel_admin(@cancel_passengers, @cancel_emails, reason_for_cancellation, cancel_message, cancel_type).deliver_now
       if @reservation.driver_id.present? || @reservation.driver_manager_id.present? 
         ReservationMailer.with(reservation: @reservation, user: current_user, recurring: recurring).car_reservation_cancel_driver(@cancel_passengers, @cancel_emails, reason_for_cancellation, cancel_message, cancel_type).deliver_now

@@ -22,7 +22,6 @@
           <th class="header_th">Car</th>
           <th class="header_th">Program</th>
           <th class="header_th">Site</th>
-          <th class="header_th">Driver</th>
           <th class="header_th">Canceled On</th>
           <th class="header_th">Canceled By</th>
           <th class="header_th">Reason for Canceletion</th>
@@ -49,10 +48,6 @@
             </td>
             <td class="mi_tbody_td">
               <%= reservation.site.title %>
-            </td>
-            <td class="mi_tbody_td">
-              <%= show_driver(reservation) %>
-              <%= display_driver_status(reservation) %>
             </td>
             <td class="mi_tbody_td">
               <%= show_date_time(reservation.updated_at) %>

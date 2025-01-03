@@ -36,7 +36,7 @@ Rails.application.routes.draw do
   get '/reservations/new_long', to: 'reservations#new_long', as: :new_long_reservation
   get '/reservations/edit_long/:id', to: 'reservations#edit_long', as: :edit_long_reservation
   get '/reservations/week_calendar/', to: 'reservations#week_calendar', as: 'week_calendar'
-  resources :reservations do
+  resources :reservations, except: [:destroy] do
     resources :vehicle_reports, module: :reservations
   end
   get '/reservations/get_available_cars/:unit_id/:day_start/:number/:start_time/:end_time/:until_date', to: 'reservations#get_available_cars'
