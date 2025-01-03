@@ -1,5 +1,10 @@
 <%= turbo_frame_tag "modal" do %>
   <div class="modal">
+    <% if @reservation.vehicle_report.present? %>
+      <p class="body-md-text status-false pb-2">
+        The reservation has a vehicle report and can't be canceled.
+      </p>
+    <% end %>
     <p class="mb-2 body-md-medium-text">To cancel the reservation, please provide your reason and click OK.<br> Otherwise, click Cancel.</p>
     <%= cancel_reservation_form(@cancel_type) do |form| %>
       <% if @reservation.errors.any? %>
