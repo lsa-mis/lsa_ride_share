@@ -261,7 +261,7 @@ class RecurringReservation
     end
   end
 
-  def get_one_to_delete
+  def get_one_to_cancel
     if prev_reservation && next_reservation
       next_reservation.update(prev: prev_reservation.id)
       prev_reservation.update(next: next_reservation.id)
@@ -297,7 +297,7 @@ class RecurringReservation
     return note
   end
 
-  def get_following_to_delete
+  def get_following_to_cancel
     if prev_reservation.present?
       prev_reservation.update(next: nil)
     end

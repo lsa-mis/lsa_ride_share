@@ -1,0 +1,37 @@
+<%= turbo_frame_tag "modal" do %>
+  <div class="modal">
+    <% if @reservation.vehicle_report.present? %>
+      <p class="body-md-text status-false pb-2">
+        The reservation has a vehicle report and can't be canceled.
+      </p>
+    <% end %>
+    <p class="mb-2 body-md-medium-text">To cancel the reservation, please provide your reason and click OK.<br> Otherwise, click Cancel.</p>
+    <%= cancel_reservation_form(@cancel_type) do |form| %>
+      <% if @reservation.errors.any? %>
+        <div style="color: red">
+          <h2><%= pluralize(@reservation.errors.count, "error") %> prohibited this @reservation from being saved:</h2>
+    
+          <ul>
+            <% @reservation.errors.each do |error| %>
+              <li><%= error.full_message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+    
+      <div>
+        <label for="reason_for_cancellation" aria-labelledby="reason_for_cancellation">
+        <textarea name="reason_for_cancellation" id="reason_for_cancellation" rows="3" required=true class="input_text_field"></textarea>
+        <%= form.hidden_field :cancel_type, value: @cancel_type %>
+      </div>
+      <div class="mt-2">
+        <%= form.submit "OK", class: "primary_button" %>
+        <%= link_to reservation_path(@reservation), data: {controller: "modals", action: "modals#close"}  do %>
+          <span class="tertiary_button">Cancel
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </span>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
