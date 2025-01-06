@@ -915,4 +915,12 @@ module ApplicationHelper
     return all_managers - managers_and_instructors
   end
 
+  def cancel_reservation_form(cancel_type)
+    if cancel_type == "single"
+      form_with(url: cancel_reservation_path, method: :get, data: { turbo_frame: "_top" }) { |form| yield form }
+    else
+      form_with(url: cancel_recurring_reservation_path, method: :get, data: { turbo_frame: "_top" }) { |form| yield form }
+    end
+  end
+
 end

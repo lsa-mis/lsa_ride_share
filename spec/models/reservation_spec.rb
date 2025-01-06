@@ -26,6 +26,8 @@
 #  prev                          :integer
 #  next                          :integer
 #  until_date                    :date
+#  canceled                      :boolean          default(FALSE)
+#  reason_for_cancellation       :string
 #
 require 'rails_helper'
 

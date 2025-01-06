@@ -26,6 +26,8 @@
 #  prev                          :integer
 #  next                          :integer
 #  until_date                    :date
+#  canceled                      :boolean          default(FALSE)
+#  reason_for_cancellation       :string
 #
 class Reservation < ApplicationRecord
   include ApplicationHelper
@@ -55,6 +57,8 @@ class Reservation < ApplicationRecord
   validate :check_diff_time
   validate :approve_requires_car, on: :update
 
+  default_scope { where(canceled: false) }
+  scope :canceled, -> { unscoped.where(canceled: true) }
   scope :with_passengers, -> { Reservation.includes(:passengers) }
   scope :include_vehicle_reports, -> { Reservation.includes(:vehicle_report) }
   scope :current_term, -> { include_vehicle_reports.where(program_id: Program.current_term.ids)}

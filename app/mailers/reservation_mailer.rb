@@ -28,29 +28,29 @@ class ReservationMailer < ApplicationMailer
     create_email_log_records
   end
 
-  def car_reservation_cancel_admin(cancel_passengers, cancel_emails, cancel_message = "", cancel_type = "")
+  def car_reservation_cancel_admin(cancel_passengers, cancel_emails, reason_for_cancellation = "", cancel_message = "", cancel_type = "")
     @passengers = cancel_passengers
     user = params[:user]
     set_subject_email_type_recurring_rule("cancel_admin")
     if params[:recurring]
-      @cancel_message = cancel_message + " scheduled '" + @recurring_rule + "' were canceled by " + show_user_name_by_id(user.id) + "."
+      @cancel_message = cancel_message + " scheduled '" + @recurring_rule + "' were canceled by " + show_user_name_by_id(user.id) + " for the following reason: " + reason_for_cancellation
     else
-      @cancel_message = "The reservation was canceled by " + show_user_name_by_id(user.id) + "."
+      @cancel_message = "The reservation was canceled by " + show_user_name_by_id(user.id) + " for the following reason: " + reason_for_cancellation
     end
     @recipients = @unit_email
     mail(to: @recipients, subject: @subject)
     create_email_log_records(recurring_type: cancel_type)
   end
 
-  def car_reservation_cancel_driver(cancel_passengers, cancel_emails, cancel_message = "", cancel_type = "")
+  def car_reservation_cancel_driver(cancel_passengers, cancel_emails, reason_for_cancellation = "", cancel_message = "", cancel_type = "")
     @passengers = cancel_passengers
     user = params[:user]
     create_recipients_list(cancel_emails: cancel_emails)
     set_subject_email_type_recurring_rule("cancel_driver")
     if params[:recurring]
-      @cancel_message = cancel_message + " scheduled '" + @recurring_rule + "' were canceled by " + show_user_name_by_id(user.id) + "."
+      @cancel_message = cancel_message + " scheduled '" + @recurring_rule + "' were canceled by " + show_user_name_by_id(user.id) + " for the following reason: " + reason_for_cancellation
     else
-      @cancel_message = "Your reservation was canceled by " + show_user_name_by_id(user.id) + "."
+      @cancel_message = "Your reservation was canceled by " + show_user_name_by_id(user.id) + " for the following reason: " + reason_for_cancellation
     end
     mail(to: @recipients, subject: @subject)
     create_email_log_records(recurring_type: cancel_type)

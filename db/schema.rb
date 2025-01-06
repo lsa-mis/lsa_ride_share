@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_12_12_221643) do
+ActiveRecord::Schema[7.1].define(version: 2024_12_24_000649) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -246,6 +246,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_12_221643) do
     t.integer "prev"
     t.integer "next"
     t.date "until_date"
+    t.boolean "canceled", default: false
+    t.string "reason_for_cancellation"
     t.index ["backup_driver_id"], name: "index_reservations_on_backup_driver_id"
     t.index ["car_id"], name: "index_reservations_on_car_id"
     t.index ["driver_id"], name: "index_reservations_on_driver_id"
