@@ -16,8 +16,8 @@ RSpec.describe ReservationPolicy, type: :policy do
     it { is_expected.to forbid_actions(%i[]) }
     it { is_expected.to permit_only_actions(%i[index week_calendar day_reservations show create new new_long update edit edit_long 
       get_available_cars get_available_cars_long no_car_all_times edit_change_day change_start_end_day add_drivers_later finish_reservation 
-      send_reservation_updated_email add_non_uofm_passengers update_passengers destroy cancel_recurring_reservation approve_all_recurring
-      selected_reservations send_email_to_selected_reservations]) }
+      send_reservation_updated_email add_non_uofm_passengers update_passengers cancel_recurring_reservation approve_all_recurring
+      selected_reservations send_email_to_selected_reservations cancel_reason cancel_reservation canceled_reservations]) }
   end
 
   context 'with admin role and reservation created by admin' do
@@ -27,8 +27,8 @@ RSpec.describe ReservationPolicy, type: :policy do
     it { is_expected.to forbid_actions(%i[]) }
     it { is_expected.to permit_only_actions(%i[index week_calendar day_reservations show create new new_long update edit edit_long 
       get_available_cars get_available_cars_long no_car_all_times edit_change_day change_start_end_day add_drivers_later finish_reservation 
-      send_reservation_updated_email add_non_uofm_passengers update_passengers destroy cancel_recurring_reservation approve_all_recurring
-      selected_reservations send_email_to_selected_reservations]) }
+      send_reservation_updated_email add_non_uofm_passengers update_passengers cancel_recurring_reservation approve_all_recurring
+      selected_reservations send_email_to_selected_reservations cancel_reason cancel_reservation canceled_reservations]) }
   end
 
   context 'with admin role and reservation created by student' do
@@ -40,8 +40,8 @@ RSpec.describe ReservationPolicy, type: :policy do
     it { is_expected.to forbid_actions(%i[]) }
     it { is_expected.to permit_only_actions(%i[index week_calendar day_reservations show create new new_long update edit edit_long 
       get_available_cars get_available_cars_long no_car_all_times edit_change_day change_start_end_day add_drivers_later finish_reservation 
-      send_reservation_updated_email add_non_uofm_passengers update_passengers destroy cancel_recurring_reservation approve_all_recurring
-      selected_reservations send_email_to_selected_reservations]) }
+      send_reservation_updated_email add_non_uofm_passengers update_passengers cancel_recurring_reservation approve_all_recurring
+      selected_reservations send_email_to_selected_reservations cancel_reason cancel_reservation canceled_reservations]) }
   end
 
   context 'with manager role' do
@@ -49,10 +49,10 @@ RSpec.describe ReservationPolicy, type: :policy do
     subject { described_class.new({ user: user_manager, role: "manager", params: {unit_id: program.unit.id} }, reservation_manager) }
 
     it { is_expected.to forbid_actions(%i[add_drivers_later index week_calendar
-      day_reservations approve_all_recurring selected_reservations send_email_to_selected_reservations send_reservation_updated_email]) }
+      day_reservations approve_all_recurring selected_reservations send_email_to_selected_reservations send_reservation_updated_email canceled_reservations]) }
     it { is_expected.to permit_only_actions(%i[show create new new_long update edit edit_long 
       get_available_cars get_available_cars_long no_car_all_times edit_change_day change_start_end_day finish_reservation 
-      add_non_uofm_passengers update_passengers destroy cancel_recurring_reservation 
+      add_non_uofm_passengers update_passengers cancel_recurring_reservation cancel_reason cancel_reservation
       ]) }
   end
 
@@ -64,10 +64,10 @@ RSpec.describe ReservationPolicy, type: :policy do
     subject { described_class.new({ user: user_student, role: "student", params: {unit_id: program.unit.id} }, reservation_student) }
     
     it { is_expected.to forbid_actions(%i[add_drivers_later index week_calendar
-      day_reservations approve_all_recurring selected_reservations send_email_to_selected_reservations send_reservation_updated_email]) }
+      day_reservations approve_all_recurring selected_reservations send_email_to_selected_reservations send_reservation_updated_email canceled_reservations]) }
     it { is_expected.to permit_only_actions(%i[show create new new_long update edit edit_long 
       get_available_cars get_available_cars_long no_car_all_times edit_change_day change_start_end_day finish_reservation 
-      add_non_uofm_passengers update_passengers destroy cancel_recurring_reservation 
+      add_non_uofm_passengers update_passengers cancel_recurring_reservation cancel_reason cancel_reservation
       ]) }
   end
 
