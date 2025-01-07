@@ -644,7 +644,7 @@ class ReservationsController < ApplicationController
       if cancel_type == "one"
         alert = "The reservation has a vehicle report and can't be canceled."
       else
-        alert = "Reservations with #{result_with_vehicle_reports} ID(s) have vehicle reports and can't be canceled."
+        alert = "This and Following Reservations can't be canceled because vehicle reports exist for #{result_with_vehicle_reports}. To cancel this reservation click 'Cancel This Reservation' button."
       end
       flash.now[:alert] = alert
       @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id).order(created_at: :desc)

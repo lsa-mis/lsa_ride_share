@@ -7,11 +7,6 @@
         </p>
       <% end %>
     </div>
-    <%if @reservation.canceled %>
-      <p class="body-md-text status-false">
-       <%= "The reservation was canceled by #{show_user_name_by_id(@reservation.updated_by)} for the following reason: #{@reservation.reason_for_cancellation}" %>
-      </p>
-    <% end %>
     
     <div class="py-2">
       <p class="body-lg-bold-text inline">
