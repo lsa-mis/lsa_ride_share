@@ -5,6 +5,15 @@
   <h2 class="mb-4">
     <%= @reservation.program.display_name_with_title %>
   </h2>
+  <% if @reservation.canceled %>
+    <div class="mb-2">
+      <p class="body-md-text status-false">
+        <%= "The reservation was canceled on #{show_date_time(@reservation.updated_at)} by #{show_user_name_by_id(@reservation.updated_by)} for the following reason:" %>
+        <br>
+        <%= @reservation.reason_for_cancellation %>
+      </p>
+    </div>
+  <% end %>
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
     <div class="col-span-3">
       <% if is_admin? %>
