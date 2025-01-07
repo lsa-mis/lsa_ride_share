@@ -2,9 +2,6 @@ require 'rails_helper'
 
 RSpec.describe Program, type: :request do
 
-	# with manager role
-  # go to index action
-  # expect 200
   context 'index action' do
 
     context 'with super_admin role' do
@@ -33,7 +30,7 @@ RSpec.describe Program, type: :request do
       end
     end
 
-    context 'with manager role who has a program' do
+    context 'with manager who has a program' do
       let!(:user_manager) { FactoryBot.create(:user) }
       let!(:manager) { FactoryBot.create(:manager, uniqname: user_manager.uniqname) }
       let!(:program) { FactoryBot.create(:program, instructor: manager) }
@@ -47,7 +44,7 @@ RSpec.describe Program, type: :request do
       end
     end
 
-    context 'with manager role who has no programs' do
+    context 'with manager who has no programs' do
       let!(:user_manager) { FactoryBot.create(:user) }
       let!(:manager) { FactoryBot.create(:manager, uniqname: user_manager.uniqname) }
 
@@ -62,7 +59,7 @@ RSpec.describe Program, type: :request do
       end
     end
 
-    context 'with student role who has a currrent term program' do
+    context 'with student who has a currrent term program' do
       let!(:user_manager) { FactoryBot.create(:user) }
       let!(:manager) { FactoryBot.create(:manager, uniqname: user_manager.uniqname) }
       let!(:program) { FactoryBot.create(:program, instructor: manager) }
@@ -94,11 +91,11 @@ RSpec.describe Program, type: :request do
       end
     end
 
-    context 'with super_admin role see Edit and Duplicate buttons in a program card' do
+    context 'with super_admin role' do
       let!(:user) { FactoryBot.create(:user) }
       let!(:program) { FactoryBot.create(:program) }
 
-      it 'returns 200' do
+      it 'should display Edit and Duplicate buttons in a program card' do
         allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, "lsa-was-rails-devs").and_return(true)
         allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, Unit.first.ldap_group).and_return(false)
         mock_login(user)
@@ -108,11 +105,11 @@ RSpec.describe Program, type: :request do
       end
     end
 
-    context 'with admin role see Edit and Duplicate buttons in a program card' do
+    context 'with admin role' do
       let!(:user) { FactoryBot.create(:user) }
       let!(:program) { FactoryBot.create(:program) }
 
-      it 'returns 200' do
+      it 'should display Edit and Duplicate buttons in a program card' do
         allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, "lsa-was-rails-devs").and_return(false)
         allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, Unit.first.ldap_group).and_return(true)
         mock_login(user)
@@ -122,12 +119,12 @@ RSpec.describe Program, type: :request do
       end
     end
 
-    context 'with manager role see Edit but not see Duplicate buttons in a program card' do
+    context 'with manager role' do
       let!(:user_manager) { FactoryBot.create(:user) }
       let!(:manager) { FactoryBot.create(:manager, uniqname: user_manager.uniqname) }
       let!(:program) { FactoryBot.create(:program, instructor: manager) }
 
-      it 'returns 200' do
+      it 'should display Edit but no Duplicate button in a program card' do
         allow(LdapLookup).to receive(:is_member_of_group?).with(user_manager.uniqname, "lsa-was-rails-devs").and_return(false)
         allow(LdapLookup).to receive(:is_member_of_group?).with(user_manager.uniqname, Unit.first.ldap_group).and_return(false)
         mock_login(user_manager)
