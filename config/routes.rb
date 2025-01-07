@@ -36,7 +36,7 @@ Rails.application.routes.draw do
   get '/reservations/new_long', to: 'reservations#new_long', as: :new_long_reservation
   get '/reservations/edit_long/:id', to: 'reservations#edit_long', as: :edit_long_reservation
   get '/reservations/week_calendar/', to: 'reservations#week_calendar', as: 'week_calendar'
-  resources :reservations do
+  resources :reservations, except: [:destroy] do
     resources :vehicle_reports, module: :reservations
   end
   get '/reservations/get_available_cars/:unit_id/:day_start/:number/:start_time/:end_time/:until_date', to: 'reservations#get_available_cars'
@@ -59,11 +59,14 @@ Rails.application.routes.draw do
   get '/reservations/:id/add_drivers_later', to: 'reservations#add_drivers_later', as: :add_drivers_later
   get '/reservations/:id/finish_reservation', to: 'reservations#finish_reservation', as: :finish_reservation
   get '/reservations/:id/update_passengers/', to: 'reservations#update_passengers', as: :update_passengers
-  post '/reservations/cancel_recurring_reservation/:id', to: 'reservations#cancel_recurring_reservation', as: :cancel_recurring_reservation
+  get '/reservations/cancel_recurring_reservation/:id', to: 'reservations#cancel_recurring_reservation', as: :cancel_recurring_reservation
   get '/send_reservation_updated_email/:id', to: 'reservations#send_reservation_updated_email', as: :send_reservation_updated_email
   get '/approve_all_recurring/:id', to: 'reservations#approve_all_recurring', as: :approve_all_recurring
   post '/selected_reservations/', to: 'reservations#selected_reservations', as: :selected_reservations
   get '/send_email_to_selected_reservations/', to: 'reservations#send_email_to_selected_reservations', as: :send_email_to_selected_reservations
+  get '/canceled_reservations/', to: 'reservations#canceled_reservations', as: :canceled_reservations
+  get '/cancel_reason/:id', to: 'reservations#cancel_reason', as: :cancel_reason
+  get '/cancel_reservation/:id', to: 'reservations#cancel_reservation', as: :cancel_reservation
 
   resources :cars, except: [:destroy] do
     resources :notes, module: :cars

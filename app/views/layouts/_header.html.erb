@@ -41,6 +41,7 @@
                   <div class="invisible absolute z-50 flex w-full flex-col bg-blue-umblue py-1 group-hover:visible" onClick="">
                     <%= link_to "Reservations", reservations_path, class:"nav-sub-link" %>
                     <%= link_to "Vehicle Reports", vehicle_reports_path, class: "nav-sub-link" %>
+                    <%= link_to "Canceled", canceled_reservations_path, class: "nav-sub-link" %>
                   </div>
                 </div>
               <% elsif is_manager? %>
