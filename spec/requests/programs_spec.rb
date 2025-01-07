@@ -9,10 +9,11 @@ RSpec.describe Program, type: :request do
 
     context 'with super_admin role' do
       let!(:user) { FactoryBot.create(:user) }
+      let!(:unit) { FactoryBot.create(:unit) }
 
       it 'returns 200' do
         allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, "lsa-was-rails-devs").and_return(true)
-        allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, Unit.first.ldap_group).and_return(false)
+        allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, unit.ldap_group).and_return(false)
         mock_login(user)
         get programs_path
         expect(response).to have_http_status(200)
@@ -21,10 +22,11 @@ RSpec.describe Program, type: :request do
 
     context 'with admin role' do
       let!(:user) { FactoryBot.create(:user) }
+      let!(:unit) { FactoryBot.create(:unit) }
 
       it 'returns 200' do
         allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, "lsa-was-rails-devs").and_return(false)
-        allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, Unit.first.ldap_group).and_return(true)
+        allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, unit.ldap_group).and_return(true)
         mock_login(user)
         get programs_path
         expect(response).to have_http_status(200)
@@ -89,6 +91,49 @@ RSpec.describe Program, type: :request do
         expect(response).to have_http_status(302)
         expect(response.location).to match("/")
         expect(flash[:alert]).to match("You are not authorized to perform this action.")
+      end
+    end
+
+    context 'with super_admin role see Edit and Duplicate buttons in a program card' do
+      let!(:user) { FactoryBot.create(:user) }
+      let!(:program) { FactoryBot.create(:program) }
+
+      it 'returns 200' do
+        allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, "lsa-was-rails-devs").and_return(true)
+        allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, Unit.first.ldap_group).and_return(false)
+        mock_login(user)
+        get programs_path
+        expect(response.body).to include("Edit")
+        expect(response.body).to include("Duplicate")
+      end
+    end
+
+    context 'with admin role see Edit and Duplicate buttons in a program card' do
+      let!(:user) { FactoryBot.create(:user) }
+      let!(:program) { FactoryBot.create(:program) }
+
+      it 'returns 200' do
+        allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, "lsa-was-rails-devs").and_return(false)
+        allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, Unit.first.ldap_group).and_return(true)
+        mock_login(user)
+        get programs_path
+        expect(response.body).to include("Edit")
+        expect(response.body).to include("Duplicate")
+      end
+    end
+
+    context 'with manager role see Edit but not see Duplicate buttons in a program card' do
+      let!(:user_manager) { FactoryBot.create(:user) }
+      let!(:manager) { FactoryBot.create(:manager, uniqname: user_manager.uniqname) }
+      let!(:program) { FactoryBot.create(:program, instructor: manager) }
+
+      it 'returns 200' do
+        allow(LdapLookup).to receive(:is_member_of_group?).with(user_manager.uniqname, "lsa-was-rails-devs").and_return(false)
+        allow(LdapLookup).to receive(:is_member_of_group?).with(user_manager.uniqname, Unit.first.ldap_group).and_return(false)
+        mock_login(user_manager)
+        get programs_path
+        expect(response.body).to include("Edit")
+        expect(response.body).not_to include("Duplicate")
       end
     end
 
