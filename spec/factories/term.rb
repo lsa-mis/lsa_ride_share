@@ -14,8 +14,8 @@
 FactoryBot.define do
   factory :term do
     code { "2470" }
-    name { "Fall 2024" }
-    classes_begin_date { "2024-01-10" }
-    classes_end_date { "2024-05-06" }
+    name { "Current Term" }
+    classes_begin_date { DateTime.now - 4.day }
+    classes_end_date { DateTime.now + 4.day }
   end
 end
