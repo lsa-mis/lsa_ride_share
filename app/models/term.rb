@@ -20,4 +20,8 @@ class Term < ApplicationRecord
   scope :future, -> { sorted.where('classes_begin_date > :date', date: Date.today)}
   scope :current_and_future, -> { current + future }
 
+  def display_name
+    "#{name} (#{classes_begin_date.strftime('%m/%d/%Y')} - #{classes_end_date.strftime('%m/%d/%Y')})"
+  end
+
 end

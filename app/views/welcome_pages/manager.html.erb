@@ -1,5 +1,8 @@
 <div class="container px-1 mb-20" data-controller='autosubmit'>
-  <h1>Welcome <%= current_user.display_name %></h1>
+  <h1>
+    Welcome <%= current_user.display_name %>
+    <p class="body-lg-text mt-2"><%= show_current_terms %></p>
+  </h1>
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
     <div class="col-span-3">
       <div class="hidden md:block">

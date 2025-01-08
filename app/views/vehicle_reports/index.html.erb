@@ -1,7 +1,8 @@
 <div class="container px-1 mb-20" data-controller='autosubmit'>
-
-  <h1>Vehicle reports</h1>
-
+  <div class="md:flex justify-between items-center whitespace-nowrap pb-4">
+    <h1>Vehicle Reports</h1>
+    <div class="body-lg-text pt-4"><%= show_current_terms %></div>
+  </div>
   <div>
     <%= form_with url: vehicle_reports_path, method: :get, data: { autosubmit_target: "form", turbo_frame: "turbo-vehicle_reports" } do |form| %>
       <div class="md:flex gap-2 mb-4">
