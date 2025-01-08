@@ -923,4 +923,8 @@ module ApplicationHelper
     end
   end
 
+  def show_current_terms
+    Term.current.map { |term| term.display_name }.join(", ")
+  end
+
 end

@@ -2,6 +2,7 @@
   <a id="top" name="top" style="display: none;">top</a>
   <div class="md:flex justify-between items-center whitespace-nowrap pb-4">
     <h1>Reservations</h1>
+    <div class="body-lg-text pt-4"><%= show_current_terms %></div>
     <div class="mt-2">
       <% if @unit_id.present? %>
         <%= link_to new_reservation_path(:unit_id => @unit_id, :day_start => Date.today) do %>
