@@ -6,16 +6,16 @@
             <p class="card-title">
               <%= program.title %>
             </p>
-            <p class="body-lg-medium-text">
+            <p class="body-lg-bold-text">
               <%= program.unit.name %>
             </p>
-            <p class="body-lg-medium-text">
+            <p class="body-md-medium-text mt-4">
               <%= program.display_name %>
             </p>
           <% end %>
         </div>
-        <p class="body-md-bold-text pt-4">
-          Instructor - <%= program.instructor.uniqname%>
+        <p class="body-md-medium-text pt-4">
+          Instructor: <%= program.instructor.display_name%>
         </p>
     </div>
     <div class="pb-2">
