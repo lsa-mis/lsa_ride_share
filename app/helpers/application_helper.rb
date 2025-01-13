@@ -924,7 +924,17 @@ module ApplicationHelper
   end
 
   def show_current_terms
-    Term.current.map { |term| term.display_name }.join(", ")
+    terms = []
+    current = Term.current
+    if current.present?
+      if current.count > 1
+        terms = current.map { |term| term.display_name }
+      else
+        terms = [current.first.name, "(#{current.first.classes_begin_date.strftime('%m/%d/%Y')} - #{current.first.classes_end_date.strftime('%m/%d/%Y')})"]
+      end
+    else
+      terms = "No current term"
+    end
   end
 
 end
