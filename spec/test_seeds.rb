@@ -17,7 +17,8 @@ terms = Term.create!([
   {code: "2480", name: "Spring 2024", classes_begin_date: DateTime.new(2024, 4, 30), classes_end_date: DateTime.new(2024, 6, 17) },
   {code: "2490", name: "Spring/Summer 2024", classes_begin_date: DateTime.new(2024, 4, 30), classes_end_date: DateTime.new(2024, 8, 13) },
   {code: "2500", name: "Summer 2024", classes_begin_date: DateTime.new(2024, 6, 26), classes_end_date: DateTime.new(2024, 8, 13) },
-  {code: "2510", name: "Fall 2024", classes_begin_date: DateTime.new(2024, 8, 26), classes_end_date: DateTime.new(2025, 01, 7)}
+  {code: "2510", name: "Fall 2024", classes_begin_date: DateTime.new(2024, 8, 26), classes_end_date: DateTime.new(2025, 01, 7)},
+  {code: "2510", name: "Winter 2025", classes_begin_date: DateTime.new(2025, 1, 8), classes_end_date: DateTime.new(2025, 5, 5)}
 ])
 
 Unit.create(name: "Fake Unit", ldap_group: "fake_group")

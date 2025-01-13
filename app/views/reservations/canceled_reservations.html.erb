@@ -1,6 +1,14 @@
 <div class="min-w-full" data-controller='autosubmit'>
   <div class="flex justify-between items-center">
-    <h1>Canceled Reservations for Current Term</h1>
+    <h1>Canceled Reservations</h1>
+    <div class="flex flex-col items-center justify-center body-md-text pt-4">
+      <div>
+        <%= show_current_terms[0] %>
+      </div>
+      <div>
+        <%= show_current_terms[1] %>
+      </div>
+    </div>
   </div>
   <%= form_with url: canceled_reservations_path, method: :get, class: "", data: { autosubmit_target: "form", turbo_frame: "canceled_reservations" } do |form| %>
     <% if session[:unit_ids].count > 1 %>
