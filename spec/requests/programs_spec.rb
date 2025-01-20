@@ -2,10 +2,6 @@ require 'rails_helper'
 
 SUPER_ADMIN_LDAP_GROUP = "lsa-was-rails-devs"
 
-def make_super_admin(user)
-  allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, SUPER_ADMIN_LDAP_GROUP).and_return(true)
-end
-
 def define_group_membership(user, ldap_group, membership)
   allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, ldap_group).and_return(membership)
 end
