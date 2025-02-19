@@ -28,6 +28,8 @@ class SitesController < ApplicationController
   def update
     if @site.update(site_params)
       redirect_back_or_default("The site was updated.", false, sites_url)
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 
