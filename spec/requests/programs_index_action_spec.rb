@@ -2,10 +2,6 @@ require 'rails_helper'
 
 SUPER_ADMIN_LDAP_GROUP = "lsa-was-rails-devs"
 
-def define_group_membership(user, ldap_group, membership)
-  allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, ldap_group).and_return(membership)
-end
-
 RSpec.describe Program, type: :request do
 
   context 'index action' do
@@ -18,14 +14,11 @@ RSpec.describe Program, type: :request do
         # make a user a member of the SUPER_ADMIN_LDAP_GROUP group
         allow(LdapLookup).to receive(:is_member_of_group?).with(super_admin_user.uniqname, SUPER_ADMIN_LDAP_GROUP).and_return(true)
         allow(LdapLookup).to receive(:is_member_of_group?).with(super_admin_user.uniqname, unit.ldap_group).and_return(false)
-        # define_group_membership(super_admin_user, SUPER_ADMIN_LDAP_GROUP, true)
-        # define_group_membership(super_admin_user, unit.ldap_group, false)
         mock_login(super_admin_user)
       end
 
       it 'returns 200' do
         get programs_path
-        # binding.pry
         expect(response).to have_http_status(200)
       end
     end
@@ -34,12 +27,14 @@ RSpec.describe Program, type: :request do
       let!(:admin_user) { FactoryBot.create(:user) }
       let!(:unit) { FactoryBot.create(:unit) }
 
-      it 'returns 200' do
+      before do
+        # make a user a member of the SUPER_ADMIN_LDAP_GROUP group
         allow(LdapLookup).to receive(:is_member_of_group?).with(admin_user.uniqname, SUPER_ADMIN_LDAP_GROUP).and_return(false)
         allow(LdapLookup).to receive(:is_member_of_group?).with(admin_user.uniqname, unit.ldap_group).and_return(true)
-        # define_group_membership(admin_user, SUPER_ADMIN_LDAP_GROUP, false)
-        # define_group_membership(admin_user, unit.ldap_group, true)
         mock_login(admin_user)
+      end
+
+      it 'returns 200' do
         get programs_path
         expect(response).to have_http_status(200)
       end
@@ -50,12 +45,13 @@ RSpec.describe Program, type: :request do
       let!(:manager) { FactoryBot.create(:manager, uniqname: user_manager.uniqname) }
       let!(:program) { FactoryBot.create(:program, instructor: manager) }
 
-      it 'returns 200' do
+      before do
         allow(LdapLookup).to receive(:is_member_of_group?).with(anything, SUPER_ADMIN_LDAP_GROUP).and_return(false)
         allow(LdapLookup).to receive(:is_member_of_group?).with(user_manager.uniqname, anything).and_return(false)
-        # define_group_membership(user_manager, SUPER_ADMIN_LDAP_GROUP, false)
-        # define_group_membership(user_manager, anything, false)
         mock_login(user_manager)
+      end
+
+      it 'returns 200' do
         get programs_path
         expect(response).to have_http_status(200)
       end
@@ -119,12 +115,13 @@ RSpec.describe Program, type: :request do
     context 'with "none" role who has no currrent term programs' do
       let!(:user) { FactoryBot.create(:user) }
 
-      it 'returns 302, redirects to root and displayes alert message' do
-        # allow(LdapLookup).to receive(:is_member_of_group?).with(anything, SUPER_ADMIN_LDAP_GROUP).and_return(false)
-        # allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, anything).and_return(false)
-        define_group_membership(user, SUPER_ADMIN_LDAP_GROUP, false)
-        define_group_membership(user, anything, false)
+      before do
+        allow(LdapLookup).to receive(:is_member_of_group?).with(anything, SUPER_ADMIN_LDAP_GROUP).and_return(false)
+        allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, anything).and_return(false)
         mock_login(user)
+      end
+
+      it 'returns 302, redirects to root and displayes alert message' do
         get programs_path
         expect(response).to have_http_status(302)
         # expect(response.location).to redirect_to("/")
@@ -151,15 +148,18 @@ RSpec.describe Program, type: :request do
     end
 
     context 'with admin role' do
-      let!(:user) { FactoryBot.create(:user) }
-      let!(:program) { FactoryBot.create(:program) }
+      let!(:admin_user) { FactoryBot.create(:user) }
+      let!(:unit) { FactoryBot.create(:unit) }
+      let!(:program) { FactoryBot.create(:program, unit: unit) }
+
+      before do
+        # make a user a member of the SUPER_ADMIN_LDAP_GROUP group
+        allow(LdapLookup).to receive(:is_member_of_group?).with(admin_user.uniqname, SUPER_ADMIN_LDAP_GROUP).and_return(false)
+        allow(LdapLookup).to receive(:is_member_of_group?).with(admin_user.uniqname, unit.ldap_group).and_return(true)
+        mock_login(admin_user)
+      end
 
       it 'should display Edit and Duplicate buttons in a program card' do
-        # allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, SUPER_ADMIN_LDAP_GROUP).and_return(false)
-        # allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, Unit.first.ldap_group).and_return(true)
-        define_group_membership(user, SUPER_ADMIN_LDAP_GROUP, false)
-        define_group_membership(user, Unit.first.ldap_group, true)
-        mock_login(user)
         get programs_path
         expect(response.body).to include("Edit")
         expect(response.body).to include("Duplicate")
@@ -171,12 +171,13 @@ RSpec.describe Program, type: :request do
       let!(:manager) { FactoryBot.create(:manager, uniqname: user_manager.uniqname) }
       let!(:program) { FactoryBot.create(:program, instructor: manager) }
 
-      it 'should display Edit but no Duplicate button in a program card' do
-        # allow(LdapLookup).to receive(:is_member_of_group?).with(user_manager.uniqname, SUPER_ADMIN_LDAP_GROUP).and_return(false)
-        # allow(LdapLookup).to receive(:is_member_of_group?).with(user_manager.uniqname, Unit.first.ldap_group).and_return(false)
-        define_group_membership(user_manager, SUPER_ADMIN_LDAP_GROUP, false)
-        define_group_membership(user_manager, Unit.first.ldap_group, false)
+      before do
+        allow(LdapLookup).to receive(:is_member_of_group?).with(user_manager.uniqname, SUPER_ADMIN_LDAP_GROUP).and_return(false)
+        allow(LdapLookup).to receive(:is_member_of_group?).with(user_manager.uniqname, Unit.first.ldap_group).and_return(false)
         mock_login(user_manager)
+      end
+
+      it 'should display Edit but no Duplicate button in a program card' do
         get programs_path
         expect(response.body).to include("Edit")
         expect(response.body).not_to include("Duplicate")
