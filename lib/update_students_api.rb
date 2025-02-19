@@ -9,7 +9,7 @@ class UpdateStudentsApi
 
     http = Net::HTTP.new(url.host, url.port)
     http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    http.verify_mode = OpenSSL::SSL::VERIFY_PEER
 
     request = Net::HTTP::Get.new(url)
     request["x-api-key"] = ENV["SYGIC_API_KEY"]
@@ -32,7 +32,7 @@ class UpdateStudentsApi
       url = URI("https://gw.api.it.umich.edu/um/aa/ClassRoster/Terms/#{term_code}/SubjectCode/#{subject_code}?CatalogNumber=#{catalog_number}&ClassSection=#{class_section}")
       http = Net::HTTP.new(url.host, url.port)
       http.use_ssl = true
-      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      http.verify_mode = OpenSSL::SSL::VERIFY_PEER
 
       request = Net::HTTP::Get.new(url)
       request["x-ibm-client-id"] = "#{Rails.application.credentials.um_api[:client_id]}"
@@ -186,7 +186,7 @@ class UpdateStudentsApi
         url = URI("https://gw.api.it.umich.edu/um/aa/CanvasReadOnly/courses/#{course_id}/enrollments?page=#{page}&per_page=#{per_page}")
         http = Net::HTTP.new(url.host, url.port)
         http.use_ssl = true
-        http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+        http.verify_mode = OpenSSL::SSL::VERIFY_PEER
 
         request = Net::HTTP::Get.new(url)
         request["x-ibm-client-id"] = "#{Rails.application.credentials.um_api[:client_id]}"
@@ -236,7 +236,7 @@ class UpdateStudentsApi
     url = URI("https://gw.api.it.umich.edu/um/oauth2/token")
     http = Net::HTTP.new(url.host, url.port)
     http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    http.verify_mode = OpenSSL::SSL::VERIFY_PEER
 
     request = Net::HTTP::Post.new(url)
     request["content-type"] = 'application/x-www-form-urlencoded'
