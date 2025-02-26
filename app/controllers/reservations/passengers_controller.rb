@@ -36,7 +36,7 @@ class Reservations::PassengersController < ApplicationController
 
   def add_passenger
     model = params[:model]
-    passenger = model.classify.constantize.find(params[:id])
+    passenger = find_student_or_manager(model)
     authorize([@reservation, :passenger])
     if params[:recurring] == "true"
       recurring_reservation =  RecurringReservation.new(@reservation)
@@ -53,7 +53,7 @@ class Reservations::PassengersController < ApplicationController
 
   def remove_passenger
     model = params[:resource]
-    passenger = model.classify.constantize.find(params[:id])
+    passenger = find_student_or_manager(model)
     authorize([@reservation, :passenger])
     recurring = false
     if params[:recurring] == "true"
@@ -80,7 +80,7 @@ class Reservations::PassengersController < ApplicationController
 
   def make_driver
     model = params[:model]
-    passenger = model.classify.constantize.find(params[:id])
+    passenger = find_student_or_manager(model)
     authorize([@reservation, :passenger])
     recurring = false
     # remove from passengers
@@ -123,7 +123,7 @@ class Reservations::PassengersController < ApplicationController
     notice = ""
     alert == ""
     model = params[:model]
-    driver = model.classify.constantize.find(params[:id])
+    driver = find_student_or_manager(model)
     authorize([@reservation, :passenger])
     recurring = false
     if params[:edit] == "true"
@@ -201,5 +201,15 @@ class Reservations::PassengersController < ApplicationController
       emails << email_address(@reservation.driver_manager)
     end
     return emails
+  end
+
+  def find_student_or_manager(model)
+    if model == 'student'
+      Student.find(params[:id])
+    elsif model == 'manager'
+      Manager.find(params[:id])
+    else
+      nil
+    end
   end
 end
