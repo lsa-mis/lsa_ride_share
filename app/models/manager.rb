@@ -23,6 +23,8 @@ class Manager < ApplicationRecord
 
   validates :uniqname, uniqueness: true
 
+  encrypts :phone_number
+
   def instructor
     Program.current_term.where(instructor: self)
   end
