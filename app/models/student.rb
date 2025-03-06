@@ -24,6 +24,8 @@ class Student < ApplicationRecord
   has_many :passengers, through: :reservation_passengers, source: :reservation
   has_many :notes, as: :noteable
 
+  encrypts :phone_number
+
   validates :uniqname, uniqueness: { scope: :program, message: "is already in the program list" }
 
   scope :registered, -> { where(registered: true) }
