@@ -18,7 +18,7 @@ RSpec.describe Program, type: :request do
         mock_login(super_admin_user)
       end
 
-      it 'goes to duplicate path and returns 200' do
+      it 'goes to duplicate path and render new template with program title' do
         get duplicate_path(program)
         expect(response.body).to include('New Program')
         expect(response.body).to include(program.title)
