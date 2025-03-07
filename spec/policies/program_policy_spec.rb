@@ -23,8 +23,8 @@ RSpec.describe ProgramPolicy, type: :policy do
   context 'with manager role' do
     subject { described_class.new({ user: user_manager, role: "manager", params: {id: program.id} }, program) }
 
-    it { is_expected.to forbid_actions(%i[create new]) }
-    it { is_expected.to permit_only_actions(%i[index show update edit duplicate]) }
+    it { is_expected.to forbid_actions(%i[create new duplicate]) }
+    it { is_expected.to permit_only_actions(%i[index show update edit]) }
   end
 
   context 'with student role' do
