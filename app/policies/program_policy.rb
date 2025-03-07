@@ -33,7 +33,7 @@ class ProgramPolicy < ApplicationPolicy
   end
 
   def duplicate?
-    update?
+    user_in_access_group?
   end
 
   def get_programs_list?
