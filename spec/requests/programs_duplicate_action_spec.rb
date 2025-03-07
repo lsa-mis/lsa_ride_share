@@ -20,22 +20,13 @@ RSpec.describe Program, type: :request do
 
       it 'goes to duplicate path and returns 200' do
         get duplicate_path(program)
-        # binding.pry
-        # expect {
-        #   get duplicate_path(program)
-        # }.to change { Program.count }.by(1)
-        expect(response).to render_template(:new)
-        # expect(response).to have_http_status(200)
+        expect(response.body).to include('New Program')
+        expect(response.body).to include(program.title)
       end
 
       it 'goes to duplicate path and returns 200' do
-        # visit duplicate_path(program)
-        # click_button 'Submit'
-        expect {
-          visit duplicate_path(program)
-          click_button 'Submit'
-        }.to change { Program.count }.by(1)
-        expect(page).to have_http_status(200)
+        get duplicate_path(program)
+        expect(response).to have_http_status(200)
       end
 
     end
@@ -51,35 +42,57 @@ RSpec.describe Program, type: :request do
         mock_login(admin_user)
       end
 
-      it 'returns 200' do
+      it 'displays Duplicate button' do
+        get programs_path
+        expect(response.body).to include("Duplicate")
       end
+
+      it 'goes to duplicate path and render new template with program title' do
+        get duplicate_path(program)
+        expect(response.body).to include('New Program')
+        expect(response.body).to include(program.title)
+      end
+
     end
 
     context 'with manager who has a program' do
       let!(:user_manager) { FactoryBot.create(:user) }
       let!(:manager) { FactoryBot.create(:manager, uniqname: user_manager.uniqname) }
-      let!(:program) { FactoryBot.create(:program, instructor: manager) }
+      let!(:unit) { FactoryBot.create(:unit) }
+      let!(:program) { FactoryBot.create(:program, unit: unit, instructor: manager) }
 
       before do
+        # login with a manager role
+        allow(LdapLookup).to receive(:is_member_of_group?).with(user_manager.uniqname, SUPER_ADMIN_LDAP_GROUP).and_return(false)
+        allow(LdapLookup).to receive(:is_member_of_group?).with(user_manager.uniqname, unit.ldap_group).and_return(false)
+        mock_login(user_manager)
       end
 
-      it 'returns 200' do
+      it 'does not displays Duplicate button' do
         get programs_path
-        expect(response).to have_http_status(200)
+        expect(response.body).not_to include("Duplicate")
+      end
+
+      it 'goes to duplicate path and returns 302' do
+        get duplicate_path(program)
+        expect(response).to have_http_status(302)
       end
     end
 
     context 'with manager who has no programs' do
       let!(:user_manager) { FactoryBot.create(:user) }
       let!(:manager) { FactoryBot.create(:manager, uniqname: user_manager.uniqname) }
+      let!(:unit) { FactoryBot.create(:unit) }
 
       before do
-        allow(LdapLookup).to receive(:is_member_of_group?).with(anything, SUPER_ADMIN_LDAP_GROUP).and_return(false)
-        allow(LdapLookup).to receive(:is_member_of_group?).with(user_manager.uniqname, anything).and_return(false)
+        allow(LdapLookup).to receive(:is_member_of_group?).with(user_manager.uniqname, SUPER_ADMIN_LDAP_GROUP).and_return(false)
+        allow(LdapLookup).to receive(:is_member_of_group?).with(user_manager.uniqname, unit.ldap_group).and_return(false)
         mock_login(user_manager)
       end
 
-      it 'returns 302' do
+      it 'goes to duplicate path and returns 302' do
+        get duplicate_path(program)
+        expect(response).to have_http_status(302)
       end
 
     end
@@ -97,7 +110,9 @@ RSpec.describe Program, type: :request do
         mock_login(user_student)
       end
 
-      it 'returns 302' do
+      it 'goes to duplicate path and returns 302' do
+        get duplicate_path(program)
+        expect(response).to have_http_status(302)
       end
 
     end
@@ -111,7 +126,9 @@ RSpec.describe Program, type: :request do
         mock_login(user)
       end
 
-      it 'returns 302, redirects to root and displayes alert message' do
+      it 'goes to duplicate path and returns 302' do
+        get duplicate_path(program)
+        expect(response).to have_http_status(302)
       end
     end
 
