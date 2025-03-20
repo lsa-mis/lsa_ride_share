@@ -9,7 +9,7 @@
       <div class="flex">
         <div>
           <p class="body-sm-text ml-2 pt-1">
-            <%= @student.phone_number %>
+            <%= @student.formatted_phone_number %>
           </p>
         </div>
         <%= link_to edit_student_phone_path(@student, edit: true, frame_type: frame_type), class: "link_to" do %>

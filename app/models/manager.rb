@@ -16,6 +16,7 @@
 #  phone_number                :string
 #
 class Manager < ApplicationRecord
+  include PhoneFormattable
   has_many :managers_programs
   has_many :programs, through: :managers_programs
   has_many :reservation_passengers_managers
@@ -62,11 +63,11 @@ class Manager < ApplicationRecord
   end
 
   def self.canvas_pass
-    where.not(canvas_course_complete_date: nil) 
+    where.not(canvas_course_complete_date: nil)
   end
 
   def self.meeting_with_admin_pass
-    where.not(meeting_with_admin_date: nil) 
+    where.not(meeting_with_admin_date: nil)
   end
 
   def self.has_phone
@@ -98,7 +99,7 @@ class Manager < ApplicationRecord
   end
 
   def display_name
-    "#{self.first_name} #{self.last_name} - #{self.uniqname}" 
+    "#{self.first_name} #{self.last_name} - #{self.uniqname}"
   end
 
   def name

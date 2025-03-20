@@ -35,13 +35,13 @@ class WelcomePagesController < ApplicationController
         status = mvr_status(resource.uniqname)
         resource.update(mvr_status: status)
       end
-    else 
+    else
       status = mvr_status(resource.uniqname)
         resource.update(mvr_status: status)
     end
     # unless resource.canvas_course_complete_date.present?
     #   canvas_date = update_my_canvas_status(resource, program)
-    #   if canvas_date 
+    #   if canvas_date
     #     resource.update(canvas_course_complete_date: canvas_date)
     #   end
     # end
@@ -61,11 +61,11 @@ class WelcomePagesController < ApplicationController
     end
     if @program.present?
       update_status(@manager, @program)
-      @reservations_current = (@manager.passenger_current.where(program_id: @program.id) + 
+      @reservations_current = (@manager.passenger_current.where(program_id: @program.id) +
         @manager.reserved_by_or_driver_current.where(program_id: @program.id)).sort_by(&:start_time)
-      @reservations_past = (@manager.passenger_past.where(program_id: @program.id) + 
+      @reservations_past = (@manager.passenger_past.where(program_id: @program.id) +
         @manager.reserved_by_or_driver_past.where(program_id: @program.id)).sort_by(&:start_time).reverse
-      @reservations_future = (@manager.passenger_future.where(program_id: @program.id) + 
+      @reservations_future = (@manager.passenger_future.where(program_id: @program.id) +
         @manager.reserved_by_or_driver_future.where(program_id: @program.id)).sort_by(&:start_time)
       unit_ids = [@program.unit_id]
     else
@@ -78,7 +78,7 @@ class WelcomePagesController < ApplicationController
   def add_student_phone
     session[:return_to] = request.referer
     authorize :welcome_page
-    phone_number = params[:phone_number]
+    phone_number = sanitize_phone_number(params[:phone_number])
     @student = Student.find(params[:id])
     if @student.update(phone_number: phone_number)
       redirect_back_or_default
@@ -95,7 +95,7 @@ class WelcomePagesController < ApplicationController
   def add_manager_phone
     session[:return_to] = request.referer
     authorize :welcome_page
-    phone_number = params[:phone_number]
+    phone_number = sanitize_phone_number(params[:phone_number])
     @manager = Manager.find(params[:id])
     if @manager.update(phone_number: phone_number)
       redirect_back_or_default
@@ -107,6 +107,14 @@ class WelcomePagesController < ApplicationController
   def edit_manager_phone
     @manager = Manager.find(params[:id])
     authorize :welcome_page
+  end
+
+  private
+
+  def sanitize_phone_number(phone)
+    return nil if phone.blank?
+    # Strip all non-numeric characters
+    phone.gsub(/\D/, '')
   end
 
 end
