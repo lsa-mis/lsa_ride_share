@@ -18,6 +18,7 @@
 #  phone_number                :string
 #
 class Student < ApplicationRecord
+  include PhoneFormattable
   belongs_to :program
   belongs_to :course, optional: true
   has_many :reservation_passengers
@@ -85,17 +86,17 @@ class Student < ApplicationRecord
   end
 
   def display_name
-    "#{self.first_name} #{self.last_name} - #{self.uniqname}" 
+    "#{self.first_name} #{self.last_name} - #{self.uniqname}"
   end
 
   def name
-    "#{self.first_name} #{self.last_name}" 
+    "#{self.first_name} #{self.last_name}"
   end
 
   def can_reserve_car?
     self.mvr_status.present? && self.mvr_status.include?("Approved until") && self.canvas_course_complete_date.present? && self.meeting_with_admin_date.present? && self.phone_number.present?
   end
-  
+
   def self.eligible_drivers
     mvr_status_pass.canvas_pass.meeting_with_admin.has_phone
   end
@@ -105,11 +106,11 @@ class Student < ApplicationRecord
   end
 
   def self.canvas_pass
-    where.not(canvas_course_complete_date: nil) 
+    where.not(canvas_course_complete_date: nil)
   end
 
   def self.meeting_with_admin
-    where.not(meeting_with_admin_date: nil) 
+    where.not(meeting_with_admin_date: nil)
   end
 
   def self.has_phone
