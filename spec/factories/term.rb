@@ -13,7 +13,7 @@
 
 FactoryBot.define do
   factory :term do
-    code { "2470" }
+    code { "2540" }
     name { "Current Term" }
     classes_begin_date { DateTime.now - 4.day }
     classes_end_date { DateTime.now + 4.day }
