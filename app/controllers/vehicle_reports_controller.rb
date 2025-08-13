@@ -44,7 +44,9 @@ class VehicleReportsController < ApplicationController
       @vehicle_reports = @vehicle_reports.where(reservation_id: ids)
     end
 
-    sort_column = params[:sort] || "vehicle_reports.id"
+    # Sanitize sort parameter to prevent SQL injection
+    allowed_sort_columns = ['vehicle_reports.id', 'start_time', 'car_number']
+    sort_column = params[:sort].presence_in(allowed_sort_columns) || "vehicle_reports.id"
     sort_direction = params[:direction].presence_in(%w[asc desc]) || "desc"
 
     @vehicle_reports = @vehicle_reports.order("#{sort_column} #{sort_direction}").page(params[:page])
