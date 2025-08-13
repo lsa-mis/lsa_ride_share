@@ -932,7 +932,7 @@ module ApplicationHelper
   end
 
   def sortable_table_header(title, column, path_method, **)
-    content_tag(:th, class: "header_th") do
+    content_tag(:th, class: "header_th link_to") do
       sortable_column(title, column, path_method)
     end
   end
