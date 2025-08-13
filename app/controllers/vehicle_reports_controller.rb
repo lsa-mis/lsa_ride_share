@@ -13,7 +13,7 @@ class VehicleReportsController < ApplicationController
     end
     car_ids = @cars.pluck(:id)
     reservation_ids = Reservation.where(car_id: car_ids)
-    @vehicle_reports = VehicleReport.where(reservation_id: reservation_ids).order(id: :desc)
+    @vehicle_reports = VehicleReport.joins(reservation: :car).where(reservation_id: reservation_ids)
 
     if params[:term_id].present?
       program_ids = Program.where(term_id: params[:term_id]).pluck(:id)
@@ -27,6 +27,12 @@ class VehicleReportsController < ApplicationController
       ids = Reservation.where(car_id: params[:car_id]).pluck(:id)
       @vehicle_reports = @vehicle_reports.where(reservation_id: ids).page(params[:page])
     end
+
+    sort_column = params[:sort] || "vehicle_reports.created_at"
+    sort_direction = params[:direction].presence_in(%w[asc desc]) || "desc"
+
+    @vehicle_reports = @vehicle_reports.order("#{sort_column} #{sort_direction}").page(params[:page])
+
     authorize @vehicle_reports
   end
 

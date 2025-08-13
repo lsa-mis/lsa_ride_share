@@ -3,9 +3,13 @@
     <table class="mi_table" id="desk-table">
       <thead class="border border-l-0 border-r-0 border-gray-um60">
         <tr>
-          <th class="header_th">Item</th>
-          <th class="header_th">Reservation Dates</th>
-          <th class="header_th">Car number</th>
+
+          <%= sortable_table_header('Item', 'vehicle_reports.id', :vehicle_reports_path) %>
+
+          <%= sortable_table_header('Reservation Dates', 'start_time', :vehicle_reports_path) %>
+
+          <%= sortable_table_header('Car number', :car_number, :vehicle_reports_path) %>
+
           <th class="header_th">Driver</th>
           <th class="header_th">Mileage start</th>
           <th class="header_th">Mileage end</th>
