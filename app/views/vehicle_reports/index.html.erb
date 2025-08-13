@@ -17,32 +17,39 @@
           <% if session[:unit_ids].count > 1 %>
             <label for="unit_id" class="fancy_label">Select a Unit</label>
             <%= select_tag "unit_id", options_from_collection_for_select(@units, :id, :name, selected: params[:unit_id]), include_blank: "All Units", class: "filter_select w-48",
-              :"data-action" => "change->vehiclereportfilters#resetAndSearch" %>
+              :"data-action" => "change->vehiclereportfilters#resetCarDriversAndSearch" %>
           <% end %>
         </div>
         <div class="">
           <% if Term.current.present? %>
             <label for="term_id" class="fancy_label">Filter by Term</label>
             <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: params[:term_id]), include_blank: "Current Term", class: "filter_select w-48",
-               :"data-action" => "change->vehiclereportfilters#search" %>
+               :"data-action" => "change->vehiclereportfilters#resetCarDriversAndSearch" %>
             <% else %>
               <label for="term_id" class="fancy_label">Select a Term</label>
               <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: params[:term_id]), include_blank: "Select ...", class: "filter_select w-48",
-                :"data-action" => "change->vehiclereportfilters#search" %>
+                :"data-action" => "change->vehiclereportfilters#resetCarDriversAndSearch" %>
             <% end %>
         </div>
         <div class="">
           <% if Car.present? %>
             <label for="car_id" class="fancy_label">Filter by Car</label>
             <%= select_tag "car_id", options_from_collection_for_select(@cars, :id, :car_number, selected: params[:car_id]), include_blank: "All Cars", class: "filter_select w-48",
-              "data-vehiclereportfilters-target": "car", :"data-action" => "change->vehiclereportfilters#search" %>
+              "data-vehiclereportfilters-target": "car", :"data-action" => "change->vehiclereportfilters#resetDriversAndSearch" %>
           <% end %>
         </div>
         <div class="">
           <% if @drivers.present? %>
-            <label for="driver_id" class="fancy_label">Filter by Driver</label>
-            <%= select_tag "driver_id", options_from_collection_for_select(@drivers, :id, :name, selected: params[:driver_id]), include_blank: "All Drivers", class: "filter_select w-48",
-              "data-vehiclereportfilters-target": "driver", :"data-action" => "change->vehiclereportfilters#search" %>
+            <label for="driver_id" class="fancy_label">Filter by Student Driver</label>
+            <%= select_tag "driver_id", options_from_collection_for_select(@drivers, :id, :name, selected: params[:driver_id]), include_blank: "All Student Drivers", class: "filter_select w-48",
+              "data-vehiclereportfilters-target": "driverStudent", :"data-action" => "change->vehiclereportfilters#resetCarDriverManagerAndSearch" %>
+          <% end %>
+        </div>
+        <div class="">
+          <% if @driver_managers.present? %>
+            <label for="driver_manager_id" class="fancy_label">Filter by Manager Driver</label>
+            <%= select_tag "driver_manager_id", options_from_collection_for_select(@driver_managers, :id, :name, selected: params[:driver_manager_id]), include_blank: "All Driver Managers", class: "filter_select w-48",
+              "data-vehiclereportfilters-target": "driverManager", :"data-action" => "change->vehiclereportfilters#resetCarDriverStudentAndSearch" %>
           <% end %>
         </div>
       </div>

@@ -5,6 +5,7 @@ class VehicleReportsController < ApplicationController
 
   # GET /vehicle_reports or /vehicle_reports.json
   def index
+    fail
     @terms = Term.sorted
     if params[:unit_id].present?
       @cars = Car.where(unit_id: params[:unit_id]).order(:car_number)
@@ -26,6 +27,9 @@ class VehicleReportsController < ApplicationController
     driver_ids = @vehicle_reports.pluck('reservations.driver_id').compact.uniq
     @drivers = Student.where(id: driver_ids)
 
+    driver_manager_ids = @vehicle_reports.pluck('reservations.driver_manager_id').compact.uniq
+    @driver_managers = Manager.where(id: driver_manager_ids)
+
     if params[:car_id].present?
       ids = Reservation.where(car_id: params[:car_id]).pluck(:id)
       @vehicle_reports = @vehicle_reports.where(reservation_id: ids).page(params[:page])
@@ -36,7 +40,12 @@ class VehicleReportsController < ApplicationController
       @vehicle_reports = @vehicle_reports.where(reservation_id: ids).page(params[:page])
     end
 
-    sort_column = params[:sort] || "vehicle_reports.created_at"
+    if params[:driver_manager_id].present?
+      ids = Reservation.where(driver_manager_id: params[:driver_manager_id]).pluck(:id)
+      @vehicle_reports = @vehicle_reports.where(reservation_id: ids).page(params[:page])
+    end
+
+    sort_column = params[:sort] || "vehicle_reports.id"
     sort_direction = params[:direction].presence_in(%w[asc desc]) || "desc"
 
     @vehicle_reports = @vehicle_reports.order("#{sort_column} #{sort_direction}").page(params[:page])
