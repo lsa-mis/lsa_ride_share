@@ -943,7 +943,7 @@ module ApplicationHelper
     query_params = request.query_parameters.merge(sort: column, direction: direction)
 
     path = send(path_method, query_params)
-    link_to(path, class: "flex items-center", **) do
+    link_to(path, data: {turbo_action: "advance"}, class: "flex items-center", **) do
       concat title
       concat sort_icon(column)
     end
