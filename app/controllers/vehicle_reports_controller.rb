@@ -13,7 +13,7 @@ class VehicleReportsController < ApplicationController
     end
     car_ids = @cars.pluck(:id)
     reservation_ids = Reservation.where(car_id: car_ids)
-    @vehicle_reports = VehicleReport.where(reservation_id: reservation_ids).order(id: :desc)
+    @vehicle_reports = VehicleReport.joins(reservation: :car).where(reservation_id: reservation_ids)
 
     if params[:term_id].present?
       program_ids = Program.where(term_id: params[:term_id]).pluck(:id)
@@ -21,12 +21,36 @@ class VehicleReportsController < ApplicationController
       program_ids = Program.current_term.pluck(:id)
     end
     reservation_ids = Reservation.where(program_id: program_ids)
-    @vehicle_reports =  @vehicle_reports.where(reservation_id: reservation_ids).page(params[:page])
+    @vehicle_reports =  @vehicle_reports.where(reservation_id: reservation_ids)
+
+    driver_ids = @vehicle_reports.distinct.pluck('reservations.driver_id').compact
+    @drivers = Student.where(id: driver_ids)
+
+    driver_manager_ids = @vehicle_reports.distinct.pluck('reservations.driver_manager_id').compact
+    @driver_managers = Manager.where(id: driver_manager_ids)
 
     if params[:car_id].present?
       ids = Reservation.where(car_id: params[:car_id]).pluck(:id)
-      @vehicle_reports = @vehicle_reports.where(reservation_id: ids).page(params[:page])
+      @vehicle_reports = @vehicle_reports.where(reservation_id: ids)
     end
+
+    if params[:driver_id].present?
+      ids = Reservation.where(driver_id: params[:driver_id]).pluck(:id)
+      @vehicle_reports = @vehicle_reports.where(reservation_id: ids)
+    end
+
+    if params[:driver_manager_id].present?
+      ids = Reservation.where(driver_manager_id: params[:driver_manager_id]).pluck(:id)
+      @vehicle_reports = @vehicle_reports.where(reservation_id: ids)
+    end
+
+    # Sanitize sort parameter to prevent SQL injection
+    allowed_sort_columns = ['vehicle_reports.id', 'start_time', 'car_number']
+    sort_column = params[:sort].presence_in(allowed_sort_columns) || "vehicle_reports.id"
+    sort_direction = params[:direction].presence_in(%w[asc desc]) || "desc"
+
+    @vehicle_reports = @vehicle_reports.order("#{sort_column} #{sort_direction}").page(params[:page])
+
     authorize @vehicle_reports
   end
 
