@@ -23,10 +23,10 @@ class VehicleReportsController < ApplicationController
     reservation_ids = Reservation.where(program_id: program_ids)
     @vehicle_reports =  @vehicle_reports.where(reservation_id: reservation_ids)
 
-    driver_ids = @vehicle_reports.pluck('reservations.driver_id').compact.uniq
+    driver_ids = @vehicle_reports.distinct.pluck('reservations.driver_id').compact
     @drivers = Student.where(id: driver_ids)
 
-    driver_manager_ids = @vehicle_reports.pluck('reservations.driver_manager_id').compact.uniq
+    driver_manager_ids = @vehicle_reports.distinct.pluck('reservations.driver_manager_id').compact
     @driver_managers = Manager.where(id: driver_manager_ids)
 
     if params[:car_id].present?
