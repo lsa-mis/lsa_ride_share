@@ -23,8 +23,16 @@ class VehicleReportsController < ApplicationController
     reservation_ids = Reservation.where(program_id: program_ids)
     @vehicle_reports =  @vehicle_reports.where(reservation_id: reservation_ids).page(params[:page])
 
+    driver_ids = @vehicle_reports.pluck('reservations.driver_id').compact.uniq
+    @drivers = Student.where(id: driver_ids)
+
     if params[:car_id].present?
       ids = Reservation.where(car_id: params[:car_id]).pluck(:id)
+      @vehicle_reports = @vehicle_reports.where(reservation_id: ids).page(params[:page])
+    end
+
+    if params[:driver_id].present?
+      ids = Reservation.where(driver_id: params[:driver_id]).pluck(:id)
       @vehicle_reports = @vehicle_reports.where(reservation_id: ids).page(params[:page])
     end
 
