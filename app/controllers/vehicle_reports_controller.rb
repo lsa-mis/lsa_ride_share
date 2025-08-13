@@ -5,7 +5,6 @@ class VehicleReportsController < ApplicationController
 
   # GET /vehicle_reports or /vehicle_reports.json
   def index
-    fail
     @terms = Term.sorted
     if params[:unit_id].present?
       @cars = Car.where(unit_id: params[:unit_id]).order(:car_number)
@@ -22,7 +21,7 @@ class VehicleReportsController < ApplicationController
       program_ids = Program.current_term.pluck(:id)
     end
     reservation_ids = Reservation.where(program_id: program_ids)
-    @vehicle_reports =  @vehicle_reports.where(reservation_id: reservation_ids).page(params[:page])
+    @vehicle_reports =  @vehicle_reports.where(reservation_id: reservation_ids)
 
     driver_ids = @vehicle_reports.pluck('reservations.driver_id').compact.uniq
     @drivers = Student.where(id: driver_ids)
@@ -32,17 +31,17 @@ class VehicleReportsController < ApplicationController
 
     if params[:car_id].present?
       ids = Reservation.where(car_id: params[:car_id]).pluck(:id)
-      @vehicle_reports = @vehicle_reports.where(reservation_id: ids).page(params[:page])
+      @vehicle_reports = @vehicle_reports.where(reservation_id: ids)
     end
 
     if params[:driver_id].present?
       ids = Reservation.where(driver_id: params[:driver_id]).pluck(:id)
-      @vehicle_reports = @vehicle_reports.where(reservation_id: ids).page(params[:page])
+      @vehicle_reports = @vehicle_reports.where(reservation_id: ids)
     end
 
     if params[:driver_manager_id].present?
       ids = Reservation.where(driver_manager_id: params[:driver_manager_id]).pluck(:id)
-      @vehicle_reports = @vehicle_reports.where(reservation_id: ids).page(params[:page])
+      @vehicle_reports = @vehicle_reports.where(reservation_id: ids)
     end
 
     sort_column = params[:sort] || "vehicle_reports.id"
