@@ -35,7 +35,9 @@ task remove_parking_from_old_vehicle_reports: :environment do
     vehicle_reports =  VehicleReport.where(reservation_id: reservation_ids)
 
     transaction = ActiveRecord::Base.transaction do
-      raise ActiveRecord::Rollback unless vehicle_reports.update_all(parking_spot: "", parking_spot_return: "", parking_note: "", parking_note_return: "")
+      vehicle_reports.each do |report|
+        raise ActiveRecord::Rollback unless report.update(parking_spot: "", parking_spot_return: "", parking_note: "", parking_note_return: "")
+      end
       true
     end
 
