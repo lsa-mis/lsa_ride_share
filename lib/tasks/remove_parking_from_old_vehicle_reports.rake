@@ -31,7 +31,7 @@ task remove_parking_from_old_vehicle_reports: :environment do
   end
   if @term.present?
     program_ids = Program.where(term_id: @term.ids).pluck(:id)
-    reservation_ids = Reservation.where(program_id: program_ids)
+    reservation_ids = Reservation.where(program_id: program_ids).pluck(:id)
     vehicle_reports =  VehicleReport.where(reservation_id: reservation_ids)
 
     transaction = ActiveRecord::Base.transaction do
