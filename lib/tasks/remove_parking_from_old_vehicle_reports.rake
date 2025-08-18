@@ -17,7 +17,7 @@ task remove_parking_from_old_vehicle_reports: :environment do
     # Remove parking location from Winter term vehicle reports
     @log.api_logger.info "Removing parking location from Winter term vehicle reports"
     # find dates of the last Winter term
-    @term = Term.where(classes_begin_date: Date.new(now.year, 1, 1).., classes_end_date: ...Date.new(now.year, 6, 1))
+    @term = Term.where(classes_begin_date: Date.new(now.year, 1, 1)..., classes_end_date: ...Date.new(now.year, 6, 1))
   when ->(d) { d.month == 1 && d.day == 1 }
     # Remove parking location from Spring/Summer term vehicle reports
     @log.api_logger.info "Removing parking location from Spring/Summer terms vehicle reports"
@@ -25,7 +25,7 @@ task remove_parking_from_old_vehicle_reports: :environment do
   when ->(d) { d.month == 6 && d.day == 1 }
     # Remove parking location from Fall term vehicle reports
     @log.api_logger.info "Removing parking location from Fall term vehicle reports"
-    @term = Term.where(classes_begin_date: Date.new(now.year - 1, 8, 1)..Date.new(now.year - 1, 12, 31), classes_end_date: ...Date.new(now.year, 1, 31))
+    @term = Term.where(classes_begin_date: Date.new(now.year - 1, 8, 1)..., classes_end_date: ...Date.new(now.year, 1, 31))
   else
     @log.api_logger.info "No parking location removal needed"
   end
