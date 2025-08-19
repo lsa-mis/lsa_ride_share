@@ -927,8 +927,9 @@ module ApplicationHelper
         terms = [current.first.name, "(#{current.first.classes_begin_date.strftime('%m/%d/%Y')} - #{current.first.classes_end_date.strftime('%m/%d/%Y')})"]
       end
     else
-      terms = "No current term"
+      terms[0] = "No current term"
     end
+    terms
   end
 
   def sortable_table_header(title, column, path_method, **)
