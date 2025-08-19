@@ -30,18 +30,16 @@ task remove_parking_from_old_vehicle_reports: :environment do
     @log.api_logger.info "No parking location removal needed"
   end
   if @term.present?
+    updated_count = 0
     program_ids = Program.where(term_id: @term.ids).pluck(:id)
     reservation_ids = Reservation.where(program_id: program_ids).pluck(:id)
     vehicle_reports =  VehicleReport.where(reservation_id: reservation_ids)
 
     transaction = ActiveRecord::Base.transaction do
-      vehicle_reports.each do |report|
-        raise ActiveRecord::Rollback unless report.update(parking_spot: "", parking_spot_return: "", parking_note: "", parking_note_return: "")
-      end
-      true
+      updated_count = vehicle_reports.update_all(parking_spot: "", parking_spot_return: "", parking_note: "", parking_note_return: "")
     end
 
-    if transaction
+    if updated_count == vehicle_reports.count
       @log.api_logger.info "Parking location removed from vehicle reports successfully: " +  @term.pluck(:name).join(", ")
     else
       @log.api_logger.info "Error updating vehicle reports."
