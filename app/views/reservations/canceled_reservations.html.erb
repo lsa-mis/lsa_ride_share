@@ -11,18 +11,32 @@
     </div>
   </div>
   <%= form_with url: canceled_reservations_path, method: :get, class: "", data: { autosubmit_target: "form", turbo_frame: "canceled_reservations" } do |form| %>
-    <% if session[:unit_ids].count > 1 %>
-      <div class="my-2">
-        <label for="unit_id" class="fancy_label">Select a Unit</label>
-        <%= select_tag "unit_id", options_from_collection_for_select(@units, :id, :name, selected: params[:unit_id]), include_blank: "All Units", class: "filter_select w-48",
-          :"data-action" => "change->autosubmit#search" %>
+    <div class="md:flex gap-2 mb-2">
+      <div class="">
+        <% if Term.current.present? %>
+          <label for="term_id" class="fancy_label">Select a Term</label>
+          <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: params[:term_id]), include_blank: "Current Term", class: "filter_select w-48",
+            :"data-action" => "change->autosubmit#search" %>
+        <% else %>
+          <label for="term_id" class="fancy_label">Select a Term</label>
+          <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: params[:term_id]), include_blank: "Select ...", class: "filter_select w-48",
+            :"data-action" => "change->autosubmit#search" %>
+        <% end %>
       </div>
-    <% else %>
-      <%= form.label :unit_id, 'Unit *', class: "hidden" %>
-      <input type="hidden" id="unit_id" name="unit_id" value=<%= @unit_id %>>
-    <% end %>
+
+      <% if session[:unit_ids].count > 1 %>
+        <div class="">
+          <label for="unit_id" class="fancy_label">Select a Unit</label>
+          <%= select_tag "unit_id", options_from_collection_for_select(@units, :id, :name, selected: params[:unit_id]), include_blank: "All Units", class: "filter_select w-48",
+            :"data-action" => "change->autosubmit#search" %>
+        </div>
+      <% end %>
+    </div>
   <% end %>
   <%= turbo_frame_tag 'canceled_reservations' do %>
+    <div class="my-2" >
+      <%= page_entries_info @canceled_reservations %>
+    </div>
     <table class="mi_table">
       <thead class="border border-l-0 border-r-0 border-gray-um60">
         <tr>
@@ -70,6 +84,9 @@
         <% end %>
       </tbody>
     </table>
+    <div class="my-2 flex justify-center" >
+      <%= paginate @canceled_reservations %>
+    </div>
   <% end %>
 
 </div>
