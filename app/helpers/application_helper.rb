@@ -931,4 +931,32 @@ module ApplicationHelper
     end
   end
 
+  def sortable_table_header(title, column, path_method, **)
+    content_tag(:th, class: "header_th link_to") do
+      sortable_column(title, column, path_method)
+    end
+  end
+
+  def sortable_column(title, column, path_method, **)
+    direction = (column.to_s == params[:sort].to_s && params[:direction] == "asc") ? "desc" : "asc"
+
+    query_params = request.query_parameters.merge(sort: column, direction: direction)
+
+    path = send(path_method, query_params)
+    link_to(path, data: {turbo_action: "advance"}, class: "flex items-center", **) do
+      concat title
+      concat sort_icon(column)
+    end
+  end
+
+  def sort_icon(column)
+    return unless params[:sort].to_s == column.to_s
+
+    if params[:direction] == "asc"
+      content_tag(:i, "", class: "fa-solid fa-caret-up ml-1")
+    else
+      content_tag(:i, "", class: "fa-solid fa-caret-down ml-1")
+    end
+  end
+
 end

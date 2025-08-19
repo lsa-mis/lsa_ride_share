@@ -4,10 +4,9 @@ export default class extends Controller {
   static targets = ['form']
   
   connect () {
-    console.log("connect")
+    console.log("connect autosubmit")
   }
   search() {
-    console.log("here")
     Turbo.navigator.submitForm(this.formTarget)
   }
 }
