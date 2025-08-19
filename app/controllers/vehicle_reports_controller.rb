@@ -20,7 +20,7 @@ class VehicleReportsController < ApplicationController
     else
       program_ids = Program.current_term.pluck(:id)
     end
-    reservation_ids = Reservation.where(program_id: program_ids)
+    reservation_ids = Reservation.where(program_id: program_ids).pluck(:id)
     @vehicle_reports =  @vehicle_reports.where(reservation_id: reservation_ids)
 
     driver_ids = @vehicle_reports.distinct.pluck('reservations.driver_id').compact
