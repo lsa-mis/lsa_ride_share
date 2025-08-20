@@ -10,7 +10,7 @@ class StudentsController < ApplicationController
       @programs = Program.where(unit_id: session[:unit_ids])
     end
     programs_ids = @programs.data(params[:term_id]).pluck(:id)
-    @students = Student.where(program_id: programs_ids).map { |s| [s.uniqname, s.display_name] }.sort_by { |s| s[1] }.uniq
+    @students = Student.where(program_id: programs_ids).order(:first_name).map { |s| [s.uniqname, s.display_name] }.uniq
     authorize Student
   end
 
