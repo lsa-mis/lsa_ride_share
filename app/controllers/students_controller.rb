@@ -10,13 +10,13 @@ class StudentsController < ApplicationController
       @programs = Program.where(unit_id: session[:unit_ids])
     end
     programs_ids = @programs.data(params[:term_id]).pluck(:id)
-    @students = Student.where(program_id: programs_ids).order(:first_name).map { |s| [s.uniqname, s.display_name] }.uniq
+    @students = Student.includes(:program).where(program_id: programs_ids).order(:first_name).map { |s| [s.uniqname, s.display_name] }.uniq
     authorize Student
   end
 
   def get_programs_for_uniqname
     uniqnames = params[:uniqnames].split(',') 
-    students = Student.where(uniqname: uniqnames, program: Program.current_term)
+    students = Student.includes(:program).where(uniqname: uniqnames, program: Program.current_term)
     @students_data = []
     students.each do |student|
       @students_data << { student_id: student.id, student_name: student.display_name, 
