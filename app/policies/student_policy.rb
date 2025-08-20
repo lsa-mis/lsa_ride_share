@@ -64,6 +64,10 @@ class StudentPolicy < ApplicationPolicy
     return false
   end
 
+  def get_programs_for_uniqname?
+    user_in_access_group?
+  end
+
   private
 
   def is_program_manager?
