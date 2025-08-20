@@ -40,8 +40,13 @@ class ReservationsController < ApplicationController
     else
       @programs = Program.where(unit_id: session[:unit_ids])
     end
-    program_ids = @programs.data(params[:term_id]).pluck(:id)
+    @programs = @programs.data(params[:term_id])
+    program_ids = @programs.pluck(:id)
     @canceled_reservations = Reservation.canceled.where(program_id: program_ids).page(params[:page])
+
+    if params[:program_id].present?
+      @canceled_reservations = @canceled_reservations.where(program_id: params[:program_id])
+    end
 
     authorize @canceled_reservations
   end

@@ -31,6 +31,10 @@
             :"data-action" => "change->autosubmit#search" %>
         </div>
       <% end %>
+      <div class="">
+        <label for="program_id" class="fancy_label">Select a Program</label>
+        <%= select_tag "program_id", options_from_collection_for_select(@programs, :id, :title, selected: params[:program_id]), include_blank: "All Programs", class: "filter_select w-96", "data-action": "change->autosubmit#search" %>
+      </div>
     </div>
   <% end %>
   <%= turbo_frame_tag 'canceled_reservations' do %>
