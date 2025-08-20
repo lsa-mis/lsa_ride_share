@@ -33,10 +33,9 @@
 
         <div id="student_name-filters" style="max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 8px;">
           <% @students.each do |uniqname, display_name| %>
-            <% student_id = "student_#{uniqname}" %>
             <div class="form-check">
-              <%= check_box_tag "[student_id][]", uniqname, params[:uniqname]&.include?(uniqname), id: student_id, class: "check_box", "data-students-target": "uniqname", "data-action": "students#selectPrograms" %>
-              <%= label_tag student_id, display_name %>
+              <%= check_box_tag "[uniqname][]", uniqname, params[:uniqname]&.include?(uniqname), id: uniqname, class: "check_box", "data-students-target": "uniqname", "data-action": "students#selectPrograms" %>
+              <%= label_tag uniqname, display_name %>
             </div>
           <% end %>
         </div>
