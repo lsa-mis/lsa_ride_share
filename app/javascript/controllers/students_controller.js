@@ -19,5 +19,15 @@ export default class extends Controller {
         responseKind: "turbo-stream"
       })
     }
+    if (selectedStudents.length === 0) {
+      const turboStream = `
+        <turbo-stream action="update" target="students_programs">
+          <template>
+            <p class="m-2">No students are selected.</p>
+          </template>
+        </turbo-stream>
+      `;
+      Turbo.renderStreamMessage(turboStream);
+    }
   }
 }
