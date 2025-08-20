@@ -99,7 +99,7 @@ class Programs::StudentsController < ApplicationController
 
   def update
     programs_ids = Program.current_term.where(unit_id: session[:unit_ids]).pluck(:id)
-    students = Student.includes(:program).where(uniqname: @student.uniqname, program: programs_ids)
+    students = Student.where(uniqname: @student.uniqname, program: programs_ids)
     
     if students.count > 1
       updated_count = 0
