@@ -45,12 +45,14 @@ class ReservationsController < ApplicationController
     if program_ids.empty?
       @canceled_reservations = Reservation.none.page(params[:page])
     else
-      @canceled_reservations = Reservation.canceled.where(program_id: program_ids).order(updated_at: :desc).page(params[:page])
+      @canceled_reservations = Reservation.canceled.where(program_id: program_ids)
     end
 
     if params[:program_id].present?
       @canceled_reservations = @canceled_reservations.where(program_id: params[:program_id])
     end
+
+    @canceled_reservations = @canceled_reservations.order(updated_at: :desc).page(params[:page])
 
     authorize @canceled_reservations
   end
