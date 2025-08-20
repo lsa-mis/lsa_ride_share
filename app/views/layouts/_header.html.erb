@@ -26,6 +26,7 @@
                     <%= link_to "All Programs", programs_path, class: "nav-sub-link" %>
                     <%= link_to "Sites", sites_path, class: "nav-sub-link" if policy(Site).index? %>
                     <%= link_to "Managers", managers_path, class: "nav-sub-link" %>
+                    <%= link_to "Students", students_path, class: "nav-sub-link" %>
                   </div>
                 </div>
               <% elsif is_manager? %>
@@ -163,6 +164,7 @@
                 <%= link_to "All Programs", programs_path, class: "nav-sub-link-mobile" %>
                 <%= link_to "Sites", sites_path, class: "nav-sub-link-mobile" %>
                 <%= link_to "Managers", managers_path, class: "nav-sub-link-mobile" %>
+                <%= link_to "Students", students_path, class: "nav-sub-link-mobile" %>
               </div>
             <% elsif is_manager? %>
               <div class="header_link">
