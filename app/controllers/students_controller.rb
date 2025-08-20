@@ -16,12 +16,9 @@ class StudentsController < ApplicationController
 
   def get_programs_for_uniqname
     uniqnames = params[:uniqnames].split(',') 
-    students = []
-    uniqnames.each do |uniqname|
-      students << Student.where(uniqname: uniqname, program: Program.current_term).to_a
-    end
+    students = Student.where(uniqname: uniqnames, program: Program.current_term)
     @students_data = []
-    students.flatten.each do |student|
+    students.each do |student|
       @students_data << { student_id: student.id, student_name: student.display_name, 
         program_id: student.program.id, program_name: student.program.display_name_with_title_and_unit }
     end
