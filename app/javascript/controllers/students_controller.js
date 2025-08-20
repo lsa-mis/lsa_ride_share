@@ -13,7 +13,6 @@ export default class extends Controller {
 
   selectPrograms() {
     var selectedStudents = this.uniqnameTargets.filter(checkbox => checkbox.checked).map(checkbox => checkbox.value);
-    console.log("Selected students:", selectedStudents);
     if (selectedStudents.length > 0) {
       get(`/students/get_programs_for_uniqname/${selectedStudents.join(",")}`, {
         responseKind: "turbo-stream"
