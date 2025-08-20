@@ -26,16 +26,16 @@
     <% end %>
     <div class="col-md-6 mb-3">
       <fieldset class="mb-3" id="order_name-filter-group">
-        <legend class="h5">Students</legend>
+        <legend><h2>Students</h2></legend>
         <small>Select students to narrow your results</small>
-        <label for="student_name-filter" class="visually-hidden">Filter Students</label>
-        <input id="student_name-filter" type="text" class="form-control my-2" placeholder="Filter" onkeyup="filterCheckboxes('student_name-filters', this.value)">
+        <label for="student_name_filter" class="hidden">Filter Students</label>
+        <input id="student_name_filter" type="text" class="filter_select w-48 my-2" placeholder="Filter" onkeyup="filterCheckboxes('student_name_filters', this.value)">
 
-        <div id="student_name-filters" style="max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 8px;">
+        <div style="max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 8px;">
           <% @students.each do |uniqname, display_name| %>
             <% student_id = "student_#{uniqname}" %>
             <div class="form-check">
-              <%= check_box_tag "[student_id][]", uniqname, params[:uniqname]&.include?(uniqname), id: student_id, "data-students-target": "uniqname", "data-action": "students#selectPrograms" %>
+              <%= check_box_tag "[student_id][]", uniqname, params[:uniqname]&.include?(uniqname), id: student_id, class: "check_box", "data-students-target": "uniqname", "data-action": "students#selectPrograms" %>
               <%= label_tag student_id, display_name %>
             </div>
           <% end %>
@@ -43,7 +43,7 @@
       </fieldset>
     </div>
   </div>
-  <h2>Students' Programs</h2>
+  <h3>Students' Programs</h3>
   <%= turbo_frame_tag "students_programs" do %>
     <%= render "students_programs", students_data: @students_data %>
   <% end %>
