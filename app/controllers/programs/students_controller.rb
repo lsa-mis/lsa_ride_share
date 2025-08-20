@@ -102,11 +102,10 @@ class Programs::StudentsController < ApplicationController
     students = Student.where(uniqname: @student.uniqname, program: programs_ids)
     
     if students.count > 1
-      updated_count = 0
-      updated_count = students.update_all(meeting_with_admin_date: student_params[:meeting_with_admin_date], 
-          phone_number: student_params[:phone_number])
-      if updated_count == students.count
-        notice = "#{updated_count} student records with this uniqname are updated."
+      updated_results = students.update(student_params.slice(:meeting_with_admin_date, :phone_number))
+      
+      if updated_results.all?
+        notice = "#{students.count} student records with this uniqname are updated."
         redirect_to program_student_path(@student_program, @student), notice: notice
       else
         alert = "Some student records were not updated."
