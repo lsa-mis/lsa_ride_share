@@ -32,9 +32,9 @@ class StudentsController < ApplicationController
 
     def set_units
       if is_admin?
-      @units = Unit.where(id: session[:unit_ids]).order(:name)
+        @units = Unit.where(id: session[:unit_ids]).order(:name)
       else
-        @units = Unit.all
+        @units = []
       end
     end
 end
