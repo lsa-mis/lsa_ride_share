@@ -29,4 +29,22 @@ export default class extends Controller {
       Turbo.renderStreamMessage(turboStream);
     }
   }
+
+  filterCheckboxes(event) {
+    const filterText = event.target.value;
+    const containerId = event.target.getAttribute('data-filter-target');
+    const container = document.getElementById(containerId);
+    const checkboxes = container.querySelectorAll(".form-check");
+
+    const lowerFilter = filterText.toLowerCase();
+
+    checkboxes.forEach((checkbox) => {
+      const label = checkbox.textContent.toLowerCase();
+      if (label.includes(lowerFilter)) {
+        checkbox.style.display = "";
+      } else {
+        checkbox.style.display = "none";
+      }
+    });
+  }
 }

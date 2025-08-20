@@ -29,7 +29,7 @@
         <legend><h2>Students</h2></legend>
         <small>Select students to narrow your results</small>
         <label for="student_name-filter" class="hidden">Filter Students</label>
-        <input id="student_name-filter" type="text" class="filter_select w-48 my-2" placeholder="Filter" onkeyup="filterCheckboxes('student_name-filters', this.value)">
+        <input id="student_name-filter" type="text" class="filter_select w-48 my-2" placeholder="Filter" data-filter-target="student_name-filters" data-action="keyup->students#filterCheckboxes">
 
         <div id="student_name-filters" style="max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 8px;">
           <% @students.each do |uniqname, display_name| %>
@@ -48,20 +48,3 @@
     <%= render "students_programs", students_data: @students_data %>
   <% end %>
 </div>
-<script>
-  function filterCheckboxes(containerId, filterText) {
-    const container = document.getElementById(containerId);
-    const checkboxes = container.querySelectorAll(".form-check");
-
-    const lowerFilter = filterText.toLowerCase();
-
-    checkboxes.forEach((checkbox) => {
-      const label = checkbox.textContent.toLowerCase();
-      if (label.includes(lowerFilter)) {
-        checkbox.style.display = "";
-      } else {
-        checkbox.style.display = "none";
-      }
-    });
-  }
-</script>
