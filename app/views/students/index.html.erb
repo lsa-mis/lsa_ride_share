@@ -28,10 +28,10 @@
       <fieldset class="mb-3" id="order_name-filter-group">
         <legend><h2>Students</h2></legend>
         <small>Select students to narrow your results</small>
-        <label for="student_name_filter" class="hidden">Filter Students</label>
-        <input id="student_name_filter" type="text" class="filter_select w-48 my-2" placeholder="Filter" onkeyup="filterCheckboxes('student_name_filters', this.value)">
+        <label for="student_name-filter" class="hidden">Filter Students</label>
+        <input id="student_name-filter" type="text" class="filter_select w-48 my-2" placeholder="Filter" onkeyup="filterCheckboxes('student_name-filters', this.value)">
 
-        <div style="max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 8px;">
+        <div id="student_name-filters" style="max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 8px;">
           <% @students.each do |uniqname, display_name| %>
             <% student_id = "student_#{uniqname}" %>
             <div class="form-check">
