@@ -42,7 +42,7 @@ class ReservationsController < ApplicationController
     end
     @programs = @programs.data(params[:term_id])
     program_ids = @programs.pluck(:id)
-    @canceled_reservations = Reservation.canceled.where(program_id: program_ids).page(params[:page])
+    @canceled_reservations = Reservation.canceled.where(program_id: program_ids).order(updated_at: :desc).page(params[:page])
 
     if params[:program_id].present?
       @canceled_reservations = @canceled_reservations.where(program_id: params[:program_id])
