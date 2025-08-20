@@ -1,0 +1,24 @@
+<% if students_data.present? %>
+  <table class="mi_table">
+    <thead class="mi_thead">
+      <tr>
+        <th class="header_th">Student</th>
+        <th class="header_th">Program</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% students_data.each do |data| %>
+        <tr>
+          <td>
+            <%= link_to data[:student_name], program_student_path(data[:program_id],data[:student_id]), class: "link_to", data: {turbo_frame: "_top"} %>
+          </td>
+          <td>
+            <%= link_to data[:program_name], program_path(data[:program_id]), class: "link_to", data: {turbo_frame: "_top"} %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>No programs found for the selected students.</p>
+<% end %>

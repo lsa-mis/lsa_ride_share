@@ -1,0 +1,67 @@
+<div class="container px-1 mb-20" data-controller='students'>
+
+  <div class="md:flex justify-between items-center whitespace-nowrap pb-4">
+    <h1>Current Term Students</h1>
+    <div class="flex flex-col items-center justify-center body-md-text pt-4">
+      <div>
+        <%= show_current_terms[0] %>
+      </div>
+      <div>
+        <%= show_current_terms[1] %>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <%= form_with url: students_path, method: :get, class: "", data: { students_target: "form" } do |form| %>
+      <div class="md:flex gap-2 mb-2">
+        <% if session[:unit_ids].count > 1 %>
+          <div class="">
+            <label for="unit_id" class="fancy_label">Select a Unit</label>
+            <%= select_tag "unit_id", options_from_collection_for_select(@units, :id, :name, selected: params[:unit_id]), include_blank: "All Units", class: "filter_select w-48",
+              :"data-action" => "change->students#search" %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+    <div class="col-md-6 mb-3">
+      <fieldset class="mb-3" id="order_name-filter-group">
+        <legend class="h5">Students</legend>
+        <small>Select students to narrow your results</small>
+        <label for="student_name-filter" class="visually-hidden">Filter Students</label>
+        <input id="student_name-filter" type="text" class="form-control my-2" placeholder="Filter" onkeyup="filterCheckboxes('student_name-filters', this.value)">
+
+        <div id="student_name-filters" style="max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 8px;">
+          <% @students.each do |uniqname, display_name| %>
+            <% student_id = "student_#{uniqname}" %>
+            <div class="form-check">
+              <%= check_box_tag "[student_id][]", uniqname, params[:uniqname]&.include?(uniqname), id: student_id, "data-students-target": "uniqname", "data-action": "students#selectPrograms" %>
+              <%= label_tag student_id, display_name %>
+            </div>
+          <% end %>
+        </div>
+      </fieldset>
+    </div>
+  </div>
+  <h2>Students' Programs</h2>
+  <%= turbo_frame_tag "students_programs" do %>
+    <%= render "students_programs", students_data: @students_data %>
+  <% end %>
+</div>
+<script>
+  function filterCheckboxes(containerId, filterText) {
+    const container = document.getElementById(containerId);
+    const checkboxes = container.querySelectorAll(".form-check");
+
+    const lowerFilter = filterText.toLowerCase();
+
+    checkboxes.forEach((checkbox) => {
+      const label = checkbox.textContent.toLowerCase();
+      if (label.includes(lowerFilter)) {
+        checkbox.style.display = "";
+      } else {
+        checkbox.style.display = "none";
+      }
+    });
+  }
+</script>
