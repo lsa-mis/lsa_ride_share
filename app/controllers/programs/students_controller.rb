@@ -98,7 +98,7 @@ class Programs::StudentsController < ApplicationController
   end
 
   def update
-    if params[:commit] == "Update All Students With This Uniqname"
+    if params[:commit] == "update-all-students-with-this-uniqname"
       programs_ids = Program.current_term.where(unit_id: session[:unit_ids]).pluck(:id)
       students = Student.where(uniqname: @student.uniqname, program: programs_ids)
     
