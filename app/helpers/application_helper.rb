@@ -961,13 +961,13 @@ module ApplicationHelper
   end
 
   def show_conflict(status)
-    if status == "conflict"
+    if status == CONFLICT_STATUS
       content_tag(:span, "There is a conflict with other reservations", class: "alert")
     end
   end
 
   def conflict?(reservation)
-    reservation.status == "conflict"
+    reservation.status == CONFLICT_STATUS
   end
-  
+
 end
