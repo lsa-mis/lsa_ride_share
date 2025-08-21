@@ -1,0 +1,49 @@
+<div class="container px-1 mb-20" data-controller='students'>
+
+  <div class="md:flex justify-between items-center whitespace-nowrap pb-4">
+    <h1>Current Term Students</h1>
+    <div class="flex flex-col items-center justify-center body-md-text pt-4">
+      <div>
+        <%= show_current_terms[0] %>
+      </div>
+      <div>
+        <%= show_current_terms[1] %>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <%= form_with url: students_path, method: :get, class: "", data: { students_target: "form" } do |form| %>
+      <div class="md:flex gap-2 mb-2">
+        <% if session[:unit_ids].count > 1 %>
+          <div class="">
+            <label for="unit_id" class="fancy_label">Select a Unit</label>
+            <%= select_tag "unit_id", options_from_collection_for_select(@units, :id, :name, selected: params[:unit_id]), include_blank: "All Units", class: "filter_select w-48",
+              :"data-action" => "change->students#search" %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+    <div class="col-md-6 mb-3">
+      <fieldset class="mb-3" id="order_name-filter-group">
+        <legend><h2>Students</h2></legend>
+        <small>Select students to narrow your results</small>
+        <label for="student_name-filter" class="hidden">Filter Students</label>
+        <input id="student_name-filter" type="text" class="filter_select w-48 my-2" placeholder="Filter" data-filter-target="student_name-filters" data-action="keyup->students#filterCheckboxes">
+
+        <div id="student_name-filters" style="max-height: 200px; overflow-y: auto; border: 1px solid #ccc; padding: 8px;">
+          <% @students.each do |uniqname, display_name| %>
+            <div class="form-check">
+              <%= check_box_tag "[uniqnames][]", uniqname, params[:uniqnames]&.include?(uniqname), id: uniqname, class: "check_box", "data-students-target": "uniqname", "data-action": "students#selectPrograms" %>
+              <%= label_tag uniqname, display_name %>
+            </div>
+          <% end %>
+        </div>
+      </fieldset>
+    </div>
+  </div>
+  <h3>Students' Programs</h3>
+  <%= turbo_frame_tag "students_programs" do %>
+    <%= render "students_programs", students_data: @students_data %>
+  <% end %>
+</div>

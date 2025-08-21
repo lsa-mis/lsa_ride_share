@@ -33,11 +33,27 @@ class ReservationsController < ApplicationController
   end
 
   def canceled_reservations
+    @terms = Term.sorted
+
     if params[:unit_id].present?
-      @canceled_reservations = Reservation.canceled.where(program: Program.current_term.where(unit_id: params[:unit_id])).order(updated_at: :desc)
+      @programs = Program.where(unit_id: params[:unit_id])
     else
-      @canceled_reservations = Reservation.canceled.where(program_id: Program.current_term.ids).order(updated_at: :desc)
+      @programs = Program.where(unit_id: session[:unit_ids])
     end
+    @programs = @programs.data(params[:term_id])
+    program_ids = @programs.pluck(:id)
+    if program_ids.empty?
+      @canceled_reservations = Reservation.none.page(params[:page])
+    else
+      @canceled_reservations = Reservation.canceled.where(program_id: program_ids)
+    end
+
+    if params[:program_id].present?
+      @canceled_reservations = @canceled_reservations.where(program_id: params[:program_id])
+    end
+
+    @canceled_reservations = @canceled_reservations.order(updated_at: :desc).page(params[:page])
+
     authorize @canceled_reservations
   end
 

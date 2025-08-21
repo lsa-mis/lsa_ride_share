@@ -89,6 +89,9 @@ class Programs::StudentsController < ApplicationController
   end
 
   def show
+    @reservations_current = @student.reservations_current.sort_by(&:start_time)
+    @reservations_past = @student.reservations_past.sort_by(&:start_time).reverse
+    @reservations_future = @student.reservations_future.sort_by(&:start_time)
   end
 
   def edit

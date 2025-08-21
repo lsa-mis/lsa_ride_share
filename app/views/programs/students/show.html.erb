@@ -22,7 +22,7 @@
   
 </div>
 <% if is_admin? %>
-  <div class="container p-2 rounded-lg shadow-lg text-xl mb-20 bg-gray-50">
+  <div class="container p-2 rounded-lg shadow-lg text-xl mb-2 bg-gray-50">
     <h2 class="mb-4">Notes:</h2>
     <%= render partial: "notes/form", locals: { note: Note.new, noteable: @student } %>
 
@@ -32,3 +32,19 @@
     <% end %>
   </div>
 <% end %>
+<h3>Reservations:</h3>
+<div>
+  <% if @reservations_current.present? %>
+    <%= render 'welcome_pages/student_reservations_current' %>
+  <% end %>
+</div>
+<div>
+  <% if @reservations_future.present? %>
+    <%= render 'welcome_pages/student_reservations_future' %>
+  <% end %>
+</div>
+<div class="mb-20">
+  <% if @reservations_past.present? %>
+    <%= render 'welcome_pages/student_reservations_past' %>
+  <% end %>
+</div>
