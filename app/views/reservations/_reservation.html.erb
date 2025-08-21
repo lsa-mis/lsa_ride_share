@@ -7,7 +7,13 @@
         </p>
       <% end %>
     </div>
-    
+
+    <div class="py-2">
+      <p class="body-lg-bold-text alert">
+        <%= show_conflict(reservation.status) %>
+      </p>
+    </div>
+
     <div class="py-2">
       <p class="body-lg-bold-text inline">
         Car:

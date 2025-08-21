@@ -126,6 +126,7 @@ class Reservation < ApplicationRecord
       new_reservation.end_time = nil
       new_reservation.prev = nil
       new_reservation.next = nil
+      new_reservation.status = nil
     end
   end
 
