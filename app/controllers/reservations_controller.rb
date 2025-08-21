@@ -445,7 +445,7 @@ class ReservationsController < ApplicationController
       no_conflict = available_edit?(@reservation.id, @reservation.car, @reservation.start_time..@reservation.end_time)
       if no_conflict
         alert = ""
-        @reservation.status = ""
+        @reservation.status = nil
       elsif !no_conflict && is_admin?
         alert = " There is a conflict with another reservation on " + show_date_with_month_name(@reservation.start_time) + "."
         @reservation.status = "conflict"
