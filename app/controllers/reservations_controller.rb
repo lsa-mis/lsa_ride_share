@@ -319,6 +319,7 @@ class ReservationsController < ApplicationController
       end
     else
       flash[:alert] = "There is a conflict with another reservation. Please select different time."
+      @reservation.update(status: CONFLICT_STATUS)
       @program = Program.find(params[:reservation][:program_id])
       @term_id = params[:term_id]
       @sites = @program.sites.order(:title)
@@ -444,8 +445,10 @@ class ReservationsController < ApplicationController
       no_conflict = available_edit?(@reservation.id, @reservation.car, @reservation.start_time..@reservation.end_time)
       if no_conflict
         alert = ""
+        @reservation.status = nil
       elsif !no_conflict && is_admin?
         alert = " There is a conflict with another reservation on " + show_date_with_month_name(@reservation.start_time) + "."
+        @reservation.status = CONFLICT_STATUS
       else
         alert = " There is a conflict with another reservation on " + show_date_with_month_name(@reservation.start_time) + ". Please select a different time or ask admins to edit the reservation."
       end
