@@ -98,10 +98,27 @@ class Programs::StudentsController < ApplicationController
   end
 
   def update
-    if @student.update(student_params)
-      redirect_to program_student_path(@student_program, @student), notice: "The student record was updated."
+    if params[:commit] == "update-all-students-with-this-uniqname"
+      programs_ids = Program.current_term.where(unit_id: session[:unit_ids]).pluck(:id)
+      students = Student.where(uniqname: @student.uniqname, program: programs_ids)
+    
+      updated_count = 0
+      updated_count = students.update_all(canvas_course_complete_date: student_params[:canvas_course_complete_date],
+          meeting_with_admin_date: student_params[:meeting_with_admin_date],
+          phone_number: student_params[:phone_number])
+      if updated_count == students.count
+        notice = "#{students.count} student record(s) with this uniqname are updated."
+        redirect_to program_student_path(@student_program, @student), notice: notice
+      else
+        alert = "Some student records were not updated."
+        redirect_to program_student_path(@student_program, @student), alert: alert
+      end
     else
-      render :edit, status: :unprocessable_entity
+      if @student.update(student_params)
+        redirect_to program_student_path(@student_program, @student), notice: "Student record is updated."
+      else
+        render :edit, status: :unprocessable_entity
+      end
     end
   end
 
