@@ -624,8 +624,9 @@ class ReservationsController < ApplicationController
       begin
         @reservation.update(canceled: true, reason_for_cancellation: reason_for_cancellation, driver_id: nil, driver_manager_id: nil, updated_by: current_user.id)
         if is_admin?
-          redirect_to reservations_url, notice: "Reservation was canceled."
-          
+          start_date = @reservation.start_time.to_date
+          redirect_to reservations_url(start_date: start_date), notice: "Reservation was canceled."
+
         elsif is_manager?
           redirect_to welcome_pages_manager_url, notice: "Reservation was canceled."
           
@@ -678,7 +679,8 @@ class ReservationsController < ApplicationController
       authorize @reservation
       if Reservation.where(id: result).update_all(canceled: true, reason_for_cancellation: reason_for_cancellation, driver_id: nil, driver_manager_id: nil, updated_by: current_user.id, prev: nil, next: nil, updated_at: Time.now)
         if is_admin?
-          redirect_to reservations_url, notice: "Selected Reservation(s) were canceled."
+          start_date = @reservation.start_time.to_date
+          redirect_to reservations_url(start_date: start_date), notice: "Selected Reservation(s) were canceled."
         elsif is_manager?
           redirect_to welcome_pages_manager_url, notice: "Selected Reservation(s) were canceled."
         elsif is_student?
