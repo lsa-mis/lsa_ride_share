@@ -120,7 +120,12 @@ class VehicleReportsController < ApplicationController
         if @vehicle_report.parking_spot_return.present?
           car.update(parking_spot: @vehicle_report.parking_spot_return, parking_note: @vehicle_report.parking_note_return, last_used: DateTime.now, last_driver_id: @reservation.driver_id)
         end
-        format.html { redirect_to vehicle_report_url(@vehicle_report), notice: "Vehicle report was successfully created." }
+        if @vehicle_report.student_status
+          notice = "Vehicle report completed."
+        else
+          notice = "Vehicle report was successfully created."
+        end
+        format.html { redirect_to vehicle_report_url(@vehicle_report), notice: notice }
         format.json { render :show, status: :created, location: @vehicle_report }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -150,7 +155,12 @@ class VehicleReportsController < ApplicationController
         if @vehicle_report.parking_spot_return.present?
           car.update(parking_spot: @vehicle_report.parking_spot_return, parking_note: @vehicle_report.parking_note_return, last_used: DateTime.now, last_driver_id: @reservation.driver_id)
         end
-        format.html { redirect_to vehicle_report_url(@vehicle_report), notice: "Vehicle report was successfully updated." }
+        if @vehicle_report.student_status
+          notice = "Vehicle report completed."
+        else
+          notice = "Vehicle report was successfully updated."
+        end
+        format.html { redirect_to vehicle_report_url(@vehicle_report), notice: notice }
         format.json { render :show, status: :ok, location: @vehicle_report }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -163,6 +173,9 @@ class VehicleReportsController < ApplicationController
     if @vehicle_report.update(vehicle_report_params)
       @image_field_name = params[:vehicle_report].keys[0]
       @image_name = @vehicle_report.send(params[:vehicle_report].keys[0].to_sym)
+      if @vehicle_report.student_status
+        flash.now[:notice] = "Vehicle report completed.                                                                                                                                                                                                                                           "
+      end
     else
       render turbo_stream: turbo_stream.update("image_errors_#{params[:vehicle_report].keys[0]}", partial: "image_errors", locals: { image_field_name: params[:vehicle_report].keys[0] })
     end
