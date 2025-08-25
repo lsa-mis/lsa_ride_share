@@ -5,7 +5,6 @@ export default class extends Controller {
 
   connect() {
     console.log("Flash controller connected")
-    console.log("scrollToTopValue:", this.scrollToTopValue)
     // Only scroll to top if the data attribute is set to true
     if (this.scrollToTopValue == true) {
       this.scrollToTop()
@@ -13,7 +12,6 @@ export default class extends Controller {
   }
 
   scrollToTop() {
-    console.log("Scrolling to top")
     // Use setTimeout to ensure DOM is fully rendered
     setTimeout(() => {
       window.scrollTo({ top: 0, behavior: 'smooth' })
