@@ -666,8 +666,8 @@ module ApplicationHelper
     end
   end
   
-  def render_flash_stream
-    turbo_stream.update "flash", partial: "layouts/notification"
+  def render_flash_stream(scroll_to_top: true)
+    turbo_stream.update "flash", partial: "layouts/notification", locals: { scroll_to_top: scroll_to_top }
   end
 
   def show_vehicle_report_student_status(vehicle_report)

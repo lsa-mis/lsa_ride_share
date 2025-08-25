@@ -174,7 +174,9 @@ class VehicleReportsController < ApplicationController
       @image_field_name = params[:vehicle_report].keys[0]
       @image_name = @vehicle_report.send(params[:vehicle_report].keys[0].to_sym)
       if @vehicle_report.student_status
-        flash.now[:notice] = "Vehicle report completed.                                                                                                                                                                                                                                           "
+        flash.now[:notice] = "Vehicle report completed."
+      else
+        flash.now[:notice] = "Image uploaded successfully."
       end
     else
       render turbo_stream: turbo_stream.update("image_errors_#{params[:vehicle_report].keys[0]}", partial: "image_errors", locals: { image_field_name: params[:vehicle_report].keys[0] })
