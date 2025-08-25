@@ -1,5 +1,10 @@
 <%= turbo_frame_tag 'edit_student' do %>
-  <%= form_for [@student_program, student], data: {turbo_frame: "_top"} do |form| %>
+  <%= form_with model: [@student_program, student], 
+      data: { controller: "phone",
+              target: "form",
+              action: "submit->phone#submitForm",
+              turbo_frame: "_top"
+            } do |form| %>
     <% if student.errors.any? %>
       <div id="error_explanation" class="text-red-umred px-3 py-2 font-medium rounded-lg mt-3">
         <h3><%= pluralize(student.errors.count, "error") %> prohibited this student from being saved:</h3>
@@ -23,13 +28,15 @@
 
     <div class="my-5">
       <%= form.label :phone_number, class: "fancy_label" %>
-      <%= form.text_field :phone_number, placeholder: "XXX-XXX-XXXX", class: "input_text_field" %>
+      <%= form.text_field :phone_number, placeholder: "XXX-XXX-XXXX", class: "input_text_field", "data-phone-target": "phone_number" %>
+      <div id="phone_error_desktop" class="error_text mb-2"></div>
     </div>
 
     <%= form.hidden_field :program_id, value: @student_program.id %>
 
     <div class="inline">
       <%= form.submit class: "secondary_blue_button" %>
+      <%= form.submit 'Update All Students With This Uniqname', name: 'commit', value: 'Update All Students With This Uniqname', class: "secondary_blue_button" %>
     </div>
     <%= link_to program_student_path(@student_program, student), data: {turbo_frame: "_top"} do %>
       <span class="tertiary_button">Cancel

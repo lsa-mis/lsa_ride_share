@@ -1,4 +1,5 @@
-<div class="flashes mt-2">
+<% scroll_to_top = local_assigns.fetch(:scroll_to_top, false) %>
+<div class="flashes mt-2" data-controller="flash" data-flash-scroll-to-top-value="<%= scroll_to_top %>">
   <% flash.each do |key, value| %>
     <% if key == 'notice' %>
       <%= content_tag(:div, value, class: "flash #{key}", id: "#{key}") %>
@@ -10,3 +11,4 @@
     <% end %>
   <% end %>
 </div>
+

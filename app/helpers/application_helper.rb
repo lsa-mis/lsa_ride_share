@@ -666,8 +666,8 @@ module ApplicationHelper
     end
   end
   
-  def render_flash_stream
-    turbo_stream.update "flash", partial: "layouts/notification"
+  def render_flash_stream(scroll_to_top: true)
+    turbo_stream.update "flash", partial: "layouts/notification", locals: { scroll_to_top: scroll_to_top }
   end
 
   def show_vehicle_report_student_status(vehicle_report)
@@ -958,6 +958,16 @@ module ApplicationHelper
     else
       content_tag(:i, "", class: "fa-solid fa-caret-down ml-1")
     end
+  end
+
+  def show_conflict(status)
+    if status == CONFLICT_STATUS
+      content_tag(:span, "There is a conflict with other reservations", class: "alert")
+    end
+  end
+
+  def conflict?(reservation)
+    reservation.status == CONFLICT_STATUS
   end
 
 end

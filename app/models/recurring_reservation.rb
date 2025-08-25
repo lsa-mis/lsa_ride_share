@@ -77,6 +77,7 @@ class RecurringReservation
         # check if there are start_time..end_time for @reservation.car is available on start_day
         unless available?(@reservation.car, next_reservation.start_time..next_reservation.end_time)
           conflict_days_message += show_date_with_month_name(day) + "; "
+          next_reservation.status = CONFLICT_STATUS
         end
         next_reservation.save
         if prev_reserv.passengers.present?

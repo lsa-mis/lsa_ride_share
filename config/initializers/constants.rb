@@ -1,0 +1,1 @@
+CONFLICT_STATUS = "conflict"
