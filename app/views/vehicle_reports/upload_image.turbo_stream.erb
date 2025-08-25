@@ -1,4 +1,8 @@
-<%= render_flash_stream %>
+<% if @vehicle_report.student_status %>
+  <%= render_flash_stream(scroll_to_top: true) %>
+<% else %>
+  <%= render_flash_stream(scroll_to_top: false) %>
+<% end %>
 
 <%= turbo_stream.update "#{@image_field_name}" do %>
   <%= render 'image_name', image_name: @image_name, image_field_name: "#{@image_field_name}" %>
