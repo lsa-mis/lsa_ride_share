@@ -4,26 +4,43 @@ class UpdateStudentsApi
   OK_CODE = "200"
 
   def mvr_status(uniqname)
+    result = {'success' => false, 'error' => '', 'mvr_status' => {}}
     mvr_status = ''
     url = URI("https://ltp.fo.umich.edu/mvr/api/api.php?action=check_status&uniqname=#{uniqname}")
 
     http = Net::HTTP.new(url.host, url.port)
     http.use_ssl = true
     http.verify_mode = OpenSSL::SSL::VERIFY_PEER
-
     request = Net::HTTP::Get.new(url)
-    request["x-api-key"] = ENV["SYGIC_API_KEY"]
-    request["cache-control"] = 'no-cache'
+    
+    # Add headers that browsers typically send
+    request["User-Agent"] = "Mozilla/5.0 (compatible; Rails/#{Rails.version})"
+    request["Accept"] = "application/json, text/plain, */*"
+    request["Accept-Language"] = "en-US,en;q=0.9"
+    request["Cache-Control"] = "no-cache"
+    request["Connection"] = "keep-alive"
 
-    response = http.request(request)
-    data = JSON.parse(response.read_body)
-    unless data['mvr_status'].nil?
-      mvr_status = data['mvr_status']
+    begin
+      response = http.request(request)
+      if response.code == '200'
+        data = JSON.parse(response.read_body)
+        result['success'] = true
+        unless data['mvr_status'].nil?
+          mvr_status = data['mvr_status']
+        end
+        if data['expires'].present?
+          mvr_status += " until " + data['expires']
+        end
+        result['mvr_status'] = mvr_status
+      else
+        Rails.logger.error "MVR API returned #{response.code}: #{response.message}"
+        result['error'] = "API Error: #{response.code} - #{response.message}"
+      end
+    rescue StandardError => e
+      Rails.logger.error "MVR API Error: #{e.class} - #{e.message}"
+      result['error'] = "Connection Error: #{e.message}"
     end
-    if data['expires'].present?
-      mvr_status += " until " + data['expires']
-    end
-    return mvr_status
+    return result
   end
 
   def class_roster_operational(term_code, subject_code, catalog_number, class_section, access_token)
