@@ -4,7 +4,7 @@ module StudentApi
   OK_CODE = "200"
 
   def mvr_status(uniqname)
-    result = {'success' => false, 'error' => '', 'mvr_status' => {}}
+    result = {'success' => false, 'error' => '', 'mvr_status' => ''}
     mvr_status = ''
     url = URI("https://ltp.fo.umich.edu/mvr/api/api.php?action=check_status&uniqname=#{uniqname}")
 
