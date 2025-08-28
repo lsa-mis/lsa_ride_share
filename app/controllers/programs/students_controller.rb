@@ -123,19 +123,27 @@ class Programs::StudentsController < ApplicationController
   end
 
   def update_student_mvr_status
-    status = mvr_status(@student.uniqname)
-    unless @student.update(mvr_status: status)
-      redirect_to program_student_path(@student_program, @student), alert: "Error updating student record."
+    result = mvr_status(@student.uniqname)
+    if result['success']
+      unless @student.update(mvr_status: result['mvr_status'])
+        redirect_to program_student_path(@student_program, @student), alert: "Error updating student record."
+      end
+      flash.now[:notice] = "MVR status is updated."
+    else
+      flash.now[:alert] = "Error retrieving MVR status for #{@student.uniqname}: #{result['error']}"
     end
-    flash.now[:notice] = "MVR status is updated."
   end
 
   def update_mvr_status(note: true)
     @student_program.students.each do |student|
       if need_to_check_mvr_status?(student)
-        status = mvr_status(student.uniqname)
-        unless student.update(mvr_status: status)
-          redirect_to program_students_path(@student_program), alert: "Error updating student record."
+        result = mvr_status(student.uniqname)
+        if result['success']
+          unless student.update(mvr_status: result['mvr_status'])
+            redirect_to program_students_path(@student_program), alert: "Error updating student record."
+          end
+        else
+          flash.now[:alert] = "Error retrieving MVR status for #{student.uniqname}: #{result['error']}"
         end
       end
     end

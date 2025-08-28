@@ -32,12 +32,20 @@ class WelcomePagesController < ApplicationController
   def update_status(resource, program)
     if resource.mvr_status.present?
       unless resource.mvr_status.include?("Approved until")
-        status = mvr_status(resource.uniqname)
-        resource.update(mvr_status: status)
+        result = mvr_status(resource.uniqname)
+        if result['success']
+          resource.update(mvr_status: result['mvr_status'])
+        else
+          flash.now[:alert] = "Error retrieving MVR status for #{resource.uniqname}: #{result['error']}"
+        end
       end
     else 
-      status = mvr_status(resource.uniqname)
-        resource.update(mvr_status: status)
+      result = mvr_status(resource.uniqname)
+      if result['success']
+        resource.update(mvr_status: result['mvr_status'])
+      else
+        flash.now[:alert] = "Error retrieving MVR status for #{resource.uniqname}: #{result['error']}"
+      end
     end
     # unless resource.canvas_course_complete_date.present?
     #   canvas_date = update_my_canvas_status(resource, program)

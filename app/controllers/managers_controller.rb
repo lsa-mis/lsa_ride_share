@@ -21,9 +21,15 @@ class ManagersController < ApplicationController
 
   def update_managers_mvr_status
     @managers.each do |manager|
-      status = mvr_status(manager.uniqname)
-      unless manager.update(mvr_status: status)
-        redirect_to managers_path, alert: "Error updating manager record."
+      result = mvr_status(manager.uniqname)
+      if result['success']
+        unless manager.update(mvr_status: result['mvr_status'])
+          redirect_to managers_path, alert: "Error updating manager record."
+        end
+      else
+        flash.now[:alert] = "Error retrieving MVR status for #{manager.uniqname}: #{result['error']}"
+        set_managers
+        return
       end
     end
     flash.now[:notice] = "MVR status is updated."
