@@ -17,8 +17,12 @@ task update_students: :environment do
   programs.each do |program|
     program.students.each do |student|
       if need_to_check_mvr_status?(student)
-        status = api.mvr_status(student.uniqname)
-        student.update(mvr_status: status)
+        result = api.mvr_status(student.uniqname)
+        if result['success']
+          student.update(mvr_status: result['mvr_status'])
+        else
+          @log.api_logger.error "Error retrieving MVR status for #{student.uniqname}: #{result['error']}"
+        end
       end
     end
     @log.api_logger.info "#{program.title} program updated"
@@ -27,8 +31,12 @@ task update_students: :environment do
   @log.api_logger.info "Update managers MVR status ***********************************"
   managers = Manager.all
   managers.each do |manager|
-    status = api.mvr_status(manager.uniqname)
-    manager.update(mvr_status: status)
+    result = api.mvr_status(manager.uniqname)
+    if result['success']
+      manager.update(mvr_status: result['mvr_status'])
+    else
+      @log.api_logger.error "Error retrieving MVR status for #{manager.uniqname}: #{result['error']}"
+    end
   end
 
   @log.api_logger.info "Update Canvas courses status ***********************************"
