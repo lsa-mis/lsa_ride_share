@@ -8,7 +8,6 @@ export default class extends Controller {
 
   submitForm(event) {
     var phone_number = this.phone_numberTarget.value
-    console.log("Phone number:", phone_number)
     if (document.getElementById('phone_error_desktop')) {
       var phone_error_desktop_place = document.getElementById('phone_error_desktop')
       phone_error_desktop_place.innerHTML = ''
@@ -18,7 +17,6 @@ export default class extends Controller {
       phone_error_mobile_place.innerHTML = ''
     }
     if (phone_number.trim() != '') {
-      console.log("Phone number here:", phone_number)
       var regex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im
       if (!regex.test(phone_number)) {
         if (typeof phone_error_desktop_place !== 'undefined') {
