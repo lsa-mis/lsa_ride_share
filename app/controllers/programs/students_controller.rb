@@ -139,6 +139,7 @@ class Programs::StudentsController < ApplicationController
         redirect_to program_student_path(@student_program, @student), alert: "Error updating student record."
       end
       flash.now[:notice] = "MVR status is updated."
+      return
     else
       flash.now[:alert] = "Error retrieving MVR status for #{@student.uniqname}: #{result['error']}"
     end
@@ -154,6 +155,7 @@ class Programs::StudentsController < ApplicationController
           end
         else
           flash.now[:alert] = "Error retrieving MVR status for #{student.uniqname}: #{result['error']}"
+          return
         end
       end
     end
