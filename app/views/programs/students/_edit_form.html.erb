@@ -27,6 +27,11 @@
     </div>
 
     <div class="my-5">
+      <%= label_tag 'mvr_status', 'MVR Status Approved Until:', class: "fancy_label" %>
+      <%= date_field_tag(:mvr_status, @mvr_status, { class: "input_text_field" }) %>
+    </div>
+
+    <div class="my-5">
       <%= form.label :phone_number, class: "fancy_label" %>
       <%= form.text_field :phone_number, placeholder: "XXX-XXX-XXXX", class: "input_text_field", "data-phone-target": "phone_number" %>
       <div id="phone_error_desktop" class="error_text mb-2"></div>
