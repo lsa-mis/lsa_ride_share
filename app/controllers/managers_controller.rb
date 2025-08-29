@@ -22,8 +22,7 @@ class ManagersController < ApplicationController
     else
       mvr_status = ""
     end
-    if @manager.update(manager_params)
-      @manager.update(mvr_status: mvr_status)
+    if @manager.update(manager_params.merge(mvr_status: mvr_status))
       redirect_to managers_path, notice: "The manager record was updated."
     else
       render :edit, status: :unprocessable_entity

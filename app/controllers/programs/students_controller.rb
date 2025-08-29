@@ -124,8 +124,7 @@ class Programs::StudentsController < ApplicationController
         redirect_to program_student_path(@student_program, @student), alert: alert
       end
     else
-      if @student.update(student_params)
-        @student.update(mvr_status: mvr_status)
+      if @student.update(student_params.merge(mvr_status: mvr_status))
         redirect_to program_student_path(@student_program, @student), notice: "Student record is updated."
       else
         render :edit, status: :unprocessable_entity
