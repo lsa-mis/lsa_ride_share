@@ -95,9 +95,19 @@ class Programs::StudentsController < ApplicationController
   end
 
   def edit
+    if @student.mvr_status&.include?("Approved until ")
+      @mvr_status = @student.mvr_status.remove("Approved until ").to_date
+    else
+      @mvr_status = nil
+    end
   end
 
   def update
+    if params[:mvr_status].present? && params[:mvr_status] != ""
+      mvr_status = "Approved until " + params[:mvr_status]
+    else
+      mvr_status = ""
+    end
     if params[:commit] == "Update All Students With This Uniqname"
       programs_ids = Program.current_term.where(unit_id: session[:unit_ids]).pluck(:id)
       students = Student.where(uniqname: @student.uniqname, program: programs_ids)
@@ -105,7 +115,7 @@ class Programs::StudentsController < ApplicationController
       updated_count = 0
       updated_count = students.update_all(canvas_course_complete_date: student_params[:canvas_course_complete_date],
           meeting_with_admin_date: student_params[:meeting_with_admin_date],
-          phone_number: student_params[:phone_number])
+          phone_number: student_params[:phone_number], mvr_status: mvr_status)
       if updated_count == students.count
         notice = "#{students.count} student record(s) with this uniqname are updated."
         redirect_to program_student_path(@student_program, @student), notice: notice
@@ -114,7 +124,7 @@ class Programs::StudentsController < ApplicationController
         redirect_to program_student_path(@student_program, @student), alert: alert
       end
     else
-      if @student.update(student_params)
+      if @student.update(student_params.merge(mvr_status: mvr_status))
         redirect_to program_student_path(@student_program, @student), notice: "Student record is updated."
       else
         render :edit, status: :unprocessable_entity

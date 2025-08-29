@@ -9,10 +9,20 @@ class ManagersController < ApplicationController
   end
 
   def edit
+    if @manager.mvr_status&.include?("Approved until ")
+      @mvr_status = @manager.mvr_status.remove("Approved until ").to_date
+    else
+      @mvr_status = nil
+    end
   end
 
   def update
-    if @manager.update(manager_params)
+    if params[:mvr_status].present? && params[:mvr_status] != ""
+      mvr_status = "Approved until " + params[:mvr_status]
+    else
+      mvr_status = ""
+    end
+    if @manager.update(manager_params.merge(mvr_status: mvr_status))
       redirect_to managers_path, notice: "The manager record was updated."
     else
       render :edit, status: :unprocessable_entity
