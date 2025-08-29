@@ -155,6 +155,7 @@ class Programs::StudentsController < ApplicationController
           end
         else
           flash.now[:alert] = "Error retrieving MVR status for #{student.uniqname}: #{result['error']}"
+          set_students_list
           return
         end
       end
@@ -238,6 +239,7 @@ class Programs::StudentsController < ApplicationController
 
     def set_students_list
       @students = @student_program.students.order(registered: :desc).order(:course_id).order(:last_name)
+      authorize @students
     end
 
     def is_member_of_admin_groups?(uniqname)
