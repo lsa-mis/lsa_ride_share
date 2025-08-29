@@ -95,7 +95,11 @@ class Programs::StudentsController < ApplicationController
   end
 
   def edit
-    @mvr_status = @student.mvr_status.remove("Approved until ").to_date
+    if @student.mvr_status&.include?("Approved until ")
+      @mvr_status = @student.mvr_status.remove("Approved until ").to_date
+    else
+      @mvr_status = nil
+    end
   end
 
   def update
