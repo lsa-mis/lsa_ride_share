@@ -30,7 +30,7 @@ class Car < ApplicationRecord
   include AppendToHasManyAttached['initial_damages']
 
   validates_presence_of :car_number, :make, :model, :color, :number_of_seats, :mileage, :gas, :parking_spot, :status, :updated_by
-  validates :car_number, uniqueness: true
+  validates :car_number, uniqueness: { scope: :unit_id, message: "must be unique within the same unit" }
   validate :acceptable_image
   validates_numericality_of :mileage, greater_than: 0, message: 'must be positive'
   
