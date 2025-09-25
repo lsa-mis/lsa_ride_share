@@ -16,12 +16,19 @@ class ApplicationMailer < ActionMailer::Base
   private
 
   def reply_to_email
-    unit = params[:reservation]&.program.unit
+    unit = params[:reservation]&.program&.unit
     if unit.present?
-      email = UnitPreference.find_by(name: "notification_email", unit_id: unit.id)&.value
+      email = Rails.cache.fetch("#{cache_key(unit)}/email", expires_in: 12.hours) do
+        UnitPreference.find_by(name: "notification_email", unit_id: unit.id)&.value
+      end
       return email if email.present?
     end
     'lsa-rideshare-admins@umich.edu'
+  end
+  
+  def cache_key(unit)
+    pref = UnitPreference.find_by(name: "notification_email", unit_id: unit.id)
+    pref.present? ? pref.cache_key_with_version : nil
   end
 
 end
