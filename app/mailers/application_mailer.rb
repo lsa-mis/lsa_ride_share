@@ -18,11 +18,8 @@ class ApplicationMailer < ActionMailer::Base
   def reply_to_email
     unit = params[:reservation]&.program&.unit
     return 'lsa-rideshare-admins@umich.edu' unless unit.present?
-    if unit.present?
-      email = UnitPreference.find_by(name: "notification_email", unit_id: unit.id)&.value
-      return email if email.present?
-    end
-    'lsa-rideshare-admins@umich.edu'
+    email = UnitPreference.find_by(name: "notification_email", unit_id: unit.id)&.value
+    email.present? ? email : 'lsa-rideshare-admins@umich.edu'
   end
 
 end
