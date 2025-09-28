@@ -48,7 +48,7 @@ class Programs::StudentsController < ApplicationController
     if result['valid']
       # check if uniqname is not admin 
       if is_member_of_admin_groups?(uniqname)
-        @students = @student_program.students.order(registered: :desc).order(:last_name)
+        @students = @student_program.students.order(registered: :desc, course_id: :asc, last_name: :asc)
         flash.now[:alert] = "Admin uniqname can't be added to students list"
         return
       end
@@ -61,27 +61,27 @@ class Programs::StudentsController < ApplicationController
       end
     else
       flash.now[:alert] = result['note']
-      @students = @student_program.students.order(registered: :desc).order(:last_name)
+      @students = @student_program.students.order(registered: :desc, course_id: :asc, last_name: :asc)
       return
     end
-    @students = @student_program.students.order(registered: :desc).order(:last_name)
+    @students = @student_program.students.order(registered: :desc, course_id: :asc, last_name: :asc)
   end
 
   def destroy
     if @student.reservations.present?
       flash.now[:alert] = "Student has reservations and can't be removed."
       @student = Student.new
-      @students = @student_program.students.order(registered: :desc).order(:last_name)
+      @students = @student_program.students.order(registered: :desc, course_id: :asc, last_name: :asc)
       return
     else
       authorize @student
       if @student.destroy
         @student_program.update(number_of_students: @student_program.students.count)
-        @students = @student_program.students.order(registered: :desc).order(:last_name)
+        @students = @student_program.students.order(registered: :desc, course_id: :asc, last_name: :asc)
         @student = Student.new
         flash.now[:notice] = "Student is removed."
       else
-        @students = @student_program.students.order(registered: :desc).order(:last_name)
+        @students = @student_program.students.order(registered: :desc, course_id: :asc, last_name: :asc)
         render :add_students, status: :unprocessable_entity
       end
     end
@@ -165,7 +165,7 @@ class Programs::StudentsController < ApplicationController
     else
       flash.now[:notice] = "Student list and MVR status are updated."
     end
-    @students = @student_program.students.order(registered: :desc).order(:last_name)
+    @students = @student_program.students.order(registered: :desc, course_id: :asc, last_name: :asc)
     authorize @students
   end
 
@@ -201,7 +201,7 @@ class Programs::StudentsController < ApplicationController
       result = canvas_readonly(@student_program.canvas_course_id, token['access_token'])
     else
       flash.now[:alert] = token['error']
-      @students = @student_program.students.order(registered: :desc).order(:last_name)
+      @students = @student_program.students.order(registered: :desc, course_id: :asc, last_name: :asc)
       return
     end
      # to test: course_id = 187918
@@ -213,7 +213,7 @@ class Programs::StudentsController < ApplicationController
         if uniqnames.include?(student.uniqname)
           unless student.update(canvas_course_complete_date: students_with_good_score[student.uniqname])
             flash.now[:alert] = "Error updating student record."
-            @students = @student_program.students.order(registered: :desc).order(:course_id).order(:last_name)
+            @students = @student_program.students.order(registered: :desc, course_id: :asc, last_name: :asc)
             return
           end
         end
@@ -222,7 +222,7 @@ class Programs::StudentsController < ApplicationController
     else
       flash.now[:alert] = result['error']
     end
-    @students = @student_program.students.order(registered: :desc).order(:course_id).order(:last_name)
+    @students = @student_program.students.order(registered: :desc, course_id: :asc, last_name: :asc)
     authorize @students
   end
 
@@ -238,7 +238,7 @@ class Programs::StudentsController < ApplicationController
     end
 
     def set_students_list
-      @students = @student_program.students.order(registered: :desc).order(:course_id).order(:last_name)
+      @students = @student_program.students.order(registered: :desc, course_id: :asc, last_name: :asc)
       authorize @students
     end
 
