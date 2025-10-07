@@ -64,6 +64,29 @@ class ReservationsController < ApplicationController
     render :email_form, status: 422
   end
 
+  def import_reservations
+    authorize Reservation
+    unit_id = params[:unit_id]
+    upload_file = params[:file]
+    return redirect_to request.referer, notice: 'No file added' unless upload_file.present?
+    return redirect_to request.referer, notice: 'Only CSV files allowed' unless valid_csv_files?(upload_file)
+
+    #TODO: update here
+    item_result = {errors:0, note: []}
+    item_result = ItemImportService.new(upload_file).call
+    create_import_log_record(item_result, collection_id, 'Item')
+    errors += item_result[:errors]
+
+    if errors > 0
+      flash[:alert] = "Import finished with #{errors} error(s). Please check reports for details"
+      flash[:alert_no_timeout] = true  # Add flag to disable timeout
+    else
+      flash[:notice] = "Import finished successfully."
+      flash[:notice_no_timeout] = true  # Add flag to disable timeout
+    end
+    redirect_to request.referer
+  end
+
   def send_email_to_selected_reservations
     @selected_reservations = params[:selected_reservations].split(',').map(&:to_i)
     subject = params[:subject]
@@ -278,6 +301,7 @@ class ReservationsController < ApplicationController
 
   # POST /reservations or /reservations.json
   def create
+    # fail
     @reservation = Reservation.new(reservation_params)
     if params[:car_id].present?
       @reservation.car_id = params[:car_id]
@@ -715,6 +739,24 @@ class ReservationsController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
+
+    #TODO: change this
+    def create_import_log_record(result, collection_id, import_type)
+      if result[:errors] > 0
+        status = "completed with errors"
+        note = result[:note]
+      else
+        status = "completed"
+        note = ["#{import_type} import completed successfully."]
+      end
+      ItemImportLog.create(date: DateTime.now, user: current_user.name_with_email, collection_id: collection_id, status: status, note: note)
+    end
+
+    def valid_csv_files?(file)
+      return false unless file.content_type == 'text/csv'
+      return false unless File.extname(file.original_filename).downcase == ".csv"
+      true
+    end
 
     def set_calendar_reservations
       start_date = params.fetch(:start_date, Date.today).to_date
