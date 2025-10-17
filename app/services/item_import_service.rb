@@ -5,12 +5,10 @@ require 'set'
 class ItemImportService
   attr_reader :file, :collection_id
 
-  def initialize(file, collection_id, user)
-    @file = file
-    @collection_id = collection_id
+  def initialize(file, unit_id, user)
+    @file = upload_file
+    @unit_id = unit_id
     @user = user
-    @items_in_db = Set.new(Item.where(collection_id: @collection_id).pluck(:occurrence_id))
-    @field_names = {}
     @log = ImportLog.new
     @notes = []
     @errors = 0
@@ -20,18 +18,25 @@ class ItemImportService
   # This method is the main entry point for the CSV import process.
   # It reads the CSV file, processes each row, and updates or creates items in the database.
   def call
+    fail
     total_time = Benchmark.measure {
-      @log.import_logger.info("#{DateTime.now} - #{Collection.find(@collection_id).division} - Processing Occurrence File: #{@file.original_filename}")
+      @log.import_logger.info("#{DateTime.now} - #{Unit.find(@unit_id).name} - Processing File: #{@file.original_filename}")
       CSV.foreach(@file.path, headers: true) do |row|
-        record = row.fields.map { |val| val&.delete('"')&.strip }
+        # read a row from the CSV file
+        # validate the row data
+        # is the program exist in the current term ?
+        # does the program belong to the unit ?
+        # does the site belongs to the program ?
+        # validate start_time and end_time
+        # validate the car (if provided) belongs to the unit, has enough seats and is available
+        # validate the driver (if provided) belongs to the program and is valid driver
+        # validate the passengers (if provided) belong to the program
+        # create the reservation record
+        # check if the reservation is recurring (finish_reservation method in reservation_controller)
 
-        next if record[0].blank?
 
-        if item_exist?(record[0])
-          update_item(record)
-        else
-          save_item(record)
-        end
+
+        
       end
       cleanup_removed_items
     }

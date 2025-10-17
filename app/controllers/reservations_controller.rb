@@ -72,8 +72,9 @@ class ReservationsController < ApplicationController
     return redirect_to request.referer, notice: 'Only CSV files allowed' unless valid_csv_files?(upload_file)
 
     #TODO: update here
-    item_result = {errors:0, note: []}
-    item_result = ItemImportService.new(upload_file).call
+    # item_result = {errors:0, note: []}
+    item_result = ItemImportService.new(upload_file, unit_id, current_user).call
+    fail
     create_import_log_record(item_result, collection_id, 'Item')
     errors += item_result[:errors]
 
@@ -301,7 +302,7 @@ class ReservationsController < ApplicationController
 
   # POST /reservations or /reservations.json
   def create
-    # fail
+    fail
     @reservation = Reservation.new(reservation_params)
     if params[:car_id].present?
       @reservation.car_id = params[:car_id]
