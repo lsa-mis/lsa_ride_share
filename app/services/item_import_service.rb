@@ -170,7 +170,10 @@ class ItemImportService
   end
 
   def add_driver_to_reservation(driver_uniqname)
-    return false if driver_uniqname.blank?
+    if driver_uniqname.blank?
+      @notes << "No driver specified for reservation ID #{@reservation.id}."
+      return
+    end
     if student_exists_in_program?(driver_uniqname)
       student = Student.find_by(uniqname: driver_uniqname, program_id: @reservation.program_id).id
       if student.driver?
@@ -202,14 +205,30 @@ class ItemImportService
   end
 
   def add_passengers_to_reservation(passenger_uniqnames)
+    number_of_people = @reservation.number_of_people - 1 # excluding driver
     passengers = passenger_uniqnames.split(',').map(&:strip)
-    passengers.each do |uniqname|
+
+    if passenger_uniqnames.blank?
+      @notes << "No passengers specified for reservation ID #{@reservation.id}." if number_of_people.positive?
+      return
+    end
+
+    number = number_of_people - passengers.size
+    case number
+    when number > 0
+      @notes << "Too few passengers specified for reservation ID #{@reservation.id}. Passengers were added to the reservation"
+    when number < 0
+      @notes << "Too many passengers specified for reservation ID #{@reservation.id}. Only the first #{number_of_people} passengers were added to the reservation"
+    end
+
+    passengers.take(number) do |uniqname|
       if student_exists_in_program?(uniqname)
         @reservation.passengers << Student.find_by(uniqname: uniqname, program_id: @program.id)
       elsif manager_exists_in_program?(uniqname)
         @reservation.passengers << Manager.find_by(uniqname: uniqname)
       end
     end
+    
   end
 
   def student_exists_in_program?(uniqname)
