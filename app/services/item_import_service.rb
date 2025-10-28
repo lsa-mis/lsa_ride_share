@@ -175,7 +175,7 @@ class ItemImportService
       return false
     end
 
-    if !available?(car, @start_time..@end_time)
+    unless available?(car, @start_time..@end_time)
       @errors += 1
       @notes << "Car is already booked between."
       return false
