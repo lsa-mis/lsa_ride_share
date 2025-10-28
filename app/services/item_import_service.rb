@@ -80,7 +80,7 @@ class ItemImportService
       program = Program.find_by(title: program_title, unit_id: @unit_id)
       unless program
         @errors += 1
-        @notes << "Program not found for unit #{@unit_id}."
+        @notes << "Program not found for unit."
         return false
       end
     end
@@ -135,14 +135,14 @@ class ItemImportService
       s_time = Time.parse(s_combined).to_datetime - 15.minute
     rescue ArgumentError
       @errors += 1
-      @notes << "Invalid time format for '#{start_day}' or '#{start_time}'."
+      @notes << "Invalid time format."
       return false
     end
     begin
       e_time = Time.parse(e_combined).to_datetime + 15.minute
     rescue ArgumentError
       @errors += 1
-      @notes << "Invalid time format for '#{end_day}' or '#{end_time}'."
+      @notes << "Invalid time format for."
       return false
     end
 
@@ -164,7 +164,7 @@ class ItemImportService
       car = Car.find_by(car_number: car_number, unit_id: @unit_id)
       unless car
         @errors += 1
-        @notes << "Car not found or not part of unit #{@unit_id}."
+        @notes << "Car not found or not part of unit."
         return false
       end
     end
@@ -177,7 +177,7 @@ class ItemImportService
 
     if !available?(car, @start_time..@end_time)
       @errors += 1
-      @notes << "Car '#{car_number}' is already booked between."
+      @notes << "Car is already booked between."
       return false
     end
 
@@ -194,7 +194,7 @@ class ItemImportService
       driver = Manager.find_by(uniqname: driver_uniqname, program_id: @current_program&.id)
       unless driver
         @errors += 1
-        @notes << "Driver '#{driver_uniqname}' not found for program '#{program_title}'."
+        @notes << "Driver not found for program."
         return false
       end
     end
@@ -221,7 +221,7 @@ class ItemImportService
 
     unless invalid.empty?
       @errors += 1
-      @notes << "Invalid passengers for program '#{program_title}': #{invalid.join(', ')}"
+      @notes << "Invalid passengers for program."
       return false
     end
 
