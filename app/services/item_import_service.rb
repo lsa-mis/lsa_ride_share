@@ -47,14 +47,10 @@ class ItemImportService
         return unless car_exists_belongs_to_unit_and_available?(car_id, car_number, number_of_people)
         # validate the driver (if provided) belongs to the program and is valid driver
         driver = row['DRIVER'].strip
-        return unless driver_exists_and_valid_for_program?(driver, program)
+        add_driver_to_reservation(driver)
         # validate the passengers (if provided) belong to the program
         passengers = row['PASSENGERS'].strip
-        return unless passengers_exist_and_valid_for_program?(passengers, program)
-        # create the reservation record
-        recurring = get_recurring_details_from_row(row)
-        reservation = create_reservation_record(program, site, start_time, end_time, recurring, car, driver, passengers)
-        # check if the reservation is recurring (finish_reservation method in reservation_controller)
+        add_passengers_to_reservation(passengers)
       end
       # cleanup_removed_items
     }
@@ -185,30 +181,86 @@ class ItemImportService
     true
   end
 
-  def driver_exists_and_valid_for_program?(driver, program)
-    return true if driver_uniqname.blank?
-
-    driver = Student.find_by(uniqname: driver_uniqname, program_id: @current_program&.id)
-    unless driver
-      # TODO: Rita adds manager program check
-      driver = Manager.find_by(uniqname: driver_uniqname, program_id: @current_program&.id)
-      unless driver
-        @errors += 1
-        @notes << "Driver not found for program."
-        return false
+  def add_driver_to_reservation(driver_uniqname)
+    if driver_uniqname.blank?
+      @notes << "No driver specified for reservation ID #{@reservation.id}."
+      return
+    end
+    if student_exists_in_program?(driver_uniqname)
+      student = Student.find_by(uniqname: driver_uniqname, program_id: @reservation.program_id).id
+      if student.driver?
+        if @reservation.update(driver_id: student)
+          return true
+        else
+          @errors += 1
+          @notes << "Failed to update reservation ID #{@reservation.id}: assign driver '#{driver_uniqname}'."
+          return false
+        end
+      else
+        @reservation.passengers << student
+        @notes << "Student '#{driver_uniqname}' is not a valid driver; added as passenger instead."
+      end
+    elsif manager_exists_in_program?(driver_uniqname)
+      manager = Manager.find_by(uniqname: driver_uniqname)
+      if manager.driver?
+        if @reservation.update(driver_manager_id: manager.id)
+        else
+          @errors += 1
+          @notes << "Failed to to update reservation ID #{@reservation.id}: assign manager driver '#{driver_uniqname}'."
+          return false
+        end
+      else
+        @reservation.passengers << manager
+        @notes << "Manager '#{driver_uniqname}' is not a valid driver; added as passenger instead."
       end
     end
+  end
 
-    @current_driver = driver
+  def add_passengers_to_reservation(passenger_uniqnames)
+    number_of_people = @reservation.number_of_people - 1 # excluding driver
+    passengers = passenger_uniqnames.split(',').map(&:strip)
 
-    # TODO: Rita adds license validation here.
-    # Example:
-    # unless driver.valid_license?
-    #   @errors += 1
-    #   @notes << "Driver '#{driver_uniqname}' does not have a valid license."
-    #   return false
-    # end
+    if passenger_uniqnames.blank?
+      @notes << "No passengers specified for reservation ID #{@reservation.id}." if number_of_people.positive?
+      return
+    end
 
+    number = number_of_people - passengers.size
+    case number
+    when number > 0
+      @notes << "Too few passengers specified for reservation ID #{@reservation.id}. Passengers were added to the reservation"
+    when number < 0
+      @notes << "Too many passengers specified for reservation ID #{@reservation.id}. Only the first #{number_of_people} passengers were added to the reservation"
+    end
+
+    passengers.take(number) do |uniqname|
+      if student_exists_in_program?(uniqname)
+        @reservation.passengers << Student.find_by(uniqname: uniqname, program_id: @program.id)
+      elsif manager_exists_in_program?(uniqname)
+        @reservation.passengers << Manager.find_by(uniqname: uniqname)
+      end
+    end
+    
+  end
+
+  def student_exists_in_program?(uniqname)
+    return false if uniqname.blank?
+    unless @program.students.pluck(:uniqname).include?(uniqname)
+      @errors += 1
+      @notes << "Student '#{uniqname}' is not enrolled in program '#{@program.id}'."
+      return false
+    end
+    true
+  end
+
+  def manager_exists_in_program?(uniqname)
+    return false if uniqname.blank?
+    manager = Manager.find_by(uniqname: uniqname)
+    unless manager && @program.all_managers.include?(manager)
+      @errors += 1
+      @notes << "Manager '#{uniqname}' is not part of program '#{@program.id}'."
+      return false
+    end
     true
   end
 
