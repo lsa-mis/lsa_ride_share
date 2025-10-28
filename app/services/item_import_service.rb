@@ -123,17 +123,17 @@ class ItemImportService
     s_combined = "#{start_day} #{start_time}"
     e_combined = "#{end_day} #{end_time}"
     begin
-      s_time = s_time = DateTime.strptime(s_combined, "%m/%d/%Y %l:%M %p") - 15.minute
+      s_time = DateTime.strptime(s_combined, "%m/%d/%Y %l:%M %p") - 15.minute
     rescue ArgumentError
       @errors += 1
-      @notes << "Invalid time format."
+      @notes << "Invalid time format for start time."
       return false
     end
     begin
       e_time = DateTime.strptime(e_combined, "%m/%d/%Y %l:%M %p") + 15.minute
     rescue ArgumentError
       @errors += 1
-      @notes << "Invalid time format for."
+      @notes << "Invalid time format for end time."
       return false
     end
 
