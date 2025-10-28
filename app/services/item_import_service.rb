@@ -20,48 +20,58 @@ class ItemImportService
     total_time = Benchmark.measure {
       @log.import_logger.info("#{DateTime.now} - #{Unit.find(@unit_id).name} - Processing File: #{@file.original_filename}")
       CSV.foreach(@file.path, headers: true) do |row|
+
         # read a row from the CSV file
         # validate the row data
         # is the program exist in the term ?
-        program_id = row['PROGRAM ID'].strip
-        program_title = row['PROGRAM TITLE'].strip
-        term_id = row['TERM ID'].strip
-        term_name = row["TERM NAME"].strip
-        next unless program_exists_for_unit_and_term?(program_id, program_name, term_id, term_name)
+        term_id = row['TERM ID']&.strip
+        term_name = row["TERM NAME"]&.strip
+        term = Term.find_by(id: term_id) || Term.find_by(name: term_name)
+        unless term
+          @errors += 1
+          @notes << "Term #{term_name} or ##{term_id} not found."
+          next
+        end
+        program_id = row['PROGRAM ID']&.strip
+        program_title = row['PROGRAM TITLE']&.strip
+ 
+        @program = program_exists_for_unit_and_term?(program_id, program_title, term)
+        next unless @program
         # is the unit exist ?
         # does the program belong to the unit ?
         # does the site belongs to the program ?
-        site_id = row['SITE ID'].strip
-        site_title = row['SITE TITLE'].strip
-        next unless site_exists_and_belongs_to_program?(site_id, site_title)
+        site_id = row['SITE ID']&.strip
+        site_title = row['SITE TITLE']&.strip
+        site = site_exists_and_belongs_to_program?(site_id, site_title)
+        next unless site
         # validate start date, time and end date, time
-        start_day = row['START DAY'].strip
-        end_day = row['END DAY'].strip
-        start_time = row['START TIME'].strip
-        end_time = row['END TIME'].strip
+        start_day = row['START DATE']&.strip
+        end_day = row['END DATE']&.strip
+        start_time = row['START TIME']&.strip
+        end_time = row['END TIME']&.strip
         next unless valid_start_and_end_time?(start_day, end_day, start_time, end_time)
         # validate the car (if provided) belongs to the unit, has enough seats and is available
-        @number_of_people = row['NUMBER OF PEOPLE'].strip.to_i
+        @number_of_people_on_trip = row['NUMBER OF PEOPLE ON TRIP']&.strip.to_i
         # check if the reservation is recurring (finish_reservation method in reservation_controller)
         recurring = get_recurring_details_from_row(row)
-        @reservation = create_reservation_record(program, site, start_time, end_time, @number_of_people, recurring)
-     
-        car_id = row['CAR ID'].strip
-        car_number = row['CAR NUMBER'].strip
+        @reservation = create_reservation_record(@program, site, @start_time, @end_time, @number_of_people_on_trip, recurring)
+     fail
+        car_id = row['CAR ID']&.strip
+        car_number = row['CAR NUMBER']&.strip
         add_car_to_reservation(car_id, car_number)
-        # next unless car_exists_belongs_to_unit_and_available?(car_id, car_number, number_of_people)
+        # next unless car_exists_belongs_to_unit_and_available?(car_id, car_number, number_of_people_on_trip)
         # validate the driver (if provided) belongs to the program and is valid driver
-        driver = row['DRIVER'].strip
+        driver = row['DRIVER']&.strip
         add_driver_to_reservation(driver)
         # validate the passengers (if provided) belong to the program
-        passengers = row['PASSENGERS'].strip
+        passengers = row['PASSENGERS']&.strip
         add_passengers_to_reservation(passengers)
       end
       # cleanup_removed_items
     }
     task_time = ((total_time.real / 60) % 60).round(2)
-    @log.import_logger.info("***********************Occurrence import completed. Total time: #{task_time} minutes.")
-    @notes << "Occurrence import completed. File: #{@file.original_filename}. Total time: #{task_time} minutes."
+    @log.import_logger.info("*********************** Reservations import completed. Total time: #{task_time} minutes.")
+    @notes << "Reservations import completed. File: #{@file.original_filename}. Total time: #{task_time} minutes."
     @result[:errors] = @errors
     @result[:note] = @notes.reverse # Reverse to maintain order of processing
     return @result
@@ -75,72 +85,52 @@ class ItemImportService
 
   private
 
-  def program_exists_for_unit_and_term?(program_id, program_title, term_name)
-    program = Program.find_by(id: program_id, unit_id: @unit_id)
+  def program_exists_for_unit_and_term?(program_id, program_title, term)
+    program = Program.find_by(id: program_id, unit_id: @unit_id) || Program.find_by(title: program_title, unit_id: @unit_id)
     unless program
-      program = Program.find_by(title: program_title, unit_id: @unit_id)
-      unless program
-        @errors += 1
-        @notes << "Program not found for unit."
-        return false
-      end
+      @errors += 1
+      @notes << "Program ##{program_title} or ##{program_id} not found for unit."
+      return false
     end
-
-    term = Term.find_by(id: term_id)
-    unless term
-      term = Term.find_by(name: term_name)
-      unless term
-        @errors += 1
-        @notes << "Term not found."
-        return false
-      end
-      unless program.term_id == term.id
-        @errors += 1
-        @notes << "Program does not belong to specified term."
-        return false
-      end
+    unless program.term_id == term.id
+      @errors += 1
+      @notes << "Program #{program.title} does not belong to term ##{term.name}."
+      return false
     end
-
-    @current_program = program
-    true
+    return program
   end
 
   def site_exists_and_belongs_to_program?(site_id, site_title)
-    site = Site.find_by(id: site_id, unit_id: @unit_id)
+    site = Site.find_by(id: site_id, unit_id: @unit_id) || Site.find_by(title: site_title, unit_id: @unit_id)
     unless site
-      site = Site.find_by(id: site_title, unit_id: @unit_id)
-      unless
-        @errors += 1
-        @notes << "Site not found for unit."
-        return false
-      end
-    end
-
-    linked = ProgramsSite.exists?(program_id: @current_program&.id, site_id: site.id)
-    unless linked
       @errors += 1
-      @notes << "Site is not linked to program'."
+      @notes << "Site ##{site_title} or ##{site_id} not found for unit."
       return false
     end
 
-    @current_site = site
-    true
+    if @program.sites.include?(site)
+      return site
+    else
+      @errors += 1
+      @notes << "Site ##{site.title} is not added to program ##{@program.title}."
+      return false
+    end
+
   end
 
   def valid_start_and_end_time?(start_day, end_day, start_time, end_time)
     # TODO: Rita checks for daylight savings
     s_combined = "#{start_day} #{start_time}"
     e_combined = "#{end_day} #{end_time}"
-    
     begin
-      s_time = Time.parse(s_combined).to_datetime - 15.minute
+      s_time = s_time = DateTime.strptime(s_combined, "%m/%d/%Y %l:%M %p") - 15.minute
     rescue ArgumentError
       @errors += 1
       @notes << "Invalid time format."
       return false
     end
     begin
-      e_time = Time.parse(e_combined).to_datetime + 15.minute
+      e_time = DateTime.strptime(e_combined, "%m/%d/%Y %l:%M %p") + 15.minute
     rescue ArgumentError
       @errors += 1
       @notes << "Invalid time format for."
@@ -154,7 +144,6 @@ class ItemImportService
     end
 
     @start_time, @end_time = s_time, e_time
-    true
   end
 
   def add_car_to_reservation(car_id, car_number)
@@ -188,7 +177,7 @@ class ItemImportService
       return false
     end
 
-    if number_of_people > car.number_of_seats
+    if number_of_people_on_trip > car.number_of_seats
       @errors += 1
       @notes << "Car #{car.car_number} has not enough seats."
       return false
@@ -234,23 +223,23 @@ class ItemImportService
   end
 
   def add_passengers_to_reservation(passenger_uniqnames)
-    number_of_people = @reservation.number_of_people - 1 # excluding driver
+    number_of_people_on_trip = @reservation.number_of_people_on_trip - 1 # excluding driver
     passengers = passenger_uniqnames.split(',').map(&:strip)
 
     if passenger_uniqnames.blank?
-      @notes << "No passengers specified for reservation ID #{@reservation.id}." if number_of_people.positive?
+      @notes << "No passengers specified for reservation ID #{@reservation.id}." if number_of_people_on_trip.positive?
       return
     end
 
-    number = number_of_people - passengers.size
+    number = number_of_people_on_trip - passengers.size
     case number
     when number > 0
       @notes << "Too few passengers specified for reservation ID #{@reservation.id}. Passengers were added to the reservation"
     when number < 0
-      @notes << "Too many passengers specified for reservation ID #{@reservation.id}. Only the first #{number_of_people} passengers were added to the reservation"
+      @notes << "Too many passengers specified for reservation ID #{@reservation.id}. Only the first #{number_of_people_on_trip} passengers were added to the reservation"
     end
 
-    passengers.take(number_of_people) do |uniqname|
+    passengers.take(number_of_people_on_trip) do |uniqname|
       if student_exists_in_program?(uniqname)
         @reservation.passengers << Student.find_by(uniqname: uniqname, program_id: @program.id)
       elsif manager_exists_in_program?(uniqname)
@@ -303,20 +292,20 @@ class ItemImportService
     @recurring = nil
   end
 
-  def create_reservation_record
+  def create_reservation_record(program, site, start_time, end_time, number_of_people_on_trip, recurring)
     Reservation.create!(
-      program_id: @current_program.id,
-      site_id: @current_site.id,
-      start_time: @start_time,
-      end_time: @end_time,
+      program_id: program.id,
+      site_id: site.id,
+      start_time: start_time,
+      end_time: end_time,
       reserved_by: @user.id,
-      number_of_people: number_of_people,
-      recurring: @recurring,
+      number_of_people_on_trip: number_of_people_on_trip,
+      recurring: recurring
     )
-  rescue => e
-    @errors += 1
-    @notes << "Error creating reservation: #{e.message}"
-    nil
+    rescue => e
+      @errors += 1
+      @notes << "Error creating reservation: #{e.message}"
+      nil
   end
 
 end
