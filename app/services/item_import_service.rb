@@ -23,14 +23,17 @@ class ItemImportService
         # read a row from the CSV file
         # validate the row data
         # is the program exist in the term ?
-        program = row['PROGRAM'].strip
-        term = row["TERM"].strip
-        return unless program_exists_for_unit_and_term?(program, term)
+        program_id = row['PROGRAM ID'].strip
+        program_title = row['PROGRAM TITLE'].strip
+        term_id = row['TERM ID'].strip
+        term_name = row["TERM NAME"].strip
+        return unless program_exists_for_unit_and_term?(program_id, program_name, term_id, term_name)
         # is the unit exist ?
         # does the program belong to the unit ?
         # does the site belongs to the program ?
-        site = row['SITE'].strip
-        return unless site_exists_and_belongs_to_program?(site, program)
+        site_id = row['SITE ID'].strip
+        site_title = row['SITE TITLE'].strip
+        return unless site_exists_and_belongs_to_program?(site_id, site_title)
         # validate start date, time and end date, time
         start_day = row['START DAY'].strip
         end_day = row['END DAY'].strip
@@ -38,9 +41,10 @@ class ItemImportService
         end_time = row['END TIME'].strip
         return unless valid_start_and_end_time?(start_day, end_day, start_time, end_time)
         # validate the car (if provided) belongs to the unit, has enough seats and is available
-        car = row['CAR'].strip
+        car_id = row['CAR ID'].strip
+        car_number = row['CAR NUMBER'].strip
         number_of_people = row['NUMBER OF PEOPLE'].strip
-        return unless car_exists_belongs_to_unit_and_available?(car, number_of_people)
+        return unless car_exists_belongs_to_unit_and_available?(car_id, car_number, number_of_people)
         # validate the driver (if provided) belongs to the program and is valid driver
         driver = row['DRIVER'].strip
         return unless driver_exists_and_valid_for_program?(driver, program)
@@ -70,39 +74,51 @@ class ItemImportService
 
   private
 
-  def program_exists_for_unit_and_term?(program_title, term_name)
-    # TODO: allow both title or id program+term entries
-    program = Program.find_by(title: program_title, unit_id: @unit_id)
+  def program_exists_for_unit_and_term?(program_id, program_title, term_name)
+    program = Program.find_by(id: program_id, unit_id: @unit_id)
     unless program
-      @errors += 1
-      @notes << "Program '#{program_title}' not found for unit #{@unit_id}."
-      return false
+      program = Program.find_by(title: program_title, unit_id: @unit_id)
+      unless program
+        @errors += 1
+        @notes << "Program not found for unit #{@unit_id}."
+        return false
+      end
     end
 
-    term = Term.find_by(name: term_name)
-    unless program.term_id == term.id
-      @errors += 1
-      @notes << "Program '#{program_title}' does not belong to specified term."
-      return false
+    term = Term.find_by(id: term_id)
+    unless term
+      term = Term.find_by(name: term_name)
+      unless term
+        @errors += 1
+        @notes << "Term not found."
+        return false
+      end
+      unless program.term_id == term.id
+        @errors += 1
+        @notes << "Program does not belong to specified term."
+        return false
+      end
     end
 
     @current_program = program
     true
   end
 
-  def site_exists_and_belongs_to_program?(site_title, program_title)
-    # TODO: allow both title or id program+site entries
-    site = Site.find_by(title: site_title, unit_id: @unit_id)
+  def site_exists_and_belongs_to_program?(site_id, site_title)
+    site = Site.find_by(id: site_id, unit_id: @unit_id)
     unless site
-      @errors += 1
-      @notes << "Site '#{site_title}' not found for unit #{@unit_id}."
-      return false
+      site = Site.find_by(id: site_title, unit_id: @unit_id)
+      unless
+        @errors += 1
+        @notes << "Site not found for unit."
+        return false
+      end
     end
 
     linked = ProgramsSite.exists?(program_id: @current_program&.id, site_id: site.id)
     unless linked
       @errors += 1
-      @notes << "Site '#{site_title}' is not linked to program '#{program_title}'."
+      @notes << "Site is not linked to program'."
       return false
     end
 
@@ -140,15 +156,17 @@ class ItemImportService
     true
   end
 
-  def car_exists_belongs_to_unit_and_available?(car_number, number_of_people)
-    # TODO: allow both title or id car entries
+  def car_exists_belongs_to_unit_and_available?(car_id, car_number, number_of_people)
     return true if car_number.blank?
 
-    car = Car.find_by(car_number: car_number, unit_id: @unit_id)
+    car = Car.find_by(id: car_id, unit_id: @unit_id)
     unless car
-      @errors += 1
-      @notes << "Car '#{car_number}' not found or not part of unit #{@unit_id}."
-      return false
+      car = Car.find_by(car_number: car_number, unit_id: @unit_id)
+      unless car
+        @errors += 1
+        @notes << "Car not found or not part of unit #{@unit_id}."
+        return false
+      end
     end
 
     if number_of_people > car.number_of_seats
@@ -157,9 +175,7 @@ class ItemImportService
       return false
     end
 
-    # TODO: make more efficient
-    overlap = car.reservations.where("start_time < ? < end_time OR start_time < ? < end_time", @end_time, @start_time).exists?
-    if overlap
+    if !available?(car, @start_time..@end_time)
       @errors += 1
       @notes << "Car '#{car_number}' is already booked between."
       return false
