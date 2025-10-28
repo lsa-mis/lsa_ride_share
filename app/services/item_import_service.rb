@@ -27,24 +27,29 @@ class ItemImportService
         program_title = row['PROGRAM TITLE'].strip
         term_id = row['TERM ID'].strip
         term_name = row["TERM NAME"].strip
-        return unless program_exists_for_unit_and_term?(program_id, program_name, term_id, term_name)
+        next unless program_exists_for_unit_and_term?(program_id, program_name, term_id, term_name)
         # is the unit exist ?
         # does the program belong to the unit ?
         # does the site belongs to the program ?
         site_id = row['SITE ID'].strip
         site_title = row['SITE TITLE'].strip
-        return unless site_exists_and_belongs_to_program?(site_id, site_title)
+        next unless site_exists_and_belongs_to_program?(site_id, site_title)
         # validate start date, time and end date, time
         start_day = row['START DAY'].strip
         end_day = row['END DAY'].strip
         start_time = row['START TIME'].strip
         end_time = row['END TIME'].strip
-        return unless valid_start_and_end_time?(start_day, end_day, start_time, end_time)
+        next unless valid_start_and_end_time?(start_day, end_day, start_time, end_time)
         # validate the car (if provided) belongs to the unit, has enough seats and is available
+        @number_of_people = row['NUMBER OF PEOPLE'].strip.to_i
+        # check if the reservation is recurring (finish_reservation method in reservation_controller)
+        recurring = get_recurring_details_from_row(row)
+        @reservation = create_reservation_record(program, site, start_time, end_time, @number_of_people, recurring)
+     
         car_id = row['CAR ID'].strip
         car_number = row['CAR NUMBER'].strip
-        number_of_people = row['NUMBER OF PEOPLE'].strip
-        return unless car_exists_belongs_to_unit_and_available?(car_id, car_number, number_of_people)
+        add_car_to_reservation(car_id, car_number)
+        # next unless car_exists_belongs_to_unit_and_available?(car_id, car_number, number_of_people)
         # validate the driver (if provided) belongs to the program and is valid driver
         driver = row['DRIVER'].strip
         add_driver_to_reservation(driver)
@@ -152,33 +157,45 @@ class ItemImportService
     true
   end
 
-  def car_exists_belongs_to_unit_and_available?(car_id, car_number, number_of_people)
-    return true if car_number.blank?
+  def add_car_to_reservation(car_id, car_number)
+    if car_id.blank? && car_number.blank?
+      notes << "No car specified for reservation ID #{@reservation.id}."
+      return
+    end
+    car = car_exists_belongs_to_unit_and_available(car_id, car_number)
+    if car
+      @reservation.update(car_id: car.id)
+    else
+      @notes << "Car not added to reservation ID #{@reservation.id} due to previous errors."
+    end
+  end
+
+  def car_exists_belongs_to_unit_and_available(car_id, car_number)
 
     car = Car.find_by(id: car_id, unit_id: @unit_id)
     unless car
       car = Car.find_by(car_number: car_number, unit_id: @unit_id)
       unless car
         @errors += 1
-        @notes << "Car not found or not part of unit."
+        @notes << "Car #{car_number} or #{car_id} not found or not part of unit."
         return false
       end
     end
 
-    if number_of_people > car.number_of_seats
-      @errors += 1
-      @notes << "Not enough seats."
-      return false
-    end
-
     unless available?(car, @start_time..@end_time)
       @errors += 1
-      @notes << "Car is already booked between."
+      @notes << "Car #{car.car_number} is already booked between."
       return false
     end
 
-    @current_car = car
-    true
+    if number_of_people > car.number_of_seats
+      @errors += 1
+      @notes << "Car #{car.car_number} has not enough seats."
+      return false
+    end
+
+    return car
+  
   end
 
   def add_driver_to_reservation(driver_uniqname)
@@ -190,11 +207,11 @@ class ItemImportService
       student = Student.find_by(uniqname: driver_uniqname, program_id: @reservation.program_id).id
       if student.driver?
         if @reservation.update(driver_id: student)
-          return true
+          return
         else
           @errors += 1
           @notes << "Failed to update reservation ID #{@reservation.id}: assign driver '#{driver_uniqname}'."
-          return false
+          return
         end
       else
         @reservation.passengers << student
@@ -207,7 +224,7 @@ class ItemImportService
         else
           @errors += 1
           @notes << "Failed to to update reservation ID #{@reservation.id}: assign manager driver '#{driver_uniqname}'."
-          return false
+          return
         end
       else
         @reservation.passengers << manager
@@ -233,7 +250,7 @@ class ItemImportService
       @notes << "Too many passengers specified for reservation ID #{@reservation.id}. Only the first #{number_of_people} passengers were added to the reservation"
     end
 
-    passengers.take(number) do |uniqname|
+    passengers.take(number_of_people) do |uniqname|
       if student_exists_in_program?(uniqname)
         @reservation.passengers << Student.find_by(uniqname: uniqname, program_id: @program.id)
       elsif manager_exists_in_program?(uniqname)
@@ -290,19 +307,12 @@ class ItemImportService
     Reservation.create!(
       program_id: @current_program.id,
       site_id: @current_site.id,
-      car_id: @current_car.id,
       start_time: @start_time,
       end_time: @end_time,
       reserved_by: @user.id,
+      number_of_people: number_of_people,
       recurring: @recurring,
-      driver: @current_driver.id
-    ).tap do |res|
-      if @current_passengers.present?
-        @current_passengers.each do |p|
-          ReservationPassenger.create!(reservation_id: res.id, student_id: p.id)
-        end
-      end
-    end
+    )
   rescue => e
     @errors += 1
     @notes << "Error creating reservation: #{e.message}"
