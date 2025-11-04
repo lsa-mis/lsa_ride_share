@@ -55,14 +55,14 @@ class ItemImportService
         # check if the reservation is recurring (finish_reservation method in reservation_controller)
         recurring = get_recurring_details_from_row(row)
         @reservation = create_reservation_record(@program, site, @start_time, @end_time, @number_of_people_on_trip, recurring)
-     fail
-        car_id = row['CAR ID']&.strip
-        car_number = row['CAR NUMBER']&.strip
-        add_car_to_reservation(car_id, car_number)
+        # car_id = row['CAR ID']&.strip
+        # car_number = row['CAR NUMBER']&.strip
+        # add_car_to_reservation(car_id, car_number)
         # next unless car_exists_belongs_to_unit_and_available?(car_id, car_number, number_of_people_on_trip)
         # validate the driver (if provided) belongs to the program and is valid driver
         driver = row['DRIVER']&.strip
         add_driver_to_reservation(driver)
+        fail
         # validate the passengers (if provided) belong to the program
         passengers = row['PASSENGERS']&.strip
         add_passengers_to_reservation(passengers)
@@ -193,9 +193,9 @@ class ItemImportService
       return
     end
     if student_exists_in_program?(driver_uniqname)
-      student = Student.find_by(uniqname: driver_uniqname, program_id: @reservation.program_id).id
+      student = Student.find_by(uniqname: driver_uniqname, program_id: @reservation.program_id)
       if student.driver?
-        if @reservation.update(driver_id: student)
+        if @reservation.update(driver_id: student.id)
           return
         else
           @errors += 1
@@ -210,6 +210,7 @@ class ItemImportService
       manager = Manager.find_by(uniqname: driver_uniqname)
       if manager.driver?
         if @reservation.update(driver_manager_id: manager.id)
+          return
         else
           @errors += 1
           @notes << "Failed to to update reservation ID #{@reservation.id}: assign manager driver '#{driver_uniqname}'."
