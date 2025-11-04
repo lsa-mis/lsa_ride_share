@@ -275,7 +275,7 @@ class ItemImportService
     return false if uniqname.blank?
     unless @program.students.pluck(:uniqname).include?(uniqname)
       @errors += 1
-      @notes << "Student '#{uniqname}' is not enrolled in program '#{@program.id}'."
+      @notes << "Student '#{uniqname}' is not enrolled in program '#{@program.id}'. Will check managers"
       return false
     end
     true
@@ -283,8 +283,7 @@ class ItemImportService
 
   def manager_exists_in_program?(uniqname)
     return false if uniqname.blank?
-    manager = Manager.find_by(uniqname: uniqname)
-    unless manager && @program.all_managers.include?(manager)
+    unless @program.all_managers.include?(uniqname)
       @errors += 1
       @notes << "Manager '#{uniqname}' is not part of program '#{@program.id}'."
       return false
