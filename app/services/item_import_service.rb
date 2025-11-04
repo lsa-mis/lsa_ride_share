@@ -123,23 +123,44 @@ class ItemImportService
     s_combined = "#{start_day} #{start_time}"
     e_combined = "#{end_day} #{end_time}"
     begin
-      s_time = DateTime.strptime(s_combined, "%m/%d/%Y %l:%M %p") - 15.minute
+      s_time = Time.zone.strptime(s_combined, "%m/%d/%Y %l:%M %p").to_datetime - 15.minutes
     rescue ArgumentError
       @errors += 1
       @notes << "Invalid time format for start time."
       return false
     end
     begin
-      e_time = DateTime.strptime(e_combined, "%m/%d/%Y %l:%M %p") + 15.minute
+      e_time = Time.zone.strptime(e_combined, "%m/%d/%Y %l:%M %p").to_datetime + 15.minutes
     rescue ArgumentError
       @errors += 1
       @notes << "Invalid time format for end time."
       return false
     end
 
+    # validate start_time and end_time comparing to Unit preferences: reservation_time_begin and reservation_time_end
+    reservation_time_begin = UnitPreference.find_by(name: "reservation_time_begin", unit_id: @unit_id).value
+    reservation_time_end = UnitPreference.find_by(name: "reservation_time_end", unit_id: @unit_id).value
+    
+    # Parse time strings to Time objects for comparison
+    start_time_parsed = Time.strptime(start_time, "%l:%M %p")
+    end_time_parsed = Time.strptime(end_time, "%l:%M %p")
+    reservation_begin_parsed = Time.strptime(reservation_time_begin, "%l:%M %p")
+    reservation_end_parsed = Time.strptime(reservation_time_end, "%l:%M %p")
+    
+    if start_time_parsed < reservation_begin_parsed
+      @errors += 1
+      @notes << "Start time #{start_time} is before allowed reservation time #{reservation_time_begin} for unit."
+      return false
+    end
+    if end_time_parsed > reservation_end_parsed
+      @errors += 1
+      @notes << "End time #{end_time} is after allowed reservation time #{reservation_time_end} for unit."
+      return false
+    end
+
     if e_time < s_time
       @errors += 1
-      @notes << "End time is too close to start time."
+      @notes << "End time #{end_time} is too close to start time #{start_time}."
       return false
     end
 
