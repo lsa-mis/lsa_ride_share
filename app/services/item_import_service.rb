@@ -55,6 +55,7 @@ class ItemImportService
         # check if the reservation is recurring (finish_reservation method in reservation_controller)
         recurring = get_recurring_details_from_row(row)
         @reservation = create_reservation_record(@program, site, @start_time, @end_time, @number_of_people_on_trip, recurring)
+
         # car_id = row['CAR ID']&.strip
         # car_number = row['CAR NUMBER']&.strip
         # add_car_to_reservation(car_id, car_number)
@@ -62,7 +63,6 @@ class ItemImportService
         # validate the driver (if provided) belongs to the program and is valid driver
         driver = row['DRIVER']&.strip
         add_driver_to_reservation(driver)
-        fail
         # validate the passengers (if provided) belong to the program
         passengers = row['PASSENGERS']&.strip
         add_passengers_to_reservation(passengers)
@@ -224,28 +224,28 @@ class ItemImportService
   end
 
   def add_passengers_to_reservation(passenger_uniqnames)
-    number_of_people_on_trip = @reservation.number_of_people_on_trip - 1 # excluding driver
-    passengers = passenger_uniqnames.split(',').map(&:strip)
+    number_of_passengers = (@reservation.driver_id.present? || @reservation.driver_manager_id.present?) ? @reservation.number_of_people_on_trip - 1 : @reservation.number_of_people_on_trip
 
     if passenger_uniqnames.blank?
-      @notes << "No passengers specified for reservation ID #{@reservation.id}." if number_of_people_on_trip.positive?
+      @notes << "No passengers specified for reservation ID #{@reservation.id}." if number_of_passengers.positive?
       return
     end
+    passengers = passenger_uniqnames.split(',').map(&:strip)
 
-    number = number_of_people_on_trip - passengers.size
-    case number
-    when number > 0
-      @notes << "Too few passengers specified for reservation ID #{@reservation.id}. Passengers were added to the reservation"
-    when number < 0
-      @notes << "Too many passengers specified for reservation ID #{@reservation.id}. Only the first #{number_of_people_on_trip} passengers were added to the reservation"
-    end
-
-    passengers.take(number_of_people_on_trip) do |uniqname|
+    passengers.take(number_of_passengers).each do |uniqname|
       if student_exists_in_program?(uniqname)
         @reservation.passengers << Student.find_by(uniqname: uniqname, program_id: @program.id)
       elsif manager_exists_in_program?(uniqname)
         @reservation.passengers << Manager.find_by(uniqname: uniqname)
       end
+    end
+
+    number = number_of_passengers - passengers.size
+    case number
+    when number > 0
+      @notes << "Too few passengers specified for reservation ID #{@reservation.id}. Passengers were added to the reservation"
+    when number < 0
+      @notes << "Too many passengers specified for reservation ID #{@reservation.id}. Only the first #{number_of_passengers} passengers were added to the reservation"
     end
     
   end
@@ -268,23 +268,6 @@ class ItemImportService
       @notes << "Manager '#{uniqname}' is not part of program '#{@program.id}'."
       return false
     end
-    true
-  end
-
-  def passengers_exist_and_valid_for_program?(passengers, program)
-    return true if passenger_uniqnames.blank?
-
-    uniqnames = passenger_uniqnames.split(',').map(&:strip)
-    # TODO: Rita checks for managers as well
-    invalid = uniqnames.reject { |u| Student.exists?(uniqname: u, program_id: @current_program&.id) }
-
-    unless invalid.empty?
-      @errors += 1
-      @notes << "Invalid passengers for program."
-      return false
-    end
-
-    @current_passengers = Student.where(uniqname: uniqnames, program_id: @current_program.id)
     true
   end
 
