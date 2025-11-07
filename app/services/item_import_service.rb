@@ -245,8 +245,12 @@ class ItemImportService
   end
 
   def add_passengers_to_reservation(passenger_uniqnames)
+    # count number of available passengers spots
     number_of_passengers = (@reservation.driver_id.present? || @reservation.driver_manager_id.present?) ? @reservation.number_of_people_on_trip - 1 : @reservation.number_of_people_on_trip
-    # to do: if a driver was added as passenger, reduce number_of_passengers by 1
+    # if a driver was added as passenger, reduce number_of_passengers by 1
+    if @reservation.passengers.count > 0
+      number_of_passengers -= @reservation.passengers.count
+    end
     if passenger_uniqnames.blank?
       @notes << "No passengers specified for reservation ID #{@reservation.id}." if number_of_passengers.positive?
       return
