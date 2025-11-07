@@ -73,7 +73,7 @@ class ItemImportService
     @log.import_logger.info("*********************** Reservations import completed. Total time: #{task_time} minutes.")
     @notes << "Reservations import completed. File: #{@file.original_filename}. Total time: #{task_time} minutes."
     @result[:errors] = @errors
-    @result[:note] = @notes.reverse # Reverse to maintain order of processing
+    @result[:note] = @notes
     return @result
     # rescue => e
     #   @log.import_logger.error("***********************Error importing Item: #{e.message}")
@@ -246,13 +246,14 @@ class ItemImportService
 
   def add_passengers_to_reservation(passenger_uniqnames)
     number_of_passengers = (@reservation.driver_id.present? || @reservation.driver_manager_id.present?) ? @reservation.number_of_people_on_trip - 1 : @reservation.number_of_people_on_trip
-
+    # to do: if a driver was added as passenger, reduce number_of_passengers by 1
     if passenger_uniqnames.blank?
       @notes << "No passengers specified for reservation ID #{@reservation.id}." if number_of_passengers.positive?
       return
     end
     passengers = passenger_uniqnames.split(',').map(&:strip)
 
+    # check that this loop works for all possible cases
     passengers.take(number_of_passengers).each do |uniqname|
       if student_exists_in_program?(uniqname)
         @reservation.passengers << Student.find_by(uniqname: uniqname, program_id: @program.id)
