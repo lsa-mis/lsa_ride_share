@@ -86,6 +86,7 @@ class Reservation < ApplicationRecord
   end
 
   def check_number_of_people_on_trip
+    return unless self.car.present?
     if self.number_of_people_on_trip > self.car.number_of_seats
         errors.add(:number_of_people_on_trip, "can't be larger than the number of seats in the car.")
     end
