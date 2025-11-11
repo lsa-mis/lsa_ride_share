@@ -293,7 +293,25 @@ class ItemImportService
 
   def get_recurring_details_from_row(row)
     # TODO: Implement logic to extract recurring details from the row
-    @recurring = nil
+    recurring = row['RECURRING?']&.strip
+    if recurring == 'No' || recurring.blank?
+      @recurring = nil
+    else
+      frequency = row['FREQUENCY']
+      case frequency
+      when 'Daily'
+        rule_type = "IceCube::DailyRule"
+      when 'Weekly'
+        rule_type = "IceCube::WeeklyRule"
+      when 'Monthly'
+        rule_type = "IceCube::MonthlyRule"
+      else
+        @errors += 1
+        @notes << "Invalid frequency '#{frequency}' for recurring reservation."
+        recurring = nil
+      end
+    end
+    recurring
   end
 
   def create_reservation_record(program, site, start_time, end_time, number_of_people_on_trip, recurring)
