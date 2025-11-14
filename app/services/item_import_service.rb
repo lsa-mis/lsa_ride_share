@@ -54,17 +54,23 @@ class ItemImportService
         @number_of_people_on_trip = row['NUMBER OF PEOPLE ON TRIP']&.strip.to_i
         # check if the reservation is recurring (finish_reservation method in reservation_controller)
         recurring = get_recurring_details_from_row(row)
-        @reservation = create_reservation_record(@program, site, @start_time, @end_time, @number_of_people_on_trip, recurring)
-
-        car_id = row['CAR ID']&.strip
-        car_number = row['CAR NUMBER']&.strip
-        next unless car_exists_belongs_to_unit_and_available?(car_id, car_number, number_of_people_on_trip)
-
+        @reservation = create_reservation_record(@program, site, @start_time, @end_time, @number_of_people_on_trip, @until_date, recurring)
+        # car_id = row['CAR ID']&.strip
+        # car_number = row['CAR NUMBER']&.strip
+        # add_car_to_reservation(car_id, car_number)
+        # next unless car_exists_belongs_to_unit_and_available?(car_id, car_number, number_of_people_on_trip)
+        # validate the driver (if provided) belongs to the program and is valid driver
         driver = row['DRIVER']&.strip
         add_driver_to_reservation(driver)
         # validate the passengers (if provided) belong to the program
         passengers = row['PASSENGERS']&.strip
         add_passengers_to_reservation(passengers)
+        if recurring.present?
+          conflict_days_message = create_recurring_reservations(@reservation, recurring, row)
+          if conflict_days_message.present?
+            @notes << "Recurring reservation ID #{@reservation.id} has conflicts on the following days: #{conflict_days_message}"
+          end
+        end
       end
       # cleanup_removed_items
     }
@@ -294,40 +300,75 @@ class ItemImportService
   def get_recurring_details_from_row(row)
     # TODO: Implement logic to extract recurring details from the row
     recurring = row['RECURRING?']&.strip
-    if recurring == 'No' || recurring.blank?
-      @recurring = nil
-    else
-      frequency = row['FREQUENCY']
-      case frequency
-      when 'Daily'
-        rule_type = "IceCube::DailyRule"
-      when 'Weekly'
-        rule_type = "IceCube::WeeklyRule"
-      when 'Monthly'
-        rule_type = "IceCube::MonthlyRule"
-      else
-        @errors += 1
-        @notes << "Invalid frequency '#{frequency}' for recurring reservation."
-        recurring = nil
-      end
+    unless recurring == 'Yes'
+      @until_date = nil
+      return nil
     end
-    recurring
+    interval = row['REPEAT']&.strip.to_i
+    frequency = row['FREQUENCY']
+    case frequency
+    when 'Daily'
+      rule_type = "IceCube::DailyRule"
+      validations = {}
+    when 'Weekly'
+      rule_type = "IceCube::WeeklyRule"
+      days_string = row['IF WEEKLY']
+      days_numbers = convert_days_to_numbers(days_string)
+      validations = {:day=>days_numbers}
+    when 'Monthly'
+      rule_type = "IceCube::MonthlyRule"
+      days_of_month = row['IF MONTHLY']&.split(',').map(&:to_i)
+      validations = {:day_of_month=>days_of_month}
+    else
+      @errors += 1
+      @notes << "Invalid frequency '#{frequency}' for recurring reservation."
+      recurring = nil
+    end
+    @until_date = row['UNTIL DATE']&.strip.to_date
+    unless @until_date.present?
+      @until_date = max_day_for_reservation(@unit_id)
+    end
+    recurring = {:validations=>validations, :rule_type=>rule_type, :interval=>interval}
   end
 
-  def create_reservation_record(program, site, start_time, end_time, number_of_people_on_trip, recurring)
-    Reservation.create!(
+  def convert_days_to_numbers(days_string)
+    return [] if days_string.blank?
+    
+    day_mapping = {
+      'sunday' => 0, 'monday' => 1, 'tuesday' => 2, 'wednesday' => 3,
+      'thursday' => 4, 'friday' => 5, 'saturday' => 6
+    }
+    
+    days_string.split(',').map(&:strip).map(&:downcase).map { |day| day_mapping[day] }.compact
+  end
+
+  def create_reservation_record(program, site, start_time, end_time, number_of_people_on_trip, until_date, recurring)
+    reservation = Reservation.new(
       program_id: program.id,
       site_id: site.id,
       start_time: start_time,
       end_time: end_time,
       reserved_by: @user.id,
       number_of_people_on_trip: number_of_people_on_trip,
+      until_date: until_date,
       recurring: recurring
     )
-    rescue => e
+    unless reservation.save
       @errors += 1
-      @notes << "Error creating reservation: #{e.message}"
-      nil
+      @notes << "Error creating reservation: #{reservation.errors.full_messages.join(', ')}"
+      return nil
+    end
+    return reservation
+    # rescue => e
+    #   @errors += 1
+    #   @notes << "Error creating reservation: #{e.message}"
+    #   nil
+  end
+
+  def create_recurring_reservations(reservation, recurring, row)
+    recurring_reservation = RecurringReservation.new(reservation)
+    conflict_days_message = recurring_reservation.create_all
+    return conflict_days_message
   end
 
 end
