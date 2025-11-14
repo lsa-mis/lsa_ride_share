@@ -492,6 +492,7 @@ module ApplicationHelper
   end
 
   def available?(car, range)
+    return true unless car.present?
     # if car is avalable for the time range
     range_begin = range.begin + 1.minute
     range_end = range.end - 1.minute
