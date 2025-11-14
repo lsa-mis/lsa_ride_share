@@ -56,11 +56,10 @@ class ItemImportService
         recurring = get_recurring_details_from_row(row)
         @reservation = create_reservation_record(@program, site, @start_time, @end_time, @number_of_people_on_trip, recurring)
 
-        # car_id = row['CAR ID']&.strip
-        # car_number = row['CAR NUMBER']&.strip
-        # add_car_to_reservation(car_id, car_number)
-        # next unless car_exists_belongs_to_unit_and_available?(car_id, car_number, number_of_people_on_trip)
-        # validate the driver (if provided) belongs to the program and is valid driver
+        car_id = row['CAR ID']&.strip
+        car_number = row['CAR NUMBER']&.strip
+        next unless car_exists_belongs_to_unit_and_available?(car_id, car_number, number_of_people_on_trip)
+
         driver = row['DRIVER']&.strip
         add_driver_to_reservation(driver)
         # validate the passengers (if provided) belong to the program
@@ -167,21 +166,11 @@ class ItemImportService
     @start_time, @end_time = s_time, e_time
   end
 
-  def add_car_to_reservation(car_id, car_number)
-    if car_id.blank? && car_number.blank?
-      notes << "No car specified for reservation ID #{@reservation.id}."
-      return
-    end
-    car = car_exists_belongs_to_unit_and_available(car_id, car_number)
-    if car
-      @reservation.update(car_id: car.id)
-    else
-      @notes << "Car not added to reservation ID #{@reservation.id} due to previous errors."
-    end
-  end
-
-  def car_exists_belongs_to_unit_and_available(car_id, car_number)
-
+  def car_exists_belongs_to_unit_and_available(car_id, car_number, number_of_people_on_trip)
+    # 1. check if car exists (id, car_number)
+    # 2. check car time available
+    # 3. check car available
+    # 4. check number of people
     car = Car.find_by(id: car_id, unit_id: @unit_id)
     unless car
       car = Car.find_by(car_number: car_number, unit_id: @unit_id)
@@ -190,6 +179,12 @@ class ItemImportService
         @notes << "Car #{car_number} or #{car_id} not found or not part of unit."
         return false
       end
+    end
+
+    unless car.status == "available"
+      @errors += 1
+      @notes << "Car #{car.car_number} is not available."
+      return false
     end
 
     unless available?(car, @start_time..@end_time)
