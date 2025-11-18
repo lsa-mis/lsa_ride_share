@@ -302,7 +302,6 @@ class ReservationsController < ApplicationController
 
   # POST /reservations or /reservations.json
   def create
-    fail
     @reservation = Reservation.new(reservation_params)
     if params[:car_id].present?
       @reservation.car_id = params[:car_id]
