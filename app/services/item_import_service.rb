@@ -2,7 +2,8 @@ require 'csv'
 require 'set'
 
 class ItemImportService
-  attr_reader :file, :collection_id
+  attr_reader :file, :unit_id, :user
+  include ApplicationHelper
 
   def initialize(file, unit_id, user)
     @file = file
@@ -54,11 +55,10 @@ class ItemImportService
         @number_of_people_on_trip = row['NUMBER OF PEOPLE ON TRIP']&.strip.to_i
         # check if the reservation is recurring (finish_reservation method in reservation_controller)
         recurring = get_recurring_details_from_row(row)
-        @reservation = create_reservation_record(@program, site, @start_time, @end_time, @number_of_people_on_trip, @until_date, recurring)
-        # car_id = row['CAR ID']&.strip
-        # car_number = row['CAR NUMBER']&.strip
-        # add_car_to_reservation(car_id, car_number)
-        # next unless car_exists_belongs_to_unit_and_available?(car_id, car_number, number_of_people_on_trip)
+        car_id = row['CAR ID']&.strip
+        car_number = row['CAR NUMBER']&.strip
+        car = car_exists_belongs_to_unit_and_available(car_id, car_number, @number_of_people_on_trip)
+        @reservation = create_reservation_record(@program, site, car, @start_time, @end_time, @number_of_people_on_trip, @until_date, recurring)
         # validate the driver (if provided) belongs to the program and is valid driver
         driver = row['DRIVER']&.strip
         add_driver_to_reservation(driver)
@@ -183,26 +183,26 @@ class ItemImportService
       unless car
         @errors += 1
         @notes << "Car #{car_number} or #{car_id} not found or not part of unit."
-        return false
+        return nil
       end
     end
 
     unless car.status == "available"
       @errors += 1
-      @notes << "Car #{car.car_number} is not available."
-      return false
+      @notes << "Car #{car.car_number} status is not available."
+      return nil
     end
 
     unless available?(car, @start_time..@end_time)
       @errors += 1
-      @notes << "Car #{car.car_number} is already booked between."
-      return false
+      @notes << "Car #{car.car_number} is already booked between #{@start_time} and #{@end_time}."
+      return nil
     end
 
     if number_of_people_on_trip > car.number_of_seats
       @errors += 1
       @notes << "Car #{car.car_number} has not enough seats."
-      return false
+      return nil
     end
 
     return car
@@ -342,10 +342,12 @@ class ItemImportService
     days_string.split(',').map(&:strip).map(&:downcase).map { |day| day_mapping[day] }.compact
   end
 
-  def create_reservation_record(program, site, start_time, end_time, number_of_people_on_trip, until_date, recurring)
+  def create_reservation_record(program, site, car, start_time, end_time, number_of_people_on_trip, until_date, recurring)
+    car_id = car.present? ? car.id : nil
     reservation = Reservation.new(
       program_id: program.id,
       site_id: site.id,
+      car_id: car_id,
       start_time: start_time,
       end_time: end_time,
       reserved_by: @user.id,
