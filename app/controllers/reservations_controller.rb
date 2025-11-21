@@ -73,9 +73,9 @@ class ReservationsController < ApplicationController
 
     #TODO: update here
     # item_result = {errors:0, note: []}
-    item_result = ItemImportService.new(upload_file, unit_id, current_user).call
+    item_result = ReservationImportService.new(upload_file, unit_id, current_user).call
     fail
-    create_import_log_record(item_result, collection_id, 'Item')
+    create_import_log_record(item_result)
     errors += item_result[:errors]
 
     if errors > 0
@@ -85,6 +85,7 @@ class ReservationsController < ApplicationController
       flash[:notice] = "Import finished successfully."
       flash[:notice_no_timeout] = true  # Add flag to disable timeout
     end
+    # send email to the admin with the import results
     redirect_to request.referer
   end
 

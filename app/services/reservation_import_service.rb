@@ -1,7 +1,7 @@
 require 'csv'
 require 'set'
 
-class ItemImportService
+class ReservationImportService
   attr_reader :file, :unit_id, :user
   include ApplicationHelper
 
@@ -71,6 +71,7 @@ class ItemImportService
             @notes << "Recurring reservation ID #{@reservation.id} has conflicts on the following days: #{conflict_days_message}"
           end
         end
+        # send confirmation emails
       end
       # cleanup_removed_items
     }
