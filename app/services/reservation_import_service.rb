@@ -54,26 +54,30 @@ class ReservationImportService
         # validate the car (if provided) belongs to the unit, has enough seats and is available
         @number_of_people_on_trip = row['NUMBER OF PEOPLE ON TRIP']&.strip.to_i
         # check if the reservation is recurring (finish_reservation method in reservation_controller)
-        recurring = get_recurring_details_from_row(row)
+        recurring_data = get_recurring_details_from_row(row)
         car_id = row['CAR ID']&.strip
         car_number = row['CAR NUMBER']&.strip
         car = car_exists_belongs_to_unit_and_available(car_id, car_number, @number_of_people_on_trip)
-        @reservation = create_reservation_record(@program, site, car, @start_time, @end_time, @number_of_people_on_trip, @until_date, recurring)
+        @reservation = create_reservation_record(@program, site, car, @start_time, @end_time, @number_of_people_on_trip, @until_date, recurring_data)
         # validate the driver (if provided) belongs to the program and is valid driver
         driver = row['DRIVER']&.strip
         add_driver_to_reservation(driver)
         # validate the passengers (if provided) belong to the program
         passengers = row['PASSENGERS']&.strip
         add_passengers_to_reservation(passengers)
-        if recurring.present?
-          conflict_days_message = create_recurring_reservations(@reservation, recurring, row)
+        recurring = false
+        conflict_days_message = nil
+        if recurring_data.present?
+          conflict_days_message = create_recurring_reservations(@reservation, recurring_data, row)
+          recurring = true
           if conflict_days_message.present?
             @notes << "Recurring reservation ID #{@reservation.id} has conflicts on the following days: #{conflict_days_message}"
           end
         end
         # send confirmation emails
+        ReservationMailer.with(reservation: @reservation, user: @user, recurring: recurring).car_reservation_confirmation(conflict_days_message).deliver_now
+        ReservationMailer.with(reservation: @reservation, user: @user, recurring: recurring).car_reservation_created(conflict_days_message).deliver_now
       end
-      # cleanup_removed_items
     }
     task_time = ((total_time.real / 60) % 60).round(2)
     @log.import_logger.info("*********************** Reservations import completed. Total time: #{task_time} minutes.")
