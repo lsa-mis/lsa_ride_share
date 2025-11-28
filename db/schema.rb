@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_06_190533) do
+ActiveRecord::Schema[7.1].define(version: 2025_11_28_223849) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -124,6 +124,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_06_190533) do
     t.string "title"
     t.index ["term_id"], name: "index_faculty_surveys_on_term_id"
     t.index ["unit_id"], name: "index_faculty_surveys_on_unit_id"
+  end
+
+  create_table "import_reservation_logs", force: :cascade do |t|
+    t.datetime "date"
+    t.string "user"
+    t.integer "unit_id"
+    t.string "status"
+    t.string "note", default: [], array: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "mailer_subscriptions", force: :cascade do |t|
