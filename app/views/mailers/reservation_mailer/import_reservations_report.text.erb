@@ -1,0 +1,13 @@
+
+Reservations were imported from a CSV file.
+<% errors = @import_result[:errors] %>
+<% if errors > 0 %>
+  Import finished with <%= "#{errors}" %> error(s).
+  <% @import_result[:note].each do |note_line| %>
+    <%= note_line %>
+  <% end %>
+<% else %>
+  Import finished successfully
+<% end %>
+
+Visit <%= link_to "LSA RideShare", all_root_url %> to view, modify, or cancel reservations.
