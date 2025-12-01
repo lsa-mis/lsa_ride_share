@@ -125,16 +125,16 @@
         <div class="">
           <% if (is_admin? || date >= Date.today) && @unit_id.present? %>
             <%= link_to new_reservation_path(:unit_id => @unit_id, :day_start => date), data: {turbo_frame: "_top"} do %>
-              <i class="fa fa-plus" aria-hidden="true"></i>
-              <span class="tertiary_button -m-4">
+              <div class="tertiary_button -m-4">
+                <i class="fa fa-plus" aria-hidden="true"></i>
                 One Day Reservation
-              </span>
+              </div>
             <% end %>
             <%= link_to new_long_reservation_path(:unit_id => @unit_id, :day_start => date), data: {turbo_frame: "_top"} do %>
-              <i class="fa fa-plus" aria-hidden="true"></i>
-              <span class="tertiary_button -m-4">
+              <div class="tertiary_button -m-4">
+                <i class="fa fa-plus" aria-hidden="true"></i>
                 Overnight Reservation
-              </span>
+              </div>
             <% end %>
           <% end %>
         </div>
