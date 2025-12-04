@@ -273,10 +273,9 @@ class ReservationImportService
     end
 
     number = number_of_passengers - passengers.size
-    case number
-    when number > 0
+    if number > 0
       @notes << "Too few passengers specified for reservation ID #{@reservation.id}. Passengers were added to the reservation"
-    when number < 0
+    elsif number < 0
       @notes << "Too many passengers specified for reservation ID #{@reservation.id}. Only the first #{number_of_passengers} passengers were added to the reservation"
     end
     
