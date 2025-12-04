@@ -285,7 +285,7 @@ class ReservationImportService
     return false if uniqname.blank?
     unless @program.students.pluck(:uniqname).include?(uniqname)
       @errors += 1
-      @notes << "Student '#{uniqname}' is not enrolled in program '#{@program.id}'. Will check managers"
+      @notes << "Student '#{uniqname}' is not enrolled in program '#{@program.id} - #{@program.title}'. Will check managers"
       return false
     end
     true
@@ -295,7 +295,7 @@ class ReservationImportService
     return false if uniqname.blank?
     unless @program.all_managers.include?(uniqname)
       @errors += 1
-      @notes << "Manager '#{uniqname}' is not part of program '#{@program.id}'."
+      @notes << "Manager '#{uniqname}' is not part of program '#{@program.id} - #{@program.title}'."
       return false
     end
     true
