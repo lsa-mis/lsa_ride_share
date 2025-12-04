@@ -240,7 +240,7 @@ class ReservationImportService
           return
         else
           @errors += 1
-          @notes << "Failed to to update reservation ID #{@reservation.id}: assign manager driver '#{driver_uniqname}'."
+          @notes << "Failed to update reservation ID #{@reservation.id}: assign manager driver '#{driver_uniqname}'."
           return
         end
       else
