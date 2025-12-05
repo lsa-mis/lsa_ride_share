@@ -328,7 +328,18 @@ class ReservationImportService
       @notes << "Invalid frequency '#{frequency}' for recurring reservation."
       recurring = nil
     end
-    @until_date = row['UNTIL DATE']&.strip.to_date
+    until_date_str = row['UNTIL DATE']&.strip
+    if until_date_str.present?
+      begin
+        @until_date = Date.strptime(until_date_str, "%m/%d/%Y")
+      rescue ArgumentError
+        @until_date = nil
+        @errors += 1
+        @notes << "Invalid UNTIL DATE format: '#{until_date_str}'. Expected MM/DD/YYYY."
+      end
+    else
+      @until_date = nil
+    end
     unless @until_date.present?
       @until_date = max_day_for_reservation(@unit_id)
     end
