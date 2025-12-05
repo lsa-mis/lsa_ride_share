@@ -43,7 +43,7 @@ class ReservationImportService
         # does the site belongs to the program ?
         site_id = row['SITE ID']&.strip
         site_title = row['SITE TITLE']&.strip
-        site = site_exists_and_belongs_to_program?(site_id, site_title)
+        site = valid_site_for_program(site_id, site_title)
         next unless site
         # validate start date, time and end date, time
         start_day = row['START DATE']&.strip
@@ -105,7 +105,7 @@ class ReservationImportService
     return program
   end
 
-  def site_exists_and_belongs_to_program?(site_id, site_title)
+  def valid_site_for_program(site_id, site_title)
     site = Site.find_by(id: site_id, unit_id: @unit_id) || Site.find_by(title: site_title, unit_id: @unit_id)
     unless site
       @errors += 1
