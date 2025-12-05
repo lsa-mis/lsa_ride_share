@@ -1,7 +1,7 @@
 class ReservationMailer < ApplicationMailer
-  before_action :set_reservation, except: %i[ to_selected_reservations_copy_to_admin ]
-  before_action :set_driver_name, except: %i[ to_selected_reservations_copy_to_admin ]
-  before_action :set_passengers, except: %i[ to_selected_reservations_copy_to_admin ]
+  before_action :set_reservation, except: %i[ to_selected_reservations_copy_to_admin import_reservations_report ]
+  before_action :set_driver_name, except: %i[ to_selected_reservations_copy_to_admin import_reservations_report ]
+  before_action :set_passengers, except: %i[ to_selected_reservations_copy_to_admin import_reservations_report ]
   include MailerHelper
 
   def car_reservation_created(conflict_days_message = " ")
@@ -164,6 +164,13 @@ class ReservationMailer < ApplicationMailer
     mail(to: unit_email, subject: subject)
   end
 
+  def import_reservations_report
+    @import_result = params[:import_result]
+    unit = Unit.find(params[:unit_id])
+    user = params[:user]
+    unit_email = unit.unit_preferences.find_by(name: "notification_email").value.presence || "lsa-rideshare-admins@umich.edu"
+    mail(to: unit_email, subject: 'Reservation Import Report for unit: ' + unit.name)
+  end
   private 
 
   def set_reservation
