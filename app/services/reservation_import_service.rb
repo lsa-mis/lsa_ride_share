@@ -94,12 +94,12 @@ class ReservationImportService
     program = Program.find_by(id: program_id, unit_id: @unit_id) || Program.find_by(title: program_title, unit_id: @unit_id)
     unless program
       @errors += 1
-      @notes << "Program ##{program_title} or ##{program_id} not found for unit."
+      @notes << "Program #{program_title} or #{program_id} not found for unit."
       return false
     end
     unless program.term_id == term.id
       @errors += 1
-      @notes << "Program #{program.title} does not belong to term ##{term.name}."
+      @notes << "Program #{program.title} does not belong to term #{term.name}."
       return false
     end
     return program
@@ -109,7 +109,7 @@ class ReservationImportService
     site = Site.find_by(id: site_id, unit_id: @unit_id) || Site.find_by(title: site_title, unit_id: @unit_id)
     unless site
       @errors += 1
-      @notes << "Site ##{site_title} or ##{site_id} not found for unit."
+      @notes << "Site #{site_title} or #{site_id} not found for unit."
       return false
     end
 
@@ -117,7 +117,7 @@ class ReservationImportService
       return site
     else
       @errors += 1
-      @notes << "Site ##{site.title} is not added to program ##{@program.title}."
+      @notes << "Site #{site.title} is not added to program #{@program.title}."
       return false
     end
 
