@@ -22,11 +22,6 @@
             Overnight Reservation
           </span>
         <% end %>
-        <%= link_to import_reservations_path(:unit_id => @unit_id) do %>
-          <span class="secondary_blue_button">
-            Import Reservations
-          </span>
-        <% end %>
         <div class="d-flex flex-column flex-sm-row flex-wrap gap-2">
         <h3 class="me-5">Import Files</h3>
         <%= form_tag import_reservations_path, 
