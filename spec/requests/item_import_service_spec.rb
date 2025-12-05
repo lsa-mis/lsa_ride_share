@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe ItemImportService, type: :service do
+RSpec.describe ReservationImportService, type: :service do
   let(:user) { create(:user) }
   let(:unit) { create(:unit) }
   let(:term) { create(:term) }
