@@ -57,7 +57,7 @@ class ReservationImportService
         recurring_data = get_recurring_details_from_row(row)
         car_id = row['CAR ID']&.strip
         car_number = row['CAR NUMBER']&.strip
-        car = car_exists_belongs_to_unit_and_available(car_id, car_number, @number_of_people_on_trip)
+        car = valid_car_for_reservation(car_id, car_number, @number_of_people_on_trip)
         @reservation = create_reservation_record(@program, site, car, @start_time, @end_time, @number_of_people_on_trip, @until_date, recurring_data)
         # validate the driver (if provided) belongs to the program and is valid driver
         driver = row['DRIVER']&.strip
@@ -171,7 +171,7 @@ class ReservationImportService
     @start_time, @end_time = s_time, e_time
   end
 
-  def car_exists_belongs_to_unit_and_available(car_id, car_number, number_of_people_on_trip)
+  def valid_car_for_reservation(car_id, car_number, number_of_people_on_trip)
     # 1. check if car exists (id, car_number)
     # 2. check car time available
     # 3. check car available
