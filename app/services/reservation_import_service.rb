@@ -85,12 +85,7 @@ class ReservationImportService
     @result[:errors] = @errors
     @result[:note] = @notes
     return @result
-    # rescue => e
-    #   @log.import_logger.error("***********************Error importing Item: #{e.message}")
-    #   @notes << "Occurrence import: Error importing Item. Error: #{e.message}"
-    #   @result[:errors] = @errors + 1
-    #   @result[:note] = @notes.reverse
-    #   return @result
+
   end
 
   private
@@ -129,7 +124,6 @@ class ReservationImportService
   end
 
   def valid_start_and_end_time?(start_day, end_day, start_time, end_time)
-    # TODO: Rita checks for daylight savings
     s_combined = "#{start_day} #{start_time}"
     e_combined = "#{end_day} #{end_time}"
     begin
@@ -302,7 +296,6 @@ class ReservationImportService
   end
 
   def get_recurring_details_from_row(row)
-    # TODO: Implement logic to extract recurring details from the row
     recurring = row['RECURRING?']&.strip
     unless recurring == 'Yes'
       @until_date = nil
@@ -376,10 +369,6 @@ class ReservationImportService
       return nil
     end
     return reservation
-    # rescue => e
-    #   @errors += 1
-    #   @notes << "Error creating reservation: #{e.message}"
-    #   nil
   end
 
   def create_recurring_reservations(reservation, recurring, row)
