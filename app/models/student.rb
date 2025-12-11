@@ -116,6 +116,10 @@ class Student < ApplicationRecord
     where.not(phone_number: nil)
   end
 
+  def driver?
+    self.canvas_course_complete_date.present? && self.mvr_status.present? && self.mvr_status.include?("Approved until") && self.phone_number.present?
+  end
+
   def self.to_csv
     fields = %w{course registered uniqname last_name first_name phone_number mvr_status canvas_course_complete_date meeting_with_admin_date}
     header = %w{course registered uniqname last_name first_name phone_number mvr_status canvas_course_complete_date in_person_orientation_date}

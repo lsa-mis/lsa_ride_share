@@ -73,6 +73,10 @@ class Manager < ApplicationRecord
     where.not(phone_number: nil)
   end
 
+  def driver?
+    self.canvas_course_complete_date.present? && self.mvr_status.present? && self.mvr_status.include?("Approved until") && self.phone_number.present?
+  end
+
   def passenger_current
     Reservation.no_or_not_complete_vehicle_reports.joins(:passengers_managers).where("reservation_passengers_managers.manager_id = ?", self)
   end

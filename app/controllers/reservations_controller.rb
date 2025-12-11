@@ -64,6 +64,28 @@ class ReservationsController < ApplicationController
     render :email_form, status: 422
   end
 
+  def import_reservations
+    authorize Reservation
+    errors = 0
+    unit_id = params[:unit_id]
+    upload_file = params[:file]
+    return redirect_to request.referer, notice: 'No file added' unless upload_file.present?
+    return redirect_to request.referer, notice: 'Only CSV files allowed' unless valid_csv_files?(upload_file)
+
+    import_result = ReservationImportService.new(upload_file, unit_id, current_user).call
+    create_import_log_record(import_result, unit_id)
+    errors = import_result[:errors]
+
+    if errors > 0
+      flash[:alert] = "Import finished with #{errors} error(s). Please check unit emails and reports for details"
+    else
+      flash[:notice] = "Import finished successfully. Email was sent to the unit's notification email."
+    end
+    # send email to the admin with the import results
+    ReservationMailer.with(import_result: import_result, user: current_user, unit_id: unit_id).import_reservations_report.deliver_now
+    redirect_to request.referer
+  end
+
   def send_email_to_selected_reservations
     @selected_reservations = params[:selected_reservations].split(',').map(&:to_i)
     subject = params[:subject]
@@ -715,6 +737,23 @@ class ReservationsController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
+
+    def create_import_log_record(import_result, unit_id)
+      if import_result[:errors] > 0
+        status = "completed with errors"
+        note = import_result[:note]
+      else
+        status = "completed"
+        note = ["import completed successfully."]
+      end
+      ImportReservationLog.create(date: DateTime.now, user: current_user.display_name_email, unit_id: unit_id, status: status, note: note)
+    end
+
+    def valid_csv_files?(file)
+      return false unless file.content_type == 'text/csv'
+      return false unless File.extname(file.original_filename).downcase == ".csv"
+      true
+    end
 
     def set_calendar_reservations
       start_date = params.fetch(:start_date, Date.today).to_date

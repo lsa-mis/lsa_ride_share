@@ -67,6 +67,7 @@ Rails.application.routes.draw do
   get '/canceled_reservations/', to: 'reservations#canceled_reservations', as: :canceled_reservations
   get '/cancel_reason/:id', to: 'reservations#cancel_reason', as: :cancel_reason
   get '/cancel_reservation/:id', to: 'reservations#cancel_reservation', as: :cancel_reservation
+  post '/import_reservations', to: 'reservations#import_reservations', as: :import_reservations
 
   resources :cars, except: [:destroy] do
     resources :notes, module: :cars
