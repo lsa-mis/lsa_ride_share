@@ -38,7 +38,7 @@ class ReservationImportService
         term = Term.find_by(id: term_id) || Term.find_by(name: term_name)
         unless term
           @errors += 1
-          @notes << "Row #{@current_row_number}: Term #{term_name} or ##{term_id} not found."
+          @notes << "Row #{@current_row_number}: Term #{term_name} or #{term_id} not found."
           next
         end
         program_id = row['PROGRAM ID']&.strip
@@ -293,7 +293,7 @@ class ReservationImportService
     return false if uniqname.blank?
     unless @program.students.pluck(:uniqname).include?(uniqname)
       @errors += 1
-      @notes << "Row #{@current_row_number}: Student '#{uniqname}' is not enrolled in program '#{@program.id} - #{@program.title}'. Will check managers"
+      @notes << "Row #{@current_row_number}: Student '#{uniqname}' is not enrolled in program '#{@program.id} - #{@program.title}'. Will check managers next"
       return false
     end
     true
