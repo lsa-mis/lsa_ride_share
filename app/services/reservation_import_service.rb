@@ -20,17 +20,25 @@ class ReservationImportService
   def call
     total_time = Benchmark.measure {
       @log.import_logger.info("#{DateTime.now} - #{Unit.find(@unit_id).name} - Processing File: #{@file.original_filename}")
-      CSV.foreach(@file.path, headers: true) do |row|
-
+      csv_data = CSV.read(@file.path)
+      headers = csv_data[1] # Second row contains headers
+      data_rows = csv_data[2..-1] # Data starts from third row
+      
+      data_rows.each_with_index do |row_data, index|
+        @current_row_number = index + 3 # Actual row number in CSV (accounting for instructions + headers)
+        row = CSV::Row.new(headers, row_data)
         # read a row from the CSV file
         # validate the row data
         # is the program exist in the term ?
         term_id = row['TERM ID']&.strip
         term_name = row["TERM NAME"]&.strip
+        if term_id.blank? && term_name.blank?
+          next
+        end
         term = Term.find_by(id: term_id) || Term.find_by(name: term_name)
         unless term
           @errors += 1
-          @notes << "Term #{term_name} or ##{term_id} not found."
+          @notes << "Row #{@current_row_number}: Term #{term_name} or ##{term_id} not found."
           next
         end
         program_id = row['PROGRAM ID']&.strip
@@ -71,7 +79,7 @@ class ReservationImportService
           conflict_days_message = create_recurring_reservations(@reservation, recurring_data, row)
           recurring = true
           if conflict_days_message.present?
-            @notes << "Recurring reservation ID #{@reservation.id} has conflicts on the following days: #{conflict_days_message}"
+            @notes << "Row #{@current_row_number}: Recurring reservation ID #{@reservation.id} has conflicts on the following days: #{conflict_days_message}"
           end
         end
         # send confirmation emails
@@ -94,12 +102,12 @@ class ReservationImportService
     program = Program.find_by(id: program_id, unit_id: @unit_id) || Program.find_by(title: program_title, unit_id: @unit_id)
     unless program
       @errors += 1
-      @notes << "Program #{program_title} or #{program_id} not found for unit."
+      @notes << "Row #{@current_row_number}: Program #{program_title} or #{program_id} not found for unit."
       return false
     end
     unless program.term_id == term.id
       @errors += 1
-      @notes << "Program #{program.title} does not belong to term #{term.name}."
+      @notes << "Row #{@current_row_number}: Program #{program.title} does not belong to term #{term.name}."
       return false
     end
     return program
@@ -109,7 +117,7 @@ class ReservationImportService
     site = Site.find_by(id: site_id, unit_id: @unit_id) || Site.find_by(title: site_title, unit_id: @unit_id)
     unless site
       @errors += 1
-      @notes << "Site #{site_title} or #{site_id} not found for unit."
+      @notes << "Row #{@current_row_number}: Site #{site_title} or #{site_id} not found for unit."
       return false
     end
 
@@ -117,7 +125,7 @@ class ReservationImportService
       return site
     else
       @errors += 1
-      @notes << "Site #{site.title} is not added to program #{@program.title}."
+      @notes << "Row #{@current_row_number}: Site #{site.title} is not added to program #{@program.title}."
       return false
     end
 
@@ -130,14 +138,14 @@ class ReservationImportService
       s_time = Time.zone.strptime(s_combined, "%m/%d/%Y %l:%M %p").to_datetime - 15.minutes
     rescue ArgumentError
       @errors += 1
-      @notes << "Invalid time format for start time."
+      @notes << "Row #{@current_row_number}: Invalid time format for start time."
       return false
     end
     begin
       e_time = Time.zone.strptime(e_combined, "%m/%d/%Y %l:%M %p").to_datetime + 15.minutes
     rescue ArgumentError
       @errors += 1
-      @notes << "Invalid time format for end time."
+      @notes << "Row #{@current_row_number}: Invalid time format for end time."
       return false
     end
 
@@ -153,18 +161,18 @@ class ReservationImportService
     
     if start_time_parsed < reservation_begin_parsed
       @errors += 1
-      @notes << "Start time #{start_time} is before allowed reservation time #{reservation_time_begin} for unit."
+      @notes << "Row #{@current_row_number}: Start time #{start_time} is before allowed reservation time #{reservation_time_begin} for unit."
       return false
     end
     if end_time_parsed > reservation_end_parsed
       @errors += 1
-      @notes << "End time #{end_time} is after allowed reservation time #{reservation_time_end} for unit."
+      @notes << "Row #{@current_row_number}: End time #{end_time} is after allowed reservation time #{reservation_time_end} for unit."
       return false
     end
 
     if e_time < s_time
       @errors += 1
-      @notes << "End time #{end_time} is too close to start time #{start_time}."
+      @notes << "Row #{@current_row_number}: End time #{end_time} is too close to start time #{start_time}."
       return false
     end
 
@@ -181,26 +189,26 @@ class ReservationImportService
       car = Car.find_by(car_number: car_number, unit_id: @unit_id)
       unless car
         @errors += 1
-        @notes << "Car #{car_number} or #{car_id} not found or not part of unit."
+        @notes << "Row #{@current_row_number}: Car #{car_number} or #{car_id} not found or not part of unit."
         return nil
       end
     end
 
     unless car.status == "available"
       @errors += 1
-      @notes << "Car #{car.car_number} status is not available."
+      @notes << "Row #{@current_row_number}: Car #{car.car_number} status is not available."
       return nil
     end
 
     unless available?(car, @start_time..@end_time)
       @errors += 1
-      @notes << "Car #{car.car_number} is already booked between #{@start_time} and #{@end_time}."
+      @notes << "Row #{@current_row_number}: Car #{car.car_number} is already booked between #{@start_time} and #{@end_time}."
       return nil
     end
 
     if number_of_people_on_trip > car.number_of_seats
       @errors += 1
-      @notes << "Car #{car.car_number} has not enough seats."
+      @notes << "Row #{@current_row_number}: Car #{car.car_number} has not enough seats."
       return nil
     end
 
@@ -210,7 +218,8 @@ class ReservationImportService
 
   def add_driver_to_reservation(driver_uniqname)
     if driver_uniqname.blank?
-      @notes << "No driver specified for reservation ID #{@reservation.id}."
+      @errors += 1
+      @notes << "Row #{@current_row_number}: No driver specified for reservation ID #{@reservation.id}."
       return
     end
     if student_exists_in_program?(driver_uniqname)
@@ -220,12 +229,13 @@ class ReservationImportService
           return
         else
           @errors += 1
-          @notes << "Failed to update reservation ID #{@reservation.id}: assign driver '#{driver_uniqname}'."
+          @notes << "Row #{@current_row_number}: Failed to update reservation ID #{@reservation.id}: assign driver '#{driver_uniqname}'."
           return
         end
       else
         @reservation.passengers << student
-        @notes << "Student '#{driver_uniqname}' is not a valid driver; added as passenger instead."
+        @errors += 1
+        @notes << "Row #{@current_row_number}: Student '#{driver_uniqname}' is not a valid driver; added as passenger instead."
       end
     elsif manager_exists_in_program?(driver_uniqname)
       manager = Manager.find_by(uniqname: driver_uniqname)
@@ -234,12 +244,13 @@ class ReservationImportService
           return
         else
           @errors += 1
-          @notes << "Failed to update reservation ID #{@reservation.id}: assign manager driver '#{driver_uniqname}'."
+          @notes << "Row #{@current_row_number}: Failed to update reservation ID #{@reservation.id}: assign manager driver '#{driver_uniqname}'."
           return
         end
       else
         @reservation.passengers << manager
-        @notes << "Manager '#{driver_uniqname}' is not a valid driver; added as passenger instead."
+        @errors += 1
+        @notes << "Row #{@current_row_number}: Manager '#{driver_uniqname}' is not a valid driver; added as passenger instead."
       end
     end
   end
@@ -252,7 +263,8 @@ class ReservationImportService
       number_of_passengers -= @reservation.passengers.count
     end
     if passenger_uniqnames.blank?
-      @notes << "No passengers specified for reservation ID #{@reservation.id}." if number_of_passengers.positive?
+      @errors += 1
+      @notes << "Row #{@current_row_number}: No passengers specified for reservation ID #{@reservation.id}." if number_of_passengers.positive?
       return
     end
     passengers = passenger_uniqnames.split(',').map(&:strip)
@@ -268,9 +280,11 @@ class ReservationImportService
 
     number = number_of_passengers - passengers.size
     if number > 0
-      @notes << "Too few passengers specified for reservation ID #{@reservation.id}. Passengers were added to the reservation"
+      @errors += 1
+      @notes << "Row #{@current_row_number}: Too few passengers specified for reservation ID #{@reservation.id}. Passengers were added to the reservation"
     elsif number < 0
-      @notes << "Too many passengers specified for reservation ID #{@reservation.id}. Only the first #{number_of_passengers} passengers were added to the reservation"
+      @errors += 1
+      @notes << "Row #{@current_row_number}: Too many passengers specified for reservation ID #{@reservation.id}. Only the first #{number_of_passengers} passengers were added to the reservation"
     end
     
   end
@@ -279,7 +293,7 @@ class ReservationImportService
     return false if uniqname.blank?
     unless @program.students.pluck(:uniqname).include?(uniqname)
       @errors += 1
-      @notes << "Student '#{uniqname}' is not enrolled in program '#{@program.id} - #{@program.title}'. Will check managers"
+      @notes << "Row #{@current_row_number}: Student '#{uniqname}' is not enrolled in program '#{@program.id} - #{@program.title}'. Will check managers"
       return false
     end
     true
@@ -289,7 +303,7 @@ class ReservationImportService
     return false if uniqname.blank?
     unless @program.all_managers.include?(uniqname)
       @errors += 1
-      @notes << "Manager '#{uniqname}' is not part of program '#{@program.id} - #{@program.title}'."
+      @notes << "Row #{@current_row_number}: Manager '#{uniqname}' is not part of program '#{@program.id} - #{@program.title}'."
       return false
     end
     true
@@ -318,7 +332,7 @@ class ReservationImportService
       validations = {:day_of_month=>days_of_month}
     else
       @errors += 1
-      @notes << "Invalid frequency '#{frequency}' for recurring reservation."
+      @notes << "Row #{@current_row_number}: Invalid frequency '#{frequency}' for recurring reservation."
       recurring = nil
     end
     until_date_str = row['UNTIL DATE']&.strip
@@ -328,7 +342,7 @@ class ReservationImportService
       rescue ArgumentError
         @until_date = nil
         @errors += 1
-        @notes << "Invalid UNTIL DATE format: '#{until_date_str}'. Expected MM/DD/YYYY."
+        @notes << "Row #{@current_row_number}: Invalid UNTIL DATE format: '#{until_date_str}'. Expected MM/DD/YYYY."
       end
     else
       @until_date = nil
@@ -365,7 +379,7 @@ class ReservationImportService
     )
     unless reservation.save
       @errors += 1
-      @notes << "Error creating reservation: #{reservation.errors.full_messages.join(', ')}"
+      @notes << "Row #{@current_row_number}: Error creating reservation: #{reservation.errors.full_messages.join(', ')}"
       return nil
     end
     return reservation
