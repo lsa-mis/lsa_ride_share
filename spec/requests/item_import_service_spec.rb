@@ -96,7 +96,7 @@ RSpec.describe ReservationImportService, type: :service do
         result = subject.call
         
         expect(result[:errors]).to be > 0
-        expect(result[:note].join).to include('Term Invalid Term or #999 not found')
+        expect(result[:note].join).to include('Term Invalid Term or 999 not found')
       end
 
       it 'does not create reservation' do
