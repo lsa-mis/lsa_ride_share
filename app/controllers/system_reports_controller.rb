@@ -1,7 +1,8 @@
 class SystemReportsController < ApplicationController
   before_action :auth_user
+  before_action :set_form_values
 
-  def index
+  def index_old
     @units = Unit.where(id: session[:unit_ids]).order(:name)
     @terms = Term.sorted
     @programs = []
@@ -20,55 +21,232 @@ class SystemReportsController < ApplicationController
     authorize :system_report
   end
 
-  def run_report
-
-    if params[:unit_id].present?
-      @unit_id = params[:unit_id].to_i
-      @unit = Unit.find(@unit_id).name
-    end
-    if params[:term_id].present?
-      @term_id = params[:term_id].to_i
-      @term = Term.find(@term_id).name
-    end
-    if params[:program_id].present?
-      @program_id = params[:program_id].to_i
-    end
-    if params[:student_id].present?
-      @student_id = params[:student_id].to_i
-    end
-
-    if params[:uniqname].present?
-      @uniqname = params[:uniqname]
-    end
-
-    @title = "LSA Rideshare System Report"
-    report_type = params[:report_type]
-    @result = get_result(report_type)
-    if report_type == "vehicle_reports_all"
-      @link = true
-      @path = "vehicle_reports"
-    end
-
-    if report_type == "reservations_for_student"
-      @link = true
-      @path = "reservations"
-    end
-
-    if params[:format] == "csv"
-      data = data_to_csv(@result, @title, @link, @path)
-        respond_to do |format|
-          format.html
-          format.csv { send_data data, filename: "LSARideShare-report-#{DateTime.now.strftime('%-d-%-m-%Y at %I-%M%p')}.csv" }
-        end
-    else
-      render turbo_stream: turbo_stream.replace(
-        :reportListing,
-        partial: "system_reports/listing")
-    end
+  def index
     authorize :system_report
+    @reports_list = [
+      {title: "Vehicle Reports", url: vehicle_reports_report_system_reports_path, description: "This report shows Vehicle Reports statistics" },
+      {title: "Totals by Programs", url: totals_programs_report_system_reports_path, description: "This report shows totals by programs statistics" },
+      {title: "Approved Drivers", url: approved_drivers_report_system_reports_path, description: "This report shows all approved drivers for selected term and unit" },
+      {title: "Reservations for Student", url: reservations_for_student_report_system_reports_path, description: "This report shows all reservations for a selected student" }
+    ]
+  end
+
+  def vehicle_reports_report
+    @report_type = "vehicle_reports_all"
+    @show_student_filter = false
+    authorize :system_report, :vehicle_reports_report?
+    if params[:commit]
+      collect_form_params
+      @result = get_result("vehicle_reports_all")
+      @title = @result[0]['report_name'].titleize
+      @link = true
+      @headers = @result[0]['header']
+      @metrics = {
+        ' ' => @title,
+        'Total' => @result[0]['total'],
+      }
+      @data = @result[0]['rows']
+    else
+      @data = nil
+    end
+
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace(
+          :reports_table,
+          partial: "system_reports/reports_table"
+        )
+      end
+      format.csv { send_data csv_data("vehicle_reports"), filename: 'vehicle_reports_report.csv', type: 'text/csv' }
+    end
+
+  end
+
+  def totals_programs_report
+    @report_type = "totals_programs"
+    @show_student_filter = false
+    authorize :system_report, :totals_programs_report?
+    if params[:commit]
+      collect_form_params
+      @result = get_result("totals_programs")
+      @title = @result[0]['report_name'].titleize
+      @headers = @result[0]['header']
+      @metrics = {
+        ' ' => @title,
+        'Total' => @result[0]['total'],
+      }
+      @data = @result[0]['rows']
+    else
+      @data = nil
+    end
+
+    respond_to do |format|
+      format.html
+      format.csv { send_data csv_data, filename: 'totals_by_programs_report.csv', type: 'text/csv' }
+    end
+  end
+
+  def approved_drivers_report
+    @report_type = "approved_drivers"
+    @show_student_filter = false
+    authorize :system_report, :totals_programs_report?
+    if params[:commit]
+      collect_form_params
+      @result = get_result("approved_drivers")
+      @title = @result[0]['report_name'].titleize
+      @headers = @result[0]['header']
+      @metrics = {
+        ' ' => @title,
+        'Total' => @result[0]['total'],
+      }
+      @data = @result[0]['rows']
+    else
+      @data = nil
+    end
+    respond_to do |format|
+      format.html
+      format.csv { send_data csv_data, filename: 'approved_drivers_report.csv', type: 'text/csv' }
+    end
+  end
+
+  def reservations_for_student_report
+    @report_type = "reservations_for_student"
+    @show_student_filter = true
+    authorize :system_report, :totals_programs_report?
+    if params[:commit]
+      collect_form_params
+      @result = get_result("reservations_for_student")
+      @title = @result[0]['report_name'].titleize
+      @headers = @result[0]['header']
+      @metrics = {
+        ' ' => @title,
+        'Total' => @result[0]['total'],
+      }
+      @data = @result[0]['rows']
+    else
+      @data = nil
+    end
+    respond_to do |format|
+      format.html
+      format.csv { send_data csv_data("reservations"), filename: 'reservations_for_student_report.csv', type: 'text/csv' }
+    end
   end
 
   private
+
+    def run_report
+
+      if params[:unit_id].present?
+        @unit_id = params[:unit_id].to_i
+        @unit = Unit.find(@unit_id).name
+      end
+      if params[:term_id].present?
+        @term_id = params[:term_id].to_i
+        @term = Term.find(@term_id).name
+      end
+      if params[:program_id].present?
+        @program_id = params[:program_id].to_i
+      end
+      if params[:student_id].present?
+        @student_id = params[:student_id].to_i
+      end
+
+      if params[:uniqname].present?
+        @uniqname = params[:uniqname]
+      end
+
+      @title = "LSA Rideshare System Report"
+      report_type = params[:report_type]
+      @result = get_result(report_type)
+      if report_type == "vehicle_reports_all"
+        @link = true
+        @path = "vehicle_reports"
+      end
+
+      if report_type == "reservations_for_student"
+        @link = true
+        @path = "reservations"
+      end
+
+      if params[:format] == "csv"
+        data = data_to_csv(@result, @title, @link, @path)
+          respond_to do |format|
+            format.html
+            format.csv { send_data data, filename: "LSARideShare-report-#{DateTime.now.strftime('%-d-%-m-%Y at %I-%M%p')}.csv" }
+          end
+      else
+        render turbo_stream: turbo_stream.replace(
+          :reportListing,
+          partial: "system_reports/listing")
+      end
+      authorize :system_report
+    end
+
+    def set_form_values
+      @units = Unit.where(id: session[:unit_ids]).order(:name)
+      @terms = Term.sorted
+      @programs = Program.where(unit_id: session[:unit_ids])
+      @term_id = Term.current.present? ? Term.current[0].id : nil
+      @programs = @programs.data(@term_id).order(:title)
+      @students = []
+      if params[:unit_id].present?
+        @unit_id = params[:unit_id].to_i
+        @unit = Unit.find(@unit_id).name
+      end
+      if params[:term_id].present?
+        @term_id = params[:term_id].to_i
+        @term = Term.find(@term_id).name
+      end
+      if params[:program_id].present?
+        @program_id = params[:program_id].to_i
+      end
+      if params[:student_id].present?
+        @student_id = params[:student_id].to_i
+      end
+
+      if params[:uniqname].present?
+        @uniqname = params[:uniqname]
+      end
+    end
+
+    def collect_form_params
+      if params[:unit_id].present?
+      @unit_id = params[:unit_id].to_i
+      @unit = Unit.find(@unit_id).name
+      end
+      if params[:term_id].present?
+        @term_id = params[:term_id].to_i
+        @term = Term.find(@term_id).name
+      end
+      if params[:program_id].present?
+        @program_id = params[:program_id].to_i
+      end
+      if params[:student_id].present?
+        @student_id = params[:student_id].to_i
+      end
+      if params[:uniqname].present?
+        @uniqname = params[:uniqname]
+      end
+    end
+
+    def csv_data(path = "")
+      CSV.generate(headers: true) do |csv|
+        next csv << ["No data found"] if !@data
+
+        csv << [@title]
+        csv << []
+        @metrics && @metrics.each { |desc, value| csv << [desc, value] }
+
+        csv << []
+        csv << @headers
+        @data.each do |row|
+          if @request_link
+            row[0] = URI.join(request.base_url + "/" + path + "/" + row[0].to_s)
+          end
+          csv << row
+        end
+      end
+    end
 
     def get_result(report_type)
       if report_type == 'totals_programs'
@@ -121,20 +299,20 @@ class SystemReportsController < ApplicationController
             report_name = @uniqname + ": reservations for #{@unit} #{@term}"
           end
           res1 = Reservation.where("approved = ? AND driver_id IN (?)", true, student_ids).order(:start_time)
-          res2 = Reservation.where("approved = ? AND backup_driver_id in (?)", true, student_ids).order(:start_time)
+          # res2 = Reservation.where("approved = ? AND backup_driver_id in (?)", true, student_ids).order(:start_time)
           res3 = Reservation.joins(:passengers).where("reservations.approved = ? AND reservation_passengers.student_id IN (?) ", true, student_ids).order(:start_time)
         else
           report_name = Student.find(@student_id).name + ": reservations for #{@unit} #{@term}"
           program = Program.find(@program_id)
           reservations_ids = program.reservations.where("approved = ?", true).ids
           res1 = program.reservations.where("approved = ? AND driver_id = ?", true, @student_id).order(:start_time)
-          res2 = program.reservations.where("approved = ? AND backup_driver_id = ?", true, @student_id).order(:start_time)
+          # res2 = program.reservations.where("approved = ? AND backup_driver_id = ?", true, @student_id).order(:start_time)
           res3 = Reservation.joins(:passengers).where("reservation_passengers.reservation_id in (?) AND reservation_passengers.student_id = ?", reservations_ids,  @student_id).order(:start_time)
         end
         rows = []
         result = []
         res1.map { |r| rows << [r.id, r.car.car_number, r.program.title, show_reservation_time(r), r.site.title, r.car.car_number, r.number_of_people_on_trip, "driver"] }
-        res2.map { |r| rows << [r.id, r.car.car_number, r.program.title, show_reservation_time(r), r.site.title, r.car.car_number, r.number_of_people_on_trip, "backup driver"] }
+        # res2.map { |r| rows << [r.id, r.car.car_number, r.program.title, show_reservation_time(r), r.site.title, r.car.car_number, r.number_of_people_on_trip, "backup driver"] }
         res3.map { |r| rows << [r.id, r.car.car_number, r.program.title, show_reservation_time(r), r.site.title, r.car.car_number, r.number_of_people_on_trip, "passenger"] }
         columns = ["reservation", "car", "program", "reservation time", "site", "car", "number of people on trip", "role"]
         rows = rows.sort_by { |obj| obj[1] }
@@ -212,9 +390,6 @@ class SystemReportsController < ApplicationController
             (SELECT students.uniqname FROM students WHERE res.driver_id = students.id)
             END) AS driver_uniqname,
           driver_phone,
-          (SELECT students.first_name || ' ' || students.last_name FROM students WHERE res.backup_driver_id = students.id ) AS backup_driver_name,
-          (SELECT students.uniqname FROM students WHERE res.backup_driver_id = students.id ) AS backup_driver_uniqname,
-          backup_driver_phone,
           (SELECT STRING_AGG(first_name || ' ' || last_name || ' (' || uniqname || ')', ', ')
           FROM students
           JOIN reservation_passengers ON reservation_passengers.student_id = students.id AND reservation_passengers.reservation_id = vehicle_reports.reservation_id)
