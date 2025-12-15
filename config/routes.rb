@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   resources :system_reports, only: [:index] do
     collection do
-      get 'vehicle_reports_report', to: 'system_reports#vehicle_reports_report'
+      get 'vehicle_reports_all_report', to: 'system_reports#vehicle_reports_all_report'
       get 'totals_programs_report', to: 'system_reports#totals_programs_report'
       get 'approved_drivers_report', to: 'system_reports#approved_drivers_report'
       get 'reservations_for_student_report', to: 'system_reports#reservations_for_student_report'

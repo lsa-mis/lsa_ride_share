@@ -8,7 +8,7 @@ class SystemReportPolicy < ApplicationPolicy
     user_in_access_group?
   end
 
-  def vehicle_reports_report?
+  def vehicle_reports_all_report?
     user_in_access_group?
   end
 

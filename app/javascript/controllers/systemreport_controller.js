@@ -116,69 +116,70 @@ export default class extends Controller {
     return name
   }
 
+  saveLink() {
+    var format = this.formatTarget.value
+    var unit = this.unitTarget.value
+    var term = this.termTarget.value
+    var program = this.programTarget.value
+    if (this.hasStudentTarget) {
+      var student = this.studentTarget.value
+    }
+    var report_type = this.report_typeTarget.value
 
+    var needsAmp = false
+    var a = document.getElementById('csv_link');
+    var report_method = report_type + "_report"
+    a.href = "/system_reports/" + report_method + "?"
 
-  // saveLink() {
-  //   var format = this.formatTarget.value
-  //   var unit = this.unitTarget.value
-  //   var term = this.termTarget.value
-  //   var program = this.programTarget.value
-  //   var student = this.studentTarget.value
-  //   var report_type = this.report_typeTarget.value
+    if(term != "") {
+      a.href = a.href + "term_id=" + term
+      needsAmp = true
+    }
+    if(unit != "") {
+      if(needsAmp == true) {
+        a.href = a.href + "&"
+        needsAmp = false
+      }
+      a.href = a.href + "unit_id=" + unit
+      needsAmp = true
+    }
+    if(program != "") {
+      if(needsAmp == true) {
+        a.href = a.href + "&"
+        needsAmp = false
+      }
+      a.href = a.href + "program_id=" + program
+      needsAmp = true
+    }
+    if(student != "") {
+      if(needsAmp == true) {
+        a.href = a.href + "&"
+        needsAmp = false
+      }
+      a.href = a.href + "student_id=" + student
+      needsAmp = true
+    }
+    if(needsAmp == true) {
+      a.href = a.href + "&"
+      needsAmp = false
+    }
 
-  //   var needsAmp = false
-  //   var a = document.getElementById('csv_link'); 
-  //   a.href = "/system_reports/run_report?"
+    a.href += "report_type=" + report_type + "&"
+    a.href = a.href + "format=csv&commit=Run+report"
 
-  //   if(term != "") {
-  //     a.href = a.href + "term_id=" + term
-  //     needsAmp = true
-  //   }
-  //   if(unit != "") {
-  //     if(needsAmp == true) {
-  //       a.href = a.href + "&"
-  //       needsAmp = false
-  //     }
-  //     a.href = a.href + "unit_id=" + unit
-  //     needsAmp = true
-  //   }
-  //   if(program != "") {
-  //     if(needsAmp == true) {
-  //       a.href = a.href + "&"
-  //       needsAmp = false
-  //     }
-  //     a.href = a.href + "program_id=" + program
-  //     needsAmp = true
-  //   }
-  //   if(student != "") {
-  //     if(needsAmp == true) {
-  //       a.href = a.href + "&"
-  //       needsAmp = false
-  //     }
-  //     a.href = a.href + "student_id=" + student
-  //     needsAmp = true
-  //   }
-  //   if(needsAmp == true) {
-  //     a.href = a.href + "&"
-  //     needsAmp = false
-  //   }
-
-  //   a.href += "report_type=" + report_type + "&"
-  //   a.href = a.href + "format=csv&commit=Run+report"
-
-  //   if(format == "csv") {
-  //     this.run_report_buttonTarget.classList.add("fields--hide")
-  //     this.run_report_buttonTarget.classList.remove("fields--display")
-  //     this.download_report_buttonTarget.classList.remove("fields--hide")
-  //     this.download_report_buttonTarget.classList.add("fields--display")
-  //   }
-  //   else {
-  //     this.download_report_buttonTarget.classList.add("fields--hide")
-  //     this.download_report_buttonTarget.classList.remove("fields--display")
-  //     this.run_report_buttonTarget.classList.remove("fields--hide")
-  //     this.run_report_buttonTarget.classList.add("fields--display")
-  //   }
-  // }
+    if(format == "csv") {
+      this.run_report_buttonTarget.classList.add("fields--hide")
+      this.run_report_buttonTarget.classList.remove("fields--display")
+      this.download_report_buttonTarget.classList.remove("fields--hide")
+      this.download_report_buttonTarget.classList.add("fields--display")
+    }
+    else {
+      this.download_report_buttonTarget.classList.add("fields--hide")
+      this.download_report_buttonTarget.classList.remove("fields--display")
+      this.run_report_buttonTarget.classList.remove("fields--hide")
+      this.run_report_buttonTarget.classList.add("fields--display")
+    }
+  }
 
   submitForm(event) {
     console.log("submit form")

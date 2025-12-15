@@ -24,17 +24,18 @@ class SystemReportsController < ApplicationController
   def index
     authorize :system_report
     @reports_list = [
-      {title: "Vehicle Reports", url: vehicle_reports_report_system_reports_path, description: "This report shows Vehicle Reports statistics" },
+      {title: "Vehicle Reports", url: vehicle_reports_all_report_system_reports_path, description: "This report shows Vehicle Reports statistics" },
       {title: "Totals by Programs", url: totals_programs_report_system_reports_path, description: "This report shows totals by programs statistics" },
       {title: "Approved Drivers", url: approved_drivers_report_system_reports_path, description: "This report shows all approved drivers for selected term and unit" },
       {title: "Reservations for Student", url: reservations_for_student_report_system_reports_path, description: "This report shows all reservations for a selected student" }
     ]
   end
 
-  def vehicle_reports_report
+  def vehicle_reports_all_report
+  
     @report_type = "vehicle_reports_all"
     @show_student_filter = false
-    authorize :system_report, :vehicle_reports_report?
+    authorize :system_report, :vehicle_reports_all_report?
     if params[:commit]
       collect_form_params
       @result = get_result("vehicle_reports_all")
