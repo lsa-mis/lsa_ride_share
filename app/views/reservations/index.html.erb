@@ -22,6 +22,20 @@
             Overnight Reservation
           </span>
         <% end %>
+        <div class="d-flex flex-column flex-sm-row flex-wrap gap-2">
+        <h3 class="me-5">Import Files</h3>
+        <%= form_tag import_reservations_path, 
+                    method: :post, 
+                    data: { turbo: false },
+                    multipart: true do %>
+          <%= label_tag 'file', 'Choose CSV files to import:', class: 'visually-hidden' %>
+          <%= file_field_tag 'file', accept: ".csv"%>
+          <%= hidden_field_tag :unit_id, @unit_id %>
+          <%= button_tag type: 'submit', class: 'btn btn-primary my-2 m-lg-0' do %>
+            Import <i class="bi bi-box-arrow-in-down"></i>
+          <% end %>
+        <% end %>
+      </div>
       <% end %>
     </div>
   </div>
