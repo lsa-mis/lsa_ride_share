@@ -51,12 +51,7 @@ class SystemReportsController < ApplicationController
     end
 
     respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: turbo_stream.replace(
-          :reports_table,
-          partial: "system_reports/reports_table"
-        )
-      end
+      format.html
       format.csv { send_data csv_data("vehicle_reports"), filename: 'vehicle_reports_report.csv', type: 'text/csv' }
     end
 
