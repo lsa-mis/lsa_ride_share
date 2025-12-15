@@ -258,7 +258,7 @@ class ReservationImportService
       else
         @reservation.passengers << manager
         @errors += 1
-        @notes << "Row #{@current_row_number}: Student '#{uniqname}' is not enrolled in program '#{@program.id} - #{@program.title}'. Manager '#{driver_uniqname}' is not a valid driver; added as passenger instead."
+        @notes << "Row #{@current_row_number}: Student '#{driver_uniqname}' is not enrolled in program '#{@program.id} - #{@program.title}'. Manager '#{driver_uniqname}' is not a valid driver; added as passenger instead."
       end
     else
       @errors += 1
@@ -297,7 +297,7 @@ class ReservationImportService
           @notes << "Row #{@current_row_number}: Passenger '#{uniqname}' is already added to reservation ID #{@reservation.id}."
           next
         end
-        @reservation.passengers << Manager.find_by(uniqname: uniqname)
+        @reservation.passengers << manager
       else
         @errors += 1
         @notes << "Row #{@current_row_number}: Passenger '#{uniqname}' not found in program."
