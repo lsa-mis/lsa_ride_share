@@ -49,6 +49,7 @@ class SystemReportsController < ApplicationController
     else
       @data = nil
     end
+    keep_form_values
 
     respond_to do |format|
       format.html
@@ -74,6 +75,7 @@ class SystemReportsController < ApplicationController
     else
       @data = nil
     end
+    keep_form_values
 
     respond_to do |format|
       format.html
@@ -98,6 +100,7 @@ class SystemReportsController < ApplicationController
     else
       @data = nil
     end
+    keep_form_values
     respond_to do |format|
       format.html
       format.csv { send_data csv_data, filename: 'approved_drivers_report.csv', type: 'text/csv' }
@@ -121,6 +124,7 @@ class SystemReportsController < ApplicationController
     else
       @data = nil
     end
+    keep_form_values
     respond_to do |format|
       format.html
       format.csv { send_data csv_data("reservations"), filename: 'reservations_for_student_report.csv', type: 'text/csv' }
@@ -194,6 +198,41 @@ class SystemReportsController < ApplicationController
       end
       if params[:program_id].present?
         @program_id = params[:program_id].to_i
+      end
+      if params[:student_id].present?
+        @student_id = params[:student_id].to_i
+      end
+
+      if params[:uniqname].present?
+        @uniqname = params[:uniqname]
+      end
+    end
+
+    def keep_form_values
+      @units = Unit.where(id: session[:unit_ids]).order(:name)
+      @terms = Term.sorted
+      if params[:unit_id].present?
+        @unit_id = params[:unit_id].to_i
+        @unit = Unit.find(@unit_id).name
+        @programs = Program.where(unit_id: @unit_id)
+      else
+        @programs = Program.where(unit_id: session[:unit_ids])
+      end
+      if params[:term_id].present?
+        @term_id = params[:term_id].to_i
+        @term = Term.find(@term_id).name
+      else
+        @term_id = Term.current.present? ? Term.current[0].id : nil
+      end
+      @programs = @programs.data(@term_id).order(:title)
+      @students = []
+      if params[:unit_id].present?
+        @unit_id = params[:unit_id].to_i
+        @unit = Unit.find(@unit_id).name
+      end
+      if params[:program_id].present?
+        @program_id = params[:program_id].to_i
+        @students = Program.find(params[:program_id]).students.order(:last_name)
       end
       if params[:student_id].present?
         @student_id = params[:student_id].to_i

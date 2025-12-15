@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["form", "format", "unit", "term", "program", 'student', 'uniqname',
+  static targets = ["form", "format", "unit", "term", "program", 'student', 'uniqname', "report_type",
   "run_report_button", "download_report_button"]
 
   connect() {
@@ -32,7 +32,7 @@ export default class extends Controller {
     defaultOption.value = '';
     if (data.length > 1) {
       console.log("multiple programs")
-      defaultOption.text = 'Select Program ...';
+      defaultOption.text = 'All Programs';
       dropdown.add(defaultOption);
       dropdown.selectedIndex = 0;
       let option;
@@ -52,7 +52,9 @@ export default class extends Controller {
       option.value = data[0][0];
       option.text = data[0][1];
       dropdown.add(option);
-      this.getStudents();
+      if (this.hasStudentTarget) {
+        this.getStudents();
+      }
     } else {
       console.log("no programs")
       defaultOption.text = 'No programs for this term';
@@ -183,8 +185,6 @@ export default class extends Controller {
     let term = this.termTarget.value
     let unit = this.unitTarget.value
     let report_type = this.report_typeTarget.value
-    let student = this.studentTarget.value
-    let uniqname = this.uniqnameTarget.value
     let error_text = document.getElementById('error_text')
     error_text.innerHTML = ""
     if(term == "" || unit == "") {
@@ -192,6 +192,8 @@ export default class extends Controller {
       event.preventDefault()
     }
     else if (report_type == "reservations_for_student") {
+      let student = this.studentTarget.value
+      let uniqname = this.uniqnameTarget.value.trim()
       if (student == "" && uniqname == "") {
         error_text.innerHTML = "For this report please select a program and a student or type a uniqname"
         event.preventDefault()
