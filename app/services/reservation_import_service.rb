@@ -297,7 +297,7 @@ class ReservationImportService
           @notes << "Row #{@current_row_number}: Passenger '#{uniqname}' is already added to reservation ID #{@reservation.id}."
           next
         end
-        @reservation.passengers << manager
+        @reservation.passengers_managers << manager
       else
         @errors += 1
         @notes << "Row #{@current_row_number}: Passenger '#{uniqname}' not found in program."
