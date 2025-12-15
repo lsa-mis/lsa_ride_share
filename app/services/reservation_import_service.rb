@@ -289,7 +289,7 @@ class ReservationImportService
           @notes << "Row #{@current_row_number}: Passenger '#{uniqname}' is already added to reservation ID #{@reservation.id}."
           next
         end
-        @reservation.passengers << Student.find_by(uniqname: uniqname, program_id: @program.id)
+        @reservation.passengers << student
       elsif manager_exists_in_program?(uniqname)
         manager = Manager.find_by(uniqname: uniqname)
         if @reservation.passengers.include?(manager)
