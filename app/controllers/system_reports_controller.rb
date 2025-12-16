@@ -44,12 +44,20 @@ class SystemReportsController < ApplicationController
       @result = get_result("vehicle_reports_all")
       @title = @result[0]['report_name'].titleize
       @link = true
+      @model_class = VehicleReport
+      @url = "vehicle_report_path"
+      # @path = "vehicle_reports"
       @headers = @result[0]['header']
       @metrics = {
         ' ' => @title,
         'Total' => @result[0]['total'],
       }
       @data = @result[0]['rows']
+
+
+
+
+
     else
       @data = nil
     end
@@ -94,6 +102,7 @@ class SystemReportsController < ApplicationController
     @show_student_filter = false
     @show_program_filter = true
     @show_date_filters = false
+    @link = false
     authorize :system_report, :approved_drivers_report?
     if params[:commit]
       collect_form_params
@@ -120,6 +129,9 @@ class SystemReportsController < ApplicationController
     @show_student_filter = true
     @show_program_filter = true
     @show_date_filters = false
+    @link = true
+    @model_class = Reservation
+    @url = "reservation_path"
     authorize :system_report, :reservations_for_student_report?
     if params[:commit]
       collect_form_params
@@ -146,6 +158,7 @@ class SystemReportsController < ApplicationController
     @show_student_filter = false
     @show_program_filter = false
     @show_date_filters = true
+    @link = false
     authorize :system_report, :import_reservations_report?
     if params[:commit]
       collect_form_params

@@ -15,14 +15,14 @@
       <tbody>
       <% @data.each do |row| %>
         <tr class="mi_tbody_tr">
-          <% if @request_link %>
+          <% if @link %>
             <% 
               record = @model_class.find(row[0].to_i)
               url_path = send(@url, record, return_to: request.fullpath)
             %>
             <td class="mi_tbody_td">
-              <%= link_to url_path do %>
-                <i class="bi bi-eye text-blue-600 hover:text-blue-800"></i>
+              <%= link_to url_path, class: "link_to" do %>
+                <%= row[0] %>
               <% end %>
             </td>
           <% else %>
