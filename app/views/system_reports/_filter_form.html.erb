@@ -6,19 +6,53 @@
         <% if session[:unit_ids].count > 1 %>
           <div class="">
             <label for="unit_id" class="fancy_label">Select a Unit *</label>
-            <%= select_tag "unit_id", options_from_collection_for_select(@units, :id, :name, selected: params[:unit_id]), include_blank: "Select...", class: "filter_select w-48", "data-systemreport-target": "unit", "data-action": "change->systemreport#changePrograms", required: true %>
+            <% if @show_program_filter %>
+              <%= select_tag "unit_id", options_from_collection_for_select(@units, :id, :name, selected: params[:unit_id]), include_blank: "Select...", class: "filter_select w-48", "data-systemreport-target": "unit", "data-action": "change->systemreport#changePrograms", required: true %>
+            <% else %>
+              <%= select_tag "unit_id", options_from_collection_for_select(@units, :id, :name, selected: params[:unit_id]), include_blank: "Select...", class: "filter_select w-48", "data-systemreport-target": "unit", required: true %>
+            <% end %>
           </div>
         <% else %>
           <input type="hidden" id="unit_id" name="unit_id" value=<%= session[:unit_ids].first %> data-systemreport-target="unit">
         <% end %>
         <div class="">
           <label for="term_id" class="fancy_label">Select a Term *</label>
-          <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: @term_id), include_blank: "Select ...", class: "filter_select w-48", "data-systemreport-target": "term", "data-action": "change->systemreport#changePrograms", required: true %>
+          <% if @show_program_filter %>
+            <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: @term_id), include_blank: "Select...", class: "filter_select w-48", "data-systemreport-target": "term", "data-action": "change->systemreport#changePrograms", required: true %>
+          <% else %>
+            <%= select_tag "term_id", options_from_collection_for_select(@terms, :id, :name, selected: @term_id), include_blank: "Select...", class: "filter_select w-48", "data-systemreport-target": "term", required: true %>
+          <% end %>
         </div>
-        <div class="">
-          <label for="program_id" class="fancy_label">Select a Program</label>
-          <%= select_tag "program_id", options_from_collection_for_select(@programs, :id, :title, selected: params[:program_id]), include_blank: "All Programs", class: "filter_select w-96", "data-systemreport-target": "program", "data-action": "change->systemreport#getStudents" %>
-        </div>
+        <% if @show_program_filter %>
+          <div class="">
+            <label for="program_id" class="fancy_label">Select a Program</label>
+            <%= select_tag "program_id", options_from_collection_for_select(@programs, :id, :title, selected: params[:program_id]), include_blank: "All Programs", class: "filter_select w-96", "data-systemreport-target": "program", "data-action": "change->systemreport#getStudents" %>
+          </div>
+        <% end %>
+      </div>
+      <div class="flex gap-4 mb-4">
+        <% if @show_date_filters %>
+          <div>
+            <%= form.label :from, "Choose a Start Date", class: "fancy_label" %>
+            <%= text_field_tag :from, params[:from] || 1.week.ago.to_date, max: Date.today,
+              data: {
+              controller: "flatpickr",
+              flatpickr_date_format: "Y-m-d",
+              },
+              class: "filter_select w-48"
+            %>
+          </div>
+          <div>
+            <%= form.label :to, "Choose an End Date", class: "fancy_label" %>
+            <%= text_field_tag :to, params[:to] || Date.today, max: Date.today,
+              data: {
+              controller: "flatpickr",
+              flatpickr_date_format: "Y-m-d",
+              },
+              class: "filter_select w-48"
+            %>
+          </div>
+        <% end %>
       </div>
       <% if @show_student_filter %>
         <div class="flex gap-2">

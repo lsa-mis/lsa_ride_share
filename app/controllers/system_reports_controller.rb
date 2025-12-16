@@ -27,7 +27,8 @@ class SystemReportsController < ApplicationController
       {title: "Vehicle Reports", url: vehicle_reports_all_report_system_reports_path, description: "This report shows Vehicle Reports statistics" },
       {title: "Totals by Programs", url: totals_programs_report_system_reports_path, description: "This report shows totals by programs statistics" },
       {title: "Approved Drivers", url: approved_drivers_report_system_reports_path, description: "This report shows all approved drivers for selected term and unit" },
-      {title: "Reservations for Student", url: reservations_for_student_report_system_reports_path, description: "This report shows all reservations for a selected student" }
+      {title: "Reservations for Student", url: reservations_for_student_report_system_reports_path, description: "This report shows all reservations for a selected student" },
+      {title: "Import Reservations", url: import_reservations_report_system_reports_path, description: "This report shows Import Reservations Log statistics" },
     ]
   end
 
@@ -35,6 +36,8 @@ class SystemReportsController < ApplicationController
   
     @report_type = "vehicle_reports_all"
     @show_student_filter = false
+    @show_program_filter = true
+    @show_date_filters = false
     authorize :system_report, :vehicle_reports_all_report?
     if params[:commit]
       collect_form_params
@@ -62,6 +65,8 @@ class SystemReportsController < ApplicationController
   def totals_programs_report
     @report_type = "totals_programs"
     @show_student_filter = false
+    @show_program_filter = true
+    @show_date_filters = false
     authorize :system_report, :totals_programs_report?
     if params[:commit]
       collect_form_params
@@ -87,7 +92,9 @@ class SystemReportsController < ApplicationController
   def approved_drivers_report
     @report_type = "approved_drivers"
     @show_student_filter = false
-    authorize :system_report, :totals_programs_report?
+    @show_program_filter = true
+    @show_date_filters = false
+    authorize :system_report, :approved_drivers_report?
     if params[:commit]
       collect_form_params
       @result = get_result("approved_drivers")
@@ -111,7 +118,9 @@ class SystemReportsController < ApplicationController
   def reservations_for_student_report
     @report_type = "reservations_for_student"
     @show_student_filter = true
-    authorize :system_report, :totals_programs_report?
+    @show_program_filter = true
+    @show_date_filters = false
+    authorize :system_report, :reservations_for_student_report?
     if params[:commit]
       collect_form_params
       @result = get_result("reservations_for_student")
@@ -129,6 +138,36 @@ class SystemReportsController < ApplicationController
     respond_to do |format|
       format.html
       format.csv { send_data csv_data("reservations"), filename: 'reservations_for_student_report.csv', type: 'text/csv' }
+    end
+  end
+
+  def import_reservations_report
+    @report_type = "import_reservations"
+    @show_student_filter = false
+    @show_program_filter = false
+    @show_date_filters = true
+    authorize :system_report, :import_reservations_report?
+    if params[:commit]
+      collect_form_params
+      @title = "Import Reservations Log Report"
+      @import_logs = ImportReservationLog.where(date: @from..@to).order(created_at: :desc)
+      if @import_logs.present?
+        @metrics = {
+          ' ' => @title,
+          'Total Import Logs' => @import_logs.count,
+        }
+        @headers = ["Date", "User", "Status", "Note"]
+        @data = @import_logs.map do |log|
+          [log.date.strftime("%Y-%m-%d %H:%M"), log.user, log.status, log.note]
+        end
+      else
+        @data = nil
+      end
+    end
+    keep_form_values
+    respond_to do |format|
+      format.html
+      format.csv { send_data csv_data, filename: 'import_reservations_log_report.csv', type: 'text/csv' }
     end
   end
 
@@ -203,9 +242,14 @@ class SystemReportsController < ApplicationController
       if params[:student_id].present?
         @student_id = params[:student_id].to_i
       end
-
       if params[:uniqname].present?
         @uniqname = params[:uniqname]
+      end
+      if params[:from].present?
+        @from = params[:from]
+      end
+      if params[:to].present?
+        @to = params[:to]
       end
     end
 
@@ -238,9 +282,14 @@ class SystemReportsController < ApplicationController
       if params[:student_id].present?
         @student_id = params[:student_id].to_i
       end
-
       if params[:uniqname].present?
         @uniqname = params[:uniqname]
+      end
+      if params[:from].present?
+        @from = params[:from]
+      end     
+      if params[:to].present?
+        @to = params[:to]
       end
     end
 
