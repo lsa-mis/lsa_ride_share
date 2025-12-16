@@ -42,16 +42,17 @@
     
     <div class="mb-4">
       <label for="format" class="fancy_label">Select Display Type</label>
-      <%= select_tag :format, options_for_select({"Display in a browser" => "html", "Export to CSV" => "csv"}, "Display in a browser"), required: true, class: "filter_select w-48", :"data-action" => "change->systemreport#saveLink", "data-systemreport-target": "format" %>
+      <%= select_tag :format, options_for_select({"Display in a browser" => "html", "Export to CSV" => "csv"}, "Display in a browser"), required: true, class: "filter_select w-48", :"data-action" => "change->systemreport#saveLink", "data-systemreport-target": "format", disabled: false %>
     </div>
   </div>
   <%= form.hidden_field :report_type, value: @report_type, "data-systemreport-target": "report_type" %>
+  <input type="hidden" data-systemreport-target="reportRun" value="false">
   <div class="flex gap-3">
     <div class="my-2 fields--display" data-systemreport-target="run_report_button">
       <%= form.submit "Run Report", data: { disable_with: false }, method: :get, class: "primary_button" %>
     </div>
     <div class="fields--hide my-4" data-systemreport-target="download_report_button">
-      <a id="csv_link" href="" class="primary_button">Download Report</a>
+      <a id="csv_link" href="" class="primary_button opacity-50 pointer-events-none">Download Report</a>
     </div>
     <button type="button" data-action='click->systemreport#clearFilters'>
       <span class="tertiary_button">Clear Filters

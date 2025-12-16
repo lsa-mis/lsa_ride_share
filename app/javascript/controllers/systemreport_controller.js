@@ -2,10 +2,32 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ["form", "format", "unit", "term", "program", 'student', 'uniqname', "report_type",
-  "run_report_button", "download_report_button"]
+  "run_report_button", "download_report_button", "reportRun"]
 
   connect() {
     console.log("connect - system report")
+    this.initializeCSVOption()
+    this.setupTurboListener()
+  }
+
+  setupTurboListener() {
+    // Listen for turbo:frame-load event to detect when report content loads
+    document.addEventListener('turbo:frame-load', (event) => {
+      if (event.target.id === 'reportListing') {
+        console.log('Report content loaded')
+        this.markReportAsRun()
+      }
+    })
+    
+    // Also listen for regular page loads in case turbo streams are used
+    document.addEventListener('turbo:load', () => {
+      // Check if we're on a report page with data
+      const reportData = document.querySelector('[data-systemreport-target="reportListing"]')
+      if (reportData && reportData.innerHTML.trim() !== '') {
+        console.log('Report page loaded with data')
+        this.markReportAsRun()
+      }
+    })
   }
 
   changePrograms() {
@@ -118,6 +140,15 @@ export default class extends Controller {
 
   saveLink() {
     var format = this.formatTarget.value
+    var reportHasRun = this.reportRunTarget.value === "true"
+    
+    // Prevent CSV selection if report hasn't been run
+    if (format === "csv" && !reportHasRun) {
+      alert("Please run the report with 'Display in a browser' first before exporting to CSV.")
+      this.formatTarget.value = "html"
+      return
+    }
+    
     var unit = this.unitTarget.value
     var term = this.termTarget.value
     var program = this.programTarget.value
@@ -167,11 +198,12 @@ export default class extends Controller {
     a.href += "report_type=" + report_type + "&"
     a.href = a.href + "format=csv&commit=Run+report"
 
-    if(format == "csv") {
+    if(format == "csv" && reportHasRun) {
       this.run_report_buttonTarget.classList.add("fields--hide")
       this.run_report_buttonTarget.classList.remove("fields--display")
       this.download_report_buttonTarget.classList.remove("fields--hide")
       this.download_report_buttonTarget.classList.add("fields--display")
+      this.enableDownloadButton()
     }
     else {
       this.download_report_buttonTarget.classList.add("fields--hide")
@@ -202,11 +234,81 @@ export default class extends Controller {
     }
     else {
       error_text.innerHTML = ""
+      console.log("form valid")
+      // Don't mark report as run here - wait for actual content to load
     }
+  }
+
+  initializeCSVOption() {
+    // Check if there's already report data on page load
+    this.checkForExistingReportData()
+    
+    // Disable CSV option initially if no data
+    if (this.reportRunTarget.value !== "true") {
+      this.disableCSVOption()
+      this.disableDownloadButton()
+    }
+  }
+
+  checkForExistingReportData() {
+    const reportTable = document.querySelector('.report_table')
+    const reportData = document.querySelector('#reportListing')
+    
+    if (reportTable || (reportData && reportData.innerHTML.trim() !== '')) {
+      this.reportRunTarget.value = "true"
+      this.enableCSVOption()
+      console.log("existing report data found on page load")
+    } else {
+      this.reportRunTarget.value = "false"
+      console.log("no existing report data found")
+    }
+  }
+
+  markReportAsRun() {
+    // Check if there's actual report data on the page
+    const reportTable = document.querySelector('.report_table')
+    const reportData = document.querySelector('#reportListing')
+    
+    if (reportTable || (reportData && reportData.innerHTML.trim() !== '')) {
+      this.reportRunTarget.value = "true"
+      this.enableCSVOption()
+      console.log("report marked as run - data found on page")
+    } else {
+      console.log("no report data found, not marking as run")
+    }
+  }
+
+  enableCSVOption() {
+    let csvOption = this.formatTarget.querySelector('option[value="csv"]')
+    if (csvOption) {
+      csvOption.disabled = false
+      csvOption.textContent = "Export to CSV"
+    }
+  }
+
+  disableCSVOption() {
+    let csvOption = this.formatTarget.querySelector('option[value="csv"]')
+    if (csvOption) {
+      csvOption.disabled = true
+      csvOption.textContent = "Export to CSV (Run report first)"
+    }
+  }
+
+  enableDownloadButton() {
+    let downloadLink = document.getElementById('csv_link')
+    downloadLink.classList.remove('opacity-50', 'pointer-events-none')
+  }
+
+  disableDownloadButton() {
+    let downloadLink = document.getElementById('csv_link')
+    downloadLink.classList.add('opacity-50', 'pointer-events-none')
   }
 
   clearFilters() {
     var url = window.location.pathname
+    this.reportRunTarget.value = "false"
+    this.disableCSVOption()
+    this.disableDownloadButton()
     Turbo.visit(url)
   }
 
