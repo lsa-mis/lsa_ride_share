@@ -41,10 +41,10 @@
             <li class="ml-2">Copy the template to edit it</li>
             <li class="ml-2">Add your reservations to the file</li>
             <li class="ml-2">Download it to your computer as a CSV file</li>
-            <li class="ml-2">Use the Import button below to upload the file</li>
+            <li class="ml-2">Choose a file and click the Import button below to upload reservations</li>
           </ol>
           <div class="d-flex flex-column flex-sm-row flex-wrap gap-2">
-          <h3 class="me-5">Import Files</h3>
+          <h2 class="me-5">Import Files</h2>
           <%= form_tag import_reservations_path, 
                       method: :post, 
                       data: { turbo: false },
