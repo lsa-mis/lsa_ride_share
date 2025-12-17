@@ -118,12 +118,21 @@ export default class extends Controller {
   }
 
   saveLink() {
+    // Clear any previous custom validation message on the format field
+    if (this.formatTarget && typeof this.formatTarget.setCustomValidity === "function") {
+      this.formatTarget.setCustomValidity("");
+    }
     var format = this.formatTarget.value
     var reportHasRun = this.reportRunTarget.value === "true"
     
     // Prevent CSV selection if report hasn't been run
     if (format === "csv" && !reportHasRun) {
-      alert("Please run the report with 'Display in a browser' first before exporting to CSV.")
+      if (typeof this.formatTarget.setCustomValidity === "function") {
+        this.formatTarget.setCustomValidity("Please run the report with 'Display in a browser' first before exporting to CSV.");
+        if (typeof this.formatTarget.reportValidity === "function") {
+          this.formatTarget.reportValidity();
+        }
+      }
       this.formatTarget.value = "html"
       return
     }
