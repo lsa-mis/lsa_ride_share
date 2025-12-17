@@ -139,9 +139,17 @@ export default class extends Controller {
     
     var unit = this.unitTarget.value
     var term = this.termTarget.value
-    var program = this.programTarget.value
+    if (this.hasProgramTarget) {
+      var program = this.programTarget.value
+    }
+    else {
+      var program = ""
+    }
     if (this.hasStudentTarget) {
       var student = this.studentTarget.value
+    }
+    else {
+      var student = ""
     }
     var report_type = this.report_typeTarget.value
 
