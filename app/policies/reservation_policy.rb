@@ -127,6 +127,10 @@ class ReservationPolicy < ApplicationPolicy
     user_in_access_group?
   end
 
+  def import_reservations_page?
+    user_in_access_group?
+  end
+
   def import_reservations?
     user_in_access_group?
   end

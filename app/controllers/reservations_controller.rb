@@ -64,13 +64,21 @@ class ReservationsController < ApplicationController
     render :email_form, status: 422
   end
 
+  def import_reservations_page
+    if params[:unit_id].present?
+      @unit_id = params[:unit_id]
+    end
+    authorize Reservation
+  end
+
   def import_reservations
     authorize Reservation
     errors = 0
     unit_id = params[:unit_id]
     upload_file = params[:file]
-    return redirect_to request.referer, notice: 'No file added' unless upload_file.present?
-    return redirect_to request.referer, notice: 'Only CSV files allowed' unless valid_csv_files?(upload_file)
+    return redirect_to request.referer, alert: 'No file added' unless upload_file.present?
+    return redirect_to request.referer, alert: 'Only CSV files allowed' unless valid_csv_files?(upload_file)
+    return redirect_to request.referer, alert: 'File has wrong headers' unless valid_headers?(upload_file)
 
     import_result = ReservationImportService.new(upload_file, unit_id, current_user).call
     create_import_log_record(import_result, unit_id)
@@ -738,6 +746,22 @@ class ReservationsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
 
+    def valid_headers?(upload_file)
+      expected_headers = ["TERM NAME", "TERM ID",	"PROGRAM TITLE", "PROGRAM ID", "SITE TITLE", "SITE ID", "START DATE", "END DATE", "START TIME", "END TIME", "NUMBER OF PEOPLE ON TRIP", "RECURRING?", "FREQUENCY", "REPEAT", "IF WEEKLY", "IF MONTHLY", "UNTIL DATE", "CAR NUMBER", "CAR ID", "DRIVER", "PASSENGERS"]
+      
+      begin
+        # Read the CSV file and get the headers from the second row (index 1)
+        csv_data = CSV.read(upload_file.path)
+        file_headers = csv_data[1] # Second row contains headers
+        
+        # Check if all expected headers are present
+        return (expected_headers - file_headers).empty?
+      rescue CSV::MalformedCSVError, StandardError => e
+        Rails.logger.error "Error reading CSV headers: #{e.message}"
+        return false
+      end
+    end
+    
     def create_import_log_record(import_result, unit_id)
       if import_result[:errors] > 0
         status = "completed with errors"
