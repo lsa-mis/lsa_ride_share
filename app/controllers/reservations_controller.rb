@@ -76,9 +76,9 @@ class ReservationsController < ApplicationController
     errors = 0
     unit_id = params[:unit_id]
     upload_file = params[:file]
-    return redirect_to request.referer, alert: 'No file added' unless upload_file.present?
-    return redirect_to request.referer, alert: 'Only CSV files allowed' unless valid_csv_files?(upload_file)
-    return redirect_to request.referer, alert: 'File has wrong headers' unless valid_headers?(upload_file)
+    return redirect_to request.referer, alert: 'No file added.' unless upload_file.present?
+    return redirect_to request.referer, alert: 'Only CSV files allowed.' unless valid_csv_files?(upload_file)
+    return redirect_to request.referer, alert: 'CSV file is missing required headers. Please use the provided template.' unless valid_headers?(upload_file)
 
     import_result = ReservationImportService.new(upload_file, unit_id, current_user).call
     create_import_log_record(import_result, unit_id)
