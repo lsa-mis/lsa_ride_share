@@ -167,10 +167,10 @@ class SystemReportsController < ApplicationController
         @uniqname = params[:uniqname]
       end
       if params[:from].present?
-        @from = params[:from]
+        @from = params[:from].to_datetime
       end
       if params[:to].present?
-        @to = params[:to]
+        @to = params[:to].to_datetime.end_of_day
       end
     end
 
