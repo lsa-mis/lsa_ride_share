@@ -300,20 +300,17 @@ class SystemReportsController < ApplicationController
             report_name = @uniqname + ": reservations for #{@unit} #{@term}"
           end
           res1 = Reservation.where("approved = ? AND driver_id IN (?)", true, student_ids).order(:start_time)
-          # res2 = Reservation.where("approved = ? AND backup_driver_id in (?)", true, student_ids).order(:start_time)
           res3 = Reservation.joins(:passengers).where("reservations.approved = ? AND reservation_passengers.student_id IN (?) ", true, student_ids).order(:start_time)
         else
           report_name = Student.find(@student_id).name + ": reservations for #{@unit} #{@term}"
           program = Program.find(@program_id)
           reservations_ids = program.reservations.where("approved = ?", true).ids
           res1 = program.reservations.where("approved = ? AND driver_id = ?", true, @student_id).order(:start_time)
-          # res2 = program.reservations.where("approved = ? AND backup_driver_id = ?", true, @student_id).order(:start_time)
           res3 = Reservation.joins(:passengers).where("reservation_passengers.reservation_id in (?) AND reservation_passengers.student_id = ?", reservations_ids,  @student_id).order(:start_time)
         end
         rows = []
         result = []
         res1.map { |r| rows << [r.id, r.car.car_number, r.program.title, show_reservation_time(r), r.site.title, r.car.car_number, r.number_of_people_on_trip, "driver"] }
-        # res2.map { |r| rows << [r.id, r.car.car_number, r.program.title, show_reservation_time(r), r.site.title, r.car.car_number, r.number_of_people_on_trip, "backup driver"] }
         res3.map { |r| rows << [r.id, r.car.car_number, r.program.title, show_reservation_time(r), r.site.title, r.car.car_number, r.number_of_people_on_trip, "passenger"] }
         columns = ["reservation", "car", "program", "reservation time", "site", "car", "number of people on trip", "role"]
         rows = rows.sort_by { |obj| obj[1] }
