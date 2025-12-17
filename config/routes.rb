@@ -8,8 +8,6 @@ Rails.application.routes.draw do
       get 'import_reservations_report', to: 'system_reports#import_reservations_report'
     end
   end
-  
-  
   get 'system_reports/', to: 'system_reports#index'
   get 'system_reports/run_report/', to: 'system_reports#run_report', as: :run_report
  

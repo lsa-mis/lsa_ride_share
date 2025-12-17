@@ -192,10 +192,6 @@ class SystemReportsController < ApplicationController
       end
       @programs = @programs.data(@term_id).order(:title)
       @students = []
-      if params[:unit_id].present?
-        @unit_id = params[:unit_id].to_i
-        @unit = Unit.find(@unit_id).name
-      end
       if params[:program_id].present?
         @program_id = params[:program_id].to_i
         @students = Program.find(params[:program_id]).students.order(:last_name)
@@ -208,7 +204,7 @@ class SystemReportsController < ApplicationController
       end
       if params[:from].present?
         @from = params[:from]
-      end     
+      end
       if params[:to].present?
         @to = params[:to]
       end

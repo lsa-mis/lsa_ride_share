@@ -205,7 +205,7 @@ export default class extends Controller {
     }
     else if (report_type == "reservations_for_student") {
       let student = this.studentTarget.value
-      let uniqname = this.uniqnameTarget.value.trim()
+      let uniqname = this.uniqnameTarget.value
       if (student == "" && uniqname == "") {
         error_text.innerHTML = "For this report please select a program and a student or type a uniqname"
         event.preventDefault()
