@@ -746,9 +746,7 @@ class ReservationsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
 
-    def valid_headers?(upload_file)
-      expected_headers = ["TERM NAME", "TERM ID",	"PROGRAM TITLE", "PROGRAM ID", "SITE TITLE", "SITE ID", "START DATE", "END DATE", "START TIME", "END TIME", "NUMBER OF PEOPLE ON TRIP", "RECURRING?", "FREQUENCY", "REPEAT", "IF WEEKLY", "IF MONTHLY", "UNTIL DATE", "CAR NUMBER", "CAR ID", "DRIVER", "PASSENGERS"]
-      
+    def valid_headers?(upload_file)      
       begin
         # Read the CSV file and get the headers from the second row (index 1)
         csv_data = CSV.read(upload_file.path)
