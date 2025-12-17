@@ -142,54 +142,6 @@ class SystemReportsController < ApplicationController
       end
     end
 
-    def run_report
-
-      if params[:unit_id].present?
-        @unit_id = params[:unit_id].to_i
-        @unit = Unit.find(@unit_id).name
-      end
-      if params[:term_id].present?
-        @term_id = params[:term_id].to_i
-        @term = Term.find(@term_id).name
-      end
-      if params[:program_id].present?
-        @program_id = params[:program_id].to_i
-      end
-      if params[:student_id].present?
-        @student_id = params[:student_id].to_i
-      end
-
-      if params[:uniqname].present?
-        @uniqname = params[:uniqname]
-      end
-
-      @title = "LSA Rideshare System Report"
-      report_type = params[:report_type]
-      @result = get_result(report_type)
-      if report_type == "vehicle_reports_all"
-        @link = true
-        @path = "vehicle_reports"
-      end
-
-      if report_type == "reservations_for_student"
-        @link = true
-        @path = "reservations"
-      end
-
-      if params[:format] == "csv"
-        data = data_to_csv(@result, @title, @link, @path)
-          respond_to do |format|
-            format.html
-            format.csv { send_data data, filename: "LSARideShare-report-#{DateTime.now.strftime('%-d-%-m-%Y at %I-%M%p')}.csv" }
-          end
-      else
-        render turbo_stream: turbo_stream.replace(
-          :reportListing,
-          partial: "system_reports/listing")
-      end
-      authorize :system_report
-    end
-
     def set_form_values
       @units = Unit.where(id: session[:unit_ids]).order(:name)
       @terms = Term.sorted

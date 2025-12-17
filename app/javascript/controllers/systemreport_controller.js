@@ -7,27 +7,6 @@ export default class extends Controller {
   connect() {
     console.log("connect - system report")
     this.initializeCSVOption()
-    this.setupTurboListener()
-  }
-
-  setupTurboListener() {
-    // Listen for turbo:frame-load event to detect when report content loads
-    document.addEventListener('turbo:frame-load', (event) => {
-      if (event.target.id === 'reportListing') {
-        console.log('Report content loaded')
-        this.markReportAsRun()
-      }
-    })
-    
-    // Also listen for regular page loads in case turbo streams are used
-    document.addEventListener('turbo:load', () => {
-      // Check if we're on a report page with data
-      const reportData = document.querySelector('[data-systemreport-target="reportListing"]')
-      if (reportData && reportData.innerHTML.trim() !== '') {
-        console.log('Report page loaded with data')
-        this.markReportAsRun()
-      }
-    })
   }
 
   changePrograms() {
@@ -252,7 +231,7 @@ export default class extends Controller {
 
   checkForExistingReportData() {
     const reportTable = document.querySelector('.report_table')
-    const reportData = document.querySelector('#reportListing')
+    const reportData = document.querySelector('#report_table')
     
     if (reportTable || (reportData && reportData.innerHTML.trim() !== '')) {
       this.reportRunTarget.value = "true"
@@ -267,9 +246,9 @@ export default class extends Controller {
   markReportAsRun() {
     // Check if there's actual report data on the page
     const reportTable = document.querySelector('.report_table')
-    const reportData = document.querySelector('#reportListing')
+    const reportData = document.querySelector('#report_table')
     
-    if (reportTable || (reportData && reportData.innerHTML.trim() !== '')) {
+    if (reportTable && reportData.innerHTML.trim() !== '') {
       this.reportRunTarget.value = "true"
       this.enableCSVOption()
       console.log("report marked as run - data found on page")
