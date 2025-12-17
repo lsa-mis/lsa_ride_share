@@ -77,7 +77,7 @@ class SystemReportsController < ApplicationController
     if params[:commit]
       collect_form_params
       @title = "Import Reservations Log Report"
-      @import_logs = ImportReservationLog.where(date: @from..@to).order(created_at: :desc)
+      @import_logs = ImportReservationLog.where(unit: @unit_id, date: @from..@to).order(created_at: :desc)
       if @import_logs.present?
         @metrics = {
           ' ' => @title,
