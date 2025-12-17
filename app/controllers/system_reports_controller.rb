@@ -2,25 +2,6 @@ class SystemReportsController < ApplicationController
   before_action :auth_user
   before_action :set_form_values
 
-  def index_old
-    @units = Unit.where(id: session[:unit_ids]).order(:name)
-    @terms = Term.sorted
-    @programs = []
-    if params[:unit_id].present?
-      @programs = Program.where(unit_id: params[:unit_id].to_i)
-    else
-      @programs = Program.where(unit_id: session[:unit_ids])
-    end
-    if params[:term_id].present?
-      @term_id = params[:term_id].to_i
-    else
-      @term_id = Term.current.present? ? Term.current[0].id : nil
-    end
-    @programs = @programs.data(@term_id).order(:title)
-    @students = []
-    authorize :system_report
-  end
-
   def index
     authorize :system_report
     @reports_list = [
@@ -33,124 +14,57 @@ class SystemReportsController < ApplicationController
   end
 
   def vehicle_reports_all_report
-  
-    @report_type = "vehicle_reports_all"
-    @show_student_filter = false
-    @show_program_filter = true
-    @show_date_filters = false
-    authorize :system_report, :vehicle_reports_all_report?
-    if params[:commit]
-      collect_form_params
-      @result = get_result("vehicle_reports_all")
-      @title = @result[0]['report_name'].titleize
-      @link = true
-      @model_class = VehicleReport
-      @url = "vehicle_report_path"
-      # @path = "vehicle_reports"
-      @headers = @result[0]['header']
-      @metrics = {
-        ' ' => @title,
-        'Total' => @result[0]['total'],
-      }
-      @data = @result[0]['rows']
-
-
-
-
-
-    else
-      @data = nil
-    end
-    keep_form_values
-
-    respond_to do |format|
-      format.html
-      format.csv { send_data csv_data("vehicle_reports"), filename: 'vehicle_reports_report.csv', type: 'text/csv' }
-    end
-
+    handle_report(
+      report_type: "vehicle_reports_all",
+      authorization: :vehicle_reports_all_report?,
+      show_student_filter: false,
+      show_program_filter: true,
+      show_date_filters: false,
+      link: true,
+      model_class: VehicleReport,
+      url: "vehicle_report_path",
+      csv_path: "vehicle_reports",
+      csv_filename: 'vehicle_reports_report.csv'
+    )
   end
 
   def totals_programs_report
-    @report_type = "totals_programs"
-    @show_student_filter = false
-    @show_program_filter = true
-    @show_date_filters = false
-    authorize :system_report, :totals_programs_report?
-    if params[:commit]
-      collect_form_params
-      @result = get_result("totals_programs")
-      @title = @result[0]['report_name'].titleize
-      @headers = @result[0]['header']
-      @metrics = {
-        ' ' => @title,
-        'Total' => @result[0]['total'],
-      }
-      @data = @result[0]['rows']
-    else
-      @data = nil
-    end
-    keep_form_values
-
-    respond_to do |format|
-      format.html
-      format.csv { send_data csv_data, filename: 'totals_by_programs_report.csv', type: 'text/csv' }
-    end
+    handle_report(
+      report_type: "totals_programs",
+      authorization: :totals_programs_report?,
+      show_student_filter: false,
+      show_program_filter: true,
+      show_date_filters: false,
+      link: false,
+      csv_filename: 'totals_by_programs_report.csv'
+    )
   end
 
   def approved_drivers_report
-    @report_type = "approved_drivers"
-    @show_student_filter = false
-    @show_program_filter = true
-    @show_date_filters = false
-    @link = false
-    authorize :system_report, :approved_drivers_report?
-    if params[:commit]
-      collect_form_params
-      @result = get_result("approved_drivers")
-      @title = @result[0]['report_name'].titleize
-      @headers = @result[0]['header']
-      @metrics = {
-        ' ' => @title,
-        'Total' => @result[0]['total'],
-      }
-      @data = @result[0]['rows']
-    else
-      @data = nil
-    end
-    keep_form_values
-    respond_to do |format|
-      format.html
-      format.csv { send_data csv_data, filename: 'approved_drivers_report.csv', type: 'text/csv' }
-    end
+    handle_report(
+      report_type: "approved_drivers",
+      authorization: :approved_drivers_report?,
+      show_student_filter: false,
+      show_program_filter: true,
+      show_date_filters: false,
+      link: false,
+      csv_filename: 'approved_drivers_report.csv'
+    )
   end
 
   def reservations_for_student_report
-    @report_type = "reservations_for_student"
-    @show_student_filter = true
-    @show_program_filter = true
-    @show_date_filters = false
-    @link = true
-    @model_class = Reservation
-    @url = "reservation_path"
-    authorize :system_report, :reservations_for_student_report?
-    if params[:commit]
-      collect_form_params
-      @result = get_result("reservations_for_student")
-      @title = @result[0]['report_name'].titleize
-      @headers = @result[0]['header']
-      @metrics = {
-        ' ' => @title,
-        'Total' => @result[0]['total'],
-      }
-      @data = @result[0]['rows']
-    else
-      @data = nil
-    end
-    keep_form_values
-    respond_to do |format|
-      format.html
-      format.csv { send_data csv_data("reservations"), filename: 'reservations_for_student_report.csv', type: 'text/csv' }
-    end
+    handle_report(
+      report_type: "reservations_for_student",
+      authorization: :reservations_for_student_report?,
+      show_student_filter: true,
+      show_program_filter: true,
+      show_date_filters: false,
+      link: true,
+      model_class: Reservation,
+      url: "reservation_path",
+      csv_path: "reservations",
+      csv_filename: 'reservations_for_student_report.csv'
+    )
   end
 
   def import_reservations_report
@@ -185,6 +99,48 @@ class SystemReportsController < ApplicationController
   end
 
   private
+
+    # Generic method to handle all report types and eliminate duplication
+    def handle_report(options = {})
+      @report_type = options[:report_type]
+      @show_student_filter = options.fetch(:show_student_filter, false)
+      @show_program_filter = options.fetch(:show_program_filter, true)
+      @show_date_filters = options.fetch(:show_date_filters, false)
+      @link = options.fetch(:link, false)
+      @model_class = options[:model_class] if options[:model_class]
+      @url = options[:url] if options[:url]
+      
+      authorize :system_report, options[:authorization]
+      
+      if params[:commit]
+        if options[:custom_logic]
+          # For reports with custom logic (like import_reservations)
+          options[:custom_logic].call
+        else
+          # Standard report logic
+          collect_form_params
+          @result = get_result(options[:report_type])
+          @title = @result[0]['report_name'].titleize
+          @headers = @result[0]['header']
+          @metrics = {
+            ' ' => @title,
+            'Total' => @result[0]['total'],
+          }
+          @data = @result[0]['rows']
+        end
+      else
+        @data = nil
+      end
+      
+      keep_form_values
+      
+      respond_to do |format|
+        format.html
+        csv_path = options[:csv_path]
+        csv_filename = options[:csv_filename]
+        format.csv { send_data csv_data(csv_path), filename: csv_filename, type: 'text/csv' }
+      end
+    end
 
     def run_report
 
@@ -337,7 +293,7 @@ class SystemReportsController < ApplicationController
         csv << []
         csv << @headers
         @data.each do |row|
-          if @request_link
+          if @link
             row[0] = URI.join(request.base_url + "/" + path + "/" + row[0].to_s)
           end
           csv << row
