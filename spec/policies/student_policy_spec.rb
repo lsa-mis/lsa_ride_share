@@ -10,20 +10,20 @@ RSpec.describe StudentPolicy, type: :policy do
     subject { described_class.new({ user: user, role: "super_admin" }, program_with_student.students) }
 
     it { is_expected.to forbid_actions(%i[]) }
-    it { is_expected.to permit_only_actions(%i[index show create new update edit update_student_list add_students update_mvr_status update_student_mvr_status canvas_results student_canvas_result destroy]) }
+    it { is_expected.to permit_only_actions(%i[index show create new update edit update_student_list add_students update_mvr_status update_student_mvr_status canvas_results student_canvas_result destroy get_programs_for_uniqname]) }
   end
 
   context 'with admin role' do
     subject { described_class.new({ user: user, role: "admin" }, program_with_student.students) }
 
     it { is_expected.to forbid_actions(%i[]) }
-    it { is_expected.to permit_only_actions(%i[index show create new update edit update_student_list add_students update_mvr_status update_student_mvr_status canvas_results student_canvas_result destroy]) }
+    it { is_expected.to permit_only_actions(%i[index show create new update edit update_student_list add_students update_mvr_status update_student_mvr_status canvas_results student_canvas_result destroy get_programs_for_uniqname]) }
   end
 
   context 'with manager role who is an instructor' do
     subject { described_class.new({ user: user_manager, params: {program_id: program_with_student.id }, role: "manager" }, program_with_student.students) }
 
-    it { is_expected.to forbid_actions(%i[show update edit update_mvr_status update_student_mvr_status canvas_results student_canvas_result]) }
+    it { is_expected.to forbid_actions(%i[show update edit update_mvr_status update_student_mvr_status canvas_results student_canvas_result get_programs_for_uniqname]) }
     it { is_expected.to permit_only_actions(%i[index create new add_students update_student_list destroy]) }
   end
 
