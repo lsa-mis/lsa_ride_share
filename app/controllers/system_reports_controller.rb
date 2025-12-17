@@ -232,7 +232,7 @@ class SystemReportsController < ApplicationController
 
     def csv_data(path = "")
       CSV.generate(headers: true) do |csv|
-        next csv << ["No data found"] if !@data
+        next csv << ["No data found"] if @data.blank?
 
         csv << [@title]
         csv << []
