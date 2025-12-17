@@ -972,7 +972,7 @@ module ApplicationHelper
     reservation.status == CONFLICT_STATUS
   end
 
-  def expected_headers 
+  def expected_reservation_import_headers 
     ["TERM NAME", "TERM ID", "PROGRAM TITLE", "PROGRAM ID", "SITE TITLE", "SITE ID", "START DATE", "END DATE", 
     "START TIME", "END TIME", "NUMBER OF PEOPLE ON TRIP", "RECURRING?", "FREQUENCY", "REPEAT", "IF WEEKLY", 
     "IF MONTHLY", "UNTIL DATE", "CAR NUMBER", "CAR ID", "DRIVER", "PASSENGERS"]

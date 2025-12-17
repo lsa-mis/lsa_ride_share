@@ -753,7 +753,7 @@ class ReservationsController < ApplicationController
         file_headers = csv_data[1] # Second row contains headers
         
         # Check if all expected headers are present
-        return (expected_headers - file_headers).empty?
+        return (expected_reservation_import_headers - file_headers).empty?
       rescue CSV::MalformedCSVError, StandardError => e
         Rails.logger.error "Error reading CSV headers: #{e.message}"
         return false
