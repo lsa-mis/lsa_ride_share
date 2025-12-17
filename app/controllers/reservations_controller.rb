@@ -67,6 +67,8 @@ class ReservationsController < ApplicationController
   def import_reservations_page
     if params[:unit_id].present?
       @unit_id = params[:unit_id]
+    else
+      @unit_id = session[:unit_ids].first
     end
     authorize Reservation
   end
