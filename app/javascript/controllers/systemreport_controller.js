@@ -10,10 +10,10 @@ export default class extends Controller {
   }
 
   changePrograms() {
-    console.log("change programs")
+    // console.log("change programs")
     let unit = this.unitTarget.value
     let term = this.termTarget.value
-    console.log("unit:", unit, "term:", term)
+    // console.log("unit:", unit, "term:", term)
     if (unit && term) {
       fetch(`/programs/get_programs_list/${unit}/${term}`)
         .then((response) => response.json())
@@ -25,28 +25,28 @@ export default class extends Controller {
   }
 
   updateProgramsSelect(data) {
-    console.log("update programs - data length:", data.length)
+    // console.log("update programs - data length:", data.length)
     let dropdown = this.programTarget;
     dropdown.length = 0;
 
     let defaultOption = document.createElement('option');
     defaultOption.value = '';
     if (data.length > 1) {
-      console.log("multiple programs")
+      // console.log("multiple programs")
       defaultOption.text = 'All Programs';
       dropdown.add(defaultOption);
       dropdown.selectedIndex = 0;
       let option;
       for (let i = 0; i < data.length; i++) {
         option = document.createElement('option');
-        console.log(option)
+        // console.log(option)
         option.value = data[i][0];
         option.text = data[i][1];
         //option.text = this.programTitle(data[i])
         dropdown.add(option);
       }
     } else if (data.length == 1) {
-      console.log("one program")
+      // console.log("one program")
       dropdown.selectedIndex = 0;
       let option;
       option = document.createElement('option');
@@ -57,7 +57,7 @@ export default class extends Controller {
         this.getStudents();
       }
     } else {
-      console.log("no programs")
+      // console.log("no programs")
       defaultOption.text = 'No programs for this term';
       dropdown.add(defaultOption);
     }
@@ -210,7 +210,7 @@ export default class extends Controller {
   }
 
   submitForm(event) {
-    console.log("submit form")
+    // console.log("submit form")
     let term = this.termTarget.value
     let unit = this.unitTarget.value
     let report_type = this.report_typeTarget.value
@@ -230,7 +230,7 @@ export default class extends Controller {
     }
     else {
       error_text.innerHTML = ""
-      console.log("form valid")
+      // console.log("form valid")
       // Don't mark report as run here - wait for actual content to load
     }
   }
@@ -253,10 +253,10 @@ export default class extends Controller {
     if (reportTable || (reportData && reportData.innerHTML.trim() !== '')) {
       this.reportRunTarget.value = "true"
       this.enableCSVOption()
-      console.log("existing report data found on page load")
+      // console.log("existing report data found on page load")
     } else {
       this.reportRunTarget.value = "false"
-      console.log("no existing report data found")
+      // console.log("no existing report data found")
     }
   }
 
@@ -268,9 +268,9 @@ export default class extends Controller {
     if (reportTable && reportData.innerHTML.trim() !== '') {
       this.reportRunTarget.value = "true"
       this.enableCSVOption()
-      console.log("report marked as run - data found on page")
+      // console.log("report marked as run - data found on page")
     } else {
-      console.log("no report data found, not marking as run")
+      // console.log("no report data found, not marking as run")
     }
   }
 
