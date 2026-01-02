@@ -492,6 +492,7 @@ module ApplicationHelper
   end
 
   def available?(car, range)
+    return true unless car.present?
     # if car is avalable for the time range
     range_begin = range.begin + 1.minute
     range_end = range.end - 1.minute
@@ -505,6 +506,7 @@ module ApplicationHelper
   end
 
   def available_edit?(reservation_id, car, range)
+    return true unless car.present?
     # if car is avalable for the time range - do not count the current reservation
     range_begin = range.begin + 1.minute
     range_end = range.end - 1.minute
@@ -968,6 +970,12 @@ module ApplicationHelper
 
   def conflict?(reservation)
     reservation.status == CONFLICT_STATUS
+  end
+
+  def expected_reservation_import_headers 
+    ["TERM NAME", "TERM ID", "PROGRAM TITLE", "PROGRAM ID", "SITE TITLE", "SITE ID", "START DATE", "END DATE", 
+    "START TIME", "END TIME", "NUMBER OF PEOPLE ON TRIP", "RECURRING?", "FREQUENCY", "REPEAT", "IF WEEKLY", 
+    "IF MONTHLY", "UNTIL DATE", "CAR NUMBER", "CAR ID", "DRIVER", "PASSENGERS"]
   end
 
 end

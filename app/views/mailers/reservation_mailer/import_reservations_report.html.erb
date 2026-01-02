@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <p>
+     Reservations were imported from a CSV file.
+    </p>
+    <% errors = @import_result[:errors] %>
+    <p>
+      <% if errors > 0 %>
+        Import finished with <%= "#{errors}" %> error(s).
+        <% @import_result[:note].each do |note_line| %>
+          <br/>
+          <%= note_line %>
+        <% end %>
+      <% else %>
+        Import finished successfully
+      <% end %>
+    </p>
+    <p>
+      Visit <%= link_to "LSA RideShare", all_root_url %> to view, modify, or cancel reservations.
+    </p>
+  </body>
+</html>
