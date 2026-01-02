@@ -21,9 +21,8 @@ RSpec.describe Program, type: :system do
 
       visit programs_path
       click_on "New Program"
-      
       fill_in "Title", with: "Fake Program"
-      select "Fall 2025", from: "Term"
+      select "Winter 2026", from: "Term"
       fill_in "Instructor's uniqname", with: uniqname
       fill_in "Canvas Course Link", with: "link"
       fill_in "Canvas Course Number", with: "123"
