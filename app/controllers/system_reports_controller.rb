@@ -8,9 +8,9 @@ class SystemReportsController < ApplicationController
       {title: "Vehicle Reports", url: vehicle_reports_all_report_system_reports_path, description: "This report shows Vehicle Reports statistics" },
       {title: "Totals by Programs", url: totals_programs_report_system_reports_path, description: "This report shows totals by programs statistics" },
       {title: "Approved Drivers", url: approved_drivers_report_system_reports_path, description: "This report shows all approved drivers for selected term and unit" },
-      {title: "Reservations for Student", url: reservations_for_student_report_system_reports_path, description: "This report shows all reservations for a selected student" }
+      {title: "Reservations for Student", url: reservations_for_student_report_system_reports_path, description: "This report shows all reservations for a selected student" },
+      {title: "Import Reservations", url: import_reservations_report_system_reports_path, description: "This report shows Import Reservations Log statistics" }
     ]
-    # {title: "Import Reservations", url: import_reservations_report_system_reports_path, description: "This report shows Import Reservations Log statistics" }
   end
 
   def vehicle_reports_all_report
