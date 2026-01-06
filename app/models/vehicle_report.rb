@@ -22,6 +22,10 @@
 #
 class VehicleReport < ApplicationRecord
   belongs_to :reservation
+  belongs_to :car, optional: true
+
+  before_save :set_car_reference
+  before_save :check_for_later_vehicle_reports
 
   has_one_attached :image_front_start do |attachable|
     attachable.variant :thumb, resize_to_limit: [100, 100]
@@ -242,6 +246,30 @@ class VehicleReport < ApplicationRecord
 
   def check_all_end_images?
     self.image_front_end.attached? && self.image_driver_end.attached? && self.image_passenger_end.attached? && self.image_back_end.attached?
+  end
+
+  def set_car_reference
+    self.car = reservation.car if reservation&.car
+  end
+
+  def check_for_later_vehicle_reports
+    return unless car && reservation
+    
+    # Find if there are any vehicle reports for reservations that ended after this one
+    later_reservations = car.reservations
+                           .joins(:vehicle_report)
+                           .where('end_time > ?', reservation.end_time)
+                           
+    if later_reservations.exists?
+      # A later vehicle report already exists, so we should not update the car
+      @should_skip_car_update = true
+    else
+      @should_skip_car_update = false
+    end
+  end
+
+  def should_skip_car_update?
+    @should_skip_car_update || false
   end
 
 end
