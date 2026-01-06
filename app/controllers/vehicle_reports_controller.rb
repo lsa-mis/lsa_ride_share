@@ -241,8 +241,9 @@ class VehicleReportsController < ApplicationController
         update_attributes[:parking_spot] = @vehicle_report.parking_spot_return
         update_attributes[:parking_note] = @vehicle_report.parking_note_return
       end
-      
-      car.update(update_attributes) if update_attributes.keys.count > 2
+      if (update_attributes.keys & [:mileage, :gas, :parking_spot, :parking_note]).any?
+        car.update(update_attributes)
+      end
     end
 
     def success_notice_message
