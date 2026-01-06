@@ -102,30 +102,12 @@ class VehicleReportsController < ApplicationController
   # POST /vehicle_reports or /vehicle_reports.json
   def create
     @vehicle_report = VehicleReport.new(vehicle_report_params)
-    if params[:parking_spot_return_select].present? && params[:parking_spot_return_select].downcase != "other"
-      @vehicle_report.parking_spot_return = params[:parking_spot_return_select]
-    elsif params[:parking_spot_return].present?
-      @vehicle_report.parking_spot_return = params[:parking_spot_return]
-    end
+    set_parking_spot_return
     authorize @vehicle_report
     respond_to do |format|
       if @vehicle_report.save
-        car = @reservation.car
-        if @vehicle_report.mileage_end.present?
-          car.update(mileage: @vehicle_report.mileage_end)
-        end
-        if @vehicle_report.gas_end.present?
-          car.update(gas: @vehicle_report.gas_end)
-        end
-        if @vehicle_report.parking_spot_return.present?
-          car.update(parking_spot: @vehicle_report.parking_spot_return, parking_note: @vehicle_report.parking_note_return, last_used: DateTime.now, last_driver_id: @reservation.driver_id)
-        end
-        if @vehicle_report.student_status
-          notice = "Vehicle report completed."
-        else
-          notice = "Vehicle report was successfully created."
-        end
-        format.html { redirect_to vehicle_report_url(@vehicle_report), notice: notice }
+        update_car_if_needed
+        format.html { redirect_to vehicle_report_url(@vehicle_report), notice: success_notice_message }
         format.json { render :show, status: :created, location: @vehicle_report }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -138,29 +120,11 @@ class VehicleReportsController < ApplicationController
   def update
     @reservation = @vehicle_report.reservation
     @vehicle_report.attributes = vehicle_report_params
-    if params[:parking_spot_return_select].present? && params[:parking_spot_return_select].downcase != "other"
-      @vehicle_report.parking_spot_return = params[:parking_spot_return_select]
-    elsif params[:parking_spot_return].present?
-      @vehicle_report.parking_spot_return = params[:parking_spot_return]
-    end
+    set_parking_spot_return
     respond_to do |format|
       if @vehicle_report.update(vehicle_report_params)
-        car = @vehicle_report.reservation.car
-        if @vehicle_report.mileage_end.present?
-          car.update(mileage: @vehicle_report.mileage_end)
-        end
-        if @vehicle_report.gas_end.present?
-          car.update(gas: @vehicle_report.gas_end)
-        end
-        if @vehicle_report.parking_spot_return.present?
-          car.update(parking_spot: @vehicle_report.parking_spot_return, parking_note: @vehicle_report.parking_note_return, last_used: DateTime.now, last_driver_id: @reservation.driver_id)
-        end
-        if @vehicle_report.student_status
-          notice = "Vehicle report completed."
-        else
-          notice = "Vehicle report was successfully updated."
-        end
-        format.html { redirect_to vehicle_report_url(@vehicle_report), notice: notice }
+        update_car_if_needed
+        format.html { redirect_to vehicle_report_url(@vehicle_report), notice: success_notice_message }
         format.json { render :show, status: :ok, location: @vehicle_report }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -254,6 +218,39 @@ class VehicleReportsController < ApplicationController
 
     def set_units
       @units = Unit.where(id: session[:unit_ids]).order(:name)
+    end
+
+    def set_parking_spot_return
+      if params[:parking_spot_return_select].present? && params[:parking_spot_return_select].downcase != "other"
+        @vehicle_report.parking_spot_return = params[:parking_spot_return_select]
+      elsif params[:parking_spot_return].present?
+        @vehicle_report.parking_spot_return = params[:parking_spot_return]
+      end
+    end
+
+    def update_car_if_needed
+      return if @vehicle_report.should_skip_car_update?
+      
+      @reservation ||= @vehicle_report.reservation
+      car = @reservation.car
+      update_attributes = { last_used: DateTime.now, last_driver_id: @reservation.driver_id }
+      
+      update_attributes[:mileage] = @vehicle_report.mileage_end if @vehicle_report.mileage_end.present?
+      update_attributes[:gas] = @vehicle_report.gas_end if @vehicle_report.gas_end.present?
+      if @vehicle_report.parking_spot_return.present?
+        update_attributes[:parking_spot] = @vehicle_report.parking_spot_return
+        update_attributes[:parking_note] = @vehicle_report.parking_note_return
+      end
+      
+      car.update(update_attributes) if update_attributes.keys.count > 2
+    end
+
+    def success_notice_message
+      if @vehicle_report.student_status
+        "Vehicle report completed."
+      else
+        action_name == 'create' ? "Vehicle report was successfully created." : "Vehicle report was successfully updated."
+      end
     end
 
     # Only allow a list of trusted parameters through.
