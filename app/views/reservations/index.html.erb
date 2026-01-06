@@ -75,7 +75,7 @@
                 <%= link_to reservation_path(reservation.id), class: "link_to", data: {turbo_frame: "_top"} do %>
                   <span">
                     <%= reservation.display_name %>
-                    <% if no_good_driver?(reservation) || conflict?(reservation) %>
+                    <% if no_good_driver?(reservation) || conflict?(reservation) || car_currently_unavailable?(reservation) %>
                       <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
                     <% end %>
                     <% if reservation.approved %>
@@ -88,7 +88,7 @@
                 <%= link_to reservation_path(reservation.id), class: "link_to", data: {turbo_frame: "_top"} do %>
                   <span">
                     <%= reservation.display_name %>
-                    <% if no_good_driver?(reservation) || conflict?(reservation) %>
+                    <% if no_good_driver?(reservation) || conflict?(reservation) || car_currently_unavailable?(reservation) %>
                       <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
                     <% end %>
                     <% if reservation.approved %>

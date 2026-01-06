@@ -150,12 +150,30 @@ module ApplicationHelper
   
   def show_car(reservation)
     if reservation.car.present?
-      reservation.car.car_number
+      if reservation.car.status == "unavailable" && reservation.end_time > DateTime.now
+        tags = html_escape('') # initialize an html safe string we can append to
+        tags << content_tag(:i, nil, class: "fa-solid fa-triangle-exclamation", style: "color:#c53030;")
+        tags << content_tag(:span, " #{reservation.car.car_number} - unavailable", class: 'unavailable')
+        tags
+      else
+        reservation.car.car_number
+      end
     else
       tags = html_escape('') # initialize an html safe string we can append to
       tags << content_tag(:i, nil, class: "fa-solid fa-triangle-exclamation", style: "color:#c53030;")
       tags << content_tag(:span, " No car selected", class: 'unavailable')
       tags
+    end
+  end
+
+  def show_unavailable_car(car, day)
+    if car.status == "unavailable" && day > Date.today - 1.day
+      tags = html_escape('') # initialize an html safe string we can append to
+      tags << content_tag(:i, nil, class: "fa-solid fa-triangle-exclamation", style: "color:#c53030;")
+      tags << content_tag(:span, " #{car.car_number} - unavailable", class: 'unavailable')
+      tags
+    else
+      car.car_number
     end
   end
 
@@ -168,6 +186,10 @@ module ApplicationHelper
       end
     end
     return location
+  end
+
+  def car_currently_unavailable?(reservation)
+    reservation.car.present? && reservation.car.status == "unavailable" && reservation.end_time > DateTime.now
   end
 
   def show_driver(reservation)

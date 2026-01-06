@@ -39,6 +39,14 @@ class Car < ApplicationRecord
 
   scope :data, ->(unit_id) { unit_id.present? ? where(unit_id: unit_id) : all }
   scope :available, -> { where(status: 'available') }
+  scope :unavailable_with_reservations_for_unit_on, ->(unit_id, day) {
+    where(status: 'unavailable', unit_id: unit_id)
+    .joins(:reservations)
+    .where(reservations: {
+      start_time: day.beginning_of_day..day.end_of_day
+    })
+    .distinct
+  }
 
   def reservations_past
     self.reservations.where('start_time <= ?', DateTime.now).sort_by(&:start_time).reverse
