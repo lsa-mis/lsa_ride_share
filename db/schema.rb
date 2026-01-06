@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_11_28_223849) do
+ActiveRecord::Schema[7.1].define(version: 2026_01_05_233618) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -365,6 +365,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_28_223849) do
     t.string "parking_spot_return"
     t.text "parking_note"
     t.text "parking_note_return"
+    t.bigint "car_id"
+    t.index ["car_id"], name: "index_vehicle_reports_on_car_id"
     t.index ["reservation_id"], name: "index_vehicle_reports_on_reservation_id"
   end
 
@@ -391,5 +393,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_11_28_223849) do
   add_foreign_key "students", "courses"
   add_foreign_key "students", "programs"
   add_foreign_key "unit_preferences", "units"
+  add_foreign_key "vehicle_reports", "cars"
   add_foreign_key "vehicle_reports", "reservations"
 end

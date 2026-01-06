@@ -23,6 +23,7 @@
 class Car < ApplicationRecord
   belongs_to :unit
   has_many :reservations
+  has_many :vehicle_reports, dependent: :restrict_with_exception
   has_many :notes, as: :noteable
   has_many_attached :initial_damages do |attachable|
     attachable.variant :thumb, resize_to_limit: [640, 480]
