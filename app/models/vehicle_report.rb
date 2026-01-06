@@ -256,16 +256,10 @@ class VehicleReport < ApplicationRecord
     return unless car && reservation
     
     # Find if there are any vehicle reports for reservations that ended after this one
-    later_reservations = car.reservations
-                           .joins(:vehicle_report)
-                           .where('end_time > ?', reservation.end_time)
-                           
-    if later_reservations.exists?
-      # A later vehicle report already exists, so we should not update the car
-      @should_skip_car_update = true
-    else
-      @should_skip_car_update = false
-    end
+    @should_skip_car_update = car.reservations
+                                 .joins(:vehicle_report)
+                                 .where('end_time > ?', reservation.end_time)
+                                 .exists?
   end
 
   def should_skip_car_update?
