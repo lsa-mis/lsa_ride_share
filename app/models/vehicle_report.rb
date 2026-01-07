@@ -246,8 +246,8 @@ class VehicleReport < ApplicationRecord
   end
 
   def should_skip_car_update?
-    car = reservation.car if reservation&.car
-    return true unless car && reservation
+    return true unless reservation&.car
+    car = reservation.car
     car.reservations.joins(:vehicle_report)
                     .where('end_time > ?', reservation.end_time)
                     .exists?
