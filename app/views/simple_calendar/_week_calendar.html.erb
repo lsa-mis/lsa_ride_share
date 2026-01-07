@@ -50,8 +50,17 @@
         <% end %>
         <% @cars.each do |car| %>
           <tr class="mi_tbody_tr border">
-            <th border>
+            <th>
               Car <%= car.car_number %>
+            </th>
+            <td></td>
+            <%= render 'simple_calendar/week_calendar_car_tr', car: car, day: day %>
+          </tr>
+        <% end %>
+        <% Car.unavailable_with_reservations_for_unit_on(@unit_id, day).each do |car| %>
+          <tr class="mi_tbody_tr border">
+            <th>
+              Car <%= show_unavailable_car(car, day) %>
             </th>
             <td></td>
             <%= render 'simple_calendar/week_calendar_car_tr', car: car, day: day %>

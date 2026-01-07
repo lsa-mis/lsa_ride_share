@@ -22,6 +22,7 @@
 #
 class VehicleReport < ApplicationRecord
   belongs_to :reservation
+  belongs_to :car, optional: true
 
   has_one_attached :image_front_start do |attachable|
     attachable.variant :thumb, resize_to_limit: [100, 100]
@@ -242,6 +243,14 @@ class VehicleReport < ApplicationRecord
 
   def check_all_end_images?
     self.image_front_end.attached? && self.image_driver_end.attached? && self.image_passenger_end.attached? && self.image_back_end.attached?
+  end
+
+  def should_skip_car_update?
+    return true unless reservation&.car
+    car = reservation.car
+    car.reservations.joins(:vehicle_report)
+                    .where('end_time > ?', reservation.end_time)
+                    .exists?
   end
 
 end

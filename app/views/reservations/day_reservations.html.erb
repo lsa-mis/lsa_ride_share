@@ -56,7 +56,16 @@
                 </td>
                 <td class="mi_tbody_td">
                   <% if reservation.car.present? %>
-                    <%= link_to reservation.car.car_number, car_path(reservation.car), class: "link_to", data: {turbo_frame: "_top"}  %>
+                    <% if car_currently_unavailable?(reservation) %>
+                      <%= link_to car_path(reservation.car), class: "link_to", data: {turbo_frame: "_top"} do %>
+                        <span class="status-false">
+                          <%= "#{reservation.car.car_number} - unavailable" %>
+                        </span>
+                      <% end %>
+                      <i class="fa-solid fa-triangle-exclamation" style="color:#c53030"></i>
+                    <% else %>
+                      <%= link_to reservation.car.car_number, car_path(reservation.car), class: "link_to", data: {turbo_frame: "_top"}  %>
+                    <% end %>
                   <% else %>
                     <span class="status-false">
                       <%= reservation.display_name %>
