@@ -23,6 +23,7 @@
 class Car < ApplicationRecord
   belongs_to :unit
   has_many :reservations
+  has_many :vehicle_reports, dependent: :restrict_with_exception
   has_many :notes, as: :noteable
   has_many_attached :initial_damages do |attachable|
     attachable.variant :thumb, resize_to_limit: [640, 480]
@@ -38,6 +39,14 @@ class Car < ApplicationRecord
 
   scope :data, ->(unit_id) { unit_id.present? ? where(unit_id: unit_id) : all }
   scope :available, -> { where(status: 'available') }
+  scope :unavailable_with_reservations_for_unit_on, ->(unit_id, day) {
+    where(status: 'unavailable', unit_id: unit_id)
+      .joins(:reservations)
+      .where(reservations: {
+        start_time: day.beginning_of_day..day.end_of_day
+      })
+      .distinct
+    }
 
   def reservations_past
     self.reservations.where('start_time <= ?', DateTime.now).sort_by(&:start_time).reverse

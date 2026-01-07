@@ -29,7 +29,7 @@
             </td>
             <% if reservation.vehicle_report.present? %>
               <td class="mi_tbody_td">
-                <%= link_to show_date(reservation.vehicle_report.updated_at), reservation_vehicle_report_path(reservation.vehicle_report), class: "link_to", data: { "turbo-frame": "_top" } %>
+                <%= link_to show_date(reservation.vehicle_report.updated_at), vehicle_report_path(reservation.vehicle_report), class: "link_to", data: { "turbo-frame": "_top" } %>
               </td>
               <td class="mi_tbody_td status-<%= reservation.vehicle_report.student_status %>">
                 <%= show_vehicle_report_student_status(reservation.vehicle_report) %>
