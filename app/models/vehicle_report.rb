@@ -19,10 +19,11 @@
 #  parking_spot_return :string
 #  parking_note        :text
 #  parking_note_return :text
+#  car_id              :bigint
 #
 class VehicleReport < ApplicationRecord
   belongs_to :reservation
-  belongs_to :car, optional: true
+  belongs_to :car
 
   has_one_attached :image_front_start do |attachable|
     attachable.variant :thumb, resize_to_limit: [100, 100]
