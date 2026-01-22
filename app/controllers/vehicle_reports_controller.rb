@@ -102,6 +102,7 @@ class VehicleReportsController < ApplicationController
   # POST /vehicle_reports or /vehicle_reports.json
   def create
     @vehicle_report = VehicleReport.new(vehicle_report_params)
+    @vehicle_report.car = @reservation.car
     set_parking_spot_return
     authorize @vehicle_report
     respond_to do |format|
@@ -231,9 +232,8 @@ class VehicleReportsController < ApplicationController
     def update_car_if_needed
       return if @vehicle_report.should_skip_car_update?
       
-      @reservation ||= @vehicle_report.reservation
-      car = @reservation.car
-      update_attributes = { last_used: DateTime.now, last_driver_id: @reservation.driver_id }
+      car = @vehicle_report.car
+      update_attributes = { last_used: DateTime.now, last_driver_id: @vehicle_report.reservation.driver_id }
       
       update_attributes[:mileage] = @vehicle_report.mileage_end if @vehicle_report.mileage_end.present?
       update_attributes[:gas] = @vehicle_report.gas_end if @vehicle_report.gas_end.present?

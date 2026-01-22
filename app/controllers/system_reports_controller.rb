@@ -11,7 +11,6 @@ class SystemReportsController < ApplicationController
       {title: "Reservations for Student", url: reservations_for_student_report_system_reports_path, description: "This report shows all reservations for a selected student" }
     ]
     # {title: "Import Reservations", url: import_reservations_report_system_reports_path, description: "This report shows Import Reservations Log statistics" }
-
   end
 
   def vehicle_reports_all_report

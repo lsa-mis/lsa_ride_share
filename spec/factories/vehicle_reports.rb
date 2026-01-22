@@ -19,6 +19,7 @@
 #  parking_spot_return :string
 #  parking_note        :text
 #  parking_note_return :text
+#  car_id              :bigint
 #
 FactoryBot.define do
   factory :vehicle_report do
