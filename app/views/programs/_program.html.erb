@@ -48,7 +48,7 @@
 
   <div class="py-2">
     <p class="body-lg-bold-text inline">
-      Number of students:
+      Number of Students:
     </p>
     <p class="body-lg-text ml-2 inline">
       <%= number_of_students(program) %>
@@ -57,7 +57,7 @@
 
   <div class="py-2">
     <p class="body-lg-bold-text inline">
-      Number of students using RideShare:
+      Number of Students Using RideShare:
     </p>
     <p class="body-lg-text ml-2 inline">
       <%= number_of_students_using_ride_share(program) %>
@@ -66,7 +66,7 @@
 
   <div class="py-2">
     <p class="body-lg-bold-text inline">
-      MVR link:
+      MVR Link:
     </p>
     <p class="body-lg-text ml-2 inline">
       <%= program.mvr_link %>
@@ -75,7 +75,7 @@
 
   <div class="py-2">
     <p class="body-lg-bold-text inline">
-      Canvas course link:
+      Canvas Course Link:
     </p>
     <p class="body-lg-text ml-2 inline">
       <%= program.canvas_link %>
@@ -84,7 +84,7 @@
   <% if program.additional_options.present? %>
     <div class="pt-2">
       <p class="body-lg-bold-text flex-none">
-        Additional options:
+        Additional Options:
       </p>
       <p class="body-lg-text ml-2">
         <%= sanitize program.additional_options %>
