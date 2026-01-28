@@ -49,7 +49,7 @@
 
     <div class="py-2">
       <p class="body-lg-bold-text inline">
-        Start time:
+        Start Time:
       </p>
       <p class="body-lg-text ml-2 inline">
         <%= show_date_time(reservation.start_time + 15.minute) %>
@@ -58,7 +58,7 @@
 
     <div class="py-2">
       <p class="body-lg-bold-text inline">
-        End time:
+        End Time:
       </p>
       <p class="body-lg-text ml-2 inline">
         <%= show_date_time(reservation.end_time - 15.minute) %>
@@ -91,36 +91,16 @@
 
     <div class="py-2">
       <p class="body-lg-bold-text inline">
-        Driver phone:
+        Driver Phone:
       </p>
       <p class="body-lg-text ml-2 inline">
         <%= show_driver_phone_number(reservation) %>
       </p>
     </div>
 
-    <% if reservation.backup_driver.present? %>
-      <div class="py-2">
-        <p class="body-lg-bold-text inline">
-          Backup Driver:
-        </p>
-        <p class="body-lg-text ml-2 inline">
-          <%= show_backup_driver(reservation) %>
-        </p>
-        <%= display_backup_driver_status(reservation) %>
-      </div>
-      <div class="py-2">
-        <p class="body-lg-bold-text inline">
-          Backup driver phone:
-        </p>
-        <p class="body-lg-text ml-2 inline">
-          <%= reservation.backup_driver_phone %>
-        </p>
-      </div>
-    <% end %>
-
     <div class="py-2">
       <p class="body-lg-bold-text inline">
-        Number of people on trip:
+        Number of People on Trip:
       </p>
       <p class="body-lg-text ml-2 inline">
         <%= reservation.number_of_people_on_trip %>
