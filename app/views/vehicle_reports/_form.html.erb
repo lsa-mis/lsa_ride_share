@@ -75,7 +75,7 @@
 
       <% if @vehicle_report.parking_note.present? %>
         <div class="my-5">
-          <%= label_tag 'Parking Note (Depart)', nil, class: "fancy_label" %>
+          <%= form.label :parking_note, "Parking Note (Depart)", class: "fancy_label" %>
           <%= form.text_field :parking_note, placeholder: "Parking Note", class: "input_text_field" %>
         </div>
       <% end %>
@@ -92,7 +92,7 @@
               </p>
             </div>
           <% end %>
-          <%= label_tag 'parking_spot_return', 'Parking Spot (Return)', class: "fancy_label" %>
+          <%= label_tag 'parking_spot_return_select', 'Parking Spot (Return)', class: "fancy_label" %>
           <%= select_tag "parking_spot_return_select", options_for_select(@parking_locations, @vehicle_report.parking_spot_return), include_blank: "Select ...", class: "input_text_field",
             "data-vehiclereport-target": "parking_return", "data-action": "vehiclereport#otherParking" %>
           <div data-vehiclereport-target="parking_other_div" class="my-5 fields--hide">
@@ -110,7 +110,7 @@
     </div>
 
     <div class="my-5">
-      <%= label_tag 'parking_note_return', 'Parking Note (Return)', class: "fancy_label" %>
+      <%= form.label :parking_note_return, "Parking Note (Return)", class: "fancy_label" %>
       <%= form.text_field :parking_note_return, placeholder: "Parking Note", class: "input_text_field" %>
     </div>
 
