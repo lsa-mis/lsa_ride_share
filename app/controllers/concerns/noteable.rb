@@ -4,7 +4,7 @@ module Noteable
   include RecordHelper
 
   included do
-    before_action :authenticate_user!
+    before_action :auth_user
   end
 
   def create
