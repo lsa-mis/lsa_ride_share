@@ -32,7 +32,7 @@
 
     <div class="py-2">
       <p class="body-lg-bold-text inline">
-        Mileage start:
+        Mileage Start:
       </p>
       <p class="body-lg-text ml-2 inline">
         <%= vehicle_report.mileage_start %>
@@ -41,7 +41,7 @@
 
     <div class="py-2">
       <p class="body-lg-bold-text inline">
-        Mileage end:
+        Mileage End:
       </p>
       <p class="body-lg-text ml-2 inline">
         <%= vehicle_report.mileage_end %>
@@ -50,7 +50,7 @@
 
     <div class="py-2">
       <p class="body-lg-bold-text inline">
-        Trip mileage total:
+        Trip Mileage Total:
       </p>
       <p class="body-lg-text ml-2 inline">
         <%= calculate_mileage(vehicle_report) %>
@@ -59,7 +59,7 @@
 
     <div class="py-2">
       <p class="body-lg-bold-text inline">
-        Fuel % (departure):
+        Fuel % (Departure):
       </p>
       <p class="body-lg-text ml-2 inline">
         <%= show_percentage(vehicle_report.gas_start) %>
@@ -68,7 +68,7 @@
 
     <div class="py-2">
       <p class="body-lg-bold-text inline">
-        Fuel % (return):
+        Fuel % (Return):
       </p>
       <p class="body-lg-text ml-2 inline">
         <%= show_percentage(vehicle_report.gas_end) %>
@@ -77,7 +77,7 @@
 
     <div class="py-2">
       <p class="body-lg-bold-text inline">
-        Parking Spot (depart):
+        Parking Spot (Depart):
       </p>
       <p class="body-lg-text ml-2 inline">
         <%= vehicle_report.parking_spot %>
@@ -87,7 +87,7 @@
     <% if vehicle_report.parking_note.present? %>
       <div class="py-2">
         <p class="body-lg-bold-text inline">
-          Parking Note (depart):
+          Parking Note (Depart):
         </p>
         <p class="body-lg-text ml-2 inline">
           <%= vehicle_report.parking_note %>
@@ -97,7 +97,7 @@
 
     <div class="py-2">
       <p class="body-lg-bold-text inline">
-        Parking Spot (return):
+        Parking Spot (Return):
       </p>
       <p class="body-lg-text ml-2 inline">
         <%= vehicle_report.parking_spot_return %>
@@ -107,7 +107,7 @@
     <% if vehicle_report.parking_note_return.present? %>
       <div class="py-2">
         <p class="body-lg-bold-text inline">
-          Parking Note (return):
+          Parking Note (Return):
         </p>
         <p class="body-lg-text ml-2 inline">
           <%= vehicle_report.parking_note_return %>

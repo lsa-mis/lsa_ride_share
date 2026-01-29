@@ -40,7 +40,7 @@
 
   <div class="my-5" id="instructor">
     <%= form.fields_for :instructor, @instructor do |instructor_attributes| %>
-      <%= form.label :instructor_attributes_uniqname, "Instructor's uniqname *", class: "fancy_label" %>
+      <%= form.label :instructor_attributes_uniqname, "Instructor's Uniqname *", class: "fancy_label" %>
       <%= instructor_attributes.text_field :uniqname, required: true, placeholder: "Uniqname", class: "input_text_field" %>
     <% end %>
   </div>
@@ -55,7 +55,7 @@
 
   <% if program.persisted? %>
     <div class="my-5">
-      <%= form.label :number_of_students_using_ride_share, class: "fancy_label" %>
+      <%= form.label :number_of_students_using_ride_share, "Number of Students Using Ride Share", class: "fancy_label" %>
       <%= form.number_field :number_of_students_using_ride_share, placeholder: "Number", class: "input_text_field" %>
     </div>
   <% end %>
