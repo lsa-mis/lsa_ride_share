@@ -74,7 +74,7 @@ class Reservation < ApplicationRecord
   end
 
   def added_people
-    number = self.passengers.count + self.passengers_managers.count + (self.driver.present? ? 1 : 0).to_i + (self.driver_manager.present? ? 1 : 0).to_i
+    number = self.passengers.count + self.passengers_managers.count + (self.driver.present? ? 1 : 0) + (self.driver_manager.present? ? 1 : 0)
     if self.program.non_uofm_passengers
       number += self.number_of_non_uofm_passengers
     end
