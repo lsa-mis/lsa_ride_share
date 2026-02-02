@@ -20,10 +20,6 @@
               <td class="mi_tbody_td">
                 <%= link_to 'Driver', reservation_path(reservation), class: "link_to", data: {turbo_frame: "_top"} %>
               </td>
-            <% elsif reservation.backup_driver == @student %>
-              <td class="mi_tbody_td">
-                <%= link_to 'Backup Driver', reservation_path(reservation), class: "link_to", data: {turbo_frame: "_top"} %>
-              </td>
             <% else %>
               <td class="mi_tbody_td">
                 <%= link_to 'Passenger', reservation_path(reservation), class: "link_to", data: {turbo_frame: "_top"} %>
@@ -59,10 +55,6 @@
           <% if reservation.driver == @student %>
             <td class="mi_tbody_td">
               <%= link_to 'Driver', reservation_path(reservation), class: "link_to", data: {turbo_frame: "_top"} %>
-            </td>
-          <% elsif reservation.backup_driver == @student %>
-            <td class="mi_tbody_td">
-              <%= link_to 'Backup Driver', reservation_path(reservation), class: "link_to", data: {turbo_frame: "_top"} %>
             </td>
           <% else %>
             <td class="mi_tbody_td">

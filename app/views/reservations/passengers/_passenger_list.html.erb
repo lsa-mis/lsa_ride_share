@@ -81,19 +81,6 @@
           </td>
         <% end %>
       </tr>
-      <% if @reservation.backup_driver.present? %>
-        <tr class="mi_tbody_tr">
-          <td class="mi_tbody_td">
-            <%= @reservation.backup_driver.uniqname %>
-          </td>
-          <td class="mi_tbody_td">
-            <%= @reservation.backup_driver.name %>
-          </td>
-          <td class="mi_tbody_td">
-            Backup Driver
-          </td>
-        <% end %>
-      </tr>
     </tbody>
   </table>
   <% if @reservation.program.non_uofm_passengers && @reservation.non_uofm_passengers.present? %>

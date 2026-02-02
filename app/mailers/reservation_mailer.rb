@@ -106,11 +106,6 @@ class ReservationMailer < ApplicationMailer
         recipients << email_address(@reservation.driver_manager)
       end
     end
-    if @reservation.backup_driver.present? 
-      if subscribed?(mailer: "one_hour_reminder", driver: @reservation.backup_driver)
-        recipients << email_address(@reservation.backup_driver)
-      end
-    end
     if recipients.present?
       @recipients = recipients.uniq.join(", ")
       set_subject_email_type_recurring_rule("one_hour_reminder")
@@ -129,11 +124,6 @@ class ReservationMailer < ApplicationMailer
     if @reservation.driver_manager.present? 
       if subscribed?(mailer: "vehicle_report_reminder", driver: @reservation.driver_manager)
         recipients << email_address(@reservation.driver_manager)
-      end
-    end
-    if @reservation.backup_driver.present? 
-      if subscribed?(mailer: "vehicle_report_reminder", driver: @reservation.backup_driver)
-        recipients << email_address(@reservation.backup_driver)
       end
     end
     if recipients.present?
@@ -187,8 +177,6 @@ class ReservationMailer < ApplicationMailer
     else
       @driver_name = "Not Selected"
     end
-      @backup_driver_name = show_backup_driver(@reservation)
-
   end
 
   def set_passengers
@@ -225,7 +213,6 @@ class ReservationMailer < ApplicationMailer
     recipients << User.find(@reservation.reserved_by).principal_name.presence unless reserved_by_flag
     recipients << email_address(@reservation.driver) if @reservation.driver.present?
     recipients << email_address(@reservation.driver_manager) if @reservation.driver_manager.present?
-    recipients << email_address(@reservation.backup_driver) if @reservation.backup_driver.present?
     recipients << @passengers_emails if @passengers_emails.present?
     recipients << cancel_emails if cancel_emails.present?
     recipients << @unit_email if admin_flag
