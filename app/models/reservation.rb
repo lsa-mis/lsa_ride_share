@@ -31,6 +31,7 @@
 #
 class Reservation < ApplicationRecord
   include ApplicationHelper
+  
   belongs_to :program
   belongs_to :site
   belongs_to :car, optional: true
