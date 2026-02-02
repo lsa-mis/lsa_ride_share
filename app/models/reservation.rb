@@ -36,11 +36,9 @@ class Reservation < ApplicationRecord
   belongs_to :car, optional: true
   belongs_to :driver, optional: true, class_name: 'Student', foreign_key: :driver_id
   belongs_to :driver_manager, optional: true, class_name: 'Manager', foreign_key: :driver_manager_id
-  belongs_to :backup_driver, optional: true, class_name: 'Student', foreign_key: :backup_driver_id
 
   has_one :next_reservation, class_name: "Reservation", foreign_key: :next
   belongs_to :prev_reservation, class_name: "Reservation", foreign_key: :prev, optional: true
-
 
   has_many :reservation_passengers
   has_many :passengers, through: :reservation_passengers, source: :student
@@ -78,11 +76,15 @@ class Reservation < ApplicationRecord
   end
 
   def added_people
-    number = self.passengers.count + self.passengers_managers.count + (self.driver.present? ? 1 : 0).to_i + (self.backup_driver.present? ? 1 : 0).to_i + + (self.driver_manager.present? ? 1 : 0).to_i
+    number = self.passengers.count + self.passengers_managers.count + (self.driver.present? ? 1 : 0).to_i + (self.driver_manager.present? ? 1 : 0).to_i
     if self.program.non_uofm_passengers
       number += self.number_of_non_uofm_passengers
     end
     return number
+  end
+
+  def all_passengers
+    self.passengers.count + self.passengers_managers.count
   end
 
   def check_number_of_people_on_trip
