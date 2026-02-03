@@ -186,9 +186,6 @@ class RecurringReservation
     if reservation.driver.present?
       emails << email_address(reservation.driver)
     end
-    if reservation.backup_driver.present?
-      emails << email_address(reservation.backup_driver)
-    end
     if reservation.driver_manager.present?
       emails << email_address(reservation.driver_manager)
     end

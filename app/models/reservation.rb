@@ -31,17 +31,14 @@
 #
 class Reservation < ApplicationRecord
   include ApplicationHelper
+  
   belongs_to :program
   belongs_to :site
   belongs_to :car, optional: true
   belongs_to :driver, optional: true, class_name: 'Student', foreign_key: :driver_id
   belongs_to :driver_manager, optional: true, class_name: 'Manager', foreign_key: :driver_manager_id
-  belongs_to :backup_driver, optional: true, class_name: 'Student', foreign_key: :backup_driver_id
-
   has_one :next_reservation, class_name: "Reservation", foreign_key: :next
   belongs_to :prev_reservation, class_name: "Reservation", foreign_key: :prev, optional: true
-
-
   has_many :reservation_passengers
   has_many :passengers, through: :reservation_passengers, source: :student
   has_many :reservation_passengers_managers

@@ -36,20 +36,12 @@ class Student < ApplicationRecord
     Reservation.no_or_not_complete_vehicle_reports.where(driver_id: self)
   end
 
-  def backup_driver_current
-    Reservation.no_or_not_complete_vehicle_reports.where(backup_driver_id: self)
-  end
-
   def passenger_current
     Reservation.no_or_not_complete_vehicle_reports.joins(:passengers).where("reservation_passengers.student_id = ?", self)
   end
 
   def driver_past
     Reservation.complete_vehicle_reports.where(driver_id: self)
-  end
-
-  def backup_driver_past
-    Reservation.complete_vehicle_reports.where(backup_driver_id: self)
   end
 
   def passenger_past
@@ -60,24 +52,20 @@ class Student < ApplicationRecord
     Reservation.where("driver_id = ? AND date_trunc('day', start_time) > ?", self, Date.today)
   end
 
-  def backup_driver_future
-    Reservation.where("backup_driver_id = ? AND date_trunc('day', start_time) > ?", self, Date.today)
-  end
-
   def passenger_future
     Reservation.joins(:passengers).where("reservation_passengers.student_id = ? AND date_trunc('day', start_time) > ?", self, Date.today)
   end
 
   def reservations_current
-    driver_current + backup_driver_current + passenger_current
+    driver_current + passenger_current
   end
 
   def reservations_past
-    driver_past + backup_driver_past + passenger_past
+    driver_past + passenger_past
   end
 
   def reservations_future
-    driver_future + backup_driver_future + passenger_future
+    driver_future + passenger_future
   end
 
   def reservations

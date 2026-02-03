@@ -68,7 +68,7 @@ class VehicleReportPolicy < ApplicationPolicy
   def can_student_create_report?(reservation)
     student = Student.find_by(program_id: reservation.program, uniqname: @user.uniqname)
     return false unless student.present?
-    if reservation.passengers.include?(student) || reservation.driver == student || reservation.backup_driver == student
+    if reservation.passengers.include?(student) || reservation.driver == student
       return true
     else
       return false
