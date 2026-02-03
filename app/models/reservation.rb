@@ -85,7 +85,7 @@ class Reservation < ApplicationRecord
     return number
   end
 
-  def all_passengers
+  def all_passengers_count
     self.passengers.count + self.passengers_managers.count
   end
 
