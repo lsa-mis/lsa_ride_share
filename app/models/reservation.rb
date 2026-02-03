@@ -85,6 +85,10 @@ class Reservation < ApplicationRecord
     return number
   end
 
+  def all_passengers
+    self.passengers.count + self.passengers_managers.count
+  end
+
   def check_number_of_people_on_trip
     return unless self.car.present?
     if self.number_of_people_on_trip > self.car.number_of_seats
