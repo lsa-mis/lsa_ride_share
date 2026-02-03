@@ -111,7 +111,7 @@
     <div>
       <div class="flex items-end gap-2 py-2 whitespace-nowrap">
         <p class="body-lg-bold-text">
-          Passengers (<%= @reservation.passengers.count %>):
+          Passengers (<%= @reservation.all_passengers_count %>):
         </p>
       </div>
       <% if @passengers.present? %>
