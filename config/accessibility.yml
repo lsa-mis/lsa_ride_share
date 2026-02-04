@@ -6,7 +6,8 @@
 # Global enable/disable flag for all accessibility checks
 # Set to false to completely disable all accessibility checks (manual and automatic)
 # When false, check_comprehensive_accessibility and automatic checks will be skipped
-# Default: true
+# Default: false (set to false to make all checks run in the GitHub actions CI)
+# Set to true to run accessibility checks: rspec spec/accessibility/all_pages_accessibility_spec.rb
 accessibility_enabled: false
 
 # WCAG compliance level (A, AA, AAA)
