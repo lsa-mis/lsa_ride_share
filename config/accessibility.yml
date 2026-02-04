@@ -1,7 +1,7 @@
 # Rails A11y Configuration
 #
 # This file configures accessibility checks for your Rails application.
-# See https://github.com/your-org/rails-a11y for full documentation.
+# See https://rayraycodes.github.io/rails-accessibility-testing/ for full documentation.
 
 # Global enable/disable flag for all accessibility checks
 # Set to false to completely disable all accessibility checks (manual and automatic)
