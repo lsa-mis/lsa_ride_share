@@ -43,11 +43,8 @@ RSpec.describe 'All Pages Accessibility', type: :accessibility do
     if errors.any?
       output << "\n" + "="*70
       output << "❌ #{errors.length} error#{'s' if errors.length != 1} found"
-      output << "="*70
       output << ""
-      
       format_issues_by_file(errors_by_file, output, 'error')
-      
       output << ""
       output << "="*70
     end
@@ -119,10 +116,9 @@ RSpec.describe 'All Pages Accessibility', type: :accessibility do
         warnings = result[:warnings] || []
         
         if errors.any? || warnings.any?
-          puts format_static_errors(errors, warnings)
           expect(errors).to be_empty, format_static_errors(errors, warnings)
         else
-          puts "✅ #{view_file}: No errors found"
+          puts "\n✅ #{view_file}: No errors found"
         end
       end
     end
