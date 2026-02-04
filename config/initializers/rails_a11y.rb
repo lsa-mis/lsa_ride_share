@@ -4,7 +4,7 @@
 #
 # Configure accessibility testing behavior for your Rails application.
 #
-# @see https://github.com/your-org/rails-a11y for documentation
+# @see https://rayraycodes.github.io/rails-accessibility-testing/ for documentation
 
 # Only configure if the gem is available (not in production)
 if defined?(RailsAccessibilityTesting)
