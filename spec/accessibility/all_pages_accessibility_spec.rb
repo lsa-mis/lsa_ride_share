@@ -120,10 +120,6 @@ RSpec.describe 'All Pages Accessibility', type: :accessibility do
         
         if errors.any? || warnings.any?
           puts format_static_errors(errors, warnings)
-          
-          if errors.any?
-            puts "Found #{errors.length} accessibility error#{'s' if errors.length != 1} in #{view_file}"
-          end
           expect(errors).to be_empty, format_static_errors(errors, warnings)
         else
           puts "✅ #{view_file}: No errors found"
