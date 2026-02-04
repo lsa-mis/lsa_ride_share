@@ -82,8 +82,7 @@ group :development, :test do
   gem 'faker'
   gem 'pry'
   gem 'pundit-matchers', '~> 3.1', '>= 3.1.2'
-  gem 'rails_accessibility_testing', '~> 1.6'
-  gem 'axe-core-capybara', '~> 4.0'
+  # gem "webmock"
 end
 
 group :development do

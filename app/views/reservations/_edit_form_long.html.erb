@@ -62,7 +62,7 @@
         <%= select_tag :number_of_people_on_trip, options_for_select(@number_of_seats, @number_of_people_on_trip), class: "input_text_field" %>
       </div>
       <div>
-        <%= label_tag :day_start, "Choose a Start Date", class: "fancy_label" %>
+        <%= form.label :day_start, "Choose a Start Date", class: "fancy_label" %>
         <%= text_field_tag :day_start, @day_start,
           data: {
           controller: "flatpickr",
@@ -74,7 +74,7 @@
         %>
       </div>
       <div>
-        <%= label_tag :day_end, "Choose an End Date", class: "fancy_label" %>
+        <%= form.label :day_end, "Choose an End Date", class: "fancy_label" %>
         <%= text_field_tag :day_end, @day_end,
           data: {
           controller: "flatpickr",
