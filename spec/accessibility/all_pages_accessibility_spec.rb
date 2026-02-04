@@ -65,8 +65,6 @@ RSpec.describe 'All Pages Accessibility', type: :accessibility do
     output.join("\n")
   end
 
-  private
-
   def format_issues_by_file(issues_by_file, output, issue_type)
     issues_by_file.each_with_index do |(file_path, file_issues), file_index|
       output << "" if file_index > 0
