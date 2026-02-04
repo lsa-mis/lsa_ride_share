@@ -3,7 +3,7 @@
     <div class="sm:px-0">
       <%= car.car_number %> - <%= car.number_of_seats %> seats
     </div>
-    <p class="h5-title">Available time</p>
+    <h5>Available time</h5>
     <div>
       <% available_ranges_long(car, day_start, day_end, unit_id).each do |range| %>
         <div>

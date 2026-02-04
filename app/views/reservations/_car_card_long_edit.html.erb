@@ -3,7 +3,7 @@
     <div class="sm:px-0">
       <%= car.car_number %> - <%= car.number_of_seats %> seats
     </div>
-    <p class="h5-title">Available time</p>
+    <h5>Available time</h5>
     <div>
       <% if @reservation.car == car %>
         <% available_ranges_long_edit(car, day_start, day_end, unit_id, @reservation).each do |range| %>

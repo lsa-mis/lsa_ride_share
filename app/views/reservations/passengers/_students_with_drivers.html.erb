@@ -7,10 +7,11 @@
         <legend class="hidden">list of drivers</legend>
         <% @drivers.each do |driver| %>
           <div>
+            <%= label_tag("driver_id_#{driver.id}", nil, class: "hidden") %>
             <%= check_box_tag "id", driver.id, nil, class: "check_box", id: "driver_id_#{driver.id}",
             disabled: (is_student? || is_manager?) && !params[:edit].present?,
               :"data-action" => "change->driverspassengers#submitForm" %>
-            <%= label_tag("driver_id_#{driver.id}", driver.display_name, class: "check_box_text") %>
+            <span class="check_box_text"><%= driver.display_name %></span>
           </div>
         <% end %>
       </fieldset>
@@ -26,10 +27,11 @@
       <legend class="hidden">list of students</legend>
       <% @students.each do |student| %>
         <div>
+          <%= label_tag("student_id_#{student.id}", nil, class: "hidden") %>
           <%= check_box_tag "id", student.id, nil, class: "check_box", id: "student_id_#{student.id}",
             disabled: @reservation.added_people == @reservation.number_of_people_on_trip,
             :"data-action" => "change->driverspassengers#submitForm" %>
-          <%= label_tag("student_id_#{student.id}", student.display_name, class: "check_box_text") %>
+          <span class="check_box_text"><%= student.display_name %></span>
         </div>
       <% end %>
     </fieldset>
