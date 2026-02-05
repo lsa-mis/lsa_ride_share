@@ -24,4 +24,3 @@ if defined?(RailsAccessibilityTesting)
     # config.default_profile = :test
   end
 end
-
