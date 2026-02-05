@@ -13,20 +13,20 @@
     <% end %>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text">
         Term:
-      </label>
-      <p class="body-lg-text ml-2 inline-block">
-        <%= @reservation.program.term.name %>
+        <span class="body-lg-text ml-2 inline-block">
+          <%= @reservation.program.term.name %>
+        </span>
       </p>
     </div>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text">
         Program:
-      </label>
-      <p class="body-lg-text ml-2 inline-block">
-        <%= @reservation.program.display_name_with_title %>
+        <span class="body-lg-text ml-2 inline-block">
+          <%= @reservation.program.display_name_with_title %>
+        </span>
       </p>
     </div>
     <%= form.hidden_field :updated_by, value: current_user.id %>
@@ -35,20 +35,20 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
 
       <div class="py-2">
-        <label class="body-lg-bold-text">
+        <p class="body-lg-bold-text">
           Current Site:
-        </label>
-        <p class="body-lg-text ml-2 inline-block">
-          <%= @reservation.site.title %>
+          <span class="body-lg-text ml-2 inline-block">
+            <%= @reservation.site.title %>
+          </span>
         </p>
       </div>
 
       <div class="py-2">
-        <label class="body-lg-bold-text">
+        <p class="body-lg-bold-text">
           Current Number of People on Trip:
-        </label>
-        <p class="body-lg-text ml-2 inline-block">
-          <%= @number_of_people_on_trip %>
+          <span class="body-lg-text ml-2 inline-block">
+            <%= @number_of_people_on_trip %>
+          </span>
         </p>
       </div>
 
@@ -58,7 +58,7 @@
       </div>
 
       <div>
-        <%= form.label :number_of_people_on_trip, 'Number of People on Trip *', class: "fancy_label" %>
+        <%= label_tag :number_of_people_on_trip, 'Number of People on Trip *', class: "fancy_label" %>
         <%= select_tag :number_of_people_on_trip, options_for_select(@number_of_seats, @number_of_people_on_trip), class: "input_text_field" %>
       </div>
       <div>
@@ -86,19 +86,19 @@
         %>
       </div>
       <div class="py-2">
-        <label class="body-lg-bold-text">
+        <p class="body-lg-bold-text">
           Current Start Time:
-        </label>
-        <p class="body-lg-text ml-2 inline-block">
-          <%= show_date_time(reservation.start_time + 15.minute) %>
+          <span class="body-lg-text ml-2 inline-block">
+            <%= show_date_time(reservation.start_time + 15.minute) %>
+          </span>
         </p>
       </div>
       <div class="py-2">
-        <label class="body-lg-bold-text">
+        <p class="body-lg-bold-text">
           Current End Time:
-        </label>
-        <p class="body-lg-text ml-2 inline-block">
-          <%= show_date_time(reservation.end_time - 15.minute)%>
+          <span class="body-lg-text ml-2 inline-block">
+            <%= show_date_time(reservation.end_time - 15.minute)%>
+          </span>
         </p>
       </div>
 
@@ -112,16 +112,16 @@
     <%= render 'start_end_time_long' %>
 
     <div class="py-2">
-      <label class="body-lg-bold-text">
+      <p class="body-lg-bold-text">
         Car:
-      </label>
-      <p class="body-lg-text ml-2 inline-block">
-        <%= show_car(@reservation) %>
+        <span class="body-lg-text ml-2 inline-block">
+          <%= show_car(@reservation) %>
+        </span>
       </p>
     </div>
 
     <div class="mb-4">
-      <%= label_tag 'Car *', nil, class: "fancy_label" %>
+      <%= label_tag :car_id,'Car *', class: "fancy_label" %>
       <%= select_tag "car_id", options_from_collection_for_select(@cars, :id, :car_number, selected: @car_id), include_blank: "Select Car ...", class: "input_text_field",
       "data-editlongreservation-target": "car" %>
     </div>

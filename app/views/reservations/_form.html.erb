@@ -12,7 +12,6 @@
   <% end %>
 
   <%= form.hidden_field :updated_by, value: current_user.id %>
-  <%= form.label :unit_id, 'Unit *', class: "hidden" %>
   <div class="error_text mt-2" id="required_fields"></div>
 
   <input type="hidden" id="unit_id" name="unit_id" value=<%= @unit_id %> data-reservation-target="unit">
@@ -90,9 +89,8 @@
 
   <div class="my-4">
     <% if UnitPreference.find_by(unit_id: @unit_id, name: "no_car_reservations").on_off %>
-      <%= label_tag("no_car", nil, class: "hidden") %>
       <%= check_box_tag "no_car", 1, nil, class: "check_box", "data-reservation-target": "no_car", "data-action": "reservation#hideCarSelection" %>
-      <span class="check_box_text">Create a reservation without a car - if no time or cars are available.</span>
+      <label for="no_car" class="check_box_text">Create a reservation without a car - if no time or cars are available.</label>
     <% end %>
   </div>
 
