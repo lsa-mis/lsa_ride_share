@@ -33,8 +33,11 @@ export default class extends Controller {
     switch (event.key) {
       case "Enter":
       case " ": // Space
-        event.preventDefault()
-        this.toggle()
+        // Only prevent default and toggle if the event is on the button itself
+        if (event.target === this.buttonTarget) {
+          event.preventDefault()
+          this.toggle()
+        }
         break
       case "Escape":
         if (this.isOpen) {
@@ -46,9 +49,7 @@ export default class extends Controller {
 
   // Clean up event listener on controller disconnect
   disconnect() {
-    if (this.isOpen) {
-      document.removeEventListener("click", this.handleOutsideClick)
-    }
+    document.removeEventListener("click", this.handleOutsideClick)
   }
 
   handleOutsideClick = (event) => {
