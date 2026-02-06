@@ -29,6 +29,7 @@
                   </button>
                   <div class="invisible absolute z-50 flex w-full flex-col bg-blue-umblue py-1 group-hover:visible" 
                        data-dropdown-target="menu" 
+                       data-action="keydown->dropdown#handleKeydown"
                        role="menu"
                        id="programs-menu">
                     <%= link_to "All Programs", programs_path, class: "nav-sub-link", role: "menuitem" %>
@@ -54,6 +55,7 @@
                   </button>
                   <div class="invisible absolute z-50 flex w-full flex-col bg-blue-umblue py-1 group-hover:visible" 
                        data-dropdown-target="menu" 
+                       data-action="keydown->dropdown#handleKeydown"
                        role="menu"
                        id="reservations-menu">
                     <%= link_to "Reservations", reservations_path, class:"nav-sub-link", role: "menuitem" %>
@@ -83,6 +85,7 @@
                   </button>
                   <div class="invisible absolute z-50 flex w-full flex-col bg-blue-umblue py-1 group-hover:visible" 
                        data-dropdown-target="menu" 
+                       data-action="keydown->dropdown#handleKeydown"
                        role="menu"
                        id="unit-options-menu">
                     <%= link_to "All Units", units_path, class: "nav-sub-link", role: "menuitem" if policy(Unit).index? %>
