@@ -18,11 +18,17 @@
           <div class="hidden lg:ml-6 lg:block">
             <div class="flex space-x-4">
               <% if is_admin? %>
-                <div class="group relative cursor-pointer">
-                  <div class="flex items-center justify-between">
-                    <%= content_tag :span, "Programs", class: "nav-top-link" %>
-                  </div>
-                  <div class="invisible absolute z-50 flex w-full flex-col bg-blue-umblue py-1 group-hover:visible" onClick="">
+                <div class="group relative cursor-pointer" data-controller="dropdown">
+                  <button type="button" class="nav-top-link flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-75" 
+                          data-action="click->dropdown#toggle keydown->dropdown#handleKeydown" 
+                          data-dropdown-target="button"
+                          aria-expanded="false"
+                          aria-haspopup="true">
+                    Programs
+                  </button>
+                  <div class="invisible absolute z-50 flex w-full flex-col bg-blue-umblue py-1 group-hover:visible" 
+                       data-dropdown-target="menu" 
+                       role="menu">
                     <%= link_to "All Programs", programs_path, class: "nav-sub-link" %>
                     <%= link_to "Sites", sites_path, class: "nav-sub-link" if policy(Site).index? %>
                     <%= link_to "Managers", managers_path, class: "nav-sub-link" %>
@@ -35,11 +41,17 @@
                 </div>
               <% end %>
               <% if is_admin? %>
-                <div class="group relative cursor-pointer">
-                  <div class="flex items-center justify-between">
-                    <%= content_tag :span, "Reservations", class: "nav-top-link" %>
-                  </div>
-                  <div class="invisible absolute z-50 flex w-full flex-col bg-blue-umblue py-1 group-hover:visible" onClick="">
+                <div class="group relative cursor-pointer" data-controller="dropdown">
+                  <button type="button" class="nav-top-link flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-75" 
+                          data-action="click->dropdown#toggle keydown->dropdown#handleKeydown" 
+                          data-dropdown-target="button"
+                          aria-expanded="false"
+                          aria-haspopup="true">
+                    Reservations
+                  </button>
+                  <div class="invisible absolute z-50 flex w-full flex-col bg-blue-umblue py-1 group-hover:visible" 
+                       data-dropdown-target="menu" 
+                       role="menu">
                     <%= link_to "Reservations", reservations_path, class:"nav-sub-link" %>
                     <%= link_to "Vehicle Reports", vehicle_reports_path, class: "nav-sub-link" %>
                     <%= link_to "Canceled", canceled_reservations_path, class: "nav-sub-link" %>
@@ -56,11 +68,17 @@
                 </div>
               <% end %>
               <% if is_admin? %>
-                <div class="group relative cursor-pointer">
-                  <div class="flex items-center justify-between">
-                    <%= content_tag :span, "Unit Options", class: "nav-top-link" %>
-                  </div>
-                  <div class="invisible absolute z-50 flex w-full flex-col bg-blue-umblue py-1 group-hover:visible" onClick="">
+                <div class="group relative cursor-pointer" data-controller="dropdown">
+                  <button type="button" class="nav-top-link flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-75" 
+                          data-action="click->dropdown#toggle keydown->dropdown#handleKeydown" 
+                          data-dropdown-target="button"
+                          aria-expanded="false"
+                          aria-haspopup="true">
+                    Unit Options
+                  </button>
+                  <div class="invisible absolute z-50 flex w-full flex-col bg-blue-umblue py-1 group-hover:visible" 
+                       data-dropdown-target="menu" 
+                       role="menu">
                     <%= link_to "All Units", units_path, class: "nav-sub-link" if policy(Unit).index? %>
                     <%= link_to "Cars", cars_path, class: "nav-sub-link" %>
                     <%= link_to "Program Surveys", faculty_surveys_path, class: "nav-sub-link" if unit_use_faculty_survey?(session[:unit_ids]) %>
