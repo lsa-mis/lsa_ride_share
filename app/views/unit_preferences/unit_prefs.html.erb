@@ -8,9 +8,8 @@
           <%= fields_for 'unit_prefs[]' do %>
             <div>
               <% if pref.pref_type == "boolean" %>
-                <label for=<%= "unit_prefs_#{unit.id}_#{pref.name}" %> class="hidden"><%= pref.description %></label>
                 <%= check_box_tag "unit_prefs[#{unit.id}][#{pref.name}]", 1, pref.on_off, class: "check_box" %>
-                <span class="check_box_text"><%= pref.description %></span>
+                <label for=<%= "unit_prefs_#{unit.id}_#{pref.name}" %> class="check_box_text"><%= pref.description %></label>
               <% elsif pref.pref_type == "string" %>
                 <label for=<%= "unit_prefs_#{unit.id}_#{pref.name}" %> class="fancy_label"><%= pref.description %></label>
                 <%= text_field_tag("unit_prefs[#{unit.id}][#{pref.name}]", pref.value, {class: "input_text_field"}) %>
