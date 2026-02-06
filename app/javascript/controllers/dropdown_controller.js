@@ -42,6 +42,9 @@ export default class extends Controller {
       case "Escape":
         if (this.isOpen) {
           this.close()
+          if (this.buttonTarget && typeof this.buttonTarget.focus === "function") {
+            this.buttonTarget.focus()
+          }
         }
         break
     }
