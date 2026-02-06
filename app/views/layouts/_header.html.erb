@@ -30,12 +30,11 @@
                   <div class="invisible absolute z-50 flex w-full flex-col bg-blue-umblue py-1 group-hover:visible" 
                        data-dropdown-target="menu" 
                        data-action="keydown->dropdown#handleKeydown"
-                       role="menu"
                        id="programs-menu">
-                    <%= link_to "All Programs", programs_path, class: "nav-sub-link", role: "menuitem" %>
-                    <%= link_to "Sites", sites_path, class: "nav-sub-link", role: "menuitem" if policy(Site).index? %>
-                    <%= link_to "Managers", managers_path, class: "nav-sub-link", role: "menuitem" %>
-                    <%= link_to "Students", students_path, class: "nav-sub-link", role: "menuitem" %>
+                    <%= link_to "All Programs", programs_path, class: "nav-sub-link" %>
+                    <%= link_to "Sites", sites_path, class: "nav-sub-link" if policy(Site).index? %>
+                    <%= link_to "Managers", managers_path, class: "nav-sub-link" %>
+                    <%= link_to "Students", students_path, class: "nav-sub-link" %>
                   </div>
                 </div>
               <% elsif is_manager? %>
@@ -56,11 +55,10 @@
                   <div class="invisible absolute z-50 flex w-full flex-col bg-blue-umblue py-1 group-hover:visible" 
                        data-dropdown-target="menu" 
                        data-action="keydown->dropdown#handleKeydown"
-                       role="menu"
                        id="reservations-menu">
-                    <%= link_to "Reservations", reservations_path, class:"nav-sub-link", role: "menuitem" %>
-                    <%= link_to "Vehicle Reports", vehicle_reports_path, class: "nav-sub-link", role: "menuitem" %>
-                    <%= link_to "Canceled", canceled_reservations_path, class: "nav-sub-link", role: "menuitem" %>
+                    <%= link_to "Reservations", reservations_path, class:"nav-sub-link" %>
+                    <%= link_to "Vehicle Reports", vehicle_reports_path, class: "nav-sub-link" %>
+                    <%= link_to "Canceled", canceled_reservations_path, class: "nav-sub-link" %>
                     <%#= link_to "Import", import_reservations_page_path, class: "nav-sub-link" %>
                   </div>
                 </div>
@@ -86,15 +84,14 @@
                   <div class="invisible absolute z-50 flex w-full flex-col bg-blue-umblue py-1 group-hover:visible" 
                        data-dropdown-target="menu" 
                        data-action="keydown->dropdown#handleKeydown"
-                       role="menu"
                        id="unit-options-menu">
-                    <%= link_to "All Units", units_path, class: "nav-sub-link", role: "menuitem" if policy(Unit).index? %>
-                    <%= link_to "Cars", cars_path, class: "nav-sub-link", role: "menuitem" %>
-                    <%= link_to "Program Surveys", faculty_surveys_path, class: "nav-sub-link", role: "menuitem" if unit_use_faculty_survey?(session[:unit_ids]) %>
-                    <%= link_to "System Reports", system_reports_path, class: "nav-sub-link", role: "menuitem" %>
-                    <%= link_to "View Terms", terms_path, class: "nav-sub-link", role: "menuitem" %>
-                    <%= link_to "Unit Preferences", unit_prefs_path, class: "nav-sub-link", role: "menuitem" %>
-                    <%= link_to "Docs", "https://docs.google.com/document/d/e/2PACX-1vRSWQUpQqq7m4yBgevco9dXqZ-JKTFnwzxBQYQYQDUBnIXm9YNzruT1308qhzCT-C3-NJnvlh83jK61/pub", target: "_blank", class: "nav-sub-link", role: "menuitem" %>
+                    <%= link_to "All Units", units_path, class: "nav-sub-link" if policy(Unit).index? %>
+                    <%= link_to "Cars", cars_path, class: "nav-sub-link" %>
+                    <%= link_to "Program Surveys", faculty_surveys_path, class: "nav-sub-link" if unit_use_faculty_survey?(session[:unit_ids]) %>
+                    <%= link_to "System Reports", system_reports_path, class: "nav-sub-link" %>
+                    <%= link_to "View Terms", terms_path, class: "nav-sub-link" %>
+                    <%= link_to "Unit Preferences", unit_prefs_path, class: "nav-sub-link" %>
+                    <%= link_to "Docs", "https://docs.google.com/document/d/e/2PACX-1vRSWQUpQqq7m4yBgevco9dXqZ-JKTFnwzxBQYQYQDUBnIXm9YNzruT1308qhzCT-C3-NJnvlh83jK61/pub", target: "_blank", rel: "noopener noreferrer", class: "nav-sub-link" %>
                   </div>
                 </div>
               <% elsif is_manager? %>
