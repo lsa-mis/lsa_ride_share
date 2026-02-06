@@ -23,7 +23,7 @@ export default class extends Controller {
 
   close() {
     this.isOpen = false
-    this.menuTarget.classList.add("invisible")  
+    this.menuTarget.classList.add("invisible")
     this.buttonTarget.setAttribute("aria-expanded", "false")
   }
 
