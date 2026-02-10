@@ -400,8 +400,8 @@ class SystemReportsController < ApplicationController
           (CASE WHEN (SELECT exists(SELECT 1 from active_storage_attachments where record_type = 'VehicleReport' and name = 'image_damages' and record_id = vehicle_reports.id)) = true
             THEN 'Yes' ELSE 'No' END) AS car_damage,
           (SELECT email FROM users WHERE vehicle_reports.updated_by = users.id) AS last_updated_by,
-          COALESCE(rich_text_comments.body, '') AS comment,
-          COALESCE((SELECT STRING_AGG(art_notes.body, '; ') 
+          COALESCE(REGEXP_REPLACE(rich_text_comments.body, E'<[^>]*>', '', 'g'), '') AS comment,
+          COALESCE((SELECT STRING_AGG(REGEXP_REPLACE(art_notes.body, E'<[^>]*>', '', 'g'), '; ') 
                     FROM notes 
                     LEFT JOIN action_text_rich_texts AS art_notes ON art_notes.record_type = 'Note' 
                       AND art_notes.record_id = notes.id AND art_notes.name = 'body'
