@@ -419,7 +419,7 @@ class SystemReportsController < ApplicationController
           LIMIT 1
         ) comment_data ON true
         LEFT JOIN LATERAL (
-          SELECT STRING_AGG(REGEXP_REPLACE(art_notes.body, E'<[^>]*>', '', 'g'), '; ') AS notes
+          SELECT STRING_AGG(REGEXP_REPLACE(art_notes.body, E'<[^>]*>', '', 'g'), '; ' ORDER BY notes.created_at) AS notes
           FROM notes 
           LEFT JOIN action_text_rich_texts AS art_notes ON art_notes.record_type = 'Note' 
             AND art_notes.record_id = notes.id AND art_notes.name = 'body'
