@@ -399,13 +399,16 @@ class SystemReportsController < ApplicationController
           (SELECT (CASE WHEN vehicle_reports.approved  = true THEN 'Approved' ELSE 'Pending' END)) AS admin_approved,
           (CASE WHEN (SELECT exists(SELECT 1 from active_storage_attachments where record_type = 'VehicleReport' and name = 'image_damages' and record_id = vehicle_reports.id)) = true
             THEN 'Yes' ELSE 'No' END) AS car_damage,
-          (SELECT email FROM users WHERE vehicle_reports.updated_by = users.id) AS last_updated_by
+          (SELECT email FROM users WHERE vehicle_reports.updated_by = users.id) AS last_updated_by,
+          COALESCE(rich_text_comments.body, '') AS comment
         FROM vehicle_reports
         JOIN reservations AS res ON res.id = vehicle_reports.reservation_id
         JOIN cars ON cars.id = res.car_id
         JOIN programs ON programs.id = res.program_id
         JOIN terms ON terms.id = programs.term_id
         JOIN units ON units.id = programs.unit_id
+        LEFT JOIN action_text_rich_texts AS rich_text_comments ON rich_text_comments.record_type = 'VehicleReport' 
+          AND rich_text_comments.record_id = vehicle_reports.id AND rich_text_comments.name = 'comment'
         WHERE terms.id = #{@term_id} AND  units.id = #{@unit_id}"
         if params[:program_id].present?
           sql += " AND programs.id = #{params[:program_id].to_i}"
