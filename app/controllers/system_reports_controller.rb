@@ -411,7 +411,7 @@ class SystemReportsController < ApplicationController
         JOIN terms ON terms.id = programs.term_id
         JOIN units ON units.id = programs.unit_id
         LEFT JOIN LATERAL (
-          SELECT REGEXP_REPLACE(art_comments.body, E'<[^>]*>', '', 'g') AS comment
+          SELECT art_comments.body AS comment
           FROM action_text_rich_texts AS art_comments 
           WHERE art_comments.record_type = 'VehicleReport' 
             AND art_comments.record_id = vehicle_reports.id 
@@ -419,7 +419,7 @@ class SystemReportsController < ApplicationController
           LIMIT 1
         ) comment_data ON true
         LEFT JOIN LATERAL (
-          SELECT STRING_AGG(REGEXP_REPLACE(art_notes.body, E'<[^>]*>', '', 'g'), '; ' ORDER BY notes.created_at) AS notes
+          SELECT STRING_AGG(art_notes.body, '; ' ORDER BY notes.created_at) AS notes
           FROM notes 
           LEFT JOIN action_text_rich_texts AS art_notes ON art_notes.record_type = 'Note' 
             AND art_notes.record_id = notes.id AND art_notes.name = 'body'
