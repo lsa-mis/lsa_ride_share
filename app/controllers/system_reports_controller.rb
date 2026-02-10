@@ -369,7 +369,9 @@ class SystemReportsController < ApplicationController
       end
       if report_type == 'vehicle_reports_all'
         sql = "SELECT DISTINCT(vehicle_reports.id), (SELECT programs.title from programs WHERE res.program_id = programs.id) AS program,
-          code AS term, terms.name AS term_name, reservation_id, start_time, end_time, 
+          code AS term, terms.name AS term_name, reservation_id, 
+          TO_CHAR((start_time + INTERVAL '15 minutes') AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York', 'MM/DD/YYYY HH:MI AM') AS start_time,
+          TO_CHAR((end_time - INTERVAL '15 minutes') AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York', 'MM/DD/YYYY HH:MI AM') AS end_time, 
           (SELECT TO_CHAR(AGE(end_time, start_time), 'DD \"Days\" HH24 \"Hours\" MI \"Minutes\"')) AS total_trip_time,
           (SELECT EXTRACT(EPOCH FROM (end_time - start_time)::INTERVAL)/60) AS total_trip_minutes, cars.car_number,
           (SELECT sites.title FROM sites WHERE res.site_id = sites.id) AS site,
@@ -400,23 +402,29 @@ class SystemReportsController < ApplicationController
           (CASE WHEN (SELECT exists(SELECT 1 from active_storage_attachments where record_type = 'VehicleReport' and name = 'image_damages' and record_id = vehicle_reports.id)) = true
             THEN 'Yes' ELSE 'No' END) AS car_damage,
           (SELECT email FROM users WHERE vehicle_reports.updated_by = users.id) AS last_updated_by,
-          COALESCE((SELECT REGEXP_REPLACE(art_comments.body, E'<[^>]*>', '', 'g') 
-                    FROM action_text_rich_texts AS art_comments 
-                    WHERE art_comments.record_type = 'VehicleReport' 
-                      AND art_comments.record_id = vehicle_reports.id 
-                      AND art_comments.name = 'comment' 
-                    LIMIT 1), '') AS comment,
-          COALESCE((SELECT STRING_AGG(REGEXP_REPLACE(art_notes.body, E'<[^>]*>', '', 'g'), '; ') 
-                    FROM notes 
-                    LEFT JOIN action_text_rich_texts AS art_notes ON art_notes.record_type = 'Note' 
-                      AND art_notes.record_id = notes.id AND art_notes.name = 'body'
-                    WHERE notes.noteable_type = 'VehicleReport' AND notes.noteable_id = vehicle_reports.id), '') AS notes
+          COALESCE(comment_data.comment, '') AS comment,
+          COALESCE(notes_data.notes, '') AS notes
         FROM vehicle_reports
         JOIN reservations AS res ON res.id = vehicle_reports.reservation_id
         JOIN cars ON cars.id = res.car_id
         JOIN programs ON programs.id = res.program_id
         JOIN terms ON terms.id = programs.term_id
         JOIN units ON units.id = programs.unit_id
+        LEFT JOIN LATERAL (
+          SELECT REGEXP_REPLACE(art_comments.body, E'<[^>]*>', '', 'g') AS comment
+          FROM action_text_rich_texts AS art_comments 
+          WHERE art_comments.record_type = 'VehicleReport' 
+            AND art_comments.record_id = vehicle_reports.id 
+            AND art_comments.name = 'comment'
+          LIMIT 1
+        ) comment_data ON true
+        LEFT JOIN LATERAL (
+          SELECT STRING_AGG(REGEXP_REPLACE(art_notes.body, E'<[^>]*>', '', 'g'), '; ') AS notes
+          FROM notes 
+          LEFT JOIN action_text_rich_texts AS art_notes ON art_notes.record_type = 'Note' 
+            AND art_notes.record_id = notes.id AND art_notes.name = 'body'
+          WHERE notes.noteable_type = 'VehicleReport' AND notes.noteable_id = vehicle_reports.id
+        ) notes_data ON true
         WHERE terms.id = #{@term_id} AND  units.id = #{@unit_id}"
         if params[:program_id].present?
           sql += " AND programs.id = #{params[:program_id].to_i}"
