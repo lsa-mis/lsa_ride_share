@@ -368,7 +368,21 @@ class SystemReportsController < ApplicationController
           sql += " GROUP BY program_id ORDER BY program_id"
       end
       if report_type == 'vehicle_reports_all'
-        sql = "SELECT DISTINCT(vehicle_reports.id), (SELECT programs.title from programs WHERE res.program_id = programs.id) AS program,
+        sql = "WITH aggregated_comments AS (
+          SELECT art_comments.record_id, art_comments.body AS comment
+          FROM action_text_rich_texts AS art_comments 
+          WHERE art_comments.record_type = 'VehicleReport' 
+            AND art_comments.name = 'comment'
+        ),
+        aggregated_notes AS (
+          SELECT notes.noteable_id, STRING_AGG(art_notes.body, '; ' ORDER BY notes.created_at) AS notes
+          FROM notes 
+          LEFT JOIN action_text_rich_texts AS art_notes ON art_notes.record_type = 'Note' 
+            AND art_notes.record_id = notes.id AND art_notes.name = 'body'
+          WHERE notes.noteable_type = 'VehicleReport'
+          GROUP BY notes.noteable_id
+        )
+        SELECT DISTINCT(vehicle_reports.id), (SELECT programs.title from programs WHERE res.program_id = programs.id) AS program,
           code AS term, terms.name AS term_name, reservation_id, 
           TO_CHAR((start_time + INTERVAL '15 minutes') AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York', 'MM/DD/YYYY HH:MI AM') AS start_time,
           TO_CHAR((end_time - INTERVAL '15 minutes') AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York', 'MM/DD/YYYY HH:MI AM') AS end_time, 
@@ -402,29 +416,16 @@ class SystemReportsController < ApplicationController
           (CASE WHEN (SELECT exists(SELECT 1 from active_storage_attachments where record_type = 'VehicleReport' and name = 'image_damages' and record_id = vehicle_reports.id)) = true
             THEN 'Yes' ELSE 'No' END) AS car_damage,
           (SELECT email FROM users WHERE vehicle_reports.updated_by = users.id) AS last_updated_by,
-          COALESCE(comment_data.comment, '') AS comment,
-          COALESCE(notes_data.notes, '') AS notes
+          COALESCE(aggregated_comments.comment, '') AS comment,
+          COALESCE(aggregated_notes.notes, '') AS notes
         FROM vehicle_reports
         JOIN reservations AS res ON res.id = vehicle_reports.reservation_id
         JOIN cars ON cars.id = res.car_id
         JOIN programs ON programs.id = res.program_id
         JOIN terms ON terms.id = programs.term_id
         JOIN units ON units.id = programs.unit_id
-        LEFT JOIN LATERAL (
-          SELECT art_comments.body AS comment
-          FROM action_text_rich_texts AS art_comments 
-          WHERE art_comments.record_type = 'VehicleReport' 
-            AND art_comments.record_id = vehicle_reports.id 
-            AND art_comments.name = 'comment'
-          LIMIT 1
-        ) comment_data ON true
-        LEFT JOIN LATERAL (
-          SELECT STRING_AGG(art_notes.body, '; ' ORDER BY notes.created_at) AS notes
-          FROM notes 
-          LEFT JOIN action_text_rich_texts AS art_notes ON art_notes.record_type = 'Note' 
-            AND art_notes.record_id = notes.id AND art_notes.name = 'body'
-          WHERE notes.noteable_type = 'VehicleReport' AND notes.noteable_id = vehicle_reports.id
-        ) notes_data ON true
+        LEFT JOIN aggregated_comments ON aggregated_comments.record_id = vehicle_reports.id
+        LEFT JOIN aggregated_notes ON aggregated_notes.noteable_id = vehicle_reports.id
         WHERE terms.id = #{@term_id} AND  units.id = #{@unit_id}"
         if params[:program_id].present?
           sql += " AND programs.id = #{params[:program_id].to_i}"
