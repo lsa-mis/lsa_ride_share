@@ -26,7 +26,7 @@
               <% end %>
             </td>
           <% else %>
-            <td class="mi_tbody_td"><%= strip_tags(row[0].to) %></td>
+            <td class="mi_tbody_td"><%= strip_tags(row[0].to_s) %></td>
           <% end %>
           <% row.shift(1) %>
           <% row.each do |cell| %>
