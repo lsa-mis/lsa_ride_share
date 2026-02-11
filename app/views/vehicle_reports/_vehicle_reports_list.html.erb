@@ -17,6 +17,8 @@
         <th class="header_th">Fuel % (return)</th>
         <th class="header_th">Parking Spot (depart)</th>
         <th class="header_th">Parking Spot (return)</th>
+        <th class="header_th">Comment</th>
+        <th class="header_th">Admin Notes</th>
         <th class="header_th">Damage</th>
         <th class="header_th">Last Updated</th>
         <th class="header_th">Admin Status</th>
@@ -58,6 +60,18 @@
           </td>
           <td class="mi_tbody_td">
             <%= vehicle_report.parking_spot_return %>
+          </td>
+          <td class="mi_tbody_td">
+            <%= vehicle_report.comment %>
+          </td>
+          <td class="mi_tbody_td">
+            <% if vehicle_report.notes.any? %>
+              <% vehicle_report.notes.order(:created_at).each do |note| %>
+                <div class="note-item">
+                  <%= note.body.to_plain_text if note.body.present? %>
+                </div>
+              <% end %>
+            <% end %>
           </td>
           <td class="mi_tbody_td">
             <% if vehicle_report.image_damages.attached? %>
@@ -148,6 +162,24 @@
         <th class="header_mobile">Parking spot (return)</th>
         <td class="mi_tbody_td">
           <%= vehicle_report.parking_spot_return %>
+        </td>
+      </tr>
+      <tr class="mi_tbody_tr">
+        <th class="header_mobile">Comment</th>
+        <td class="mi_tbody_td">
+          <%= vehicle_report.comment %>
+        </td>
+      </tr>
+      <tr class="mi_tbody_tr">
+        <th class="header_mobile">Admin Notes</th>
+        <td class="mi_tbody_td">
+          <% if vehicle_report.notes.any? %>
+            <% vehicle_report.notes.order(:created_at).each do |note| %>
+              <div class="note-item">
+                <%= note.body.to_plain_text if note.body.present? %>
+              </div>
+            <% end %>
+          <% end %>
         </td>
       </tr>
       <tr class="mi_tbody_tr">
