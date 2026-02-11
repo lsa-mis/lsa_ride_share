@@ -60,10 +60,6 @@ from https://tailwindcss.com/docs/adding-custom-styles
     @apply border-gray-um50 border m-2;
   }
 
-  .h4-title {
-    @apply text-base font-medium leading-6 font-oswald;
-  }
-
   .h5-title {
     @apply text-base font-normal leading-6 font-oswald;
   }
