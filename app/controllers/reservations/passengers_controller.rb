@@ -5,7 +5,6 @@ class Reservations::PassengersController < ApplicationController
     @passengers = @reservation.passengers
     @students = @reservation.program.students.order(:last_name) - @passengers
     @students.delete(@reservation.driver)
-    @students.delete(@reservation.backup_driver)
     @drivers = []
     @students.map { |s| @drivers << s if s.can_reserve_car? }
     @passengers_managers = @reservation.passengers_managers
@@ -21,7 +20,6 @@ class Reservations::PassengersController < ApplicationController
     @passengers = @reservation.passengers
     @students = @reservation.program.students.order(:last_name) - @passengers
     @students.delete(@reservation.driver)
-    @students.delete(@reservation.backup_driver)
     @drivers = []
     @students.map { |s| @drivers << s if s.can_reserve_car? }
     @passengers_managers = @reservation.passengers_managers
@@ -193,9 +191,6 @@ class Reservations::PassengersController < ApplicationController
     emails = []
     if @reservation.driver.present?
       emails << email_address(@reservation.driver)
-    end
-    if @reservation.backup_driver.present?
-      emails << email_address(@reservation.backup_driver)
     end
     if @reservation.driver_manager.present?
       emails << email_address(@reservation.driver_manager)

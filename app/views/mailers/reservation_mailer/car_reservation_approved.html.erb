@@ -4,7 +4,7 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-    <h4>Your transportation reservation has been approved.</h4>
+    <p><strong>Your transportation reservation has been approved.</strong></p>
     <p>
       Please email <%= @unit_email %> or call the office at: <%= @contact_phone %> if you have any questions.
     </p>
@@ -24,9 +24,6 @@
         <li>SITE: <%= @reservation.site.title %></li>
         <li>PROGRAM: <%= @reservation.program.title %></li>
         <li>DRIVER: <%= @driver_name %></li>
-        <% if @reservation.backup_driver.present? %>
-          <li>BACKUP DRIVER: <%= @backup_driver_name %></li>
-        <% end %>
       </ul>
       Passengers:
       <ul>

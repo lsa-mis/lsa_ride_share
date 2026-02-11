@@ -207,7 +207,7 @@ module ApplicationHelper
   end
 
   def no_good_driver?(reservation)
-    driver_status_not_eligible?(reservation) || backup_driver_status_not_eligible?(reservation) || no_driver?(reservation)
+    driver_status_not_eligible?(reservation) || no_driver?(reservation)
   end
 
   def no_driver?(reservation)
@@ -217,10 +217,10 @@ module ApplicationHelper
 
   def driver_status_not_eligible?(reservation)
     if reservation.driver.present?
-      return true unless reservation.driver.mvr_status.include?("Approved until")
+      return true unless reservation.driver.driver?
     end
     if reservation.driver_manager.present?
-      return true unless reservation.driver_manager.mvr_status.include?("Approved until")
+      return true unless reservation.driver_manager.driver?
     end
     return false
   end
@@ -229,31 +229,7 @@ module ApplicationHelper
     if driver_status_not_eligible?(reservation)
       tags = html_escape('') # initialize an html safe string we can append to
       tags << content_tag(:i, nil, class: "fa-solid fa-triangle-exclamation", style: "color:#c53030;")
-      tags << content_tag(:span, " - expired MVR Status", class: 'unavailable')
-      tags
-    end
-  end
-
-  def show_backup_driver(reservation)
-    if reservation.backup_driver.present?
-      reservation.backup_driver.display_name
-    else
-      "No backup driver selected"
-    end
-  end
-
-  def backup_driver_status_not_eligible?(reservation)
-    if reservation.backup_driver.present?
-      return true unless reservation.backup_driver.mvr_status.include?("Approved until")
-    end
-    return false
-  end
-
-  def display_backup_driver_status(reservation)
-    if backup_driver_status_not_eligible?(reservation)
-      tags = html_escape('') # initialize an html safe string we can append to
-      tags << content_tag(:i, nil, class: "fa-solid fa-triangle-exclamation", style: "color:#c53030;")
-      tags << content_tag(:span, " - expired MVR Status", class: 'unavailable')
+      tags << content_tag(:span, " - not eligible", class: 'unavailable')
       tags
     end
   end
@@ -329,19 +305,10 @@ module ApplicationHelper
     if reservation.driver.present? || reservation.driver_manager.present?
       driver = "Driver: " + show_driver(reservation) + " (" + show_driver_phone_number(reservation) + ")"
       if driver_status_not_eligible?(reservation)
-        driver += " - expired MVR Status"
+        driver += " - not eligible"
       end
     else 
       driver = "No driver selected"
-    end
-    if reservation.backup_driver.present?
-      backup_driver = "Backup Driver: " + show_backup_driver(reservation) + " (" + reservation.backup_driver_phone.to_s + ")"
-      if backup_driver_status_not_eligible?(reservation)
-        backup_driver += " - expired MVR Status"
-      end
-      backup_driver += "\n"
-    else
-      backup_driver = ""
     end
     if reservation.passengers.present? || reservation.passengers_managers.present?
       passengers = "Passengers: "
@@ -361,7 +328,7 @@ module ApplicationHelper
     end
     reservation.program.title + "\n" + reservation.site.title + "\n" +
     "From: " + show_date_time(reservation.start_time + 15.minute) + "\n" +  "To: " + show_date_time(reservation.end_time - 15.minute) + "\n" +
-    recurring + "\n" + driver + "\n" + backup_driver +
+    recurring + "\n" + driver + "\n" +
     reservation.number_of_people_on_trip.to_s + " people on the trip" + "\n" +
     passengers + non_uofm_passengers
   end
@@ -621,7 +588,7 @@ module ApplicationHelper
       end 
     elsif is_student?
       student = Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program)
-      if (reservation.driver == student || reservation.backup_driver == student) && reservation.end_time > Date.today.beginning_of_day
+      if reservation.driver == student && reservation.end_time > Date.today.beginning_of_day
         return true
       end
     else
@@ -636,7 +603,7 @@ module ApplicationHelper
     end
     if is_student?
       student = Student.find_by(program_id: reservation.program, uniqname: current_user.uniqname)
-      return reservation.driver == student || reservation.backup_driver == student || reservation.passengers.include?(student)
+      return reservation.driver == student || reservation.passengers.include?(student)
     end
     return false
   end
@@ -646,7 +613,7 @@ module ApplicationHelper
     return false unless Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program).present?
     student = Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program)
     return false unless student.can_reserve_car?
-    if (reservation.driver == student || reservation.backup_driver == student) && ((reservation.start_time - DateTime.now.beginning_of_day)/3600).round > minimum_hours_before_reservation(reservation.program.unit)
+    if reservation.driver == student && ((reservation.start_time - DateTime.now.beginning_of_day)/3600).round > minimum_hours_before_reservation(reservation.program.unit)
       return true
     else
       return false
@@ -668,9 +635,7 @@ module ApplicationHelper
     return false unless is_student?
     return false unless Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program).present?
     student = Student.find_by(uniqname: current_user.uniqname, program_id: reservation.program)
-    # return false unless student.can_reserve_car?
-    # if (reservation.driver == student || reservation.backup_driver == student) && reservation.end_time + 45.minute > DateTime.now
-    if (reservation.passengers.include?(student) || reservation.driver == student || reservation.backup_driver == student) && reservation.end_time + 45.minute > DateTime.now
+    if (reservation.passengers.include?(student) || reservation.driver == student) && reservation.end_time + 45.minute > DateTime.now
       return true
     else
       return false
@@ -681,7 +646,6 @@ module ApplicationHelper
     return false unless is_manager?
     return false unless reservation.driver_manager_id.present?
     return true if reservation.reserved_by = current_user.id
-    # if reservation.driver_manager.uniqname == current_user.uniqname && reservation.end_time + 45.minute > DateTime.now
     manager = Manager.find_by(uniqname: current_user.uniqname)
     if (reservation.driver_manager == manager || reservation.passengers_managers.include?(manager)) && reservation.end_time + 45.minute > DateTime.now
       return true

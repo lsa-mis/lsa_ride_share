@@ -564,7 +564,6 @@ class ReservationsController < ApplicationController
       @passengers = @reservation.passengers
       @students = @reservation.program.students.order(:last_name) - @passengers
       @students.delete(@reservation.driver)
-      @students.delete(@reservation.backup_driver)
       @passengers_managers = @reservation.passengers_managers
       @managers = @reservation.program.managers.to_a
       @managers << @reservation.program.instructor
@@ -828,9 +827,6 @@ class ReservationsController < ApplicationController
       if @reservation.driver.present?
         emails << email_address(@reservation.driver)
       end
-      if @reservation.backup_driver.present?
-        emails << email_address(@reservation.backup_driver)
-      end
       if @reservation.driver_manager.present?
         emails << email_address(@reservation.driver_manager)
       end
@@ -884,7 +880,7 @@ class ReservationsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def reservation_params
-      params.require(:reservation).permit(:status, :start_time, :end_time, :recurring, :driver_id, :driver_manager_id, :driver_phone, :backup_driver_id, :backup_driver_phone, 
+      params.require(:reservation).permit(:status, :start_time, :end_time, :recurring, :driver_id, :driver_manager_id, :driver_phone, 
       :number_of_people_on_trip, :program_id, :site_id, :car_id, :reserved_by, :approved, :non_uofm_passengers, :number_of_non_uofm_passengers, :until_date, :updated_by, :canceled, :reason_for_cancellation)
     end
 end
