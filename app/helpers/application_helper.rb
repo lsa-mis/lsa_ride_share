@@ -217,10 +217,10 @@ module ApplicationHelper
 
   def driver_status_not_eligible?(reservation)
     if reservation.driver.present?
-      return true unless reservation.driver.mvr_status.include?("Approved until")
+      return true unless reservation.driver.driver?
     end
     if reservation.driver_manager.present?
-      return true unless reservation.driver_manager.mvr_status.include?("Approved until")
+      return true unless reservation.driver_manager.driver?
     end
     return false
   end
@@ -229,7 +229,7 @@ module ApplicationHelper
     if driver_status_not_eligible?(reservation)
       tags = html_escape('') # initialize an html safe string we can append to
       tags << content_tag(:i, nil, class: "fa-solid fa-triangle-exclamation", style: "color:#c53030;")
-      tags << content_tag(:span, " - expired MVR Status", class: 'unavailable')
+      tags << content_tag(:span, " - not eligible", class: 'unavailable')
       tags
     end
   end
@@ -305,7 +305,7 @@ module ApplicationHelper
     if reservation.driver.present? || reservation.driver_manager.present?
       driver = "Driver: " + show_driver(reservation) + " (" + show_driver_phone_number(reservation) + ")"
       if driver_status_not_eligible?(reservation)
-        driver += " - expired MVR Status"
+        driver += " - not eligible"
       end
     else 
       driver = "No driver selected"
