@@ -226,10 +226,7 @@ class ProgramsController < ApplicationController
         redirect_to @program, alert: "Program could not be deleted: #{@program.errors.full_messages.join(', ')}"
       end
     end
-  rescue ActiveRecord::RecordNotFound
-    redirect_to programs_url, alert: "Program not found."
-  rescue StandardError => e
-    redirect_to programs_url, alert: "An error occurred while deleting the program: #{e.message}"
+
   end
 
   private
