@@ -187,7 +187,7 @@ class ProgramsController < ApplicationController
         return
       end
       
-      # Delete up canceled reservations
+      # Delete canceled reservations
       if canceled_reservations.any?
         canceled_reservations.delete_all
       end
