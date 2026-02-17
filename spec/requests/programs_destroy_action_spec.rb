@@ -84,6 +84,7 @@ RSpec.describe Program, type: :request do
         expect(response).to redirect_to(programs_path)
         expect(flash[:notice]).to include("Program was successfully deleted.")
         expect { Program.find(program.id) }.to raise_error(ActiveRecord::RecordNotFound)
+        expect { Student.find(student.id) }.to raise_error(ActiveRecord::RecordNotFound)
       end
 
       it 'try to delete a program that has no courses, sites, or reservations and succeed' do
