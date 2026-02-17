@@ -170,15 +170,17 @@ class ProgramsController < ApplicationController
   end
 
   def destroy
+    # Explicitly authorize the destroy action
+    authorize @program
+    
     ActiveRecord::Base.transaction do
       # Apply pessimistic locking to prevent race conditions
-      @program.lock
+      @program.lock!
       
       # Check for both canceled and non-canceled reservations after acquiring lock
       all_reservations = Reservation.unscoped.where(program_id: @program.id)
       active_reservations = @program.reservations
       canceled_reservations = all_reservations.canceled
-      
       # Check for active reservations
       if active_reservations.any?
         redirect_to @program, alert: "Program can't be deleted because it has active reservations (#{active_reservations.ids.join(', ')}) associated. Please cancel the reservations first."
@@ -222,9 +224,9 @@ class ProgramsController < ApplicationController
       end
       
       if @program.destroy
-        redirect_to programs_url, notice: "Program was successfully destroyed."
+        redirect_to programs_url, notice: "Program was successfully deleted."
       else
-        redirect_to @program, alert: "Program could not be destroyed: #{@program.errors.full_messages.join(', ')}"
+        redirect_to @program, alert: "Program could not be deleted: #{@program.errors.full_messages.join(', ')}"
       end
     end
   rescue ActiveRecord::RecordNotFound
