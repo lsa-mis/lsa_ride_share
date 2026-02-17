@@ -48,6 +48,10 @@ class ProgramPolicy < ApplicationPolicy
     create?
   end
 
+  def destroy?
+    is_super_admin?
+  end
+
   private
 
   def is_manager?
