@@ -54,11 +54,39 @@ RSpec.describe Program, type: :request do
         expect(Program.find(program.id)).to be_present
       end
 
+      it 'try to delete a program with sites and succeed' do
+        site = FactoryBot.create(:site)
+        program.sites << site
+        delete program_path(program)
+        expect(response).to have_http_status(302)
+        expect(response).to redirect_to(programs_path)
+        expect(flash[:notice]).to include("Program was successfully deleted.")
+        expect { Program.find(program.id) }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it 'try to delete a program with managers and succeed' do
+        manager = FactoryBot.create(:manager)
+        program.managers << manager
+        delete program_path(program)
+        expect(response).to have_http_status(302)
+        expect(response).to redirect_to(programs_path)
+        expect(flash[:notice]).to include("Program was successfully deleted.")
+        expect { Program.find(program.id) }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
       it 'try to delete a program that has courses and succeed' do
         course = FactoryBot.create(:course, program: program)
         student = FactoryBot.create(:student, program: program)
         course.students << student
 
+        delete program_path(program)
+        expect(response).to have_http_status(302)
+        expect(response).to redirect_to(programs_path)
+        expect(flash[:notice]).to include("Program was successfully deleted.")
+        expect { Program.find(program.id) }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it 'try to delete a program that has no courses, sites, or reservations and succeed' do
         delete program_path(program)
         expect(response).to have_http_status(302)
         expect(response).to redirect_to(programs_path)
