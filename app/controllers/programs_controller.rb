@@ -174,9 +174,6 @@ class ProgramsController < ApplicationController
     authorize @program
     
     ActiveRecord::Base.transaction do
-      # Apply pessimistic locking to prevent race conditions
-      @program.lock!
-      
       # Check for both canceled and non-canceled reservations after acquiring lock
       all_reservations = Reservation.unscoped.where(program_id: @program.id)
       active_reservations = @program.reservations
