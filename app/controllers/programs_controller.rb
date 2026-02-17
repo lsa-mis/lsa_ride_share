@@ -1,9 +1,9 @@
 class ProgramsController < ApplicationController
   before_action :auth_user
 
-  before_action :set_program, except: %i[ index new create get_programs_list get_students_list get_sites_list]
+  before_action :set_program, except: %i[ index new create get_programs_list get_students_list get_sites_list ]
   before_action :set_units
-  before_action :set_terms, only: %i[ duplicate new edit create update]
+  before_action :set_terms, only: %i[ duplicate new edit create update ]
 
   include ApplicationHelper
 
@@ -170,51 +170,46 @@ class ProgramsController < ApplicationController
   end
 
   def destroy
-    # Check for both canceled and non-canceled reservations
-    all_reservations = Reservation.unscoped.where(program_id: @program.id)
-    active_reservations = @program.reservations
-    canceled_reservations = all_reservations.canceled
-    
-    # Check for active reservations
-    if active_reservations.any?
-      redirect_to @program, alert: "Program can't be deleted because it has active reservations (#{active_reservations.ids.join(', ')}) associated. Please cancel the reservations first."
-      return
-    end
-    
-    # Clean up canceled reservations by nullifying the program_id
-    if canceled_reservations.any?
-      canceled_reservations.delete_all
-    end
-    if @program.sites.any?
-      @program.sites.each do |site|
-        @program.sites.delete(site)
+    ActiveRecord::Base.transaction do
+      # Apply pessimistic locking to prevent race conditions
+      @program.lock
+      
+      # Check for both canceled and non-canceled reservations after acquiring lock
+      all_reservations = Reservation.unscoped.where(program_id: @program.id)
+      active_reservations = @program.reservations
+      canceled_reservations = all_reservations.canceled
+      
+      # Check for active reservations
+      if active_reservations.any?
+        redirect_to @program, alert: "Program can't be deleted because it has active reservations (#{active_reservations.ids.join(', ')}) associated. Please cancel the reservations first."
+        return
       end
-    end
-    if @program.managers.any?
-      @program.managers.each do |manager|
-        @program.managers.delete(manager)
+      
+      # Delete up canceled reservations
+      if canceled_reservations.any?
+        canceled_reservations.delete_all
       end
-    end
-    if @program.courses.any?
-      @program.courses.each do |course|
-        students = course.students
-        students.each do |student|
-          if student.reservations.present?
-            student.update(registered: false, course_id: nil)
-          else
-            student.delete
+      @program.sites.clear if @program.sites.any?
+      @program.managers.clear if @program.managers.any?
+      if @program.courses.any?
+        @program.courses.each do |course|
+          students = course.students
+          students.each do |student|
+            if student.reservations.present?
+              student.update(registered: false, course_id: nil)
+            else
+              student.delete
+            end
+          end
+          unless course.destroy
+            redirect_to @program, alert: "Program can't be deleted because course #{course.subject} #{course.catalog_number} #{course.class_section} can't be deleted. Please check the course and its students' reservations."
+            return
           end
         end
-        unless course.destroy
-          redirect_to @program, alert: "Program can't be deleted because course #{course.subject} #{course.catalog_number} #{course.class_section} can't be deleted. Please check the course and its students' reservations."
-          return
-        end
       end
-    end
-    
-    if @program.destroy
-      if FacultySurvey.where(program_id: @program.id).any?
-        faculty_surveys = FacultySurvey.where(program_id: @program.id)
+
+      faculty_surveys = FacultySurvey.where(program_id: @program.id)
+      if faculty_surveys.any?
         faculty_surveys.each do |faculty_survey|
           # Reset all config_questions' answers for this faculty survey
           faculty_survey.config_questions.each do |config_question|
@@ -225,10 +220,17 @@ class ProgramsController < ApplicationController
         end
         faculty_surveys.update_all(program_id: nil)
       end
-      redirect_to programs_url, notice: "Program was successfully destroyed."
-    else
-      redirect_to @program, alert: "Program could not be destroyed: #{@program.errors.full_messages.join(', ')}"
+      
+      if @program.destroy
+        redirect_to programs_url, notice: "Program was successfully destroyed."
+      else
+        redirect_to @program, alert: "Program could not be destroyed: #{@program.errors.full_messages.join(', ')}"
+      end
     end
+  rescue ActiveRecord::RecordNotFound
+    redirect_to programs_url, alert: "Program not found."
+  rescue StandardError => e
+    redirect_to @program, alert: "An error occurred while deleting the program: #{e.message}"
   end
 
   private
