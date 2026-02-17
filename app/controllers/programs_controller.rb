@@ -232,7 +232,7 @@ class ProgramsController < ApplicationController
   rescue ActiveRecord::RecordNotFound
     redirect_to programs_url, alert: "Program not found."
   rescue StandardError => e
-    redirect_to @program, alert: "An error occurred while deleting the program: #{e.message}"
+    redirect_to programs_url, alert: "An error occurred while deleting the program: #{e.message}"
   end
 
   private
