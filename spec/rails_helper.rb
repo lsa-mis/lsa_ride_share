@@ -1,8 +1,8 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
-SUPER_ADMIN_LDAP_GROUP = "lsa-was-rails-devs"
 ENV['RAILS_ENV'] = 'test'
 require_relative '../config/environment'
+SUPER_ADMIN_LDAP_GROUP = "lsa-was-rails-devs"
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require 'rspec/rails'
