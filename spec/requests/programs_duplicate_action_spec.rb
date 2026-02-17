@@ -1,7 +1,5 @@
 require 'rails_helper'
 
-SUPER_ADMIN_LDAP_GROUP = "lsa-was-rails-devs"
-
 RSpec.describe Program, type: :request do
 
   context 'duplicate action' do
