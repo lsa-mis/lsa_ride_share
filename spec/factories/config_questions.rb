@@ -10,7 +10,7 @@
 FactoryBot.define do
   factory :config_question do
     question { Faker::Lorem.question}
-    answer { "" }
+    answer { Faker::Lorem.sentence }
     association :faculty_survey
   end
 end

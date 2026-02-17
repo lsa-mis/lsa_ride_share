@@ -94,6 +94,25 @@ RSpec.describe Program, type: :request do
         expect { Program.find(program.id) }.to raise_error(ActiveRecord::RecordNotFound)
       end
 
+      it 'try to delete a program that is associated with faculty-survey and succeed' do
+        faculty_survey = FactoryBot.create(:faculty_survey, program_id: program.id)
+        config_question = FactoryBot.create(:config_question, faculty_survey: faculty_survey)
+        # Add answer content to the config question
+        config_question.answer = "This is the answer content"
+        config_question.save!
+
+        delete program_path(program)
+        expect(response).to have_http_status(302)
+        expect(response).to redirect_to(programs_path)
+        expect(flash[:notice]).to include("Program was successfully deleted.")
+        expect { Program.find(program.id) }.to raise_error(ActiveRecord::RecordNotFound)
+        expect(ConfigQuestion.find(config_question.id)).to be_present
+        expect(FacultySurvey.find(faculty_survey.id)).to be_present
+        expect(FacultySurvey.find(faculty_survey.id).program_id).to be_nil
+        expect(ConfigQuestion.find(config_question.id).answer.body).to be_nil
+
+      end
+
       it 'try to delete a program that fails deletion and show an error message' do
         allow_any_instance_of(Program).to receive(:destroy).and_return(false)
         allow_any_instance_of(Program).to receive_message_chain(:errors, :full_messages).and_return(["Error message 1", "Error message 2"])
