@@ -1,7 +1,5 @@
 require 'rails_helper'
 
-SUPER_ADMIN_LDAP_GROUP = "lsa-was-rails-devs"
-
 RSpec.describe Program, type: :request do
 
   context 'index action' do
@@ -83,7 +81,7 @@ RSpec.describe Program, type: :request do
       end
     end
 
-    context 'with student who has a currrent term program' do
+    context 'with student who has a current term program' do
       let!(:user_manager) { FactoryBot.create(:user) }
       let!(:manager) { FactoryBot.create(:manager, uniqname: user_manager.uniqname) }
       let!(:program) { FactoryBot.create(:program, instructor: manager) }
@@ -112,7 +110,7 @@ RSpec.describe Program, type: :request do
       end
     end
 
-    context 'with "none" role who has no currrent term programs' do
+    context 'with "none" role who has no current term programs' do
       let!(:user) { FactoryBot.create(:user) }
 
       before do

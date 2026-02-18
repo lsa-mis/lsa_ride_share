@@ -22,7 +22,7 @@ class Student < ApplicationRecord
   belongs_to :course, optional: true
   has_many :reservation_passengers
   has_many :passengers, through: :reservation_passengers, source: :reservation
-  has_many :notes, as: :noteable
+  has_many :notes, as: :noteable, dependent: :destroy
 
   encrypts :phone_number
 
