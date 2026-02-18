@@ -7,6 +7,6 @@
     
     or go to the <a href="/" class="link_to">homepage</a>
     
-    or <button id="myCustomTrigger" class="hover:underline px-1 footer-text footer-link border-0 bg-transparent p-0" data-email="<%= session[:user_email]%>">Report an Issue</button>
+    or <button id="myCustomTrigger" class="hover:underline px-1 footer-text footer-link border-0 bg-transparent p-0" data-email="<%= session&.[](:user_email) %>">Report an Issue</button>
     </p>
 </div>
