@@ -14,6 +14,9 @@
         <div class="py-2">
           <%= link_to 'Students List - Update Roster', program_students_path(@program, :update => "roster"), class: "secondary_blue_button" %>
         </div>
+        <div class="py-2">
+          <%= link_to 'Delete Program', program_path(@program), data: { turbo_confirm: 'Are you sure?', turbo_method: :delete }, class: "primary_button" if policy(@program).destroy? %>
+        </div>
       <% end %>
     </div>
   </div>

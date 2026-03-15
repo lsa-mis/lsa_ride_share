@@ -3,7 +3,7 @@ class ProgramsController < ApplicationController
 
   before_action :set_program, except: %i[ index new create get_programs_list get_students_list get_sites_list ]
   before_action :set_units
-  before_action :set_terms, only: %i[ duplicate new edit create update]
+  before_action :set_terms, only: %i[ duplicate new edit create update ]
 
   include ApplicationHelper
 
@@ -167,6 +167,66 @@ class ProgramsController < ApplicationController
   def get_sites_list
     render json: Program.find(params[:program_id]).sites.order(:title)
     authorize Program
+  end
+
+  def destroy
+    # Explicitly authorize the destroy action
+    authorize @program
+    
+    ActiveRecord::Base.transaction do
+      # Check for both canceled and non-canceled reservations after acquiring lock
+      all_reservations = Reservation.unscoped.where(program_id: @program.id)
+      active_reservations = @program.reservations
+      canceled_reservations = all_reservations.canceled
+      # Check for active reservations
+      if active_reservations.any?
+        redirect_to @program, alert: "Program can't be deleted because it has active reservations (#{active_reservations.ids.join(', ')}) associated. Please cancel the reservations first."
+        return
+      end
+      
+      # Delete canceled reservations
+      if canceled_reservations.any?
+        canceled_reservations.delete_all
+      end
+      @program.sites.clear if @program.sites.any?
+      @program.managers.clear if @program.managers.any?
+      if @program.courses.any?
+        @program.courses.each do |course|
+          students = course.students
+          students.each do |student|
+            if student.reservations.present?
+              student.update(registered: false, course_id: nil)
+            else
+              student.delete
+            end
+          end
+          unless course.destroy
+            redirect_to @program, alert: "Program can't be deleted because course #{course.subject} #{course.catalog_number} #{course.class_section} can't be deleted. Please check the course and its students' reservations."
+            return
+          end
+        end
+      end
+
+      faculty_surveys = FacultySurvey.where(program_id: @program.id)
+      if faculty_surveys.any?
+        faculty_surveys.each do |faculty_survey|
+          # Reset all config_questions' answers for this faculty survey
+          faculty_survey.config_questions.each do |config_question|
+            if config_question.answer.present?
+              config_question.answer.update(body: nil)
+            end
+          end
+        end
+        faculty_surveys.update_all(program_id: nil)
+      end
+      
+      if @program.destroy
+        redirect_to programs_url, notice: "Program was successfully deleted."
+      else
+        redirect_to @program, alert: "Program could not be deleted: #{@program.errors.full_messages.join(', ')}"
+      end
+    end
+
   end
 
   private
