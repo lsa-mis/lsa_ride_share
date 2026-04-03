@@ -140,7 +140,7 @@ class Reservation < ApplicationRecord
     end
   end
 
-  serialize :recurring, Hash
+  serialize :recurring, type: Hash
 
   def recurring=(value)
     if RecurringSelect.is_valid_rule?(value)
