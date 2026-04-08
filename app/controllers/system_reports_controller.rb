@@ -278,9 +278,10 @@ class SystemReportsController < ApplicationController
           rows << row1 + [row2_edited] + [n]
           rows2.shift
         end
-        records_array1.columns.shift
-        records_array2.columns.shift
-        columns = records_array1.columns + records_array2.columns + ["unique_users"]
+        # Create new arrays without the first column instead of modifying frozen arrays
+        columns1 = records_array1.columns.drop(1)
+        columns2 = records_array2.columns.drop(1)
+        columns = columns1 + columns2 + ["unique_users"]
         result.push({"report_name" => "#{report_type} for #{@unit} #{@term}", "total" => records_array1.count, "header" => columns, "rows" => rows})
         return result
       end
