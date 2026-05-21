@@ -27,7 +27,14 @@ module StudentApi
       response = http.request(request)
       if response.code == OK_CODE
         body = response.read_body
-        data = JSON.parse(body)
+        data = nil
+        begin
+          data = JSON.parse(body)
+        rescue JSON::ParserError
+          Rails.logger.error "MVR API Error: JSON parsing error for response body: #{body}"
+          result['error'] = "JSON Parsing Error: Unable to parse response from MVR API."
+          data = nil
+        end
         result['success'] = true
         if data.present?
           unless data['mvr_status'].nil?
@@ -36,9 +43,6 @@ module StudentApi
           if data['expires'].present?
             mvr_status += " until " + data['expires']
           end
-        else
-          # Legacy endpoint may return plain text instead of JSON.
-          mvr_status = body.to_s.strip
         end
         result['mvr_status'] = mvr_status
       else
