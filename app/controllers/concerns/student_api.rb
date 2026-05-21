@@ -6,8 +6,8 @@ module StudentApi
   def mvr_status(uniqname)
     result = {'success' => false, 'error' => '', 'mvr_status' => ''}
     mvr_status = ''
-    url = URI("https://mvr.fo.umich.edu/api/status?identifier=#{uniqname}&format=legacy")
-
+    url = URI("https://mvr.fo.umich.edu/api/status")
+    url.query = URI.encode_www_form(identifier: uniqname, format: 'legacy')
     http = Net::HTTP.new(url.host, url.port)
     http.use_ssl = true
     http.verify_mode = OpenSSL::SSL::VERIFY_PEER
@@ -31,7 +31,7 @@ module StudentApi
         begin
           data = JSON.parse(body)
         rescue JSON::ParserError
-          Rails.logger.error "MVR API Error: JSON parsing error for response body: #{body}"
+          Rails.logger.error "MVR API Error: JSON parsing error"
           result['error'] = "JSON Parsing Error: Unable to parse response from MVR API."
           data = nil
         end
