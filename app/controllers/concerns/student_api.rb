@@ -6,12 +6,15 @@ module StudentApi
   def mvr_status(uniqname)
     result = {'success' => false, 'error' => '', 'mvr_status' => ''}
     mvr_status = ''
-    url = URI("https://ltp.fo.umich.edu/mvr/api/api.php?action=check_status&uniqname=#{uniqname}")
+    url = URI("https://mvr.fo.umich.edu/api/status?identifier=#{uniqname}&format=legacy")
 
     http = Net::HTTP.new(url.host, url.port)
     http.use_ssl = true
     http.verify_mode = OpenSSL::SSL::VERIFY_PEER
     request = Net::HTTP::Get.new(url)
+    user = Rails.application.credentials.mvr_api[:username]
+    password = Rails.application.credentials.mvr_api[:password]
+    request.basic_auth(user, password)
     
     # Add headers that browsers typically send
     request["User-Agent"] = "Mozilla/5.0 (compatible; Rails/#{Rails.version})"
@@ -22,14 +25,20 @@ module StudentApi
 
     begin
       response = http.request(request)
-      if response.code == '200'
-        data = JSON.parse(response.read_body)
+      if response.code == OK_CODE
+        body = response.read_body
+        data = JSON.parse(body)
         result['success'] = true
-        unless data['mvr_status'].nil?
-          mvr_status = data['mvr_status']
-        end
-        if data['expires'].present?
-          mvr_status += " until " + data['expires']
+        if data.present?
+          unless data['mvr_status'].nil?
+            mvr_status = data['mvr_status']
+          end
+          if data['expires'].present?
+            mvr_status += " until " + data['expires']
+          end
+        else
+          # Legacy endpoint may return plain text instead of JSON.
+          mvr_status = body.to_s.strip
         end
         result['mvr_status'] = mvr_status
       else
