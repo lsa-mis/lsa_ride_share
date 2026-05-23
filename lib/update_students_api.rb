@@ -6,12 +6,15 @@ class UpdateStudentsApi
   def mvr_status(uniqname)
     result = {'success' => false, 'error' => '', 'mvr_status' => ''}
     mvr_status = ''
-    url = URI("https://ltp.fo.umich.edu/mvr/api/api.php?action=check_status&uniqname=#{uniqname}")
-
+    url = URI("https://mvr.fo.umich.edu/api/status")
+    url.query = URI.encode_www_form(identifier: uniqname, format: 'legacy')
     http = Net::HTTP.new(url.host, url.port)
     http.use_ssl = true
     http.verify_mode = OpenSSL::SSL::VERIFY_PEER
     request = Net::HTTP::Get.new(url)
+    user = Rails.application.credentials.mvr_api[:username]
+    password = Rails.application.credentials.mvr_api[:password]
+    request.basic_auth(user, password)
     
     # Add headers that browsers typically send
     request["User-Agent"] = "Mozilla/5.0 (compatible; Rails/#{Rails.version})"
@@ -22,14 +25,24 @@ class UpdateStudentsApi
 
     begin
       response = http.request(request)
-      if response.code == '200'
-        data = JSON.parse(response.read_body)
-        result['success'] = true
-        unless data['mvr_status'].nil?
-          mvr_status = data['mvr_status']
+      if response.code == OK_CODE
+        body = response.read_body
+        data = nil
+        begin
+          data = JSON.parse(body)
+        rescue JSON::ParserError
+          Rails.logger.error "MVR API Error: JSON parsing error"
+          result['error'] = "JSON Parsing Error: Unable to parse response from MVR API."
+          data = nil
         end
-        if data['expires'].present?
-          mvr_status += " until " + data['expires']
+        result['success'] = true
+        if data.present?
+          unless data['mvr_status'].nil?
+            mvr_status = data['mvr_status']
+          end
+          if data['expires'].present?
+            mvr_status += " until " + data['expires']
+          end
         end
         result['mvr_status'] = mvr_status
       else
