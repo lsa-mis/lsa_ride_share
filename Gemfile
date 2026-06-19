@@ -62,6 +62,7 @@ gem "ruby-vips", "~> 2.0"
 gem 'omniauth-saml', '~> 2.1'
 gem "omniauth-rails_csrf_protection"
 gem 'ldap_lookup', '~> 2.1.0'
+gem 'ostruct', '~> 0.6.3'
 gem 'pundit', '~> 2.3'
 gem 'simple_calendar', '~> 2.4', '>= 2.4.3'
 gem 'requestjs-rails', '~> 0.0.10'
