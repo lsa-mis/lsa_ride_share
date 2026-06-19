@@ -304,18 +304,6 @@ from https://tailwindcss.com/docs/adding-custom-styles
     @apply bg-gray-um30;
   }
 
-  .vehicle_report_file_input {
-    @apply text-sm font-normal font-montserrat;
-  }
-
-  .vehicle_report_file_input::file-selector-button {
-    @apply mr-3 rounded-md border border-gray-um30 bg-gray-um10 px-3 py-2 text-sm font-medium text-black;
-  }
-
-  .vehicle_report_file_input::file-selector-button:hover {
-    @apply bg-gray-um30;
-  }
-
   .card_area {
     @apply col-span-1 bg-white rounded-lg shadow-md divide-y divide-gray-400 px-2 place-items-stretch bg-white border border-gray-300 rounded-l
   }
