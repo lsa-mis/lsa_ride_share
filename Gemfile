@@ -56,7 +56,7 @@ gem "bootsnap", require: false
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 gem "image_processing", "~> 2.0"
-gem "ruby-vips", "~> 2.0"
+gem "mini_magick", "~> 4.13"
 
 # Use OmniAuth gems to implement Shibboleth SAML authentication
 gem 'omniauth-saml', '~> 2.1'
@@ -74,6 +74,7 @@ gem 'repost'
 # Use Kaminari for pagination
 gem "kaminari"
 gem 'csv', '~> 3.3', '>= 3.3.5'
+gem 'benchmark'
 
 group :development, :staging do
   gem "letter_opener_web"
