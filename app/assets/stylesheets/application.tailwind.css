@@ -1,8 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&family=Oswald:wght@400;500;600&family=Anek+Tamil:wght@100;200;300&display=swap');
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-@import 'actiontext.css';
+@config "../../../config/tailwind.config.js";
+@import "tailwindcss";
+@import "./actiontext.css";
 
 /*
 
@@ -149,7 +148,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .nav-sub-link {
-    @apply my-2 block py-1 nav-sm-text text-white hover:text-yellow-ummaze md:mx-2
+    @apply my-2 block py-1 text-sm font-normal font-montserrat text-white hover:text-yellow-ummaze md:mx-2
   }
 
   .nav-top-link-mobile {
@@ -157,7 +156,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
   
   .nav-sub-link-mobile {
-    @apply mx-2 block py-1 nav-sm-text text-white md:mx-2
+    @apply mx-2 block py-1 text-sm font-normal font-montserrat text-white md:mx-2
   }
 
   .button_label {
@@ -253,7 +252,7 @@ from https://tailwindcss.com/docs/adding-custom-styles
   }
 
   .tertiary_button:disabled {
-    @apply text-opacity-50 pointer-events-none text-blue-umblue;
+    @apply pointer-events-none text-blue-umblue/50;
   }
 
   .sign_button {
@@ -291,6 +290,18 @@ from https://tailwindcss.com/docs/adding-custom-styles
 
   .file-upload {
     @apply block shadow rounded-md border border-gray-600 outline-none px-3 py-2 mt-2 w-full;
+  }
+
+  input[type="file"] {
+    @apply text-sm font-normal font-montserrat;
+  }
+
+  input[type="file"]::file-selector-button {
+    @apply mr-3 rounded-md border border-gray-um30 bg-gray-um10 px-3 py-2 text-sm font-medium text-black;
+  }
+
+  input[type="file"]::file-selector-button:hover {
+    @apply bg-gray-um30;
   }
 
   .card_area {
