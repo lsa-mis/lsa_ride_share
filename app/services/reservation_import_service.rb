@@ -18,76 +18,76 @@ class ReservationImportService
   # It reads the CSV file, processes each row, and updates or creates items in the database.
   def call
     begin
-      total_time = Benchmark.measure {
-        @log.import_logger.info("#{DateTime.now} - #{Unit.find(@unit_id).name} - Processing File: #{@file.original_filename}")
-        csv_data = CSV.read(@file.path)
-        headers = csv_data[1] # Second row contains headers
-        data_rows = csv_data[2..-1] # Data starts from third row
-        
-        data_rows.each_with_index do |row_data, index|
-          @current_row_number = index + 3 # Actual row number in CSV (accounting for instructions + headers)
-          row = CSV::Row.new(headers, row_data)
-          # read a row from the CSV file
-          # validate the row data
-          # is the program exist in the term ?
-          term_id = row['TERM ID']&.strip
-          term_name = row["TERM NAME"]&.strip
-          if term_id.blank? && term_name.blank?
-            next
-          end
-          term = Term.find_by(id: term_id) || Term.find_by(name: term_name)
-          unless term
-            @errors += 1
-            @notes << "Row #{@current_row_number}: Term #{term_name} or #{term_id} not found."
-            next
-          end
-          program_id = row['PROGRAM ID']&.strip
-          program_title = row['PROGRAM TITLE']&.strip
-  
-          @program = program_exists_for_unit_and_term?(program_id, program_title, term)
-          next unless @program
-          # is the unit exist ?
-          # does the program belong to the unit ?
-          # does the site belongs to the program ?
-          site_id = row['SITE ID']&.strip
-          site_title = row['SITE TITLE']&.strip
-          site = valid_site_for_program(site_id, site_title)
-          next unless site
-          # validate start date, time and end date, time
-          start_day = row['START DATE']&.strip
-          end_day = row['END DATE']&.strip
-          start_time = row['START TIME']&.strip
-          end_time = row['END TIME']&.strip
-          next unless valid_start_and_end_time?(start_day, end_day, start_time, end_time)
-          # validate the car (if provided) belongs to the unit, has enough seats and is available
-          @number_of_people_on_trip = row['NUMBER OF PEOPLE ON TRIP']&.strip.to_i
-          # check if the reservation is recurring (finish_reservation method in reservation_controller)
-          recurring_data = get_recurring_details_from_row(row)
-          car_id = row['CAR ID']&.strip
-          car_number = row['CAR NUMBER']&.strip
-          car = valid_car_for_reservation(car_id, car_number, @number_of_people_on_trip)
-          @reservation = create_reservation_record(@program, site, car, @start_time, @end_time, @number_of_people_on_trip, @until_date, recurring_data)
-          # validate the driver (if provided) belongs to the program and is valid driver
-          driver = row['DRIVER']&.strip
-          add_driver_to_reservation(driver)
-          # validate the passengers (if provided) belong to the program
-          passengers = row['PASSENGERS']&.strip
-          add_passengers_to_reservation(passengers)
-          recurring = false
-          conflict_days_message = nil
-          if recurring_data.present?
-            conflict_days_message = create_recurring_reservations(@reservation, recurring_data, row)
-            recurring = true
-            if conflict_days_message.present?
-              @notes << "Row #{@current_row_number}: Recurring reservation ID #{@reservation.id} has conflicts on the following days: #{conflict_days_message}"
-            end
-          end
-          # send confirmation emails
-          ReservationMailer.with(reservation: @reservation, user: @user, recurring: recurring).car_reservation_confirmation(conflict_days_message).deliver_now
-          ReservationMailer.with(reservation: @reservation, user: @user, recurring: recurring).car_reservation_created(conflict_days_message).deliver_now
+      start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      @log.import_logger.info("#{DateTime.now} - #{Unit.find(@unit_id).name} - Processing File: #{@file.original_filename}")
+      csv_data = CSV.read(@file.path)
+      headers = csv_data[1] # Second row contains headers
+      data_rows = csv_data[2..-1] # Data starts from third row
+
+      data_rows.each_with_index do |row_data, index|
+        @current_row_number = index + 3 # Actual row number in CSV (accounting for instructions + headers)
+        row = CSV::Row.new(headers, row_data)
+        # read a row from the CSV file
+        # validate the row data
+        # is the program exist in the term ?
+        term_id = row['TERM ID']&.strip
+        term_name = row["TERM NAME"]&.strip
+        if term_id.blank? && term_name.blank?
+          next
         end
-      }
-      task_time = ((total_time.real / 60) % 60).round(2)
+        term = Term.find_by(id: term_id) || Term.find_by(name: term_name)
+        unless term
+          @errors += 1
+          @notes << "Row #{@current_row_number}: Term #{term_name} or #{term_id} not found."
+          next
+        end
+        program_id = row['PROGRAM ID']&.strip
+        program_title = row['PROGRAM TITLE']&.strip
+
+        @program = program_exists_for_unit_and_term?(program_id, program_title, term)
+        next unless @program
+        # is the unit exist ?
+        # does the program belong to the unit ?
+        # does the site belongs to the program ?
+        site_id = row['SITE ID']&.strip
+        site_title = row['SITE TITLE']&.strip
+        site = valid_site_for_program(site_id, site_title)
+        next unless site
+        # validate start date, time and end date, time
+        start_day = row['START DATE']&.strip
+        end_day = row['END DATE']&.strip
+        start_time_value = row['START TIME']&.strip
+        end_time = row['END TIME']&.strip
+        next unless valid_start_and_end_time?(start_day, end_day, start_time_value, end_time)
+        # validate the car (if provided) belongs to the unit, has enough seats and is available
+        @number_of_people_on_trip = row['NUMBER OF PEOPLE ON TRIP']&.strip.to_i
+        # check if the reservation is recurring (finish_reservation method in reservation_controller)
+        recurring_data = get_recurring_details_from_row(row)
+        car_id = row['CAR ID']&.strip
+        car_number = row['CAR NUMBER']&.strip
+        car = valid_car_for_reservation(car_id, car_number, @number_of_people_on_trip)
+        @reservation = create_reservation_record(@program, site, car, @start_time, @end_time, @number_of_people_on_trip, @until_date, recurring_data)
+        # validate the driver (if provided) belongs to the program and is valid driver
+        driver = row['DRIVER']&.strip
+        add_driver_to_reservation(driver)
+        # validate the passengers (if provided) belong to the program
+        passengers = row['PASSENGERS']&.strip
+        add_passengers_to_reservation(passengers)
+        recurring = false
+        conflict_days_message = nil
+        if recurring_data.present?
+          conflict_days_message = create_recurring_reservations(@reservation, recurring_data, row)
+          recurring = true
+          if conflict_days_message.present?
+            @notes << "Row #{@current_row_number}: Recurring reservation ID #{@reservation.id} has conflicts on the following days: #{conflict_days_message}"
+          end
+        end
+        # send confirmation emails
+        ReservationMailer.with(reservation: @reservation, user: @user, recurring: recurring).car_reservation_confirmation(conflict_days_message).deliver_now
+        ReservationMailer.with(reservation: @reservation, user: @user, recurring: recurring).car_reservation_created(conflict_days_message).deliver_now
+      end
+      elapsed_seconds = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start_time
+      task_time = ((elapsed_seconds / 60) % 60).round(2)
       @log.import_logger.info("*********************** Reservations import completed. Total time: #{task_time} minutes.")
       @notes << "Reservations import completed. File: #{@file.original_filename}. Total time: #{task_time} minutes."
       @result[:errors] = @errors
