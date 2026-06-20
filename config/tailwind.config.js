@@ -1,5 +1,3 @@
-const defaultTheme = require('tailwindcss/defaultTheme')
-
 module.exports = {
   // mode: 'jit',
   // These paths are just examples, customize them to match your project structure
@@ -141,9 +139,5 @@ module.exports = {
     },
   },
 
-  plugins: [
-    require('@tailwindcss/forms'),
-    require('@tailwindcss/aspect-ratio'),
-    require('@tailwindcss/typography'),
-  ]
+  plugins: []
 }
