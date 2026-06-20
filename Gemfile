@@ -1,13 +1,13 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "3.3.6"
+ruby "4.0.1"
 
 gem 'devise'
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 # gem "rails", "~> 7.0.8"
-gem "rails", "~> 7.2.3", ">= 7.2.3.1"
+gem "rails", "~> 8.1.3"
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem "sprockets-rails"
@@ -46,7 +46,7 @@ gem "skylight"
 # gem "bcrypt", "~> 3.1.7"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem "tzinfo-data", platforms: %i[ mingw mswin x64_mingw jruby ]
+gem "tzinfo-data", platforms: %i[ windows jruby ]
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
@@ -55,29 +55,39 @@ gem "bootsnap", require: false
 # gem "sassc-rails"
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-gem "image_processing", "~> 1.2"
-
-gem 'letter_opener_web'
+gem "image_processing", "~> 2.0"
+gem "mini_magick", "~> 4.13"
 
 # Use OmniAuth gems to implement Shibboleth SAML authentication
 gem 'omniauth-saml', '~> 2.1'
 gem "omniauth-rails_csrf_protection"
 gem 'ldap_lookup', '~> 2.1.0'
+gem 'ostruct', '~> 0.6.3'
 gem 'pundit', '~> 2.3'
 gem 'simple_calendar', '~> 2.4', '>= 2.4.3'
 gem 'requestjs-rails', '~> 0.0.10'
-gem 'recurring_select', '~> 3.0', '>= 3.0.1'
+# gem 'recurring_select', '>= 3.0.1'
+gem 'recurring_select', '4.0.0.rc1'
+# Needed by older asset dependencies that still require `coffee_script` at precompile time.
+gem 'coffee-script'
 gem 'repost'
 # Use Kaminari for pagination
 gem "kaminari"
+gem 'csv', '~> 3.3', '>= 3.3.5'
+gem 'benchmark'
+
+group :development, :staging do
+  gem "letter_opener_web"
+end
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem "debug", platforms: %i[ mri mingw x64_mingw ]
+  gem "debug", platforms: %i[ mri windows ]
   gem 'dotenv-rails'
   gem 'rspec-rails'
   gem 'factory_bot_rails'
   gem 'capybara'
+  gem 'selenium-webdriver', '>= 4.8', '< 4.11'
   gem 'webdrivers'
   gem 'faker'
   gem 'pry'
@@ -88,6 +98,6 @@ end
 
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
-  gem 'annotate', '~> 3.2'
+  # gem 'annotate', '~> 3.2'
   gem "web-console"
 end
