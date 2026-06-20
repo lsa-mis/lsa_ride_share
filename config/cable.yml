@@ -10,5 +10,5 @@ staging:
 
 production:
   adapter: redis
-  url: <%= ENV.fetch("REDIS_URL") %>
+  url: <%= ENV["REDIS_URL"] %>
   channel_prefix: lsa_ride_share_production
