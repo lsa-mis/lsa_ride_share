@@ -10,7 +10,7 @@
         <%= show_current_terms[1] %>
       </div>
     </div>
-    <% if policy(Program).create? %>
+    <% if policy(Program).new? %>
       <div class="mt-2">
         <%= link_to 'New Program', new_program_path, class: "secondary_blue_button" %>
       </div>
