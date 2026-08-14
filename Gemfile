@@ -75,6 +75,7 @@ gem 'repost'
 gem "kaminari"
 gem 'csv', '~> 3.3', '>= 3.3.5'
 gem 'benchmark'
+gem 'lsa_tdx_feedback'
 
 group :development, :staging do
   gem "letter_opener_web"

@@ -4,6 +4,8 @@
     <title>LSA RideShare</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-prefetch" content="false">
+    <%= lsa_tdx_feedback_css %>
+    <%= lsa_tdx_feedback_js %>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
@@ -25,5 +27,6 @@
       <%= yield %>
     </main>
     <%= render 'layouts/footer' %>
+    <%= lsa_tdx_feedback_modal %>
   </body>
 </html>
