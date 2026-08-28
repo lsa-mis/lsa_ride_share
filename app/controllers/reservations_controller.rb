@@ -58,6 +58,10 @@ class ReservationsController < ApplicationController
   end
 
   def selected_reservations
+    unless params[:res_ids].present?
+      redirect_to day_reservations_path(params[:day]), alert: "Please select at least one reservation."
+      return
+    end
     @selected_reservations = params[:res_ids].keys.join(',')
     @day = params[:day]
     authorize Reservation
