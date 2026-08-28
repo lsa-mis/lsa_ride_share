@@ -95,6 +95,8 @@ group :development, :test do
   gem 'pundit-matchers', '~> 3.1', '>= 3.1.2'
   gem 'rails_accessibility_testing', '~> 1.6'
   gem 'axe-core-capybara', '~> 4.0'
+  gem 'prosopite', '~> 1.4'
+  gem "pg_query", "~> 6.2"
 end
 
 group :development do
