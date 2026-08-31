@@ -78,7 +78,7 @@ class CarsController < ApplicationController
 
   def get_parking_locations
     authorize Car
-    parking_prefs = UnitPreference.find_by(name: "parking_location", unit_id: params[:unit_id]).value
+    parking_prefs = UnitPreference.find_by(name: "parking_location", unit_id: params[:unit_id])&.value
     parking_locations = []
     if parking_prefs.present?
       parking_locations = parking_prefs.split(',')
