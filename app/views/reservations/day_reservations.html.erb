@@ -12,7 +12,7 @@
   </div>
   <div>
     <%= turbo_frame_tag 'day_reservations' do %>
-      <%= form_with model: @res_ids, url: selected_reservations_path, method: :post, 
+      <%= form_with url: selected_reservations_path, method: :post,
         data: { controller: "checkboxselectall",
                 target: "form",
                 action: "submit->checkboxselectall#submitForm",
