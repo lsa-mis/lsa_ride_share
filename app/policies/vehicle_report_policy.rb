@@ -14,9 +14,12 @@ class VehicleReportPolicy < ApplicationPolicy
   end
 
   def create?
+    reservation = reservation_for_create
+    return false unless reservation.present?
+
     return true if user_in_access_group?
-    return true if can_manager_create_report?(Reservation.find(params[:reservation_id]))
-    return true if can_student_create_report?(Reservation.find(params[:reservation_id]))
+    return true if can_manager_create_report?(reservation)
+    return true if can_student_create_report?(reservation)
     return false
   end
 
@@ -93,6 +96,18 @@ class VehicleReportPolicy < ApplicationPolicy
   def is_vehicle_report_manager?
     report = VehicleReport.find(params[:id])
     can_manager_create_report?(report.reservation)
+  end
+
+  def reservation_for_create
+    reservation_id = if @record.respond_to?(:reservation_id)
+      @record.reservation_id.presence
+    else
+      nil
+    end
+    reservation_id ||= params[:reservation_id]
+    return nil unless reservation_id.present?
+
+    Reservation.find_by(id: reservation_id)
   end
 
 end

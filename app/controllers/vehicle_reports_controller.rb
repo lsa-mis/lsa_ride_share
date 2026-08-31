@@ -102,9 +102,18 @@ class VehicleReportsController < ApplicationController
   # POST /vehicle_reports or /vehicle_reports.json
   def create
     @vehicle_report = VehicleReport.new(vehicle_report_params)
+    unless @reservation.present?
+      @vehicle_report.errors.add(:reservation, "must exist")
+      skip_authorization
+      respond_to do |format|
+        format.html { render plain: "Invalid reservation", status: :unprocessable_content }
+        format.json { render json: @vehicle_report.errors, status: :unprocessable_content }
+      end
+      return
+    end
+    authorize @vehicle_report
     @vehicle_report.car = @reservation.car
     set_parking_spot_return
-    authorize @vehicle_report
     respond_to do |format|
       if @vehicle_report.save
         update_car_if_needed
