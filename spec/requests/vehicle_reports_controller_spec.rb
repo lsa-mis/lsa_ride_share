@@ -56,7 +56,7 @@ RSpec.describe VehicleReport, type: :request do
       expect(response.body).to include("Vehicle Report: #{vehicle_report.id}")
     end
 
-    it 'returns 500 and does not create a vehicle report' do
+    it 'creates a vehicle report and redirects to show' do
       new_reservation = FactoryBot.create(
         :reservation,
         program: program,
@@ -66,7 +66,6 @@ RSpec.describe VehicleReport, type: :request do
         reserved_by: admin_user.id,
         updated_by: admin_user.id
       )
-
       expect do
         post vehicle_reports_path, params: {
           vehicle_report: {
@@ -83,9 +82,36 @@ RSpec.describe VehicleReport, type: :request do
           },
           parking_spot_return: 'Lot C'
         }
+      end.to change(VehicleReport, :count).by(1)
+
+      created = VehicleReport.last
+      expect(response).to have_http_status(302)
+      expect(response).to redirect_to(vehicle_report_path(created))
+      expect(created.parking_spot_return).to eq('Lot C')
+      expect(car.reload.mileage).to eq(2010)
+      expect(car.reload.gas.to_f).to eq(55.0)
+      expect(car.reload.parking_spot).to eq('Lot C')
+      expect(car.reload.last_driver_id).to eq(student_driver.id)
+    end
+
+    it 'fails cleanly for an invalid reservation_id without raising a server error' do
+      expect do
+        post vehicle_reports_path, params: {
+          vehicle_report: {
+            reservation_id: -1,
+            mileage_start: 2000,
+            mileage_end: 2010,
+            gas_start: 65,
+            gas_end: 55,
+            parking_spot: 'Lot A',
+            created_by: admin_user.id,
+            updated_by: admin_user.id
+          },
+          parking_spot_return: 'Lot C'
+        }
       end.not_to change(VehicleReport, :count)
 
-      expect(response).to have_http_status(500)
+      expect(response).to have_http_status(422)
     end
 
     it 'updates a vehicle report and redirects to show' do
