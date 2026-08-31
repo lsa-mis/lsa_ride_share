@@ -5,21 +5,6 @@ RSpec.describe Manager, type: :request do
   let!(:instructor) { FactoryBot.create(:manager) }
   let!(:program) { FactoryBot.create(:program, unit: unit, instructor: instructor) }
 
-  def stub_super_admin_access(user, unit)
-    allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, SUPER_ADMIN_LDAP_GROUP).and_return(true)
-    allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, unit.ldap_group).and_return(false)
-  end
-
-  def stub_admin_access(user)
-    allow(LdapLookup).to receive(:is_member_of_group?).with(anything, SUPER_ADMIN_LDAP_GROUP).and_return(false)
-    allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, anything).and_return(true)
-  end
-
-  def stub_non_admin_access(user)
-    allow(LdapLookup).to receive(:is_member_of_group?).with(anything, SUPER_ADMIN_LDAP_GROUP).and_return(false)
-    allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, anything).and_return(false)
-  end
-
   context 'with super_admin role' do
     let!(:super_admin_user) { FactoryBot.create(:user) }
 

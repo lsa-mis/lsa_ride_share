@@ -20,8 +20,7 @@ RSpec.describe Car, type: :request do
 
     before do
       create_parking_pref(unit)
-      allow(LdapLookup).to receive(:is_member_of_group?).with(super_admin_user.uniqname, SUPER_ADMIN_LDAP_GROUP).and_return(true)
-      allow(LdapLookup).to receive(:is_member_of_group?).with(super_admin_user.uniqname, unit.ldap_group).and_return(false)
+      stub_super_admin_access(super_admin_user, unit)
       mock_login(super_admin_user)
     end
 
@@ -41,8 +40,7 @@ RSpec.describe Car, type: :request do
 
     before do
       create_parking_pref(unit)
-      allow(LdapLookup).to receive(:is_member_of_group?).with(anything, SUPER_ADMIN_LDAP_GROUP).and_return(false)
-      allow(LdapLookup).to receive(:is_member_of_group?).with(admin_user.uniqname, anything).and_return(true)
+      stub_admin_access(admin_user)
       mock_login(admin_user)
     end
 
@@ -120,8 +118,7 @@ RSpec.describe Car, type: :request do
     let!(:program) { FactoryBot.create(:program, unit: unit, instructor: manager) }
 
     before do
-      allow(LdapLookup).to receive(:is_member_of_group?).with(anything, SUPER_ADMIN_LDAP_GROUP).and_return(false)
-      allow(LdapLookup).to receive(:is_member_of_group?).with(manager_user.uniqname, anything).and_return(false)
+      stub_non_admin_access(manager_user)
       mock_login(manager_user)
     end
 
@@ -155,8 +152,7 @@ RSpec.describe Car, type: :request do
     let!(:student) { FactoryBot.create(:student, uniqname: student_user.uniqname, program: program) }
 
     before do
-      allow(LdapLookup).to receive(:is_member_of_group?).with(anything, SUPER_ADMIN_LDAP_GROUP).and_return(false)
-      allow(LdapLookup).to receive(:is_member_of_group?).with(student_user.uniqname, anything).and_return(false)
+      stub_non_admin_access(student_user)
       mock_login(student_user)
     end
 
@@ -177,8 +173,7 @@ RSpec.describe Car, type: :request do
     let!(:user) { FactoryBot.create(:user) }
 
     before do
-      allow(LdapLookup).to receive(:is_member_of_group?).with(anything, SUPER_ADMIN_LDAP_GROUP).and_return(false)
-      allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, anything).and_return(false)
+      stub_non_admin_access(user)
       mock_login(user)
     end
 
