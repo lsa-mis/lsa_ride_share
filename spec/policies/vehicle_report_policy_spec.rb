@@ -59,7 +59,7 @@ RSpec.describe VehicleReportPolicy, type: :policy do
     let!(:reservation) { FactoryBot.create(:reservation, program: program, site: site, car: car, reserved_by: user.id) }
     let!(:vehicle_report) { FactoryBot.create(:vehicle_report, reservation: reservation) }
 
-    subject { described_class.new({ user: user_none, role: "none", params: {id: vehicle_report.id, reservation_id: reservation.id}  }, reservation) }
+    subject { described_class.new({ user: user_none, role: "none", params: {id: vehicle_report.id, reservation_id: reservation.id}  }, vehicle_report) }
 
     it { is_expected.to forbid_all_actions }
   end

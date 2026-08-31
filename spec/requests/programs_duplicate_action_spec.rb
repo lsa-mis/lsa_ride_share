@@ -11,8 +11,7 @@ RSpec.describe Program, type: :request do
 
       before do
         # make a user a member of the SUPER_ADMIN_LDAP_GROUP group
-        allow(LdapLookup).to receive(:is_member_of_group?).with(super_admin_user.uniqname, SUPER_ADMIN_LDAP_GROUP).and_return(true)
-        allow(LdapLookup).to receive(:is_member_of_group?).with(super_admin_user.uniqname, unit.ldap_group).and_return(false)
+        stub_super_admin_access(super_admin_user, unit)
         mock_login(super_admin_user)
       end
 
@@ -35,8 +34,7 @@ RSpec.describe Program, type: :request do
 
       before do
         # make a user a member of the SUPER_ADMIN_LDAP_GROUP group
-        allow(LdapLookup).to receive(:is_member_of_group?).with(admin_user.uniqname, SUPER_ADMIN_LDAP_GROUP).and_return(false)
-        allow(LdapLookup).to receive(:is_member_of_group?).with(admin_user.uniqname, unit.ldap_group).and_return(true)
+        stub_admin_access(admin_user, unit)
         mock_login(admin_user)
       end
 
@@ -61,8 +59,7 @@ RSpec.describe Program, type: :request do
 
       before do
         # login with a manager role
-        allow(LdapLookup).to receive(:is_member_of_group?).with(user_manager.uniqname, SUPER_ADMIN_LDAP_GROUP).and_return(false)
-        allow(LdapLookup).to receive(:is_member_of_group?).with(user_manager.uniqname, unit.ldap_group).and_return(false)
+        stub_non_admin_access(user_manager)
         mock_login(user_manager)
       end
 
@@ -83,8 +80,7 @@ RSpec.describe Program, type: :request do
       let!(:unit) { FactoryBot.create(:unit) }
 
       before do
-        allow(LdapLookup).to receive(:is_member_of_group?).with(user_manager.uniqname, SUPER_ADMIN_LDAP_GROUP).and_return(false)
-        allow(LdapLookup).to receive(:is_member_of_group?).with(user_manager.uniqname, unit.ldap_group).and_return(false)
+        stub_non_admin_access(user_manager)
         mock_login(user_manager)
       end
 
@@ -103,8 +99,7 @@ RSpec.describe Program, type: :request do
       let!(:student) { FactoryBot.create(:student, uniqname: user_student.uniqname, program: program) }
 
       before do
-        allow(LdapLookup).to receive(:is_member_of_group?).with(anything, SUPER_ADMIN_LDAP_GROUP).and_return(false)
-        allow(LdapLookup).to receive(:is_member_of_group?).with(user_student.uniqname, anything).and_return(false)
+        stub_non_admin_access(user_student)
         mock_login(user_student)
       end
 
@@ -119,8 +114,7 @@ RSpec.describe Program, type: :request do
       let!(:user) { FactoryBot.create(:user) }
 
       before do
-        allow(LdapLookup).to receive(:is_member_of_group?).with(anything, SUPER_ADMIN_LDAP_GROUP).and_return(false)
-        allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, anything).and_return(false)
+        stub_non_admin_access(user)
         mock_login(user)
       end
 

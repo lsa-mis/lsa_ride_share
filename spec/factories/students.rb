@@ -19,7 +19,7 @@
 #
 FactoryBot.define do
   factory :student do
-    uniqname { Faker::String.random(length: 3..8) }
+    uniqname { Faker::Alphanumeric.alpha(number: rand(3..8)) }
     last_name { Faker::Name.last_name }
     first_name { Faker::Name.first_name }
     mvr_status { ['Approved', 'Expired', '', nil].sample }
