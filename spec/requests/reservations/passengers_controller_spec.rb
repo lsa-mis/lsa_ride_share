@@ -6,7 +6,7 @@ RSpec.describe Reservations::PassengersController, type: :request do
   let!(:instructor) { FactoryBot.create(:manager) }
   let!(:program) { FactoryBot.create(:program, unit: unit, term: term, instructor: instructor) }
   let!(:site) { FactoryBot.create(:site, unit: unit) }
-  let!(:car) { FactoryBot.create(:car, unit: unit, status: :available) }
+  let!(:car) { FactoryBot.create(:car, unit: unit, status: :available, number_of_seats: 8) }
 
   let!(:driver_student) do
     FactoryBot.create(
