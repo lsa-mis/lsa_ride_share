@@ -26,7 +26,7 @@
       </tr>
     </thead>
     <tbody>
-      <% @vehicle_reports.order(updated_at: :desc).each do |vehicle_report| %>
+      <% @vehicle_reports.each do |vehicle_report| %>
         <tr class="mi_tbody_tr">
           <td class="mi_tbody_td">
             <%= link_to vehicle_report.id, vehicle_report_path(vehicle_report), class: "link_to", data: {turbo_frame: "_top"} %>
@@ -65,10 +65,11 @@
             <%= vehicle_report.comment %>
           </td>
           <td class="mi_tbody_td">
-            <% if vehicle_report.notes.any? %>
-              <% vehicle_report.notes.order(:created_at).each do |note| %>
+            <% notes = vehicle_report.notes.sort_by(&:created_at) %>
+            <% if notes.any? %>
+              <% notes.each do |note| %>
                 <div class="note-item">
-                  <%= note.body.to_plain_text if note.body.present? %>
+                  <%= note.body.to_plain_text %>
                 </div>
               <% end %>
             <% end %>
@@ -97,7 +98,7 @@
     </tbody>
   </table>
   <table id="phone-table">
-    <% @vehicle_reports.order(updated_at: :desc).each do |vehicle_report| %>
+    <% @vehicle_reports.each do |vehicle_report| %>
       <tr class="mi_tbody_tr">
         <th class="header_mobile">Item</th>
         <td class="mi_tbody_td">
@@ -173,10 +174,11 @@
       <tr class="mi_tbody_tr">
         <th class="header_mobile">Admin Notes</th>
         <td class="mi_tbody_td">
-          <% if vehicle_report.notes.any? %>
-            <% vehicle_report.notes.order(:created_at).each do |note| %>
+          <% notes = vehicle_report.notes.sort_by(&:created_at) %>
+          <% if notes.any? %>
+            <% notes.each do |note| %>
               <div class="note-item">
-                <%= note.body.to_plain_text if note.body.present? %>
+                <%= note.body.to_plain_text %>
               </div>
             <% end %>
           <% end %>
