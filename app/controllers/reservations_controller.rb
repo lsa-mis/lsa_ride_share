@@ -45,7 +45,7 @@ class ReservationsController < ApplicationController
     if program_ids.empty?
       @canceled_reservations = Reservation.none.page(params[:page])
     else
-      @canceled_reservations = Reservation.canceled.where(program_id: program_ids)
+      @canceled_reservations = Reservation.canceled.includes(:car, :program, :site).where(program_id: program_ids)
     end
 
     if params[:program_id].present?
@@ -53,6 +53,12 @@ class ReservationsController < ApplicationController
     end
 
     @canceled_reservations = @canceled_reservations.order(updated_at: :desc).page(params[:page])
+    updater_ids = @canceled_reservations.map(&:updated_by).compact.uniq
+    @user_names_by_id = if updater_ids.any?
+      User.where(id: updater_ids).index_with(&:display_name_email).transform_keys(&:id)
+    else
+      {}
+    end
 
     authorize @canceled_reservations
   end

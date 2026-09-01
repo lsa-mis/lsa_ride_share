@@ -53,8 +53,16 @@ module ApplicationHelper
     end
   end
 
-  def show_user_name_by_id(id)
-    id ? User.find(id).display_name_email : "unknown"
+  def show_user_name_by_id(id, user_names_by_id = nil)
+    return "unknown" unless id
+
+    lookup = user_names_by_id
+    if lookup.nil? && defined?(@user_names_by_id) && @user_names_by_id.is_a?(Hash)
+      lookup = @user_names_by_id
+    end
+    return lookup[id] if lookup.is_a?(Hash) && lookup.key?(id)
+
+    User.find_by(id: id)&.display_name_email || "unknown"
   end
 
   def updated_on_and_by(resource)
