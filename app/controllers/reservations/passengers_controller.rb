@@ -104,11 +104,11 @@ class Reservations::PassengersController < ApplicationController
       # add as a driver
       if model == 'student'
         unless @reservation.update(driver_id: passenger.id, driver_manager_id: nil, updated_by: current_user.id)
-          flash.now[:alert] = " Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". Please report an issue."
+          flash.now[:alert] = " Reservation #{@reservation.id} was not updated: " + @reservation.errors.full_messages.join(',') + ". Please report an issue."
         end
       else
         unless @reservation.update(driver_manager_id: passenger.id, driver_id: nil, updated_by: current_user.id)
-          flash.now[:alert] = " Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". Please report an issue."
+          flash.now[:alert] = " Reservation #{@reservation.id} was not updated: " + @reservation.errors.full_messages.join(',') + ". Please report an issue."
         end
       end
     end
