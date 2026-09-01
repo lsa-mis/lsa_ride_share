@@ -1,14 +1,15 @@
 module MailerHelper
-  def subscribed?(mailer:, driver:)
-    if MailerSubscription.find_by(mailer: mailer, user_id: User.find_by(uniqname: driver.uniqname)).present?
-      if MailerSubscription.find_by(mailer: mailer, user_id: User.find_by(uniqname: driver.uniqname).id).unsubscribed
-        return false
-      else 
-        return true
-      end
+  def subscribed?(mailer:, driver:, user: nil, subscriptions: nil)
+    user ||= User.find_by(uniqname: driver.uniqname)
+    return true unless user.present?
+
+    subscription = if subscriptions.present?
+      subscriptions[[mailer, user.id]]
     else
-      return true
+      MailerSubscription.find_by(mailer: mailer, user_id: user.id)
     end
+
+    subscription.nil? || !subscription.unsubscribed
   end
 
   def reminders_on?(program_id: nil, unit_id: nil)
