@@ -56,7 +56,7 @@ RSpec.describe VehicleReport, type: :request do
       expect(response.body).to include("Vehicle Report: #{vehicle_report.id}")
     end
 
-    it 'creates a vehicle report and redirects to show' do
+    it 'is not routable for create at top-level vehicle_reports path' do
       new_reservation = FactoryBot.create(
         :reservation,
         program: program,
@@ -82,19 +82,12 @@ RSpec.describe VehicleReport, type: :request do
           },
           parking_spot_return: 'Lot C'
         }
-      end.to change(VehicleReport, :count).by(1)
+      end.not_to change(VehicleReport, :count)
 
-      created = VehicleReport.last
-      expect(response).to have_http_status(302)
-      expect(response).to redirect_to(vehicle_report_path(created))
-      expect(created.parking_spot_return).to eq('Lot C')
-      expect(car.reload.mileage).to eq(2010)
-      expect(car.reload.gas.to_f).to eq(55.0)
-      expect(car.reload.parking_spot).to eq('Lot C')
-      expect(car.reload.last_driver_id).to eq(student_driver.id)
+      expect(response).to have_http_status(404)
     end
 
-    it 'fails cleanly for an invalid reservation_id without raising a server error' do
+    it 'returns not found for top-level create even with invalid reservation_id' do
       expect do
         post vehicle_reports_path, params: {
           vehicle_report: {
@@ -111,7 +104,7 @@ RSpec.describe VehicleReport, type: :request do
         }
       end.not_to change(VehicleReport, :count)
 
-      expect(response).to have_http_status(422)
+      expect(response).to have_http_status(404)
     end
 
     it 'updates a vehicle report and redirects to show' do
