@@ -1,13 +1,16 @@
 module MailerHelper
   def subscribed?(mailer:, driver:, user: nil, subscriptions: nil)
+    unless subscriptions.nil?
+      return true if user.nil?
+
+      subscription = subscriptions[[mailer, user.id]]
+      return subscription.nil? || !subscription.unsubscribed
+    end
+
     user ||= User.find_by(uniqname: driver.uniqname)
     return true unless user.present?
 
-    subscription = if subscriptions.present?
-      subscriptions[[mailer, user.id]]
-    else
-      MailerSubscription.find_by(mailer: mailer, user_id: user.id)
-    end
+    subscription = MailerSubscription.find_by(mailer: mailer, user_id: user.id)
 
     subscription.nil? || !subscription.unsubscribed
   end

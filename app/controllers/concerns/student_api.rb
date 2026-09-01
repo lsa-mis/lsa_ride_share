@@ -102,6 +102,18 @@ module StudentApi
       alert = ""
       if token['success']
         courses = program.courses
+        registered_students_by_course = program.students
+          .registered
+          .where(course_id: courses.ids)
+          .pluck(:course_id, :uniqname)
+          .group_by(&:first)
+          .transform_values { |pairs| pairs.map(&:last) }
+
+        manually_added_students_by_uniqname = program.students
+          .added_manually
+          .where(course_id: nil)
+          .index_by(&:uniqname)
+
         courses.each do |course|
           result = class_roster_operational(program.term.code, course.subject, course.catalog_number, course.class_section, token['access_token'])
           if result['success']
@@ -112,17 +124,18 @@ module StudentApi
                 data1 << data
                 data = data1
               end
-              students_in_db_registered = program.students.registered.where(course_id: course.id).pluck(:uniqname)
-              students_in_db_added_manually = program.students.added_manually.pluck(:uniqname)
+              students_in_db_registered = (registered_students_by_course[course.id] || []).dup
               data.each do |student_info|
                 if student_info['EnrollmentStatus'] == "Enrolled"
                   uniqname = student_info['Uniqname']
                   if students_in_db_registered.include?(uniqname)
                     students_in_db_registered.delete(uniqname)
-                  elsif students_in_db_added_manually.include?(uniqname)
-                    unless Student.find_by(uniqname: student_info['Uniqname'], program: program, course: nil).update(registered: true, course: course)
-                    alert += "#{course.display_name}: Error updating student #{student_info['Uniqname']} record from manually added to registered."
+                  elsif manually_added_students_by_uniqname.key?(uniqname)
+                    student = manually_added_students_by_uniqname[uniqname]
+                    unless student.update(registered: true, course: course)
+                      alert += "#{course.display_name}: Error updating student #{student_info['Uniqname']} record from manually added to registered."
                     end
+                    manually_added_students_by_uniqname.delete(uniqname)
                   else
                     student = Student.new(uniqname: student_info['Uniqname'], first_name: student_info['Name'].split(",").last, last_name: student_info['Name'].split(",").first, program: program, course: course)
                     unless student.save
@@ -134,7 +147,7 @@ module StudentApi
               if students_in_db_registered.present?
                 # delete students who dropped the course
                 students_in_db_registered.each do |uniqname|
-                  student = Student.find_by(uniqname: students_in_db_registered, program_id: program, course_id: course.id)
+                  student = Student.find_by(uniqname: uniqname, program_id: program, course_id: course.id)
                   if student.reservations.present?
                     student.update(registered: false, course_id: nil)
                   else
