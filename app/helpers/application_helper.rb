@@ -951,7 +951,7 @@ module ApplicationHelper
           day.beginning_of_day, day.end_of_day, day.beginning_of_day, day.beginning_of_day)
       else
         car_day_reserv = Reservation.where(program: Program.where(unit_id: unit_id), car_id: nil).where("start_time BETWEEN ? AND ? OR end_time BETWEEN ? AND ?", 
-          day.beginning_of_day, day.end_of_day, day.beginning_of_day, day.beginning_of_day)
+          day.beginning_of_day, day.end_of_day, day.beginning_of_day, day.end_of_day)
       end
     end
     car_cells = {}
