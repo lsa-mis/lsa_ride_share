@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
   after_action :verify_authorized, unless: :devise_controller?
   skip_after_action :verify_authorized, only: [:delete_file_attachment]
-  around_action :prosopite_scan, if: -> { Rails.env.development? && defined?(Prosopite) }
+  around_action :prosopite_scan, if: -> { (Rails.env.development? || Rails.env.test?) && defined?(Prosopite) }
 
   def user_not_authorized
     flash[:alert] = "You are not authorized to perform this action."
