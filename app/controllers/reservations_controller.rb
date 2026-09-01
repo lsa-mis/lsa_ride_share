@@ -49,7 +49,7 @@ class ReservationsController < ApplicationController
     else
       @programs = Program.where(unit_id: session[:unit_ids])
     end
-    @programs = @programs.data(params[:term_id])
+    @programs = @programs.data(params[:term_id]).includes(:term, :courses)
     program_ids = @programs.pluck(:id)
     if program_ids.empty?
       @canceled_reservations = Reservation.none.page(params[:page])
@@ -163,7 +163,7 @@ class ReservationsController < ApplicationController
       @term_id = params[:term_id]
     end
     if @term_id.present? && @unit_id.present?
-      @programs = Program.where(unit_id: @unit_id, term: @term_id).order(:title, :catalog_number, :class_section)
+      @programs = Program.includes(:term, :courses).where(unit_id: @unit_id, term: @term_id).order(:title, :catalog_number, :class_section)
     end
     if params[:car_id].present?
       @car_id = params[:car_id]
@@ -455,7 +455,7 @@ class ReservationsController < ApplicationController
         else
           # for students and managers - don't save if there is a conflict
           alert += " please select a different time or ask admins to edit the reservation."
-          @programs = Program.where(unit_id: session[:unit_ids]).order(:title, :catalog_number, :class_section)
+          @programs = Program.includes(:term, :courses).where(unit_id: session[:unit_ids]).order(:title, :catalog_number, :class_section)
           @number_of_seats = 1..Car.available.maximum(:number_of_seats)
           @number_of_people_on_trip = Reservation.find(params[:id]).number_of_people_on_trip
           @day_start = @reservation.start_time.to_date
@@ -513,7 +513,7 @@ class ReservationsController < ApplicationController
           end
           redirect_to reservation_path(@reservation), notice: "Reservation was successfully updated." + notice, alert: alert
         else
-          @programs = Program.where(unit_id: session[:unit_ids]).order(:title, :catalog_number, :class_section)
+          @programs = Program.includes(:term, :courses).where(unit_id: session[:unit_ids]).order(:title, :catalog_number, :class_section)
           @number_of_seats = 1..Car.available.maximum(:number_of_seats)
           @number_of_people_on_trip = Reservation.find(params[:id]).number_of_people_on_trip
           @day_start = params[:day_start].to_date
@@ -532,7 +532,7 @@ class ReservationsController < ApplicationController
         end
       else
         # for students and managers - don't save if there is a conflict
-        @programs = Program.where(unit_id: session[:unit_ids]).order(:title, :catalog_number, :class_section)
+        @programs = Program.includes(:term, :courses).where(unit_id: session[:unit_ids]).order(:title, :catalog_number, :class_section)
         @number_of_seats = 1..Car.available.maximum(:number_of_seats)
         @number_of_people_on_trip = Reservation.find(params[:id]).number_of_people_on_trip
         @day_start = params[:day_start].to_date
@@ -822,7 +822,7 @@ class ReservationsController < ApplicationController
     end
 
     def set_programs
-      @programs = Program.where(unit_id: session[:unit_ids]).order(:title)
+      @programs = Program.includes(:term, :courses).where(unit_id: session[:unit_ids]).order(:title)
     end
 
     def set_cars
