@@ -35,8 +35,14 @@
             </th>
           <% end %>
         </tr>
-        <% if @reservations.where(car_id: nil).where("(start_time BETWEEN ? AND ?) OR (start_time < ? AND end_time > ?)",
-          day.beginning_of_day, day.end_of_day, day.beginning_of_day, day.beginning_of_day).present? %>
+        <% has_no_car_reservations = @week_calendar_reservations.any? do |reservation|
+             reservation.car_id.nil? && (
+               reservation.start_time.between?(day.beginning_of_day, day.end_of_day) ||
+               reservation.end_time.between?(day.beginning_of_day, day.end_of_day) ||
+               (reservation.start_time < day.beginning_of_day && reservation.end_time > day.beginning_of_day)
+             )
+           end %>
+        <% if has_no_car_reservations %>
           <tr class="mi_tbody_tr border">
             <th border>
               <span class="status-false">
@@ -57,7 +63,7 @@
             <%= render 'simple_calendar/week_calendar_car_tr', car: car, day: day %>
           </tr>
         <% end %>
-        <% Car.unavailable_with_reservations_for_unit_on(@unit_id, day).each do |car| %>
+        <% @unavailable_cars_by_day.fetch(day.to_date, []).each do |car| %>
           <tr class="mi_tbody_tr border">
             <th>
               Car <%= show_unavailable_car(car, day) %>

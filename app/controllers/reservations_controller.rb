@@ -20,6 +20,15 @@ class ReservationsController < ApplicationController
     @hour_begin = UnitPreference.find_by(name: "reservation_time_begin", unit_id: @unit_id).value.split(":").first.to_i - 1
     @hour_end = UnitPreference.find_by(name: "reservation_time_end", unit_id: @unit_id).value.split(":").first.to_i + 12
     authorize @reservations
+    @week_calendar_reservations = @reservations.to_a
+    @unavailable_cars_by_day = Hash.new { |hash, key| hash[key] = [] }
+    @week_calendar_reservations.each do |reservation|
+      car = reservation.car
+      next unless car&.status_unavailable?
+
+      @unavailable_cars_by_day[reservation.start_time.to_date] << car
+    end
+    @unavailable_cars_by_day.each_value(&:uniq!)
     @cars = Car.available.where(unit_id: @unit_id).order(:car_number)
     @date_range = Date.today.beginning_of_week..Date.today.end_of_week
     @dates = @date_range.to_a
@@ -790,14 +799,15 @@ class ReservationsController < ApplicationController
 
     def set_calendar_reservations
       start_date = params.fetch(:start_date, Date.today).to_date
+      calendar_includes = [:car, :driver, :driver_manager, :site, :passengers, :passengers_managers, { program: [:instructor, :managers] }]
       if session[:unit_ids].count == 1
         @unit_id = session[:unit_ids][0]
-        @reservations = Reservation.where(program: Program.where(unit_id: @unit_id)).where("start_time BETWEEN ? and ? OR end_time BETWEEN ? and ?", start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week, start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week)
+        @reservations = Reservation.includes(calendar_includes).where(program: Program.where(unit_id: @unit_id)).where("start_time BETWEEN ? and ? OR end_time BETWEEN ? and ?", start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week, start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week)
       elsif params[:unit_id].present?
         @unit_id = params[:unit_id]
-        @reservations = Reservation.where(program: Program.where(unit_id: @unit_id)).where("start_time BETWEEN ? and ? OR end_time BETWEEN ? and ?", start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week, start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week)
+        @reservations = Reservation.includes(calendar_includes).where(program: Program.where(unit_id: @unit_id)).where("start_time BETWEEN ? and ? OR end_time BETWEEN ? and ?", start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week, start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week)
       else
-        @reservations = Reservation.where("start_time BETWEEN ? and ? OR end_time BETWEEN ? and ?", start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week, start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week)
+        @reservations = Reservation.includes(calendar_includes).where("start_time BETWEEN ? and ? OR end_time BETWEEN ? and ?", start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week, start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week)
       end
     end
     

@@ -841,12 +841,32 @@ module ApplicationHelper
     day_begin = unit_beginning_of_day(day, unit_id) - 15.minute
     day_end = unit_end_of_day(day, unit_id)
     day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) }
-    if car.present?
-      car_day_reserv = car.reservations.where("(start_time BETWEEN ? AND ?) OR (start_time < ? AND end_time > ?)",
-        day.beginning_of_day, day.end_of_day, day.beginning_of_day, day.beginning_of_day)
+    if defined?(@week_calendar_reservations) && @week_calendar_reservations.present?
+      if car.present?
+        car_day_reserv = @week_calendar_reservations.select do |reservation|
+          reservation.car_id == car.id && (
+            reservation.start_time.between?(day.beginning_of_day, day.end_of_day) ||
+            reservation.end_time.between?(day.beginning_of_day, day.end_of_day) ||
+            (reservation.start_time < day.beginning_of_day && reservation.end_time > day.beginning_of_day)
+          )
+        end
+      else
+        car_day_reserv = @week_calendar_reservations.select do |reservation|
+          reservation.car_id.nil? && (
+            reservation.start_time.between?(day.beginning_of_day, day.end_of_day) ||
+            reservation.end_time.between?(day.beginning_of_day, day.end_of_day) ||
+            (reservation.start_time < day.beginning_of_day && reservation.end_time > day.beginning_of_day)
+          )
+        end
+      end
     else
-      car_day_reserv = Reservation.where(program: Program.where(unit_id: unit_id), car_id: nil).where("(start_time BETWEEN ? AND ?) OR (start_time < ? AND end_time > ?)",
-        day.beginning_of_day, day.end_of_day, day.beginning_of_day, day.beginning_of_day)
+      if car.present?
+        car_day_reserv = car.reservations.where("(start_time BETWEEN ? AND ?) OR (start_time < ? AND end_time > ?)",
+          day.beginning_of_day, day.end_of_day, day.beginning_of_day, day.beginning_of_day)
+      else
+        car_day_reserv = Reservation.where(program: Program.where(unit_id: unit_id), car_id: nil).where("start_time BETWEEN ? AND ? OR end_time BETWEEN ? AND ?", 
+          day.beginning_of_day, day.end_of_day, day.beginning_of_day, day.beginning_of_day)
+      end
     end
     car_cells = {}
     day_times_with_15_min_steps.each do |step|
