@@ -1,13 +1,13 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "4.0.1"
+ruby '4.0.1'
 
 gem 'devise'
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-# gem "rails", "~> 7.0.8"
-gem "rails", "~> 8.1.3", ">= 8.1.3.1"
+# gem 'rails', '~> 7.0.8'
+gem 'rails', '~> 8.1.3', '>= 8.1.3.1'
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem "sprockets-rails"
@@ -18,27 +18,27 @@ gem "pg", "~> 1.1"
 gem 'google-cloud-storage', require: false
 
 # Use the Puma web server [https://github.com/puma/puma]
-gem "puma", ">= 5.6"
+gem 'puma', '>= 5.6'
 
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
-gem "importmap-rails"
+gem 'importmap-rails'
 
 # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
-gem "turbo-rails"
+gem 'turbo-rails'
 
 # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
-gem "stimulus-rails"
+gem 'stimulus-rails'
 
 # Use Tailwind CSS [https://github.com/rails/tailwindcss-rails]
-gem "tailwindcss-rails"
+gem 'tailwindcss-rails'
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
-gem "jbuilder"
+gem 'jbuilder'
 
 # Use Redis adapter to run Action Cable in production
-gem "redis", "~> 4.0"
+gem 'redis', '~> 4.0'
 
-gem "skylight"
+gem 'skylight'
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
 
@@ -46,17 +46,17 @@ gem "skylight"
 # gem "bcrypt", "~> 3.1.7"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem "tzinfo-data", platforms: %i[ windows jruby ]
+gem 'tzinfo-data', platforms: %i[ windows jruby ]
 
 # Reduces boot times through caching; required in config/boot.rb
-gem "bootsnap", require: false
+gem 'bootsnap', require: false
 
 # Use Sass to process CSS
 # gem "sassc-rails"
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-gem "image_processing", "~> 2.0"
-gem "mini_magick", "~> 4.13"
+gem 'image_processing', '~> 2.0'
+gem 'mini_magick', '~> 4.13'
 
 # Use OmniAuth gems to implement Shibboleth SAML authentication
 gem 'omniauth-saml', '~> 2.1'
@@ -78,7 +78,7 @@ gem 'benchmark'
 gem 'lsa_tdx_feedback'
 
 group :development, :staging do
-  gem "letter_opener_web"
+  gem 'letter_opener_web'
 end
 
 group :development, :test do
@@ -96,11 +96,11 @@ group :development, :test do
   gem 'rails_accessibility_testing', '~> 1.6'
   gem 'axe-core-capybara', '~> 4.0'
   gem 'prosopite', '~> 1.4'
-  gem "pg_query", "~> 6.2"
+  gem 'pg_query', '~> 6.2'
 end
 
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   # gem 'annotate', '~> 3.2'
-  gem "web-console"
+  gem 'web-console'
 end
