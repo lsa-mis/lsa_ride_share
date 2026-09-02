@@ -35,13 +35,7 @@
             </th>
           <% end %>
         </tr>
-        <% has_no_car_reservations = @week_calendar_reservations.any? do |reservation|
-             reservation.car_id.nil? && (
-               reservation.start_time.between?(day.beginning_of_day, day.end_of_day) ||
-               reservation.end_time.between?(day.beginning_of_day, day.end_of_day) ||
-               (reservation.start_time < day.beginning_of_day && reservation.end_time > day.beginning_of_day)
-             )
-           end %>
+        <% has_no_car_reservations = @no_car_reservations_by_day.fetch(day.to_date, false) %>
         <% if has_no_car_reservations %>
           <tr class="mi_tbody_tr border">
             <th border>

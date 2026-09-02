@@ -21,8 +21,15 @@ class ReservationsController < ApplicationController
     @hour_end = UnitPreference.find_by(name: "reservation_time_end", unit_id: @unit_id).value.split(":").first.to_i + 12
     authorize @reservations
     @week_calendar_reservations = @reservations.to_a
+    @no_car_reservations_by_day = Hash.new(false)
     @unavailable_cars_by_day = Hash.new { |hash, key| hash[key] = [] }
     @week_calendar_reservations.each do |reservation|
+      if reservation.car_id.nil?
+        reservation.start_time.to_date.upto(reservation.end_time.to_date) do |date|
+          @no_car_reservations_by_day[date] = true
+        end
+      end
+
       car = reservation.car
       next unless car&.status_unavailable?
 
