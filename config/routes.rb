@@ -33,7 +33,7 @@ Rails.application.routes.draw do
   resources :terms
 
   get "vehicle_reports/download_vehicle_damage_form/", to: 'vehicle_reports#download_vehicle_damage_form', as: :download_vehicle_damage_form
-  resources :vehicle_reports do
+  resources :vehicle_reports, except: [:new, :create] do
     resources :notes, module: :vehicle_reports
   end
   post 'vehicle_reports/upload_image/:id', to: 'vehicle_reports#upload_image', as: :upload_image

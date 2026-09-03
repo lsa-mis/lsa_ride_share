@@ -79,7 +79,7 @@
               <%= show_date_time(reservation.updated_at) %>
             </td>
             <td class="mi_tbody_td">
-              <%= show_user_name_by_id(reservation.updated_by) %>
+              <%= show_user_name_by_id(reservation.updated_by, @user_names_by_id) %>
             </td>
             <td class="mi_tbody_td">
             <%= reservation.reason_for_cancellation %>

@@ -196,6 +196,27 @@ GEM
       googleauth (~> 1.9)
       mini_mime (~> 1.0)
     google-logging-utils (0.2.0)
+    google-protobuf (4.36.0)
+      bigdecimal
+      rake (~> 13.3)
+    google-protobuf (4.36.0-aarch64-linux-gnu)
+      bigdecimal
+      rake (~> 13.3)
+    google-protobuf (4.36.0-aarch64-linux-musl)
+      bigdecimal
+      rake (~> 13.3)
+    google-protobuf (4.36.0-arm64-darwin)
+      bigdecimal
+      rake (~> 13.3)
+    google-protobuf (4.36.0-x86_64-darwin)
+      bigdecimal
+      rake (~> 13.3)
+    google-protobuf (4.36.0-x86_64-linux-gnu)
+      bigdecimal
+      rake (~> 13.3)
+    google-protobuf (4.36.0-x86_64-linux-musl)
+      bigdecimal
+      rake (~> 13.3)
     googleauth (1.17.1)
       faraday (>= 1.0, < 3.a)
       google-cloud-env (~> 2.2)
@@ -330,10 +351,13 @@ GEM
     pg (1.6.3-x86_64-darwin)
     pg (1.6.3-x86_64-linux)
     pg (1.6.3-x86_64-linux-musl)
+    pg_query (6.2.2)
+      google-protobuf (>= 3.25.3)
     pp (0.6.4)
       prettyprint
     prettyprint (0.2.0)
     prism (1.9.0)
+    prosopite (1.4.2)
     pry (0.16.0)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -564,6 +588,8 @@ DEPENDENCIES
   omniauth-saml (~> 2.1)
   ostruct (~> 0.6.3)
   pg (~> 1.1)
+  pg_query (~> 6.2)
+  prosopite (~> 1.4)
   pry
   puma (>= 5.6)
   pundit (~> 2.3)
@@ -656,6 +682,13 @@ CHECKSUMS
   google-cloud-errors (1.6.0) sha256=1da8476dd706ad04b9d32e3c4b90d07d3463b37d6407cb56d41342ea7647d0a1
   google-cloud-storage (1.61.0) sha256=a77f10f4a603289948b09e81c3e23d762a18733fd69d70a4c1399663fbd96002
   google-logging-utils (0.2.0) sha256=675462b4ea5affa825a3442694ca2d75d0069455a1d0956127207498fca3df7b
+  google-protobuf (4.36.0) sha256=2132fb002366b85a57fbb796333e2cb1f969126e05f9af32149709ba3fd397b5
+  google-protobuf (4.36.0-aarch64-linux-gnu) sha256=3fa22004853b83297d8ad4ca5c9adc8aea5e6da7b4caadf5577cb9da3eefe63f
+  google-protobuf (4.36.0-aarch64-linux-musl) sha256=6392f5e7cc5366203349f268c98e39f29c2ef9766ebbdb434819d7edb085a12c
+  google-protobuf (4.36.0-arm64-darwin) sha256=be182aac1cf55ccbbd27ec5a94d5b012069075f5c879d65423d33e6b2dec86f5
+  google-protobuf (4.36.0-x86_64-darwin) sha256=6cb938760546ee5ce57d04ed358ea10d0278b6f1ddea35e100c278f429afc25b
+  google-protobuf (4.36.0-x86_64-linux-gnu) sha256=8c253f7cb7647cdf1f54fc3f215e151206b5159e03d74fe29b8599264903de2b
+  google-protobuf (4.36.0-x86_64-linux-musl) sha256=d6c510ff9743b3dcde6acdea06512e4e4ecf53246e5c5b689879861e05d4738a
   googleauth (1.17.1) sha256=0f7e6fc70e204cee1b2d71f1e1de2d3b349d432404197fe68ebf7fa23d0821b9
   hashie (5.1.0) sha256=c266471896f323c446ea8207f8ffac985d2718df0a0ba98651a3057096ca3870
   httparty (0.24.2) sha256=8fca6a54aa0c4aa4303a0fd33e5e2156175d6a5334f714263b458abd7fda9c38
@@ -718,9 +751,11 @@ CHECKSUMS
   pg (1.6.3-x86_64-darwin) sha256=ee2e04a17c0627225054ffeb43e31a95be9d7e93abda2737ea3ce4a62f2729d6
   pg (1.6.3-x86_64-linux) sha256=5d9e188c8f7a0295d162b7b88a768d8452a899977d44f3274d1946d67920ae8d
   pg (1.6.3-x86_64-linux-musl) sha256=9c9c90d98c72f78eb04c0f55e9618fe55d1512128e411035fe229ff427864009
+  pg_query (6.2.2) sha256=316c194160ccfac8af9a7aff55cdc5b2d13bdd8bd8734976c6bddc477e779b6f
   pp (0.6.4) sha256=dfcb0fce700c41456265922884f9fe195d7fbb0674a3578e6c0f69588e82b570
   prettyprint (0.2.0) sha256=2bc9e15581a94742064a3cc8b0fb9d45aae3d03a1baa6ef80922627a0766f193
   prism (1.9.0) sha256=7b530c6a9f92c24300014919c9dcbc055bf4cdf51ec30aed099b06cd6674ef85
+  prosopite (1.4.2) sha256=b2e422e2d9dbf3ce20130ded3252fe14adb3833555eacd451f5015d8c9177e79
   pry (0.16.0) sha256=d76c69065698ed1f85e717bd33d7942c38a50868f6b0673c636192b3d1b6054e
   pstore (0.2.1) sha256=03904d0f2c66579e96d1e6704cdabc0c88df7ea8ed8782d9f3569f6f6c702c1a
   public_suffix (7.0.5) sha256=1a8bb08f1bbea19228d3bed6e5ed908d1cb4f7c2726d18bd9cadf60bc676f623

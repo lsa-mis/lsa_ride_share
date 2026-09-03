@@ -1,8 +1,9 @@
 <%= turbo_frame_tag 'students' do %>
+  <% reminders_enabled = reminders_on?(program_id: @student_program.id) %>
   <div class="w-full">
     <table class="mi_table">
       <thead class="mi_thead">
-        <% if reminders_on?(program_id: @student_program.id) %>
+        <% if reminders_enabled %>
           <tr>
             <td></td><td></td>
             <th class="header_th_small">Registered</th>
@@ -81,22 +82,24 @@
             <td class="mi_tbody_td">
               <%= student.meeting_with_admin_date %>
             </td>
-            <% if reminders_on?(program_id: @student_program.id) %>
+            <% if reminders_enabled %>
+              <% user = @student_users_by_uniqname[student.uniqname] %>
               <td class="mi_tbody_td">
-                <% if subscribed?(mailer: "one_hour_reminder", driver: student) %>
+                <% if subscribed?(mailer: "one_hour_reminder", driver: student, user: user, subscriptions: @student_mailer_subscriptions) %>
                   <i class="fa-solid fa-check"></i>
                 <% end %>
               </td>
               <td class="mi_tbody_td">
-                <% if subscribed?(mailer: "vehicle_report_reminder", driver: student) %>
+                <% if subscribed?(mailer: "vehicle_report_reminder", driver: student, user: user, subscriptions: @student_mailer_subscriptions) %>
                   <i class="fa-solid fa-check"></i>
                 <% end %>
               </td>
             <% end %>
             <td class="mi_tbody_td">
-              <% if student.notes.present? && is_admin? %>
+              <% note_count = student.notes.size %>
+              <% if note_count.positive? && is_admin? %>
                 <%= link_to program_student_path(@student_program, student), class: "link_to", data: {turbo_frame: "_top"} do %>
-                  <%= student.notes.count %>
+                  <%= note_count %>
                 <% end %>
               <% end %>
             </td>

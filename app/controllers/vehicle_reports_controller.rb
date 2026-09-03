@@ -13,7 +13,11 @@ class VehicleReportsController < ApplicationController
     end
     car_ids = @cars.pluck(:id)
     reservation_ids = Reservation.where(car_id: car_ids)
-    @vehicle_reports = VehicleReport.joins(reservation: :car).where(reservation_id: reservation_ids)
+    @vehicle_reports = VehicleReport
+      .joins(reservation: :car)
+      .includes(reservation: [:car, :driver, :driver_manager], notes: :rich_text_body)
+      .with_attached_image_damages
+      .where(reservation_id: reservation_ids)
 
     if params[:term_id].present?
       program_ids = Program.where(term_id: params[:term_id]).pluck(:id)
@@ -50,6 +54,10 @@ class VehicleReportsController < ApplicationController
     sort_direction = params[:direction].presence_in(%w[asc desc]) || "desc"
 
     @vehicle_reports = @vehicle_reports.order("#{sort_column} #{sort_direction}").page(params[:page])
+    reports = @vehicle_reports.to_a
+    ActiveRecord::Associations::Preloader.new(records: reports, associations: [:notes, :rich_text_comment]).call
+    notes = reports.flat_map(&:notes)
+    ActiveRecord::Associations::Preloader.new(records: notes, associations: :rich_text_body).call
 
     authorize @vehicle_reports
   end

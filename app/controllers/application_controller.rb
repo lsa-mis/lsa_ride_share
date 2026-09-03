@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
   after_action :verify_authorized, unless: :devise_controller?
   skip_after_action :verify_authorized, only: [:delete_file_attachment]
+  around_action :prosopite_scan, if: -> { Rails.env.development? && defined?(Prosopite) }
 
   def user_not_authorized
     flash[:alert] = "You are not authorized to perform this action."
@@ -135,6 +136,13 @@ class ApplicationController < ActionController::Base
       result['note'] = "The '#{uniqname}' uniqname is not valid."
     end
     return result
+  end
+
+  def prosopite_scan
+    Prosopite.scan
+    yield
+  ensure
+    Prosopite.finish
   end
 
 end
