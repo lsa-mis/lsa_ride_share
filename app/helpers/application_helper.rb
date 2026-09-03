@@ -928,23 +928,7 @@ module ApplicationHelper
     day_end = unit_end_of_day(day, unit_id)
     day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) }
     if defined?(@week_calendar_reservations) && @week_calendar_reservations.present?
-      if car.present?
-        car_day_reserv = @week_calendar_reservations.select do |reservation|
-          reservation.car_id == car.id && (
-            reservation.start_time.between?(day.beginning_of_day, day.end_of_day) ||
-            reservation.end_time.between?(day.beginning_of_day, day.end_of_day) ||
-            (reservation.start_time < day.beginning_of_day && reservation.end_time > day.beginning_of_day)
-          )
-        end
-      else
-        car_day_reserv = @week_calendar_reservations.select do |reservation|
-          reservation.car_id.nil? && (
-            reservation.start_time.between?(day.beginning_of_day, day.end_of_day) ||
-            reservation.end_time.between?(day.beginning_of_day, day.end_of_day) ||
-            (reservation.start_time < day.beginning_of_day && reservation.end_time > day.beginning_of_day)
-          )
-        end
-      end
+      car_day_reserv = week_calendar_reservations_by_car_day.fetch([car&.id, day.to_date], [])
     else
       if car.present?
         car_day_reserv = car.reservations.where("(start_time BETWEEN ? AND ?) OR (start_time < ? AND end_time > ?)",
@@ -975,6 +959,20 @@ module ApplicationHelper
       car_cells[step] = {:start => start, :middle => middle, :ending => ending }
     end
     return car_cells
+  end
+
+  def week_calendar_reservations_by_car_day
+    @week_calendar_reservations_by_car_day ||= begin
+      reservations_by_key = Hash.new { |hash, key| hash[key] = [] }
+      if defined?(@week_calendar_reservations) && @week_calendar_reservations.present?
+        @week_calendar_reservations.each do |reservation|
+          reservation.start_time.to_date.upto(reservation.end_time.to_date) do |date|
+            reservations_by_key[[reservation.car_id, date]] << reservation
+          end
+        end
+      end
+      reservations_by_key
+    end
   end
 
   def report_types
