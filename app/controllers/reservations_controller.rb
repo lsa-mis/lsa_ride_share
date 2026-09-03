@@ -20,6 +20,22 @@ class ReservationsController < ApplicationController
     @hour_begin = UnitPreference.find_by(name: "reservation_time_begin", unit_id: @unit_id).value.split(":").first.to_i - 1
     @hour_end = UnitPreference.find_by(name: "reservation_time_end", unit_id: @unit_id).value.split(":").first.to_i + 12
     authorize @reservations
+    @week_calendar_reservations = @reservations.to_a
+    @no_car_reservations_by_day = Hash.new(false)
+    @unavailable_cars_by_day = Hash.new { |hash, key| hash[key] = [] }
+    @week_calendar_reservations.each do |reservation|
+      if reservation.car_id.nil?
+        reservation.start_time.to_date.upto(reservation.end_time.to_date) do |date|
+          @no_car_reservations_by_day[date] = true
+        end
+      end
+
+      car = reservation.car
+      next unless car&.status_unavailable?
+
+      @unavailable_cars_by_day[reservation.start_time.to_date] << car
+    end
+    @unavailable_cars_by_day.each_value(&:uniq!)
     @cars = Car.available.where(unit_id: @unit_id).order(:car_number)
     @date_range = Date.today.beginning_of_week..Date.today.end_of_week
     @dates = @date_range.to_a
@@ -40,12 +56,12 @@ class ReservationsController < ApplicationController
     else
       @programs = Program.where(unit_id: session[:unit_ids])
     end
-    @programs = @programs.data(params[:term_id])
+    @programs = @programs.data(params[:term_id]).includes(:term, :courses)
     program_ids = @programs.pluck(:id)
     if program_ids.empty?
       @canceled_reservations = Reservation.none.page(params[:page])
     else
-      @canceled_reservations = Reservation.canceled.where(program_id: program_ids)
+      @canceled_reservations = Reservation.canceled.includes(:car, :program, :site).where(program_id: program_ids)
     end
 
     if params[:program_id].present?
@@ -53,6 +69,12 @@ class ReservationsController < ApplicationController
     end
 
     @canceled_reservations = @canceled_reservations.order(updated_at: :desc).page(params[:page])
+    updater_ids = @canceled_reservations.map(&:updated_by).compact.uniq
+    @user_names_by_id = if updater_ids.any?
+      User.where(id: updater_ids).index_with(&:display_name_email).transform_keys(&:id)
+    else
+      {}
+    end
 
     authorize @canceled_reservations
   end
@@ -148,7 +170,7 @@ class ReservationsController < ApplicationController
       @term_id = params[:term_id]
     end
     if @term_id.present? && @unit_id.present?
-      @programs = Program.where(unit_id: @unit_id, term: @term_id).order(:title, :catalog_number, :class_section)
+      @programs = Program.includes(:term, :courses).where(unit_id: @unit_id, term: @term_id).order(:title, :catalog_number, :class_section)
     end
     if params[:car_id].present?
       @car_id = params[:car_id]
@@ -440,7 +462,7 @@ class ReservationsController < ApplicationController
         else
           # for students and managers - don't save if there is a conflict
           alert += " please select a different time or ask admins to edit the reservation."
-          @programs = Program.where(unit_id: session[:unit_ids]).order(:title, :catalog_number, :class_section)
+          @programs = Program.includes(:term, :courses).where(unit_id: session[:unit_ids]).order(:title, :catalog_number, :class_section)
           @number_of_seats = 1..Car.available.maximum(:number_of_seats)
           @number_of_people_on_trip = Reservation.find(params[:id]).number_of_people_on_trip
           @day_start = @reservation.start_time.to_date
@@ -498,7 +520,7 @@ class ReservationsController < ApplicationController
           end
           redirect_to reservation_path(@reservation), notice: "Reservation was successfully updated." + notice, alert: alert
         else
-          @programs = Program.where(unit_id: session[:unit_ids]).order(:title, :catalog_number, :class_section)
+          @programs = Program.includes(:term, :courses).where(unit_id: session[:unit_ids]).order(:title, :catalog_number, :class_section)
           @number_of_seats = 1..Car.available.maximum(:number_of_seats)
           @number_of_people_on_trip = Reservation.find(params[:id]).number_of_people_on_trip
           @day_start = params[:day_start].to_date
@@ -517,7 +539,7 @@ class ReservationsController < ApplicationController
         end
       else
         # for students and managers - don't save if there is a conflict
-        @programs = Program.where(unit_id: session[:unit_ids]).order(:title, :catalog_number, :class_section)
+        @programs = Program.includes(:term, :courses).where(unit_id: session[:unit_ids]).order(:title, :catalog_number, :class_section)
         @number_of_seats = 1..Car.available.maximum(:number_of_seats)
         @number_of_people_on_trip = Reservation.find(params[:id]).number_of_people_on_trip
         @day_start = params[:day_start].to_date
@@ -784,14 +806,15 @@ class ReservationsController < ApplicationController
 
     def set_calendar_reservations
       start_date = params.fetch(:start_date, Date.today).to_date
+      calendar_includes = [:car, :driver, :driver_manager, :site, :passengers, :passengers_managers, { program: [:instructor, :managers] }]
       if session[:unit_ids].count == 1
         @unit_id = session[:unit_ids][0]
-        @reservations = Reservation.where(program: Program.where(unit_id: @unit_id)).where("start_time BETWEEN ? and ? OR end_time BETWEEN ? and ?", start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week, start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week)
+        @reservations = Reservation.includes(calendar_includes).where(program: Program.where(unit_id: @unit_id)).where("start_time BETWEEN ? and ? OR end_time BETWEEN ? and ?", start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week, start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week)
       elsif params[:unit_id].present?
         @unit_id = params[:unit_id]
-        @reservations = Reservation.where(program: Program.where(unit_id: @unit_id)).where("start_time BETWEEN ? and ? OR end_time BETWEEN ? and ?", start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week, start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week)
+        @reservations = Reservation.includes(calendar_includes).where(program: Program.where(unit_id: @unit_id)).where("start_time BETWEEN ? and ? OR end_time BETWEEN ? and ?", start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week, start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week)
       else
-        @reservations = Reservation.where("start_time BETWEEN ? and ? OR end_time BETWEEN ? and ?", start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week, start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week)
+        @reservations = Reservation.includes(calendar_includes).where("start_time BETWEEN ? and ? OR end_time BETWEEN ? and ?", start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week, start_date.beginning_of_month.beginning_of_week, start_date.end_of_month.end_of_week)
       end
     end
     
@@ -806,7 +829,7 @@ class ReservationsController < ApplicationController
     end
 
     def set_programs
-      @programs = Program.where(unit_id: session[:unit_ids]).order(:title)
+      @programs = Program.includes(:term, :courses).where(unit_id: session[:unit_ids]).order(:title)
     end
 
     def set_cars

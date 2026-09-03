@@ -53,8 +53,16 @@ module ApplicationHelper
     end
   end
 
-  def show_user_name_by_id(id)
-    id ? User.find(id).display_name_email : "unknown"
+  def show_user_name_by_id(id, user_names_by_id = nil)
+    return "unknown" unless id
+
+    lookup = user_names_by_id
+    if lookup.nil? && defined?(@user_names_by_id) && @user_names_by_id.is_a?(Hash)
+      lookup = @user_names_by_id
+    end
+    return lookup[id] if lookup.is_a?(Hash) && lookup.key?(id)
+
+    User.find_by(id: id)&.display_name_email || "unknown"
   end
 
   def updated_on_and_by(resource)
@@ -338,12 +346,16 @@ module ApplicationHelper
     day_begin  = unit_beginning_of_day(day, unit_id) - 15.minute
     day_end  = unit_end_of_day(day, unit_id) + 15.minute
     car_available = []
-    car_whole_day = car.reservations.where("start_time < ? AND end_time > ?", day.beginning_of_day, day.end_of_day)
-    if car_whole_day.present?
+    reservations_by_car = cached_day_reservations_by_car(day, @cars)
+    car_day_reserv = (reservations_by_car[car.id] || []).sort_by(&:start_time)
+
+    car_whole_day = car_day_reserv.any? do |reservation|
+      reservation.start_time < day.beginning_of_day && reservation.end_time > day.end_of_day
+    end
+    if car_whole_day
       return car_available
     end
     space_begin = day_begin
-    car_day_reserv = car.reservations.where("start_time BETWEEN ? AND ? OR end_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day, day.beginning_of_day, day.end_of_day).order(:start_time)
     if car_day_reserv.present?
       day_ranges = car_day_reserv.map { |res| res.start_time..res.end_time }
       day_ranges.each do |range|
@@ -368,6 +380,27 @@ module ApplicationHelper
     return car_available
   end
 
+  def cached_day_reservations_by_car(day, cars)
+    return {} unless cars.present?
+
+    car_ids = cars.map(&:id)
+    cache_key = [day.to_date, car_ids.sort]
+    @day_reservations_by_car_cache ||= {}
+    @day_reservations_by_car_cache[cache_key] ||= Reservation
+      .where(car_id: car_ids)
+      .where(
+        "start_time BETWEEN ? AND ? OR end_time BETWEEN ? AND ? OR (start_time < ? AND end_time > ?)",
+        day.beginning_of_day,
+        day.end_of_day,
+        day.beginning_of_day,
+        day.end_of_day,
+        day.beginning_of_day,
+        day.end_of_day
+      )
+      .to_a
+      .group_by(&:car_id)
+  end
+
   def available_ranges_long(car, day_start, day_end, unit_id)
     # time renges when the car is available from day_start to day_end
     day_start_beginning = unit_beginning_of_day(day_start, unit_id) - 15.minute
@@ -376,13 +409,24 @@ module ApplicationHelper
     day_end_beginning = unit_beginning_of_day(day_end, unit_id) - 15.minute
     day_end_finish = unit_end_of_day(day_end, unit_id) + 15.minute
     car_available = []
-    car_whole_day_beginning = car.reservations.where("start_time < ? AND end_time > ?", day_start_beginning, day_start_finish)
-    car_whole_day_finish = car.reservations.where("start_time < ? AND end_time > ?", day_end_beginning, day_end_finish)
-    if car_whole_day_beginning.present? || car_whole_day_finish.present?
+    reservations_by_car = cached_reservations_by_car_for_range(@cars, day_start_beginning..day_end_finish)
+    car_reservations = (reservations_by_car[car.id] || []).sort_by(&:start_time)
+
+    car_whole_day_beginning = car_reservations.any? do |reservation|
+      reservation.start_time < day_start_beginning && reservation.end_time > day_start_finish
+    end
+    car_whole_day_finish = car_reservations.any? do |reservation|
+      reservation.start_time < day_end_beginning && reservation.end_time > day_end_finish
+    end
+    if car_whole_day_beginning || car_whole_day_finish
       return car_available
     end
-    day_start_reservation = car.reservations.where(start_time: day_start_beginning..day_start_finish).order(end_time: :desc).first
-    day_end_reservation = car.reservations.where(start_time: day_end_beginning..day_end_finish).order(:start_time).first
+    day_start_reservation = car_reservations
+      .select { |reservation| reservation.start_time.between?(day_start_beginning, day_start_finish) }
+      .max_by(&:end_time)
+    day_end_reservation = car_reservations
+      .select { |reservation| reservation.start_time.between?(day_end_beginning, day_end_finish) }
+      .min_by(&:start_time)
 
     if day_start_reservation.present?
       range_start = day_start_reservation.end_time
@@ -533,12 +577,31 @@ module ApplicationHelper
     available_times_begin = []
     available_times_end = []
 
-    day_reservations = Reservation.where("start_time BETWEEN ? AND ?", day.beginning_of_day, day.end_of_day).order(:start_time)
+    car_ids = cars.map(&:id)
+    reservations_cache_key = [day.to_date, car_ids.sort]
+    @available_time_reservations_cache ||= {}
+    day_reservations_by_car = @available_time_reservations_cache[reservations_cache_key] ||= Reservation
+      .where(car_id: car_ids)
+      .where(
+        "start_time BETWEEN ? AND ? OR end_time BETWEEN ? AND ? OR (start_time < ? AND end_time > ?)",
+        day.beginning_of_day,
+        day.end_of_day,
+        day.beginning_of_day,
+        day.end_of_day,
+        day.beginning_of_day,
+        day.end_of_day
+      )
+      .order(:start_time)
+      .to_a
+      .group_by(&:car_id)
+
+    day_reservations = day_reservations_by_car.values.flatten
     if day_reservations.present?
       day_times_with_15_min_steps.each do |step|
         range = step..step + 15.minutes
         cars.each do |car|
-          if available?(car, range)
+          car_reservations = day_reservations_by_car[car.id] || []
+          if car_available_for_range?(car_reservations, range)
             available_times_begin << [show_time(step), step]
             available_times_end << [show_time(step + 15.minutes), step + 15.minutes]
             break
@@ -559,15 +622,46 @@ module ApplicationHelper
     end
   end
 
+  def car_available_for_range?(reservations, range)
+    range_begin = range.begin + 1.minute
+    range_end = range.end - 1.minute
+
+    reservations.none? do |reservation|
+      reservation.start_time.between?(range_begin, range_end) ||
+        reservation.end_time.between?(range_begin, range_end) ||
+        (reservation.start_time < range_begin && reservation.end_time > range_end)
+    end
+  end
+
   def available_cars(cars, range)
     # all cars available for the time range
-    available = []
-    cars.each do |car|
-      if available?(car, range)
-        available << car
-      end
+    reservations_by_car = cached_reservations_by_car_for_range(cars, range)
+
+    cars.select do |car|
+      car_reservations = reservations_by_car[car.id] || []
+      car_available_for_range?(car_reservations, range)
     end
-    return available
+  end
+
+  def cached_reservations_by_car_for_range(cars, range)
+    return {} unless cars.present?
+
+    car_ids = cars.map(&:id)
+    cache_key = [range.begin.to_i, range.end.to_i, car_ids.sort]
+    @reservations_by_car_for_range_cache ||= {}
+    @reservations_by_car_for_range_cache[cache_key] ||= Reservation
+      .where(car_id: car_ids)
+      .where(
+        "start_time BETWEEN ? AND ? OR end_time BETWEEN ? AND ? OR (start_time < ? AND end_time > ?)",
+        range.begin,
+        range.end,
+        range.begin,
+        range.end,
+        range.begin,
+        range.end
+      )
+      .to_a
+      .group_by(&:car_id)
   end
   
   def minimum_hours_before_reservation(unit_id)
@@ -833,12 +927,18 @@ module ApplicationHelper
     day_begin = unit_beginning_of_day(day, unit_id) - 15.minute
     day_end = unit_end_of_day(day, unit_id)
     day_times_with_15_min_steps = (day_begin.to_i..day_end.to_i).to_a.in_groups_of(15.minutes).collect(&:first).collect { |t| Time.at(t) }
-    if car.present?
-      car_day_reserv = car.reservations.where("(start_time BETWEEN ? AND ?) OR (start_time < ? AND end_time > ?)",
-        day.beginning_of_day, day.end_of_day, day.beginning_of_day, day.beginning_of_day)
+    if defined?(@week_calendar_reservations) && @week_calendar_reservations.present?
+      car_day_reserv = week_calendar_reservations_by_car_day.fetch([car&.id, day.to_date], [])
     else
-      car_day_reserv = Reservation.where(program: Program.where(unit_id: unit_id), car_id: nil).where("(start_time BETWEEN ? AND ?) OR (start_time < ? AND end_time > ?)",
-        day.beginning_of_day, day.end_of_day, day.beginning_of_day, day.beginning_of_day)
+      if car.present?
+        car_day_reserv = car.reservations.where("(start_time BETWEEN ? AND ?) OR (start_time < ? AND end_time > ?)",
+          day.beginning_of_day, day.end_of_day, day.beginning_of_day, day.beginning_of_day)
+      else
+        car_day_reserv = Reservation.where(program: Program.where(unit_id: unit_id), car_id: nil).where(
+          "start_time BETWEEN ? AND ? OR end_time BETWEEN ? AND ? OR (start_time < ? AND end_time > ?)",
+          day.beginning_of_day, day.end_of_day, day.beginning_of_day, day.end_of_day, day.beginning_of_day, day.end_of_day
+        )  
+      end
     end
     car_cells = {}
     day_times_with_15_min_steps.each do |step|
@@ -859,6 +959,20 @@ module ApplicationHelper
       car_cells[step] = {:start => start, :middle => middle, :ending => ending }
     end
     return car_cells
+  end
+
+  def week_calendar_reservations_by_car_day
+    @week_calendar_reservations_by_car_day ||= begin
+      reservations_by_key = Hash.new { |hash, key| hash[key] = [] }
+      if defined?(@week_calendar_reservations) && @week_calendar_reservations.present?
+        @week_calendar_reservations.each do |reservation|
+          reservation.start_time.to_date.upto(reservation.end_time.to_date) do |date|
+            reservations_by_key[[reservation.car_id, date]] << reservation
+          end
+        end
+      end
+      reservations_by_key
+    end
   end
 
   def report_types
