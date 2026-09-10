@@ -57,7 +57,8 @@ jobs:
         run: bundle exec rails assets:precompile
 
       - name: Setup DB
-        run: bin/rails db:create db:migrate db:seed
+        # No db:seed here: specs load spec/test_seeds.rb themselves and assume a single Unit.
+        run: bin/rails db:create db:migrate
 
       - name: Run Model tests
         run: bundle exec rspec spec/models/*

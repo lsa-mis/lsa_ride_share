@@ -10,39 +10,39 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_01_05_233618) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_05_233618) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+  enable_extension "pg_catalog.plpgsql"
 
   create_table "action_text_rich_texts", force: :cascade do |t|
-    t.string "name", null: false
     t.text "body"
-    t.string "record_type", null: false
-    t.bigint "record_id", null: false
     t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.bigint "record_id", null: false
+    t.string "record_type", null: false
     t.datetime "updated_at", null: false
     t.index ["record_type", "record_id", "name"], name: "index_action_text_rich_texts_uniqueness", unique: true
   end
 
   create_table "active_storage_attachments", force: :cascade do |t|
-    t.string "name", null: false
-    t.string "record_type", null: false
-    t.bigint "record_id", null: false
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.bigint "record_id", null: false
+    t.string "record_type", null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
     t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
   end
 
   create_table "active_storage_blobs", force: :cascade do |t|
-    t.string "key", null: false
-    t.string "filename", null: false
-    t.string "content_type"
-    t.text "metadata"
-    t.string "service_name", null: false
     t.bigint "byte_size", null: false
     t.string "checksum"
+    t.string "content_type"
     t.datetime "created_at", null: false
+    t.string "filename", null: false
+    t.string "key", null: false
+    t.text "metadata"
+    t.string "service_name", null: false
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
@@ -54,210 +54,210 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_05_233618) do
 
   create_table "cars", force: :cascade do |t|
     t.string "car_number"
-    t.string "make"
-    t.string "model"
     t.string "color"
-    t.integer "number_of_seats"
-    t.float "mileage"
-    t.decimal "gas"
-    t.string "parking_spot"
-    t.datetime "last_used"
-    t.integer "last_driver_id"
-    t.integer "updated_by"
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.decimal "gas"
+    t.integer "last_driver_id"
+    t.datetime "last_used"
+    t.string "make"
+    t.float "mileage"
+    t.string "model"
+    t.integer "number_of_seats"
+    t.text "parking_note"
+    t.string "parking_spot"
     t.integer "status"
     t.bigint "unit_id"
-    t.text "parking_note"
+    t.datetime "updated_at", null: false
+    t.integer "updated_by"
     t.index ["unit_id"], name: "index_cars_on_unit_id"
   end
 
   create_table "config_questions", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.bigint "faculty_survey_id"
+    t.datetime "updated_at", null: false
     t.index ["faculty_survey_id"], name: "index_config_questions_on_faculty_survey_id"
   end
 
   create_table "contacts", force: :cascade do |t|
-    t.string "title"
+    t.datetime "created_at", null: false
+    t.string "email"
     t.string "first_name"
     t.string "last_name"
     t.string "phone_number"
-    t.string "email"
     t.bigint "site_id", null: false
-    t.datetime "created_at", null: false
+    t.string "title"
     t.datetime "updated_at", null: false
     t.index ["site_id"], name: "index_contacts_on_site_id"
   end
 
   create_table "courses", force: :cascade do |t|
-    t.string "subject", null: false
     t.string "catalog_number", null: false
     t.string "class_section", null: false
-    t.bigint "program_id"
     t.datetime "created_at", null: false
+    t.bigint "program_id"
+    t.string "subject", null: false
     t.datetime "updated_at", null: false
     t.index ["program_id"], name: "index_courses_on_program_id"
   end
 
   create_table "email_logs", force: :cascade do |t|
-    t.string "sent_from_model"
-    t.integer "record_id"
-    t.string "email_type"
-    t.string "sent_to"
-    t.integer "sent_by"
-    t.datetime "sent_at"
     t.datetime "created_at", null: false
+    t.string "email_type"
+    t.integer "record_id"
+    t.datetime "sent_at"
+    t.integer "sent_by"
+    t.string "sent_from_model"
+    t.string "sent_to"
     t.datetime "updated_at", null: false
   end
 
   create_table "faculty_surveys", force: :cascade do |t|
-    t.string "uniqname"
-    t.bigint "term_id"
-    t.bigint "unit_id"
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "program_id"
     t.string "first_name"
     t.string "last_name"
+    t.integer "program_id"
+    t.bigint "term_id"
     t.string "title"
+    t.string "uniqname"
+    t.bigint "unit_id"
+    t.datetime "updated_at", null: false
     t.index ["term_id"], name: "index_faculty_surveys_on_term_id"
     t.index ["unit_id"], name: "index_faculty_surveys_on_unit_id"
   end
 
   create_table "import_reservation_logs", force: :cascade do |t|
-    t.datetime "date"
-    t.string "user"
-    t.integer "unit_id"
-    t.string "status"
-    t.string "note", default: [], array: true
     t.datetime "created_at", null: false
+    t.datetime "date"
+    t.string "note", default: [], array: true
+    t.string "status"
+    t.integer "unit_id"
     t.datetime "updated_at", null: false
+    t.string "user"
   end
 
   create_table "mailer_subscriptions", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.boolean "unsubscribed"
-    t.string "mailer", null: false
     t.datetime "created_at", null: false
+    t.string "mailer", null: false
+    t.boolean "unsubscribed"
     t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
     t.index ["user_id", "mailer"], name: "index_mailer_subscriptions_on_user_id_and_mailer", unique: true
     t.index ["user_id"], name: "index_mailer_subscriptions_on_user_id"
   end
 
   create_table "managers", force: :cascade do |t|
-    t.string "uniqname"
+    t.date "canvas_course_complete_date"
+    t.datetime "created_at", null: false
     t.string "first_name"
     t.string "last_name"
-    t.integer "updated_by"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "program_id"
-    t.string "mvr_status"
-    t.date "canvas_course_complete_date"
     t.date "meeting_with_admin_date"
+    t.string "mvr_status"
     t.string "phone_number"
+    t.bigint "program_id"
+    t.string "uniqname"
+    t.datetime "updated_at", null: false
+    t.integer "updated_by"
     t.index ["program_id"], name: "index_managers_on_program_id"
   end
 
   create_table "managers_programs", force: :cascade do |t|
+    t.datetime "created_at", null: false
     t.bigint "manager_id"
     t.bigint "program_id"
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["manager_id"], name: "index_managers_programs_on_manager_id"
     t.index ["program_id"], name: "index_managers_programs_on_program_id"
   end
 
   create_table "notes", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.string "noteable_type", null: false
-    t.bigint "noteable_id", null: false
     t.datetime "created_at", null: false
+    t.bigint "noteable_id", null: false
+    t.string "noteable_type", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
     t.index ["noteable_type", "noteable_id"], name: "index_notes_on_noteable"
     t.index ["user_id"], name: "index_notes_on_user_id"
   end
 
   create_table "programs", force: :cascade do |t|
-    t.string "title"
-    t.string "subject"
+    t.boolean "add_managers", default: false
+    t.integer "canvas_course_id"
+    t.string "canvas_link"
     t.string "catalog_number"
     t.string "class_section"
+    t.datetime "created_at", null: false
+    t.bigint "instructor_id", null: false
+    t.string "mvr_link"
+    t.boolean "non_uofm_passengers", default: false
+    t.boolean "not_course", default: true
     t.integer "number_of_students"
     t.integer "number_of_students_using_ride_share"
-    t.boolean "pictures_required_start", default: false
     t.boolean "pictures_required_end", default: false
-    t.boolean "non_uofm_passengers", default: false
-    t.bigint "instructor_id", null: false
-    t.integer "updated_by"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "mvr_link"
-    t.string "canvas_link"
-    t.integer "canvas_course_id"
+    t.boolean "pictures_required_start", default: false
+    t.string "subject"
     t.integer "term_id"
-    t.boolean "add_managers", default: false
-    t.boolean "not_course", default: true
+    t.string "title"
     t.bigint "unit_id"
+    t.datetime "updated_at", null: false
+    t.integer "updated_by"
     t.index ["instructor_id"], name: "index_programs_on_instructor_id"
     t.index ["unit_id"], name: "index_programs_on_unit_id"
   end
 
   create_table "programs_sites", force: :cascade do |t|
+    t.datetime "created_at", null: false
     t.bigint "program_id", null: false
     t.bigint "site_id", null: false
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["program_id"], name: "index_programs_sites_on_program_id"
     t.index ["site_id"], name: "index_programs_sites_on_site_id"
   end
 
   create_table "reservation_passengers", force: :cascade do |t|
+    t.datetime "created_at", null: false
     t.bigint "reservation_id", null: false
     t.bigint "student_id", null: false
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["reservation_id"], name: "index_reservation_passengers_on_reservation_id"
     t.index ["student_id"], name: "index_reservation_passengers_on_student_id"
   end
 
   create_table "reservation_passengers_managers", force: :cascade do |t|
-    t.bigint "reservation_id", null: false
-    t.bigint "manager_id", null: false
     t.datetime "created_at", null: false
+    t.bigint "manager_id", null: false
+    t.bigint "reservation_id", null: false
     t.datetime "updated_at", null: false
     t.index ["manager_id"], name: "index_reservation_passengers_managers_on_manager_id"
     t.index ["reservation_id"], name: "index_reservation_passengers_managers_on_reservation_id"
   end
 
   create_table "reservations", force: :cascade do |t|
-    t.string "status"
-    t.bigint "program_id", null: false
-    t.bigint "site_id", null: false
-    t.bigint "car_id"
-    t.datetime "start_time"
-    t.datetime "end_time"
-    t.text "recurring"
-    t.bigint "driver_id"
-    t.string "driver_phone"
+    t.boolean "approved", default: false
     t.bigint "backup_driver_id"
     t.string "backup_driver_phone"
-    t.integer "number_of_people_on_trip"
-    t.integer "updated_by"
+    t.boolean "canceled", default: false
+    t.bigint "car_id"
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "reserved_by"
-    t.boolean "approved", default: false
+    t.bigint "driver_id"
+    t.bigint "driver_manager_id"
+    t.string "driver_phone"
+    t.datetime "end_time"
+    t.integer "next"
     t.string "non_uofm_passengers"
     t.integer "number_of_non_uofm_passengers", default: 0
-    t.bigint "driver_manager_id"
+    t.integer "number_of_people_on_trip"
     t.integer "prev"
-    t.integer "next"
-    t.date "until_date"
-    t.boolean "canceled", default: false
+    t.bigint "program_id", null: false
     t.string "reason_for_cancellation"
+    t.text "recurring"
+    t.integer "reserved_by"
+    t.bigint "site_id", null: false
+    t.datetime "start_time"
+    t.string "status"
+    t.date "until_date"
+    t.datetime "updated_at", null: false
+    t.integer "updated_by"
     t.index ["backup_driver_id"], name: "index_reservations_on_backup_driver_id"
     t.index ["car_id"], name: "index_reservations_on_car_id"
     t.index ["driver_id"], name: "index_reservations_on_driver_id"
@@ -267,105 +267,105 @@ ActiveRecord::Schema[7.1].define(version: 2026_01_05_233618) do
   end
 
   create_table "sites", force: :cascade do |t|
-    t.string "title"
     t.string "address1"
     t.string "address2"
     t.string "city"
-    t.string "state"
-    t.string "zip_code"
-    t.integer "updated_by"
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string "state"
+    t.string "title"
     t.bigint "unit_id"
+    t.datetime "updated_at", null: false
+    t.integer "updated_by"
+    t.string "zip_code"
     t.index ["unit_id"], name: "index_sites_on_unit_id"
   end
 
   create_table "students", force: :cascade do |t|
-    t.string "uniqname"
-    t.string "last_name"
-    t.string "first_name"
     t.date "canvas_course_complete_date"
-    t.integer "updated_by"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "mvr_status"
-    t.bigint "program_id"
-    t.date "meeting_with_admin_date"
-    t.boolean "registered", default: true
     t.bigint "course_id"
+    t.datetime "created_at", null: false
+    t.string "first_name"
+    t.string "last_name"
+    t.date "meeting_with_admin_date"
+    t.string "mvr_status"
     t.string "phone_number"
+    t.bigint "program_id"
+    t.boolean "registered", default: true
+    t.string "uniqname"
+    t.datetime "updated_at", null: false
+    t.integer "updated_by"
     t.index ["course_id"], name: "index_students_on_course_id"
     t.index ["program_id"], name: "index_students_on_program_id"
   end
 
   create_table "terms", force: :cascade do |t|
-    t.string "code"
-    t.string "name"
     t.date "classes_begin_date"
     t.date "classes_end_date"
+    t.string "code"
     t.datetime "created_at", null: false
+    t.string "name"
     t.datetime "updated_at", null: false
   end
 
   create_table "unit_preferences", force: :cascade do |t|
-    t.string "name"
-    t.string "description"
-    t.boolean "on_off"
-    t.bigint "unit_id", null: false
     t.datetime "created_at", null: false
+    t.string "description"
+    t.string "name"
+    t.boolean "on_off"
+    t.integer "pref_type"
+    t.bigint "unit_id", null: false
     t.datetime "updated_at", null: false
     t.string "value"
-    t.integer "pref_type"
     t.index ["unit_id"], name: "index_unit_preferences_on_unit_id"
   end
 
   create_table "units", force: :cascade do |t|
-    t.string "name"
-    t.string "ldap_group"
     t.datetime "created_at", null: false
+    t.string "ldap_group"
+    t.string "name"
     t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "current_sign_in_at"
+    t.string "current_sign_in_ip"
+    t.string "display_name"
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
-    t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
-    t.integer "sign_in_count", default: 0, null: false
-    t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
-    t.string "current_sign_in_ip"
     t.string "last_sign_in_ip"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string "person_affiliation"
+    t.string "principal_name"
+    t.datetime "remember_created_at"
+    t.datetime "reset_password_sent_at"
+    t.string "reset_password_token"
+    t.integer "sign_in_count", default: 0, null: false
     t.string "uid"
     t.string "uniqname"
-    t.string "principal_name"
-    t.string "display_name"
-    t.string "person_affiliation"
+    t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
   create_table "vehicle_reports", force: :cascade do |t|
-    t.bigint "reservation_id", null: false
-    t.float "mileage_start"
-    t.float "mileage_end"
-    t.decimal "gas_start"
-    t.decimal "gas_end"
-    t.string "parking_spot"
-    t.integer "created_by"
-    t.integer "updated_by"
-    t.string "status"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.boolean "student_status", default: false
     t.boolean "approved", default: false
-    t.string "parking_spot_return"
+    t.bigint "car_id"
+    t.datetime "created_at", null: false
+    t.integer "created_by"
+    t.decimal "gas_end"
+    t.decimal "gas_start"
+    t.float "mileage_end"
+    t.float "mileage_start"
     t.text "parking_note"
     t.text "parking_note_return"
-    t.bigint "car_id"
+    t.string "parking_spot"
+    t.string "parking_spot_return"
+    t.bigint "reservation_id", null: false
+    t.string "status"
+    t.boolean "student_status", default: false
+    t.datetime "updated_at", null: false
+    t.integer "updated_by"
     t.index ["car_id"], name: "index_vehicle_reports_on_car_id"
     t.index ["reservation_id"], name: "index_vehicle_reports_on_reservation_id"
   end
