@@ -27,7 +27,7 @@ terms = Term.create!([
 
 ])
 
-test_unit = Unit.create!(name: "Fake Unit", ldap_group: "fake_group")
+test_unit = Unit.find_or_create_by!(name: "Fake Unit", ldap_group: "fake_group")
 
 UnitPreference.create!([
   { name: "contact_phone", description: "A phone that students can call with questions about cars reservations", on_off: false, unit_id: test_unit.id, value: "808 453-3245", pref_type: "string" },
