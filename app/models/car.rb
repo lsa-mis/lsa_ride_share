@@ -62,7 +62,7 @@ class Car < ApplicationRecord
 
   def vehicle_reports_ids
     ids = reservation_vehicle_reports.map(&:id)
-    ids.present? ? ids.join(",") : []
+    ids.present? ? ids.join(",") : ""
   end
 
   def vehicle_reports
