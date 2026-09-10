@@ -25,7 +25,7 @@ class CarsController < ApplicationController
     @reservations_future = @car.reservations_future
     reserver_ids = (@reservations_past + @reservations_future).map(&:reserved_by).compact.uniq
     user_ids = (reserver_ids + [@car.updated_by]).compact.uniq
-    @user_names_by_id = User.where(id: user_ids).index_with(&:display_name_email).transform_keys(&:id)
+    @user_names_by_id = User.where(id: user_ids).index_by(&:id).transform_values(&:display_name_email)
   end
 
   # GET /cars/new
