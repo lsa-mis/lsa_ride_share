@@ -49,27 +49,29 @@ class Car < ApplicationRecord
     }
 
   def reservations_past
-    self.reservations.where('start_time <= ?', DateTime.now).sort_by(&:start_time).reverse
+    self.reservations.includes(:site, :vehicle_report, program: [:term, :courses]).where('start_time <= ?', DateTime.now).sort_by(&:start_time).reverse
   end
 
   def reservations_future
-    self.reservations.where('start_time > ?', DateTime.now).sort_by(&:start_time)
+    self.reservations.includes(:site, :vehicle_report, program: [:term, :courses]).where('start_time > ?', DateTime.now).sort_by(&:start_time)
   end
 
   def last_vehicle_report
-    VehicleReport.where(reservation_id: self.reservations.ids).present? ?
-    VehicleReport.where(reservation_id: self.reservations.ids).order(:updated_at).last :
-    nil
+    reservation_vehicle_reports.max_by(&:updated_at)
   end
 
   def vehicle_reports_ids
-    VehicleReport.where(reservation_id: self.reservations.ids).present? ? 
-      VehicleReport.where(reservation_id: self.reservations.ids).pluck(:id).join(",") : 
-      []
+    ids = reservation_vehicle_reports.map(&:id)
+    ids.present? ? ids.join(",") : []
   end
 
   def vehicle_reports
-    VehicleReport.where(reservation_id: self.reservations.ids).order(updated_at: :desc)
+    reservation_vehicle_reports.sort_by(&:updated_at).reverse
+  end
+
+  # Uses the loaded reservations/vehicle_report associations to avoid N+1 queries
+  def reservation_vehicle_reports
+    reservations.filter_map(&:vehicle_report)
   end
 
   def acceptable_image
