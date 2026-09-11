@@ -2,6 +2,8 @@ require 'rails_helper'
 
 RSpec.describe Car, type: :system do
 
+  let(:test_unit) { Unit.find_by!(name: "Fake Unit") }
+
 	before do
     load "#{Rails.root}/spec/test_seeds.rb" 
 		user = FactoryBot.create(:user)
@@ -12,7 +14,6 @@ RSpec.describe Car, type: :system do
 
 	context "create new car" do
     it 'is valid input' do
-      unit = Unit.first
       visit cars_path
       click_on "New Car"
       fill_in "Car Number", with: "12345"
@@ -30,7 +31,7 @@ RSpec.describe Car, type: :system do
 
   context "edit a car" do
     it 'updates parking location' do
-      car = FactoryBot.create(:car, updated_by: User.last.id, unit: Unit.last)
+      car = FactoryBot.create(:car, updated_by: User.last.id, unit: test_unit)
       visit "cars/#{car.id}/"
       click_on "Edit Car"
       select "Thayer 1A", :from => "parking_spot_select"
