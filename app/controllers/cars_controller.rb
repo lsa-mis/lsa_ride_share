@@ -12,6 +12,7 @@ class CarsController < ApplicationController
     else
       @cars = Car.where(unit_id: session[:unit_ids]).order(:car_number)
     end
+    @cars = @cars.includes(reservations: :vehicle_report)
     if params[:car_status].present?
       @cars = @cars.where(status: params[:car_status])
     end
@@ -22,6 +23,9 @@ class CarsController < ApplicationController
   def show
     @reservations_past = @car.reservations_past
     @reservations_future = @car.reservations_future
+    reserver_ids = (@reservations_past + @reservations_future).map(&:reserved_by).compact.uniq
+    user_ids = (reserver_ids + [@car.updated_by]).compact.uniq
+    @user_names_by_id = User.where(id: user_ids).index_by(&:id).transform_values(&:display_name_email)
   end
 
   # GET /cars/new
@@ -90,7 +94,7 @@ class CarsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_car
-      @car = Car.find(params[:id])
+      @car = Car.with_attached_initial_damages.find(params[:id])
       authorize @car
     end
 

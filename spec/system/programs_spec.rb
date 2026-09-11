@@ -2,17 +2,18 @@ require 'rails_helper'
 
 RSpec.describe Program, type: :system do
 
+  let(:test_unit) { Unit.find_by!(name: "Fake Unit") }
+
 	before do
     load "#{Rails.root}/spec/test_seeds.rb" 
 		user = FactoryBot.create(:user)
     allow(LdapLookup).to receive(:is_member_of_group?).with(anything, "lsa-was-rails-devs").and_return(false)
-    allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, Unit.first.ldap_group).and_return(true)
+    allow(LdapLookup).to receive(:is_member_of_group?).with(user.uniqname, test_unit.ldap_group).and_return(true)
 		mock_login(user)
 	end
 
 	context "create new program" do
     it 'is valid input' do
-      unit = Unit.first
       uniqname = 'fakeuniqname'
       # uniqname is not a member of any admin groups
       allow(LdapLookup).to receive(:is_member_of_group?).with(uniqname, anything).and_return(false)
@@ -33,7 +34,7 @@ RSpec.describe Program, type: :system do
 
   context "edit a program" do
     it 'updates title' do
-      program = FactoryBot.create(:program, updated_by: User.last.id, term: Term.last, unit: Unit.last)
+      program = FactoryBot.create(:program, updated_by: User.last.id, term: Term.last, unit: test_unit)
       visit "programs/#{program.id}/"
       click_on "Edit Program"
       fill_in "Title", with: "Edited Program Title"
@@ -45,7 +46,7 @@ RSpec.describe Program, type: :system do
 
   context "add associated courses to a program" do
     it 'succeed with valid input' do
-      program = FactoryBot.create(:program, updated_by: User.last.id, term: Term.last, unit: Unit.last)
+      program = FactoryBot.create(:program, updated_by: User.last.id, term: Term.last, unit: test_unit)
       visit "programs/#{program.id}/"
       click_on "Add Associated Courses"
       expect(page).to have_content("Update Courses for Program")
@@ -59,7 +60,7 @@ RSpec.describe Program, type: :system do
 
   context "add associated courses to a program" do
     it 'fails with duplicated course data' do
-      program = FactoryBot.create(:program, updated_by: User.last.id, term: Term.last, unit: Unit.last)
+      program = FactoryBot.create(:program, updated_by: User.last.id, term: Term.last, unit: test_unit)
       course = FactoryBot.create(:course, program: program)
       visit "programs/#{program.id}/"
       click_on "Edit Associated Courses"
