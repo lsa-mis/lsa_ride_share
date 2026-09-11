@@ -15,6 +15,7 @@ class FacultySurveysController < ApplicationController
     end
     @faculty_surveys = @faculty_surveys.data(params[:term_id]).order(created_at: :desc)
     authorize @faculty_surveys
+    set_emailed_survey_ids
   end
 
   def surveys_index
@@ -98,6 +99,7 @@ class FacultySurveysController < ApplicationController
     end
     @faculty_surveys = @faculty_surveys.data(params[:term_id]).order(created_at: :desc)
     authorize @faculty_surveys
+    set_emailed_survey_ids
   end
 
   def add_config_questions(faculty_survey)
@@ -115,16 +117,16 @@ class FacultySurveysController < ApplicationController
     end
 
     def set_units
-      @units = []
-      session[:unit_ids].each do |unit_id|
-        if unit_use_faculty_survey?(unit_id)
-          @units << Unit.find(unit_id)
-        end
-      end
+      survey_unit_ids = UnitPreference.where(unit_id: session[:unit_ids], name: "faculty_survey", on_off: true).pluck(:unit_id)
+      @units = Unit.where(id: survey_unit_ids).to_a
     end
 
     def set_terms
       @terms = Term.current_and_future
+    end
+
+    def set_emailed_survey_ids
+      @emailed_survey_ids = EmailLog.where(sent_from_model: "FacultySurvey", record_id: @faculty_surveys.map(&:id)).distinct.pluck(:record_id).to_set
     end
 
     # Only allow a list of trusted parameters through.
