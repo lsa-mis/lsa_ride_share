@@ -815,7 +815,8 @@ module ApplicationHelper
     reservation.program.unit.unit_preferences.find_by(name: "contact_phone").value.presence || ""
   end 
 
-  def email_was_sent?(model, record)
+  def email_was_sent?(model, record, sent_record_ids = nil)
+    return sent_record_ids.include?(record.id) unless sent_record_ids.nil?
     EmailLog.find_by(sent_from_model: model, record_id: record).present?
   end
 
