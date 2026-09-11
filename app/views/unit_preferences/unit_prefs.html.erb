@@ -4,7 +4,7 @@
     <%= form_with model: @unit_prefs, url: unit_prefs_path, method: :post do |form| %>
       <% @units.each do |unit| %>
         <h2 class="m-2"><%= unit.name %></h2>
-        <% @unit_prefs.where(unit_id: unit).each do |pref| %>
+        <% @unit_prefs_by_unit.fetch(unit.id, []).each do |pref| %>
           <%= fields_for 'unit_prefs[]' do %>
             <div>
               <% if pref.pref_type == "boolean" %>

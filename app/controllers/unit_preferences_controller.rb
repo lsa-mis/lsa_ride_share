@@ -13,17 +13,21 @@ class UnitPreferencesController < ApplicationController
   def unit_prefs
     @unit_prefs = UnitPreference.where(unit_id: session[:unit_ids]).order(:pref_type, :description)
     authorize @unit_prefs
+    @unit_prefs_by_unit = @unit_prefs.group_by(&:unit_id)
   end
 
   def save_unit_prefs
     @unit_prefs = UnitPreference.where(unit_id: session[:unit_ids])
     authorize @unit_prefs
-    @unit_prefs.where(pref_type: 'boolean').update(on_off: false)
+    @unit_prefs.where(pref_type: 'boolean').update_all(on_off: false)
     if params[:unit_prefs].present?
+      # preloading units avoids a query per record from the belongs_to presence validation
+      prefs_by_unit_and_name = UnitPreference.where(unit_id: session[:unit_ids]).includes(:unit).index_by { |pref| [pref.unit_id, pref.name] }
       params[:unit_prefs].each do |unit, p|
         unit_id = unit.to_i
         p.each do |k, v|
-          pref = UnitPreference.find_by(unit_id: unit_id, name: k)
+          pref = prefs_by_unit_and_name[[unit_id, k]]
+          next if pref.nil?
           if pref.pref_type == 'boolean'
             pref.update(on_off: true)
           end

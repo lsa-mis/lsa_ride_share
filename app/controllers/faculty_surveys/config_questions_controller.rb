@@ -4,7 +4,7 @@ class FacultySurveys::ConfigQuestionsController < ApplicationController
   before_action :set_config_question, only: %i[ edit update destroy ]
 
   def index
-    config_questions = @faculty_survey.config_questions.order(:id)
+    config_questions = @faculty_survey.config_questions.with_rich_text_question_and_embeds.with_rich_text_answer_and_embeds.order(:id)
     @config_questions_no_edit = config_questions[0..5]
     @config_questions_edit = config_questions.drop(6)
     @email_log_entries = EmailLog.where(sent_from_model: "FacultySurvey", record_id: @faculty_survey.id).order(created_at: :desc)
@@ -82,7 +82,7 @@ class FacultySurveys::ConfigQuestionsController < ApplicationController
     end
 
     def set_config_question
-      @config_question = ConfigQuestion.find(params[:id])
+      @config_question = ConfigQuestion.with_rich_text_question.with_rich_text_answer.find(params[:id])
       authorize @config_question
     end
 
