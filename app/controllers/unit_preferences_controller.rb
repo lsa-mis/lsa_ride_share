@@ -58,9 +58,8 @@ class UnitPreferencesController < ApplicationController
   def create
     # create preference for every unit
     Unit.all.each do |unit|
-      @unit_preference = UnitPreference.new(unit_preference_params)
+      @unit_preference = unit.unit_preferences.build(unit_preference_params)
       authorize @unit_preference
-      @unit_preference.unit_id = unit.id
       unless @unit_preference.save
         @unit_preferences = UnitPreference.distinct.pluck(:name, :description, :pref_type)
         return
