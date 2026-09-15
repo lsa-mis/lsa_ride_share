@@ -11,9 +11,13 @@ class UnitPreferencesController < ApplicationController
   end
 
   def unit_prefs
-    @unit_prefs = UnitPreference.where(unit_id: session[:unit_ids]).order(:pref_type, :description)
+    if session[:role] == "super_admin"
+      @unit_prefs = UnitPreference.includes(:unit).all.order(:pref_type, :description)
+    else
+      @unit_prefs = UnitPreference.includes(:unit).where(unit_id: session[:unit_ids]).order(:pref_type, :description)
+    end
     authorize @unit_prefs
-    @unit_prefs_by_unit = @unit_prefs.group_by(&:unit_id)
+    @unit_prefs_by_unit = @unit_prefs.group_by(&:unit_id).sort_by { |_unit_id, prefs| prefs.first.unit.name }.to_h
   end
 
   def save_unit_prefs
@@ -84,7 +88,11 @@ class UnitPreferencesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
 
     def set_units
-      @units = Unit.where(id: session[:unit_ids])
+      if session[:role] == "super_admin"
+        @units = Unit.all
+      else
+        @units = Unit.where(id: session[:unit_ids])
+      end
     end
 
     def set_pref_types
