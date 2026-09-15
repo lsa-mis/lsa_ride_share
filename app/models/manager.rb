@@ -18,6 +18,8 @@
 class Manager < ApplicationRecord
   has_many :managers_programs
   has_many :programs, through: :managers_programs
+  has_many :managed_programs, through: :managers_programs, source: :program
+  has_many :instructor_programs, class_name: "Program", foreign_key: :instructor_id
   has_many :reservation_passengers_managers
   has_many :passengers_managers, through: :reservation_passengers_managers, source: :reservation, dependent: :restrict_with_exception
 
@@ -30,7 +32,7 @@ class Manager < ApplicationRecord
   end
 
   def instructor_all_terms
-    Program.where(instructor: self)
+    instructor_programs
   end
 
   def manager
@@ -38,7 +40,7 @@ class Manager < ApplicationRecord
   end
 
   def manager_all_terms
-    Program.joins(:managers).where('managers_programs.manager_id = ?', self)
+    managed_programs
   end
 
   def programs

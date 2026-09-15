@@ -73,11 +73,16 @@ class ManagersController < ApplicationController
         unit_ids = session[:unit_ids]
       end
       programs = Program.where(unit_id: unit_ids)
-      i_ids = programs.pluck(:instructor_id).uniq
-      instructors = Manager.where(id: i_ids)
-      p_ids = programs.pluck(:id)
-      managers = Manager.joins(:programs).where('managers_programs.program_id IN (?)', p_ids)
-      @managers = (instructors + managers).uniq.sort_by(&:uniqname)
+      instructor_ids = programs.where.not(instructor_id: nil).select(:instructor_id)
+      manager_ids = ManagersProgram.where(program_id: programs.select(:id)).select(:manager_id)
+      @managers = Manager
+        .where(id: instructor_ids)
+        .or(Manager.where(id: manager_ids))
+        .includes(
+          instructor_programs: [:term, :courses, :unit],
+          managed_programs: [:term, :courses, :unit]
+        )
+        .order(:uniqname)
       authorize Manager
     end
 
