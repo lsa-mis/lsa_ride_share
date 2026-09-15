@@ -230,7 +230,16 @@ class VehicleReportsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_vehicle_report
-      @vehicle_report = VehicleReport.find(params[:id])
+      attachment_associations = %i[
+        image_front_start_attachment image_driver_start_attachment image_passenger_start_attachment image_back_start_attachment
+        image_front_end_attachment image_driver_end_attachment image_passenger_end_attachment image_back_end_attachment
+        image_damages_attachments damage_form_attachment
+      ]
+      @vehicle_report = if action_name == "destroy"
+        VehicleReport.includes(*attachment_associations).find(params[:id])
+      else
+        VehicleReport.find(params[:id])
+      end
       authorize @vehicle_report
     end
 
