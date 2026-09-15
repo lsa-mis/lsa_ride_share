@@ -56,7 +56,7 @@ class ProgramPolicy < ApplicationPolicy
 
   def is_manager?
     manager = Manager.find_by(uniqname: @user.uniqname)
-    manager.present? && (Program.exists?(instructor_id: manager.id) || manager.programs.exists?)
+    manager.present? && (Program.exists?(instructor_id: manager.id) || manager.programs.any?)
   end
 
   def is_program_manager?
