@@ -230,16 +230,19 @@ class VehicleReportsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_vehicle_report
-      @vehicle_report = VehicleReport.find(params[:id])
+      # only preload attachments when destroy will actually purge them, and go through
+      # includes(...).find so Prosopite recognizes this as a legitimate eager load
+      if action_name == "destroy" && !VehicleReport.where(id: params[:id]).pick(:approved)
+        attachment_associations = %i[
+          image_front_start_attachment image_driver_start_attachment image_passenger_start_attachment image_back_start_attachment
+          image_front_end_attachment image_driver_end_attachment image_passenger_end_attachment image_back_end_attachment
+          image_damages_attachments damage_form_attachment
+        ]
+        @vehicle_report = VehicleReport.includes(*attachment_associations.map { |association| { association => :blob } }).find(params[:id])
+      else
+        @vehicle_report = VehicleReport.find(params[:id])
+      end
       authorize @vehicle_report
-
-      return unless action_name == "destroy" && !@vehicle_report.approved
-      attachment_associations = %i[
-        image_front_start_attachment image_driver_start_attachment image_passenger_start_attachment image_back_start_attachment
-        image_front_end_attachment image_driver_end_attachment image_passenger_end_attachment image_back_end_attachment
-        image_damages_attachments damage_form_attachment
-      ]
-      @vehicle_report = VehicleReport.includes(*attachment_associations.map { |association| { association => :blob } }).find(@vehicle_report.id)
     end
 
     def set_units
