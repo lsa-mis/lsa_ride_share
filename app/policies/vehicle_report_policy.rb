@@ -89,13 +89,11 @@ class VehicleReportPolicy < ApplicationPolicy
   end
 
   def is_vehicle_report_student?
-    report = VehicleReport.find(params[:id])
-    can_student_create_report?(report.reservation)
+    can_student_create_report?(record.reservation)
   end
 
   def is_vehicle_report_manager?
-    report = VehicleReport.find(params[:id])
-    can_manager_create_report?(report.reservation)
+    can_manager_create_report?(record.reservation)
   end
 
   def reservation_for_create

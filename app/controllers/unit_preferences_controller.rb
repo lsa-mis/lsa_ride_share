@@ -11,35 +11,43 @@ class UnitPreferencesController < ApplicationController
   end
 
   def unit_prefs
-    @unit_prefs = UnitPreference.where(unit_id: session[:unit_ids]).order(:pref_type, :description)
+    @unit_prefs = UnitPreference.includes(:unit).where(unit_id: @units)
     authorize @unit_prefs
-    @unit_prefs_by_unit = @unit_prefs.group_by(&:unit_id)
+    @unit_prefs_by_unit = @unit_prefs
+      .group_by(&:unit_id)
+      .sort_by { |_unit_id, prefs| [prefs.first.unit.name, prefs.first.pref_type_before_type_cast] }
+      .to_h
+      .transform_values do |prefs|
+        prefs.sort_by { |pref| [pref.pref_type_before_type_cast, pref.description.to_s, pref.name.to_s] }
+      end
   end
 
   def save_unit_prefs
-    @unit_prefs = UnitPreference.where(unit_id: session[:unit_ids])
+    @unit_prefs = UnitPreference.where(unit_id: @units)
     authorize @unit_prefs
+
     @unit_prefs.where(pref_type: 'boolean').update_all(on_off: false)
+
     if params[:unit_prefs].present?
-      # preloading units avoids a query per record from the belongs_to presence validation
-      prefs_by_unit_and_name = UnitPreference.where(unit_id: session[:unit_ids]).includes(:unit).index_by { |pref| [pref.unit_id, pref.name] }
+      prefs_by_unit_and_name = @unit_prefs.includes(:unit).index_by { |pref| [pref.unit_id, pref.name] }
+
       params[:unit_prefs].each do |unit, p|
         unit_id = unit.to_i
         p.each do |k, v|
           pref = prefs_by_unit_and_name[[unit_id, k]]
           next if pref.nil?
+
           if pref.pref_type == 'boolean'
             pref.update(on_off: true)
-          end
-          if pref.pref_type == 'time' || pref.pref_type == 'string'
+          elsif pref.pref_type == 'time' || pref.pref_type == 'string'
             pref.update(value: v)
-          end
-          if pref.pref_type == 'integer'
+          elsif pref.pref_type == 'integer'
             pref.update(value: v.to_s)
           end
         end
       end
     end
+
     redirect_to unit_prefs_path, notice: "Preferences are updated."
   end
 
@@ -54,9 +62,8 @@ class UnitPreferencesController < ApplicationController
   def create
     # create preference for every unit
     Unit.all.each do |unit|
-      @unit_preference = UnitPreference.new(unit_preference_params)
+      @unit_preference = unit.unit_preferences.build(unit_preference_params)
       authorize @unit_preference
-      @unit_preference.unit_id = unit.id
       unless @unit_preference.save
         @unit_preferences = UnitPreference.distinct.pluck(:name, :description, :pref_type)
         return
@@ -84,7 +91,11 @@ class UnitPreferencesController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
 
     def set_units
-      @units = Unit.where(id: session[:unit_ids])
+      if session[:role] == "super_admin"
+        @units = Unit.all
+      else
+        @units = Unit.where(id: session[:unit_ids])
+      end
     end
 
     def set_pref_types

@@ -55,7 +55,8 @@ class ProgramPolicy < ApplicationPolicy
   private
 
   def is_manager?
-    Program.all.map { |p| p.all_managers.include?(@user.uniqname) }.any?
+    manager = Manager.find_by(uniqname: @user.uniqname)
+    manager.present? && (Program.exists?(instructor_id: manager.id) || manager.managed_programs.exists?)
   end
 
   def is_program_manager?
