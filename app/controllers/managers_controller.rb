@@ -91,6 +91,10 @@ class ManagersController < ApplicationController
       uniqnames = @managers.map(&:uniqname)
       @manager_users_by_uniqname = User.where(uniqname: uniqnames).index_by(&:uniqname)
       user_ids = @manager_users_by_uniqname.values.map(&:id)
+      @manager_mailer_subscriptions = MailerSubscription.where(
+        user_id: user_ids,
+        mailer: ["one_hour_reminder", "vehicle_report_reminder"]
+      ).index_by { |subscription| [subscription.mailer, subscription.user_id] }
     end
 
     def set_units
