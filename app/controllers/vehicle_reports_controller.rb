@@ -240,7 +240,6 @@ class VehicleReportsController < ApplicationController
         image_damages_attachments damage_form_attachment
       ]
       @vehicle_report = VehicleReport.includes(*attachment_associations.map { |association| { association => :blob } }).find(@vehicle_report.id)
-      authorize @vehicle_report
     end
 
     def set_units
