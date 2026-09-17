@@ -84,6 +84,13 @@ class ManagersController < ApplicationController
         )
         .order(:uniqname)
       authorize Manager
+      prepare_manager_list_support_data
+    end
+
+    def prepare_manager_list_support_data
+      uniqnames = @managers.map(&:uniqname)
+      @manager_users_by_uniqname = User.where(uniqname: uniqnames).index_by(&:uniqname)
+      user_ids = @manager_users_by_uniqname.values.map(&:id)
     end
 
     def set_units

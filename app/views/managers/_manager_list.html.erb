@@ -75,13 +75,14 @@
               <% end %>
             </td>
             <% if reminders_on?(unit_id: params[:unit_id]) %>
+              <% user = @manager_users_by_uniqname[manager.uniqname] %>
               <td class="mi_tbody_td">
-                <% if subscribed?(mailer: "one_hour_reminder", driver: manager) %>
+                <% if subscribed?(mailer: "one_hour_reminder", driver: manager, user: user) %>
                   <i class="fa-solid fa-check"></i>
                 <% end %>
               </td>
               <td class="mi_tbody_td">
-                <% if subscribed?(mailer: "vehicle_report_reminder", driver: manager) %>
+                <% if subscribed?(mailer: "vehicle_report_reminder", driver: manager, user: user) %>
                   <i class="fa-solid fa-check"></i>
                 <% end %>
             </td>
