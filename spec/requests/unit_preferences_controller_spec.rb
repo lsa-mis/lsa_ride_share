@@ -97,12 +97,56 @@ RSpec.describe UnitPreference, type: :request do
       expect(response.body).to include('Unit Preferences')
     end
 
-    it 'saves boolean/string/integer/time preferences and redirects with notice' do
+    it 'sorts preferences by pref_type within each unit' do
+      FactoryBot.create(:unit_preference,
+        unit: unit,
+        name: 'zebra_pref',
+        description: 'Zebra pref',
+        pref_type: :string,
+        value: 'last'
+      )
+      FactoryBot.create(:unit_preference,
+        unit: unit,
+        name: 'alpha_pref',
+        description: 'Alpha pref',
+        pref_type: :boolean,
+        on_off: true,
+        value: ''
+      )
+      FactoryBot.create(:unit_preference,
+        unit: unit,
+        name: 'middle_pref',
+        description: 'Middle pref',
+        pref_type: :integer,
+        value: '2'
+      )
+
+      get unit_prefs_path
+
+      expect(response).to have_http_status(200)
+      body = response.body
+      alpha_pos = body.index('Alpha pref')
+      middle_pos = body.index('Middle pref')
+      zebra_pos = body.index('Zebra pref')
+      expect(alpha_pos).to be < middle_pos
+      expect(middle_pos).to be < zebra_pos
+    end
+
+    it 'resets all booleans and then updates only the submitted ones' do
       bool_pref = FactoryBot.create(
         :unit_preference,
         unit: unit,
         name: 'send_reminders',
         description: 'Send reminders',
+        pref_type: :boolean,
+        on_off: true,
+        value: ''
+      )
+      another_bool_pref = FactoryBot.create(
+        :unit_preference,
+        unit: unit,
+        name: 'other_alert',
+        description: 'Other alert',
         pref_type: :boolean,
         on_off: true,
         value: ''
@@ -135,6 +179,7 @@ RSpec.describe UnitPreference, type: :request do
       post unit_prefs_path, params: {
         unit_prefs: {
           unit.id.to_s => {
+            'send_reminders' => '1',
             'contact_phone' => '734-111-2222',
             'capacity_limit' => 7,
             'reservation_time_begin' => '09:00'
@@ -145,10 +190,45 @@ RSpec.describe UnitPreference, type: :request do
       expect(response).to have_http_status(302)
       expect(response).to redirect_to(unit_prefs_path)
       expect(flash[:notice]).to eq('Preferences are updated.')
-      expect(bool_pref.reload.on_off).to eq(false)
+      expect(bool_pref.reload.on_off).to eq(true)
+      expect(another_bool_pref.reload.on_off).to eq(false)
       expect(str_pref.reload.value).to eq('734-111-2222')
       expect(int_pref.reload.value).to eq('7')
       expect(time_pref.reload.value).to eq('09:00')
+    end
+
+    it 'turns off a previously checked boolean when it is left unchecked on the form' do
+      checked_pref = FactoryBot.create(
+        :unit_preference,
+        unit: unit,
+        name: 'send_reminders',
+        description: 'Send reminders',
+        pref_type: :boolean,
+        on_off: true,
+        value: ''
+      )
+      other_pref = FactoryBot.create(
+        :unit_preference,
+        unit: unit,
+        name: 'other_alert',
+        description: 'Other alert',
+        pref_type: :boolean,
+        on_off: false,
+        value: ''
+      )
+
+      post unit_prefs_path, params: {
+        unit_prefs: {
+          unit.id.to_s => {
+            'other_alert' => '1'
+          }
+        }
+      }
+
+      expect(response).to have_http_status(302)
+      expect(response).to redirect_to(unit_prefs_path)
+      expect(checked_pref.reload.on_off).to eq(false)
+      expect(other_pref.reload.on_off).to eq(true)
     end
   end
 

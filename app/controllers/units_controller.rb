@@ -27,16 +27,16 @@ class UnitsController < ApplicationController
       # create preferences for the unit
       prefs = UnitPreference.distinct.pluck(:name, :description, :pref_type)
       prefs.each do |name, descr, pref_type|
-        if pref_type == "boolean"
-          unless UnitPreference.create(name: name, description: descr, pref_type: pref_type, on_off: false, unit_id: @unit.id)
-            @units = Unit.all
-            return
-          end
-        else
-          unless UnitPreference.create(name: name, description: descr, pref_type: pref_type, unit_id: @unit.id)
-            @units = Unit.all
-            return
-          end 
+        preference = @unit.unit_preferences.build(
+          name: name,
+          description: descr,
+          pref_type: pref_type,
+          on_off: false
+        )
+        authorize preference
+        unless preference.save
+          @units = Unit.all
+          return
         end
       end
       @unit = Unit.new
