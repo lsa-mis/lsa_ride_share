@@ -15,18 +15,21 @@ class StudentPolicy < ApplicationPolicy
   def update_student_list?
     return true if user_in_access_group? 
     return true if is_instructor?
+    return true if is_program_manager?
     return false
   end
 
   def add_students?
     return true if user_in_access_group? 
     return true if is_instructor?
+    return true if is_program_manager?
     return false
   end
 
   def create?
     return true if user_in_access_group? 
     return true if is_instructor?
+    return true if is_program_manager?
     return false
   end
 
@@ -61,6 +64,7 @@ class StudentPolicy < ApplicationPolicy
   def destroy?
     return true if user_in_access_group? 
     return true if is_instructor?
+    return true if is_program_manager?
     return false
   end
 
