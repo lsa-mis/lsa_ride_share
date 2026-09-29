@@ -601,7 +601,6 @@ DEPENDENCIES
   repost
   requestjs-rails (~> 0.0.10)
   rspec-rails
-  selenium-webdriver (>= 4.8, < 4.11)
   simple_calendar (~> 2.4, >= 2.4.3)
   skylight
   sprockets-rails
