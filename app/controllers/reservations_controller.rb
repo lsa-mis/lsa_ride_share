@@ -514,8 +514,8 @@ class ReservationsController < ApplicationController
       # for admins - always save && display message about conflict
       # for non admins - save if there is no conflict
       if is_admin? || !is_admin? && no_conflict
-        conflicting.each { |conflicting_reservation| conflicting_reservation.update(status: CONFLICT_STATUS) }
         if @reservation.update(reservation_params)
+          conflicting.each { |conflicting_reservation| conflicting_reservation.update(status: CONFLICT_STATUS) }
           clear_resolved_conflicts(previously_conflicting - conflicting.to_a)
           unless is_admin?
             ReservationMailer.with(reservation: @reservation, user: current_user, recurring: false).car_reservation_updated(admin: true).deliver_now
