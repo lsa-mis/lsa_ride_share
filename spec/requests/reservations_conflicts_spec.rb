@@ -230,5 +230,29 @@ RSpec.describe 'Reservation conflicts', type: :request do
       expect(reservation.reload.start_time).to eq(day_time(10) - 15.minute)
       expect(reservation.status).to be_nil
     end
+
+    it 'ignores car and times nested in reservation params' do
+      patch reservation_path(reservation), params: {
+        reservation: {
+          program_id: program.id,
+          site_id: site.id,
+          updated_by: student_user.id,
+          car_id: car.id,
+          start_time: (day_time(14) - 15.minute).to_s,
+          end_time: (day_time(16) + 15.minute).to_s
+        },
+        unit_id: unit.id,
+        car_id: car.id,
+        day_start: day.to_s,
+        start_time: day_time(10).to_s,
+        end_time: day_time(12).to_s,
+        number_of_people_on_trip: 1
+      }
+
+      expect(response).to have_http_status(302)
+      expect(reservation.reload.start_time).to eq(day_time(10) - 15.minute)
+      expect(reservation.end_time).to eq(day_time(12) + 15.minute)
+      expect(blocking.reload.status).to be_nil
+    end
   end
 end

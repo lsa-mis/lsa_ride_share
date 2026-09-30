@@ -514,7 +514,7 @@ class ReservationsController < ApplicationController
       # for admins - always save && display message about conflict
       # for non admins - save if there is no conflict
       if is_admin? || !is_admin? && no_conflict
-        if @reservation.update(reservation_params)
+        if @reservation.save
           conflicting.each { |conflicting_reservation| conflicting_reservation.update(status: CONFLICT_STATUS) }
           clear_resolved_conflicts(previously_conflicting - conflicting.to_a)
           unless is_admin?
