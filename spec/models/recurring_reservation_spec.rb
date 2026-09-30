@@ -106,18 +106,18 @@ RSpec.describe RecurringReservation, type: :model do
       reservation_one.update(next: reservation_two.id)
     end
 
-    def update_params
+    def update_params(car_id = car.id)
       {
         'site_id' => site.id,
         'updated_by' => user.id,
-        'car_id' => car.id,
+        'car_id' => car_id,
         'number_of_people_on_trip' => 1
       }
     end
 
-    def update_following(start_hour, end_hour, admin: true)
+    def update_following(start_hour, end_hour, admin: true, car_id: car.id)
       RecurringReservation.new(reservation_one.reload).update_this_and_following(
-        update_params,
+        update_params(car_id),
         day_time(day_one, start_hour) - 15.minute,
         day_time(day_one, end_hour) + 15.minute,
         admin
@@ -165,6 +165,28 @@ RSpec.describe RecurringReservation, type: :model do
       expect(message).to include('There are conflicts with other reservations on')
       expect(reservation_two.reload.start_time.hour).to eq(9)
       expect(reservation_two.reload.status).to be_nil
+      expect(blocking.reload.status).to be_nil
+    end
+
+    it 'lets non admins remove the car even when the old car is taken at the new time' do
+      build_reservation(day_two, 14, 16)
+
+      message = update_following(14, 16, admin: false, car_id: '')
+
+      expect(message).to eq('')
+      expect(reservation_two.reload.car_id).to be_nil
+      expect(reservation_two.status).to be_nil
+    end
+
+    it 'clears conflicts on the old car when admins remove the car' do
+      blocking = build_reservation(day_two, 14, 16)
+      update_following(14, 16)
+      expect(blocking.reload.status).to eq(CONFLICT_STATUS)
+
+      update_following(14, 16, car_id: '')
+
+      expect(reservation_two.reload.car_id).to be_nil
+      expect(reservation_two.status).to be_nil
       expect(blocking.reload.status).to be_nil
     end
   end

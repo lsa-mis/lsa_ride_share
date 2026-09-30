@@ -106,8 +106,9 @@ class RecurringReservation
     conflict_days_message = ""
     alert = ""
     list = get_following
-    new_car = Car.find_by(id: update_params["car_id"]) if update_params["car_id"].present?
-    conflict_days_message = conflicts_updating_recurring(start_time, end_time, new_car)
+    car_changed = update_params.key?("car_id")
+    new_car = Car.find_by(id: update_params["car_id"].presence) if car_changed
+    conflict_days_message = conflicts_updating_recurring(start_time, end_time, new_car, car_changed)
     if admin || (!admin && conflict_days_message == "")
       list.each do |id|
         reservation = Reservation.find(id)
@@ -118,7 +119,7 @@ class RecurringReservation
         update_params["start_time"] = start_time
         update_params["end_time"] = end_time
         previously_conflicting = conflicting_reservations(reservation.car, reservation.start_time..reservation.end_time, id).to_a
-        conflicting = conflicting_reservations(new_car || reservation.car, start_time..end_time, id)
+        conflicting = conflicting_reservations(car_changed ? new_car : reservation.car, start_time..end_time, id)
         update_params["status"] = conflicting.present? ? CONFLICT_STATUS : nil
         if reservation.update(update_params)
           conflicting.each { |conflicting_reservation| conflicting_reservation.update(status: CONFLICT_STATUS) }
@@ -131,7 +132,7 @@ class RecurringReservation
     return conflict_days_message + alert
   end
 
-  def conflicts_updating_recurring(start_time, end_time, new_car = nil)
+  def conflicts_updating_recurring(start_time, end_time, new_car = nil, car_changed = false)
     conflict_days_message = ""
     list = get_following
     list.each do |id|
@@ -140,7 +141,7 @@ class RecurringReservation
       day_end = reservation.end_time.beginning_of_day
       start_time = combine_day_and_time(day_start, start_time)
       end_time = combine_day_and_time(day_end, end_time)
-      unless available_edit?(id, new_car || reservation.car, start_time..end_time)
+      unless available_edit?(id, car_changed ? new_car : reservation.car, start_time..end_time)
         conflict_days_message += show_date_with_month_name(day_start) + "; "
       end
     end

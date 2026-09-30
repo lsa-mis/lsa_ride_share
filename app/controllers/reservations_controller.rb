@@ -444,7 +444,7 @@ class ReservationsController < ApplicationController
       update_params = {}
       update_params["site_id"] = reservation_params[:site_id]
       update_params["updated_by"] = reservation_params[:updated_by]
-      update_params["car_id"] = params[:car_id]
+      update_params["car_id"] = params[:car_id] if params.key?(:car_id)
       update_params["number_of_people_on_trip"] = params[:number_of_people_on_trip]
       start_time = params[:start_time].to_datetime - 15.minute
       end_time = params[:end_time].to_datetime + 15.minute
