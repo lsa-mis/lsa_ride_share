@@ -119,16 +119,13 @@ class RecurringReservation
         update_params["end_time"] = end_time
         previously_conflicting = conflicting_reservations(reservation.car, reservation.start_time..reservation.end_time, id).to_a
         conflicting = conflicting_reservations(new_car || reservation.car, start_time..end_time, id)
-        if conflicting.present?
-          update_params["status"] = CONFLICT_STATUS
+        update_params["status"] = conflicting.present? ? CONFLICT_STATUS : nil
+        if reservation.update(update_params)
           conflicting.each { |conflicting_reservation| conflicting_reservation.update(status: CONFLICT_STATUS) }
+          clear_resolved_conflicts(previously_conflicting - conflicting.to_a)
         else
-          update_params["status"] = nil
-        end
-        unless reservation.update(update_params)
           alert += "Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". "
         end
-        clear_resolved_conflicts(previously_conflicting - conflicting.to_a)
       end
     end
     return conflict_days_message + alert
