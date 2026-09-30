@@ -682,7 +682,10 @@ class ReservationsController < ApplicationController
         ReservationMailer.with(reservation: @reservation, user: current_user, recurring: recurring).car_reservation_cancel_driver(@cancel_passengers, @cancel_emails, reason_for_cancellation).deliver_now
       end
       begin
-        @reservation.update(canceled: true, reason_for_cancellation: reason_for_cancellation, driver_id: nil, driver_manager_id: nil, updated_by: current_user.id)
+        conflicting_peers = conflicting_reservations(@reservation.car, @reservation.start_time..@reservation.end_time, @reservation.id).to_a
+        if @reservation.update(canceled: true, reason_for_cancellation: reason_for_cancellation, driver_id: nil, driver_manager_id: nil, updated_by: current_user.id)
+          clear_resolved_conflicts(conflicting_peers)
+        end
         if is_admin?
           start_date = @reservation.start_time.to_date
           redirect_to reservations_url(start_date: start_date), notice: "Reservation was canceled."
@@ -737,7 +740,11 @@ class ReservationsController < ApplicationController
       end
       recurring_reservation.destroy_passengers(result)
       authorize @reservation
+      conflicting_peers = Reservation.where(id: result).flat_map do |reservation|
+        conflicting_reservations(reservation.car, reservation.start_time..reservation.end_time, reservation.id).to_a
+      end.uniq.reject { |peer| result.include?(peer.id) }
       if Reservation.where(id: result).update_all(canceled: true, reason_for_cancellation: reason_for_cancellation, driver_id: nil, driver_manager_id: nil, updated_by: current_user.id, prev: nil, next: nil, updated_at: Time.now)
+        clear_resolved_conflicts(conflicting_peers)
         if is_admin?
           start_date = @reservation.start_time.to_date
           redirect_to reservations_url(start_date: start_date), notice: "Selected Reservation(s) were canceled."

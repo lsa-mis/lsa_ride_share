@@ -167,6 +167,36 @@ RSpec.describe 'Reservation conflicts', type: :request do
         expect(still_conflicting.reload.status).to eq(CONFLICT_STATUS)
       end
     end
+
+    describe 'canceling a conflicting reservation' do
+      let!(:reservation) { build_reservation(14, 16, status: CONFLICT_STATUS, reserved_by: admin_user.id, updated_by: admin_user.id) }
+      let!(:blocking) { build_reservation(14, 16, status: CONFLICT_STATUS) }
+
+      it 'clears the conflict status of the remaining reservation' do
+        get cancel_reservation_path(reservation), params: { reason_for_cancellation: 'No longer needed' }
+
+        expect(response).to have_http_status(302)
+        expect(Reservation.canceled.find(reservation.id).canceled).to be true
+        expect(blocking.reload.status).to be_nil
+      end
+
+      it 'keeps the conflict status of a reservation that still conflicts with another one' do
+        still_conflicting = build_reservation(15, 17, status: CONFLICT_STATUS)
+
+        get cancel_reservation_path(reservation), params: { reason_for_cancellation: 'No longer needed' }
+
+        expect(blocking.reload.status).to eq(CONFLICT_STATUS)
+        expect(still_conflicting.reload.status).to eq(CONFLICT_STATUS)
+      end
+
+      it 'clears the conflict status when canceled through the recurring cancel action' do
+        get cancel_recurring_reservation_path(reservation), params: { cancel_type: 'one', reason_for_cancellation: 'No longer needed' }
+
+        expect(response).to have_http_status(302)
+        expect(Reservation.canceled.find(reservation.id).canceled).to be true
+        expect(blocking.reload.status).to be_nil
+      end
+    end
   end
 
   context 'with student role' do
