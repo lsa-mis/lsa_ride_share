@@ -79,9 +79,11 @@ class RecurringReservation
         end
         next_reservation.prev = prev_reserv.id
         # check if there are start_time..end_time for @reservation.car is available on start_day
-        unless available?(@reservation.car, next_reservation.start_time..next_reservation.end_time)
+        conflicting = conflicting_reservations(@reservation.car, next_reservation.start_time..next_reservation.end_time)
+        if conflicting.present?
           conflict_days_message += show_date_with_month_name(day) + "; "
           next_reservation.status = CONFLICT_STATUS
+          conflicting.each { |reservation| reservation.update(status: CONFLICT_STATUS) }
         end
         next_reservation.save
         if prev_reserv.passengers.present?
@@ -114,9 +116,18 @@ class RecurringReservation
         end_time = combine_day_and_time(day_end, end_time)
         update_params["start_time"] = start_time
         update_params["end_time"] = end_time
+        previously_conflicting = conflicting_reservations(reservation.car, reservation.start_time..reservation.end_time, id).to_a
+        conflicting = conflicting_reservations(reservation.car, start_time..end_time, id)
+        if conflicting.present?
+          update_params["status"] = CONFLICT_STATUS
+          conflicting.each { |conflicting_reservation| conflicting_reservation.update(status: CONFLICT_STATUS) }
+        else
+          update_params["status"] = nil
+        end
         unless reservation.update(update_params)
           alert += "Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". "
         end
+        clear_resolved_conflicts(previously_conflicting - conflicting.to_a)
       end
     end
     return conflict_days_message + alert

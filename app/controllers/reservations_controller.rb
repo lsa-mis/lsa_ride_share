@@ -377,7 +377,6 @@ class ReservationsController < ApplicationController
       end
     else
       flash[:alert] = "There is a conflict with another reservation. Please select different time."
-      @reservation.update(status: CONFLICT_STATUS)
       @program = Program.find(params[:reservation][:program_id])
       @term_id = params[:term_id]
       @sites = @program.sites.order(:title)
@@ -500,7 +499,9 @@ class ReservationsController < ApplicationController
       @reservation.end_time = params[:end_time].to_datetime + 15.minute
       @reservation.number_of_people_on_trip = params[:number_of_people_on_trip]
       # check if updated reservation has conflict with existing resertvations
-      no_conflict = available_edit?(@reservation.id, @reservation.car, @reservation.start_time..@reservation.end_time)
+      previously_conflicting = conflicting_reservations(Car.find_by(id: @reservation.car_id_was), @reservation.start_time_was..@reservation.end_time_was, @reservation.id).to_a
+      conflicting = conflicting_reservations(@reservation.car, @reservation.start_time..@reservation.end_time, @reservation.id)
+      no_conflict = conflicting.blank?
       if no_conflict
         alert = ""
         @reservation.status = nil
@@ -513,7 +514,9 @@ class ReservationsController < ApplicationController
       # for admins - always save && display message about conflict
       # for non admins - save if there is no conflict
       if is_admin? || !is_admin? && no_conflict
+        conflicting.each { |conflicting_reservation| conflicting_reservation.update(status: CONFLICT_STATUS) }
         if @reservation.update(reservation_params)
+          clear_resolved_conflicts(previously_conflicting - conflicting.to_a)
           unless is_admin?
             ReservationMailer.with(reservation: @reservation, user: current_user, recurring: false).car_reservation_updated(admin: true).deliver_now
             @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id).order(created_at: :desc)
