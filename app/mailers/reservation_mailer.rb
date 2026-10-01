@@ -243,7 +243,7 @@ class ReservationMailer < ApplicationMailer
       @subject =  "Recurring Reservation " + subject + " for program: #{@reservation.program.display_name_with_title}"
       @email_type = "recurring_" + type
       @recurring_reservation = RecurringReservation.new(@reservation)
-      @recurring_rule = @recurring_reservation.first_reservation.rule.to_s
+      @recurring_rule = @recurring_reservation.rule.to_s
     else
       @subject = "Reservation " + subject + " for program: #{@reservation.program.display_name_with_title}"
       @email_type = type

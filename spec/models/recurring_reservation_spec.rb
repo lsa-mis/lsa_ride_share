@@ -181,6 +181,41 @@ RSpec.describe RecurringReservation, type: :model do
     end
   end
 
+  describe '#rule' do
+    let!(:reservation_one) { build_reservation(day_one, 10, 12) }
+    let!(:reservation_two) { build_reservation(day_two, 10, 12) }
+    let(:weekly_rule) { IceCube::Rule.weekly.day(:thursday).to_hash }
+
+    before do
+      reservation_one.update_columns(next: reservation_two.id)
+      reservation_two.update_columns(prev: reservation_one.id)
+    end
+
+    it 'uses the rule of a later reservation when the first one lost its rule' do
+      reservation_one.update_columns(recurring: {})
+      reservation_two.update_columns(recurring: weekly_rule)
+
+      expect(RecurringReservation.new(reservation_one.reload).rule.to_s).to eq("Weekly on Thursdays")
+      expect(RecurringReservation.new(reservation_two.reload).rule.to_s).to eq("Weekly on Thursdays")
+    end
+
+    it 'returns nil when no reservation in the chain has a rule' do
+      reservation_one.update_columns(recurring: {})
+      reservation_two.update_columns(recurring: {}, next: Reservation.unscoped.maximum(:id) + 1000)
+
+      expect(RecurringReservation.new(reservation_two.reload).rule).to be_nil
+    end
+  end
+
+  describe '#create_all when the series already exists' do
+    it 'does not create a second series' do
+      head = build_reservation(day_one, 10, 12)
+      head.update_columns(recurring: IceCube::Rule.weekly.day(:thursday).to_hash.merge(until: (day_one + 3.weeks).to_s), next: head.id + 1000)
+
+      expect { RecurringReservation.new(head.reload).create_all }.not_to change(Reservation, :count)
+    end
+  end
+
   describe '#update_this_and_following' do
     let!(:reservation_one) { build_reservation(day_one, 10, 12) }
     let!(:reservation_two) { build_reservation(day_two, 10, 12, prev: reservation_one.id) }

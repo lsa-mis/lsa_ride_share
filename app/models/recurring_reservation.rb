@@ -34,6 +34,18 @@ class RecurringReservation
     current
   end
 
+  # the rule of the first reservation in the chain that has one; a corrupted reservation can lose its rule
+  def rule
+    current = first_reservation
+    visited = []
+    while current.present? && !visited.include?(current.id)
+      return current.rule if current.recurring.present?
+      visited << current.id
+      current = current.next.present? ? Reservation.find_by(id: current.next) : nil
+    end
+    nil
+  end
+
   def prev_reservation
     return false unless @reservation.prev.present?
     Reservation.find(@reservation.prev)
@@ -55,6 +67,8 @@ class RecurringReservation
   def create_all
     conflict_days_message = ""
     failed_days_message = ""
+    # the series was already created for this reservation (e.g. a double submit)
+    return conflict_days_message if @reservation.next.present?
     unless @reservation.recurring.empty?
       start_hour = @reservation.start_time.strftime("%H").to_i
       start_minute = @reservation.start_time.strftime("%M").to_i

@@ -152,6 +152,7 @@ class Reservation < ApplicationRecord
   end
 
   def rule
+    return nil if recurring.blank?
     IceCube::Rule.from_hash recurring
   end
 

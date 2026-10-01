@@ -9,7 +9,7 @@
         </p>
         <p class="body-lg-text ml-2 inline">
           Start on <%= show_date(@reservation.start_time) %>
-          <%= recurring_reservation.first_reservation.rule.to_s %>
+          <%= recurring_reservation.rule.to_s %>
         </p>
       </div>
     <% end %>
