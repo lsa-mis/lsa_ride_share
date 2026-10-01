@@ -79,10 +79,11 @@ class RecurringReservation
           next_reservation.end_time = DateTime.new(day_end.year, day_end.month, day_end.day, end_hour, end_minute, 0, 'EST')
         end
         next_reservation.prev = prev_reserv.id
-        # check if there are start_time..end_time for @reservation.car is available on start_day
-        conflicting = conflicting_reservations(@reservation.car, next_reservation.start_time..next_reservation.end_time).to_a
-        next_reservation.status = conflicting.present? ? CONFLICT_STATUS : nil
+        conflicting = []
         created = Reservation.transaction do
+          lock_car_for_conflict_check(@reservation.car)
+          conflicting = conflicting_reservations(@reservation.car, next_reservation.start_time..next_reservation.end_time).to_a
+          next_reservation.status = conflicting.present? ? CONFLICT_STATUS : nil
           next_reservation.save!
           conflicting.each { |reservation| reservation.update!(status: CONFLICT_STATUS) }
           if prev_reserv.passengers.present?
@@ -123,17 +124,24 @@ class RecurringReservation
     if admin || (!admin && conflict_days_message == "")
       list.each do |id|
         reservation = Reservation.find(id)
-        day_start = reservation.start_time.beginning_of_day
-        day_end = reservation.end_time.beginning_of_day
-        start_time = combine_day_and_time(day_start, start_time)
-        end_time = combine_day_and_time(day_end, end_time)
-        update_params["start_time"] = start_time
-        update_params["end_time"] = end_time
-        previously_conflicting = conflicting_reservations(reservation.car, reservation.start_time..reservation.end_time, id).to_a
-        conflicting = conflicting_reservations(car_changed ? new_car : reservation.car, start_time..end_time, id).to_a
-        update_params["status"] = conflicting.present? ? CONFLICT_STATUS : nil
         failed_record = nil
+        conflict_rejected = false
         Reservation.transaction do
+          lock_car_for_conflict_check(reservation.car, car_changed ? new_car : reservation.car)
+          reservation.reload
+          day_start = reservation.start_time.beginning_of_day
+          day_end = reservation.end_time.beginning_of_day
+          start_time = combine_day_and_time(day_start, start_time)
+          end_time = combine_day_and_time(day_end, end_time)
+          update_params["start_time"] = start_time
+          update_params["end_time"] = end_time
+          previously_conflicting = conflicting_reservations(reservation.car, reservation.start_time..reservation.end_time, id).to_a
+          conflicting = conflicting_reservations(car_changed ? new_car : reservation.car, start_time..end_time, id).to_a
+          if !admin && conflicting.present?
+            conflict_rejected = true
+            raise ActiveRecord::Rollback
+          end
+          update_params["status"] = conflicting.present? ? CONFLICT_STATUS : nil
           reservation.update!(update_params)
           conflicting.each { |conflicting_reservation| conflicting_reservation.update!(status: CONFLICT_STATUS) }
           clear_resolved_conflicts(previously_conflicting - conflicting)
@@ -141,7 +149,9 @@ class RecurringReservation
           failed_record = e.record
           raise ActiveRecord::Rollback
         end
-        if failed_record == reservation
+        if conflict_rejected
+          alert += "Reservation #{id} was not updated: there is a conflict with another reservation on " + show_date_with_month_name(reservation.start_time) + ". "
+        elsif failed_record == reservation
           alert += "Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". "
         elsif failed_record
           alert += "Reservation #{id} was not updated: could not update the conflict status of reservation #{failed_record.id}: " + failed_record.errors.full_messages.join(',') + ". "
@@ -306,24 +316,26 @@ class RecurringReservation
 
   def remove_from_list
     note = ""
-    if prev_reservation && next_reservation
-      unless next_reservation.update(prev: prev_reservation.id)
-        note += " Error removing reservation #{id} from the recurring list: " + reservation.errors.full_messages.join(',') + ". "
+    prev_reserv = prev_reservation
+    next_reserv = next_reservation
+    if prev_reserv && next_reserv
+      unless next_reserv.update(prev: prev_reserv.id)
+        note += " Error removing reservation #{@reservation.id} from the recurring list: " + next_reserv.errors.full_messages.join(',') + ". "
       end
-      unless prev_reservation.update(next: next_reservation.id)
-        note += " Error removing reservation #{id} from the recurring list: " + reservation.errors.full_messages.join(',') + ". "
+      unless prev_reserv.update(next: next_reserv.id)
+        note += " Error removing reservation #{@reservation.id} from the recurring list: " + prev_reserv.errors.full_messages.join(',') + ". "
       end
-    elsif prev_reservation
-      unless prev_reservation.update(next: nil)
-        note += " Error removing reservation #{id} from the recurring list: " + reservation.errors.full_messages.join(',') + ". "
+    elsif prev_reserv
+      unless prev_reserv.update(next: nil)
+        note += " Error removing reservation #{@reservation.id} from the recurring list: " + prev_reserv.errors.full_messages.join(',') + ". "
       end
-    elsif next_reservation
-      unless next_reservation.update(prev: nil)
-        note += " Error removing reservation #{id} from the recurring list: " + reservation.errors.full_messages.join(',') + ". "
+    elsif next_reserv
+      unless next_reserv.update(prev: nil)
+        note += " Error removing reservation #{@reservation.id} from the recurring list: " + next_reserv.errors.full_messages.join(',') + ". "
       end
     end
     unless @reservation.update(recurring: nil, prev: nil, next: nil)
-      note += " Error removing reservation #{id} from the recurring list: " + reservation.errors.full_messages.join(',') + ". "
+      note += " Error removing reservation #{@reservation.id} from the recurring list: " + @reservation.errors.full_messages.join(',') + ". "
     end
     return note
   end

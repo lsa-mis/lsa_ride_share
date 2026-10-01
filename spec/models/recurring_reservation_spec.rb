@@ -97,6 +97,19 @@ RSpec.describe RecurringReservation, type: :model do
       expect(blocking.reload.status).to be_nil
     end
 
+    it 'locks the car before checking each occurrence for conflicts' do
+      first_reservation
+      lock_calls = 0
+      allow(Car).to receive(:lock).and_wrap_original do |original, *args|
+        lock_calls += 1
+        original.call(*args)
+      end
+
+      RecurringReservation.new(first_reservation).create_all
+
+      expect(lock_calls).to eq(2)
+    end
+
     it 'does not flag existing reservations when the conflicting occurrence fails to save' do
       blocking = build_reservation(day_two, 11, 13)
       first_reservation
@@ -225,6 +238,36 @@ RSpec.describe RecurringReservation, type: :model do
       expect(reservation_two.reload.start_time.hour).to eq(9)
       expect(reservation_two.reload.status).to be_nil
       expect(blocking.reload.status).to be_nil
+    end
+
+    it 'locks the old and new cars before loading conflicts for each reservation' do
+      locked_car_ids = []
+      allow(Car).to receive(:lock).and_wrap_original do |original, *args|
+        relation = original.call(*args)
+        allow(relation).to receive(:where).and_wrap_original do |where_original, *where_args|
+          locked_car_ids << where_args.first[:id]
+          where_original.call(*where_args)
+        end
+        relation
+      end
+
+      update_following(14, 16, car_id: other_car.id)
+
+      expect(locked_car_ids).to eq([[car.id, other_car.id].sort] * 2)
+      expect(reservation_two.reload.car_id).to eq(other_car.id)
+    end
+
+    it 'rejects a non admin update when a conflict appears after the precheck' do
+      blocking = build_reservation(day_two, 14, 16)
+      allow_any_instance_of(RecurringReservation).to receive(:conflicts_updating_recurring).and_return('')
+
+      message = update_following(14, 16, admin: false)
+
+      expect(message).to include("Reservation #{reservation_two.id} was not updated: there is a conflict")
+      expect(reservation_two.reload.start_time).to eq(day_time(day_two, 10) - 15.minute)
+      expect(reservation_two.status).to be_nil
+      expect(blocking.reload.status).to be_nil
+      expect(reservation_one.reload.start_time).to eq(day_time(day_one, 14) - 15.minute)
     end
 
     it 'rolls back an occurrence and reports it when a conflicting reservation cannot be flagged' do
