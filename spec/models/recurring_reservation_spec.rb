@@ -155,6 +155,30 @@ RSpec.describe RecurringReservation, type: :model do
       expect(RecurringReservation.new(reservation_one.reload).first_reservation).to eq(reservation_two)
       expect(RecurringReservation.new(reservation_one.reload).last_reservation).to eq(reservation_two)
     end
+
+    it 'does not change the wrapped reservation' do
+      reservation_one.update(next: reservation_two.id)
+      reservation_two.update(prev: reservation_one.id, next: reservation_three.id)
+      reservation_three.update(prev: reservation_two.id)
+      recurring = RecurringReservation.new(reservation_two.reload)
+
+      recurring.first_reservation
+      recurring.last_reservation
+
+      expect(recurring.reservation).to eq(reservation_two)
+      expect(recurring.get_following).to eq([reservation_two.id, reservation_three.id])
+    end
+
+    it 'returns consistent results and terminates on a reciprocal cycle' do
+      reservation_one.update(prev: reservation_two.id, next: reservation_two.id)
+      reservation_two.update(prev: reservation_one.id, next: reservation_one.id)
+      recurring = RecurringReservation.new(reservation_one.reload)
+
+      expect(recurring.first_reservation).to eq(reservation_two)
+      expect(recurring.first_reservation).to eq(reservation_two)
+      expect(recurring.get_all_reservations).to eq([reservation_two.id, reservation_one.id])
+      expect(recurring.get_following).to eq([reservation_one.id, reservation_two.id])
+    end
   end
 
   describe '#update_this_and_following' do

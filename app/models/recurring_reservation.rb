@@ -11,25 +11,27 @@ class RecurringReservation
   end
 
   def first_reservation
-    visited = [@reservation.id]
-    while @reservation.prev.present? && !visited.include?(@reservation.prev)
-      previous_reservation = Reservation.find_by(id: @reservation.prev)
-      break unless previous_reservation&.next == @reservation.id
-      @reservation = previous_reservation
-      visited << @reservation.id
+    current = @reservation
+    visited = [current.id]
+    while current.prev.present? && !visited.include?(current.prev)
+      previous_reservation = Reservation.find_by(id: current.prev)
+      break unless previous_reservation&.next == current.id
+      current = previous_reservation
+      visited << current.id
     end
-    @reservation
+    current
   end
 
   def last_reservation
-    visited = [@reservation.id]
-    while @reservation.next.present? && !visited.include?(@reservation.next)
-      next_reservation = Reservation.find_by(id: @reservation.next)
-      break unless next_reservation&.prev == @reservation.id
-      @reservation = next_reservation
-      visited << @reservation.id
+    current = @reservation
+    visited = [current.id]
+    while current.next.present? && !visited.include?(current.next)
+      next_reservation = Reservation.find_by(id: current.next)
+      break unless next_reservation&.prev == current.id
+      current = next_reservation
+      visited << current.id
     end
-    @reservation
+    current
   end
 
   def prev_reservation
@@ -332,31 +334,22 @@ class RecurringReservation
     if prev_reservation.present?
       prev_reservation.update(next: nil)
     end
-    list = Array(@reservation.id)
-    next_id = @reservation.next
-    until next_id.nil? do
-      reserv = Reservation.find(next_id)
-      list << reserv.id
-      next_id = reserv.next
-    end
-    return list
+    following_ids(@reservation)
   end
 
   def get_following
-    list = Array(@reservation.id)
-    next_id = @reservation.next
-    until next_id.nil? do
-      reserv = Reservation.find(next_id)
-      list << reserv.id
-      next_id = reserv.next
-    end
-    return list
+    following_ids(@reservation)
   end
 
   def get_all_reservations
-    list = Array(first_reservation.id)
-    next_id = first_reservation.next
-    until next_id.nil? do
+    following_ids(first_reservation)
+  end
+
+  # ids of start and every reservation linked after it; stops before revisiting an id
+  def following_ids(start)
+    list = Array(start.id)
+    next_id = start.next
+    until next_id.nil? || list.include?(next_id) do
       reserv = Reservation.find(next_id)
       list << reserv.id
       next_id = reserv.next
