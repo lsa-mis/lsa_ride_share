@@ -66,6 +66,9 @@ jobs:
       - name: Run System tests
         run: bundle exec rspec spec/system/*
 
+      - name: Run Request tests
+        run: bundle exec rspec spec/requests/*
+
       - name: Keep screenshots from failed system tests
         uses: actions/upload-artifact@v5
         if: failure()
