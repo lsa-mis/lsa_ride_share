@@ -98,6 +98,38 @@ RSpec.describe RecurringReservation, type: :model do
     end
   end
 
+  describe '#first_reservation and #last_reservation' do
+    let!(:reservation_one) { build_reservation(day_one, 10, 12) }
+    let!(:reservation_two) { build_reservation(day_two, 10, 12) }
+    let!(:reservation_three) { build_reservation(day_three, 10, 12) }
+    let(:missing_id) { Reservation.unscoped.maximum(:id) + 1000 }
+
+    it 'follows reciprocal links to both ends of the chain' do
+      reservation_one.update(next: reservation_two.id)
+      reservation_two.update(prev: reservation_one.id, next: reservation_three.id)
+      reservation_three.update(prev: reservation_two.id)
+
+      expect(RecurringReservation.new(reservation_two.reload).first_reservation).to eq(reservation_one)
+      expect(RecurringReservation.new(reservation_two.reload).last_reservation).to eq(reservation_three)
+    end
+
+    it 'stops at the current reservation when the linked record is missing' do
+      reservation_two.update(prev: missing_id, next: missing_id)
+
+      expect(RecurringReservation.new(reservation_two.reload).first_reservation).to eq(reservation_two)
+      expect(RecurringReservation.new(reservation_two.reload).last_reservation).to eq(reservation_two)
+    end
+
+    it 'stops at the current reservation when the link is not reciprocal' do
+      reservation_one.update(next: reservation_three.id)
+      reservation_three.update(prev: reservation_one.id)
+      reservation_two.update(prev: reservation_one.id, next: reservation_three.id)
+
+      expect(RecurringReservation.new(reservation_two.reload).first_reservation).to eq(reservation_two)
+      expect(RecurringReservation.new(reservation_two.reload).last_reservation).to eq(reservation_two)
+    end
+  end
+
   describe '#update_this_and_following' do
     let!(:reservation_one) { build_reservation(day_one, 10, 12) }
     let!(:reservation_two) { build_reservation(day_two, 10, 12, prev: reservation_one.id) }
