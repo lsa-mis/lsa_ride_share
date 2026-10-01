@@ -96,6 +96,25 @@ RSpec.describe RecurringReservation, type: :model do
       expect(message).to eq('')
       expect(blocking.reload.status).to be_nil
     end
+
+    it 'does not flag existing reservations when the conflicting occurrence fails to save' do
+      blocking = build_reservation(day_two, 11, 13)
+      first_reservation
+      allow_any_instance_of(Reservation).to receive(:save!).and_wrap_original do |original, *args|
+        record = original.receiver
+        raise ActiveRecord::RecordInvalid.new(record) if record.new_record? && record.start_time.to_date == day_two
+        original.call(*args)
+      end
+
+      message = RecurringReservation.new(first_reservation).create_all
+
+      expect(message).to include('Reservations were not created on')
+      expect(message).not_to include('There are conflicts')
+      expect(blocking.reload.status).to be_nil
+      day_three_reservation = Reservation.where(car: car).find { |r| r.start_time.to_date == day_three }
+      expect(day_three_reservation.prev).to eq(first_reservation.id)
+      expect(first_reservation.reload.next).to eq(day_three_reservation.id)
+    end
   end
 
   describe '#first_reservation and #last_reservation' do
