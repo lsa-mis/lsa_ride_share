@@ -72,6 +72,44 @@ RSpec.describe 'Reservation conflicts', type: :request do
     }
   end
 
+  # overnight reservations start on day and end on next_day
+  let(:next_day) { day + 1.day }
+
+  def time_on(on_day, hour)
+    combine_day_and_time(on_day, format('%02d:00', hour))
+  end
+
+  def build_overnight_reservation(start_hour, end_hour, attrs = {})
+    build_reservation(start_hour, end_hour, {
+      start_time: time_on(day, start_hour) - 15.minute,
+      end_time: time_on(next_day, end_hour) + 15.minute
+    }.merge(attrs))
+  end
+
+  def build_next_day_reservation(start_hour, end_hour, attrs = {})
+    build_reservation(start_hour, end_hour, {
+      start_time: time_on(next_day, start_hour) - 15.minute,
+      end_time: time_on(next_day, end_hour) + 15.minute
+    }.merge(attrs))
+  end
+
+  def update_overnight_reservation(reservation, start_hour, end_hour, car_for_update = car)
+    patch reservation_path(reservation), params: {
+      reservation: {
+        program_id: program.id,
+        site_id: site.id,
+        updated_by: reservation.updated_by
+      },
+      unit_id: unit.id,
+      car_id: car_for_update.id,
+      day_start: day.to_s,
+      day_end: next_day.to_s,
+      start_time: time_on(day, start_hour).to_s,
+      end_time: time_on(next_day, end_hour).to_s,
+      number_of_people_on_trip: 1
+    }
+  end
+
   context 'with admin role' do
     let!(:admin_user) { FactoryBot.create(:user) }
 
@@ -236,6 +274,140 @@ RSpec.describe 'Reservation conflicts', type: :request do
         expect(blocking.reload.status).to be_nil
       end
     end
+
+    describe 'overnight reservations' do
+      def get_available_cars_long(last_day, start_hour, end_hour)
+        get "/reservations/get_available_cars_long/#{unit.id}/#{day}/#{last_day}/1/" \
+          "#{CGI.escape(time_on(day, start_hour).to_s)}/#{CGI.escape(time_on(last_day, end_hour).to_s)}/#{day}",
+          headers: { 'Accept' => 'text/vnd.turbo-stream.html' }
+      end
+
+      [1, 2].each do |nights|
+        it "does not offer a car that is reserved on the last morning of a #{nights} night reservation" do
+          last_day = day + nights.days
+          build_reservation(9, 11, start_time: time_on(last_day, 9) - 15.minute, end_time: time_on(last_day, 11) + 15.minute)
+
+          get_available_cars_long(last_day, 16, 10)
+
+          expect(response).to have_http_status(200)
+          expect(response.body).not_to include(car.car_number)
+          expect(response.body).to include(other_car.car_number)
+        end
+      end
+
+      it 'does not offer a car that is reserved on a day between the first and the last day' do
+        middle_day = day + 2.days
+        build_reservation(10, 12, start_time: time_on(middle_day, 10) - 15.minute, end_time: time_on(middle_day, 12) + 15.minute)
+
+        get_available_cars_long(day + 4.days, 16, 10)
+
+        expect(response.body).not_to include(car.car_number)
+        expect(response.body).to include(other_car.car_number)
+      end
+
+      it 'does not offer a car that is reserved for longer than the whole overnight reservation' do
+        build_reservation(8, 20, start_time: time_on(day, 8) - 15.minute, end_time: time_on(day + 3.days, 20) + 15.minute)
+
+        get_available_cars_long(day + 2.days, 16, 10)
+
+        expect(response.body).not_to include(car.car_number)
+        expect(response.body).to include(other_car.car_number)
+      end
+
+      it 'offers a car that is reserved only after the overnight reservation ends' do
+        build_next_day_reservation(14, 16)
+
+        get_available_cars_long(next_day, 16, 10)
+
+        expect(response.body).to include(car.car_number)
+      end
+
+      it 'does not create an overnight reservation when the car is reserved the next morning' do
+        build_next_day_reservation(9, 11)
+
+        expect do
+          post reservations_path, params: {
+            reservation: { program_id: program.id, site_id: site.id },
+            unit_id: unit.id,
+            car_id: car.id,
+            day_start: day.to_s,
+            day_end: next_day.to_s,
+            start_time: time_on(day, 16).to_s,
+            end_time: time_on(next_day, 10).to_s,
+            number_of_people_on_trip: 1,
+            until_date: day.to_s
+          }
+        end.not_to change(Reservation, :count)
+
+        expect(response).to have_http_status(422)
+        expect(flash[:alert]).to eq('There is a conflict with another reservation. Please select different time.')
+      end
+
+      it 'creates an overnight reservation that ends before the next morning reservation' do
+        build_next_day_reservation(14, 16)
+
+        expect do
+          post reservations_path, params: {
+            reservation: { program_id: program.id, site_id: site.id },
+            unit_id: unit.id,
+            car_id: car.id,
+            day_start: day.to_s,
+            day_end: next_day.to_s,
+            start_time: time_on(day, 16).to_s,
+            end_time: time_on(next_day, 10).to_s,
+            number_of_people_on_trip: 1,
+            until_date: day.to_s
+          }
+        end.to change(Reservation, :count).by(1)
+
+        expect(Reservation.last.status).to be_nil
+      end
+
+      it 'flags both reservations when an overnight update overlaps the next morning reservation' do
+        reservation = build_overnight_reservation(16, 8, reserved_by: admin_user.id, updated_by: admin_user.id)
+        blocking = build_next_day_reservation(11, 13)
+
+        update_overnight_reservation(reservation, 16, 12)
+
+        expect(response).to have_http_status(302)
+        expect(reservation.reload.end_time).to eq(time_on(next_day, 12) + 15.minute)
+        expect(reservation.status).to eq(CONFLICT_STATUS)
+        expect(blocking.reload.status).to eq(CONFLICT_STATUS)
+      end
+
+      it 'flags both reservations when a one day reservation is extended overnight into another reservation' do
+        reservation = build_reservation(14, 16, reserved_by: admin_user.id, updated_by: admin_user.id)
+        blocking = build_next_day_reservation(9, 11)
+
+        update_overnight_reservation(reservation, 14, 10)
+
+        expect(response).to have_http_status(302)
+        expect(reservation.reload.end_time).to eq(time_on(next_day, 10) + 15.minute)
+        expect(reservation.status).to eq(CONFLICT_STATUS)
+        expect(blocking.reload.status).to eq(CONFLICT_STATUS)
+      end
+
+      it 'clears the status of both reservations when the overnight conflict is resolved' do
+        reservation = build_overnight_reservation(16, 12, status: CONFLICT_STATUS, reserved_by: admin_user.id, updated_by: admin_user.id)
+        blocking = build_next_day_reservation(11, 13, status: CONFLICT_STATUS)
+
+        update_overnight_reservation(reservation, 16, 9)
+
+        expect(response).to have_http_status(302)
+        expect(reservation.reload.status).to be_nil
+        expect(blocking.reload.status).to be_nil
+      end
+
+      it 'clears the conflict of the next morning reservation when the overnight reservation is canceled' do
+        reservation = build_overnight_reservation(16, 12, status: CONFLICT_STATUS, reserved_by: admin_user.id, updated_by: admin_user.id)
+        blocking = build_next_day_reservation(11, 13, status: CONFLICT_STATUS)
+
+        get cancel_reservation_path(reservation), params: { reason_for_cancellation: 'No longer needed' }
+
+        expect(response).to have_http_status(302)
+        expect(blocking.reload.status).to be_nil
+      end
+    end
   end
 
   context 'with student role' do
@@ -260,6 +432,19 @@ RSpec.describe 'Reservation conflicts', type: :request do
       expect(reservation.reload.start_time).to eq(day_time(8) - 15.minute)
       expect(reservation.status).to be_nil
       expect(blocking.reload.status).to be_nil
+    end
+
+    it 'does not save an overnight update that overlaps the next morning reservation' do
+      next_morning = build_next_day_reservation(9, 11)
+
+      update_overnight_reservation(reservation, 16, 10)
+
+      expect(response).to have_http_status(422)
+      expect(response.body).to include('End Time Overnight')
+      expect(flash[:alert]).to include('Please select a different time or ask admins to edit the reservation')
+      expect(reservation.reload.end_time).to eq(day_time(9) + 15.minute)
+      expect(reservation.status).to be_nil
+      expect(next_morning.reload.status).to be_nil
     end
 
     it 'saves the reservation when there is no conflict' do

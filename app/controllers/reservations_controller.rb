@@ -283,22 +283,8 @@ class ReservationsController < ApplicationController
     if params[:number].present?
       @cars = @cars.where("number_of_seats >= ?", params[:number]).order(:car_number)
     end
-    if (@day_end.to_date - @day_start.to_date).to_i > 1
-
-      cars_reservations = Reservation.where(car_id: @cars)
-      day_start_beginning = unit_beginning_of_day(@day_start, @unit_id) - 15.minute
-      day_start_finish = unit_end_of_day(@day_start, @unit_id) + 15.minute
-
-      day_end_beginning = unit_beginning_of_day(@day_end, @unit_id) - 15.minute
-      day_end_finish = unit_end_of_day(@day_end, @unit_id) + 15.minute
-
-      long_reservations = cars_reservations.where("start_time < ? AND end_time > ?", day_start_finish, day_end_beginning).pluck(:car_id)
-      between_reservations = cars_reservations.where(start_time: (day_start_beginning + 1.day).., end_time: ..(day_end_finish - 1.day)).pluck(:car_id)
-      day_start_reservations = cars_reservations.where(start_time: day_start_beginning..day_start_finish, end_time: day_start_finish - 30.minute..day_start_finish).pluck(:car_id)
-      day_end_reservations = cars_reservations.where(start_time: day_end_beginning..day_end_beginning + 30.minute, end_time: day_end_beginning..day_end_finish).pluck(:car_id)
-      exclude_cars = (between_reservations + day_start_reservations + day_end_reservations + long_reservations).uniq
-      @cars = @cars.where.not(id: exclude_cars)
-    end
+    # same range (with 15 minutes before and after) that create checks for conflicts
+    @cars = available_cars(@cars, (@start_time.to_datetime - 15.minute)..(@end_time.to_datetime + 15.minute))
     if params[:until_date].present?
       @until_date = params[:until_date]
     else

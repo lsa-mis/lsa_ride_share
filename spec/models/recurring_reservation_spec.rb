@@ -266,4 +266,97 @@ RSpec.describe RecurringReservation, type: :model do
       expect(blocking.reload.status).to be_nil
     end
   end
+
+  describe 'overnight recurring reservations' do
+    let(:day_four) { day_one + 3.days }
+
+    # starts on day at start_hour and ends on the following day at end_hour
+    def build_overnight_reservation(day, start_hour, end_hour, attrs = {})
+      build_reservation(day, start_hour, end_hour, {
+        start_time: day_time(day, start_hour) - 15.minute,
+        end_time: day_time(day + 1.day, end_hour) + 15.minute
+      }.merge(attrs))
+    end
+
+    describe '#create_all' do
+      let(:first_reservation) do
+        build_overnight_reservation(
+          day_one, 18, 8,
+          recurring: { 'validations' => {}, 'rule_type' => 'IceCube::DailyRule', 'interval' => 2, 'count' => 2 },
+          until_date: day_three
+        )
+      end
+
+      it 'creates the following overnight reservations ending on the next day' do
+        message = RecurringReservation.new(first_reservation).create_all
+
+        following = Reservation.find_by(prev: first_reservation.id)
+        expect(message).to eq('')
+        expect(following.start_time).to eq(day_time(day_three, 18) - 15.minute)
+        expect(following.end_time).to eq(day_time(day_four, 8) + 15.minute)
+        expect(following.status).to be_nil
+      end
+
+      it 'flags the following overnight reservation and the next morning reservation it conflicts with' do
+        next_morning = build_reservation(day_four, 7, 9)
+
+        message = RecurringReservation.new(first_reservation).create_all
+
+        following = Reservation.find_by(prev: first_reservation.id)
+        expect(message).to include('There are conflicts with other reservations on')
+        expect(following.status).to eq(CONFLICT_STATUS)
+        expect(next_morning.reload.status).to eq(CONFLICT_STATUS)
+        expect(first_reservation.reload.status).to be_nil
+      end
+    end
+
+    describe '#update_this_and_following' do
+      let!(:reservation_one) { build_overnight_reservation(day_one, 18, 8) }
+      let!(:reservation_two) { build_overnight_reservation(day_three, 18, 8, prev: reservation_one.id) }
+
+      before do
+        reservation_one.update(next: reservation_two.id)
+      end
+
+      def update_following(start_hour, end_hour, admin: true)
+        RecurringReservation.new(reservation_one.reload).update_this_and_following(
+          { 'site_id' => site.id, 'updated_by' => user.id, 'car_id' => car.id, 'number_of_people_on_trip' => 1 },
+          day_time(day_one, start_hour) - 15.minute,
+          day_time(day_two, end_hour) + 15.minute,
+          admin
+        )
+      end
+
+      it 'keeps the overnight end day and flags the reservation it now conflicts with the next morning' do
+        next_morning = build_reservation(day_four, 9, 11)
+
+        update_following(18, 10)
+
+        expect(reservation_two.reload.end_time).to eq(day_time(day_four, 10) + 15.minute)
+        expect(reservation_two.status).to eq(CONFLICT_STATUS)
+        expect(next_morning.reload.status).to eq(CONFLICT_STATUS)
+        expect(reservation_one.reload.status).to be_nil
+      end
+
+      it 'clears the conflict of the next morning reservation when the overnight reservations end earlier' do
+        next_morning = build_reservation(day_four, 9, 11)
+        update_following(18, 10)
+        expect(next_morning.reload.status).to eq(CONFLICT_STATUS)
+
+        update_following(18, 8)
+
+        expect(reservation_two.reload.status).to be_nil
+        expect(next_morning.reload.status).to be_nil
+      end
+
+      it 'does not update the overnight reservations for non admins when there is a conflict' do
+        build_reservation(day_four, 9, 11)
+
+        message = update_following(18, 10, admin: false)
+
+        expect(message).to include('There are conflicts with other reservations on')
+        expect(reservation_two.reload.end_time).to eq(day_time(day_four, 8) + 15.minute)
+      end
+    end
+  end
 end
