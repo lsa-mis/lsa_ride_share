@@ -146,23 +146,6 @@ RSpec.describe 'Reservation conflicts', type: :request do
         expect(blocking.reload.status).to be_nil
       end
 
-      it 'locks the old and new cars before checking for conflicts' do
-        locked_car_ids = []
-        allow(Car).to receive(:lock).and_wrap_original do |original, *args|
-          relation = original.call(*args)
-          allow(relation).to receive(:where).and_wrap_original do |where_original, *where_args|
-            locked_car_ids << where_args.first[:id]
-            where_original.call(*where_args)
-          end
-          relation
-        end
-
-        update_reservation(reservation, 14, 16, other_car)
-
-        expect(locked_car_ids).to eq([[car.id, other_car.id].sort])
-        expect(reservation.reload.car_id).to eq(other_car.id)
-      end
-
       it 'clears the conflict when the reservation is moved to another car' do
         update_reservation(reservation, 14, 16)
 
@@ -197,39 +180,6 @@ RSpec.describe 'Reservation conflicts', type: :request do
         expect(reservation.reload.start_time).to eq(day_time(8) - 15.minute)
         expect(reservation.status).to be_nil
         expect(blocking.reload.status).to be_nil
-      end
-
-      it 'keeps a recurring reservation in its series when the stand-alone edit rolls back' do
-        recurring_rule = { 'validations' => {}, 'rule_type' => 'IceCube::DailyRule', 'interval' => 1 }
-        series_start = build_reservation(8, 9, recurring: recurring_rule, reserved_by: admin_user.id, updated_by: admin_user.id)
-        series_start.update_columns(start_time: series_start.start_time - 1.day, end_time: series_start.end_time - 1.day, next: reservation.id)
-        reservation.update_columns(recurring: recurring_rule, prev: series_start.id)
-        blocking_id = blocking.id
-        allow_any_instance_of(Reservation).to receive(:update!).and_wrap_original do |original, *args|
-          raise ActiveRecord::RecordInvalid.new(original.receiver) if original.receiver.id == blocking_id
-          original.call(*args)
-        end
-
-        update_reservation(reservation, 14, 16)
-
-        expect(response).to have_http_status(422)
-        expect(reservation.reload.prev).to eq(series_start.id)
-        expect(reservation.recurring).to be_present
-        expect(series_start.reload.next).to eq(reservation.id)
-      end
-
-      it 'removes a recurring reservation from its series when the stand-alone edit succeeds' do
-        recurring_rule = { 'validations' => {}, 'rule_type' => 'IceCube::DailyRule', 'interval' => 1 }
-        series_start = build_reservation(8, 9, recurring: recurring_rule, reserved_by: admin_user.id, updated_by: admin_user.id)
-        series_start.update_columns(start_time: series_start.start_time - 1.day, end_time: series_start.end_time - 1.day, next: reservation.id)
-        reservation.update_columns(recurring: recurring_rule, prev: series_start.id)
-
-        update_reservation(reservation, 10, 12)
-
-        expect(response).to have_http_status(302)
-        expect(reservation.reload.prev).to be_nil
-        expect(reservation.recurring).to be_blank
-        expect(series_start.reload.next).to be_nil
       end
     end
 

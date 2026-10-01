@@ -564,13 +564,6 @@ module ApplicationHelper
     conflicts
   end
 
-  # serializes conflict check + write per car; must be called inside a transaction
-  def lock_car_for_conflict_check(*cars)
-    car_ids = cars.compact.map(&:id).uniq.sort
-    # lock in id order so concurrent multi-car locks cannot deadlock
-    Car.lock.where(id: car_ids).order(:id).to_a if car_ids.present?
-  end
-
   def clear_resolved_conflicts(reservations)
     reservations.each do |reservation|
       reservation.reload

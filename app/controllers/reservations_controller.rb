@@ -482,57 +482,75 @@ class ReservationsController < ApplicationController
         end
       end
     else
-      # edit recurring reservation as stand-alone; it is removed from the recurring list inside the save transaction
-      unlink_from_series = @reservation.recurring.present?
+      if @reservation.recurring.present?
+        # edit recurring reservation as stahd-alone; remotve it from the list of recurring reservations
+        recurring_reservation = RecurringReservation.new(@reservation)
+        alert = recurring_reservation.remove_from_list
+        if alert == ""
+          notice = " Reservation was removed from the list of recurring reservations."
+        else
+          redirect_to reservation_path(@reservation), alert: "Reservation was not updated." + alert
+          return
+        end
+      end
       @reservation.attributes = reservation_params
       @reservation.car_id = params[:car_id]
       @reservation.start_time = params[:start_time].to_datetime - 15.minute
       @reservation.end_time = params[:end_time].to_datetime + 15.minute
       @reservation.number_of_people_on_trip = params[:number_of_people_on_trip]
-      old_car = Car.find_by(id: @reservation.car_id_was)
-      old_range = @reservation.start_time_was..@reservation.end_time_was
-      alert = ""
-      conflict_rejected = false
-      # admins always save and see a conflict message; non admins save only if there is no conflict
-      saved = Reservation.transaction do
-        lock_car_for_conflict_check(old_car, @reservation.car)
-        previously_conflicting = conflicting_reservations(old_car, old_range, @reservation.id).to_a
-        conflicting = conflicting_reservations(@reservation.car, @reservation.start_time..@reservation.end_time, @reservation.id).to_a
-        if conflicting.blank?
-          @reservation.status = nil
-        elsif is_admin?
-          alert = " There is a conflict with another reservation on " + show_date_with_month_name(@reservation.start_time) + "."
-          @reservation.status = CONFLICT_STATUS
-        else
-          alert = " There is a conflict with another reservation on " + show_date_with_month_name(@reservation.start_time) + ". Please select a different time or ask admins to edit the reservation."
-          conflict_rejected = true
+      # check if updated reservation has conflict with existing resertvations
+      previously_conflicting = conflicting_reservations(Car.find_by(id: @reservation.car_id_was), @reservation.start_time_was..@reservation.end_time_was, @reservation.id).to_a
+      conflicting = conflicting_reservations(@reservation.car, @reservation.start_time..@reservation.end_time, @reservation.id)
+      no_conflict = conflicting.blank?
+      if no_conflict
+        alert = ""
+        @reservation.status = nil
+      elsif !no_conflict && is_admin?
+        alert = " There is a conflict with another reservation on " + show_date_with_month_name(@reservation.start_time) + "."
+        @reservation.status = CONFLICT_STATUS
+      else
+        alert = " There is a conflict with another reservation on " + show_date_with_month_name(@reservation.start_time) + ". Please select a different time or ask admins to edit the reservation."
+      end
+      # for admins - always save && display message about conflict
+      # for non admins - save if there is no conflict
+      if is_admin? || !is_admin? && no_conflict
+        saved = Reservation.transaction do
+          @reservation.save!
+          conflicting.each { |conflicting_reservation| conflicting_reservation.update!(status: CONFLICT_STATUS) }
+          clear_resolved_conflicts(previously_conflicting - conflicting.to_a)
+          true
+        rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved => e
+          unless e.record == @reservation
+            @reservation.errors.add(:base, "Could not update the conflict status of reservation #{e.record.id}: " + e.record.errors.full_messages.join(', '))
+          end
           raise ActiveRecord::Rollback
         end
-        if unlink_from_series
-          unlink_alert = RecurringReservation.new(@reservation).remove_from_list
-          if unlink_alert.present?
-            @reservation.errors.add(:base, "Reservation was not removed from the list of recurring reservations." + unlink_alert)
-            raise ActiveRecord::Rollback
+        if saved
+          unless is_admin?
+            ReservationMailer.with(reservation: @reservation, user: current_user, recurring: false).car_reservation_updated(admin: true).deliver_now
+            @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id).order(created_at: :desc)
+          end
+          redirect_to reservation_path(@reservation), notice: "Reservation was successfully updated." + notice, alert: alert
+        else
+          @programs = Program.includes(:term, :courses).where(unit_id: session[:unit_ids]).order(:title, :catalog_number, :class_section)
+          @number_of_seats = 1..Car.available.maximum(:number_of_seats)
+          @number_of_people_on_trip = Reservation.find(params[:id]).number_of_people_on_trip
+          @day_start = params[:day_start].to_date
+          @unit_id = params[:unit_id]
+          @cars = Car.available.where(unit_id: @unit_id).order(:car_number)
+          @sites = @reservation.program.sites
+          @car_id = @reservation.car_id
+          @start_time = params[:start_time]
+          @end_time = params[:end_time]
+          if params[:day_end].present?
+            @day_end = params[:day_end].to_date
+            render :edit_long, status: :unprocessable_entity
+          else 
+            render :edit, status: :unprocessable_entity
           end
         end
-        @reservation.save!
-        conflicting.each { |conflicting_reservation| conflicting_reservation.update!(status: CONFLICT_STATUS) }
-        clear_resolved_conflicts(previously_conflicting - conflicting)
-        true
-      rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved => e
-        unless e.record == @reservation
-          @reservation.errors.add(:base, "Could not update the conflict status of reservation #{e.record.id}: " + e.record.errors.full_messages.join(', '))
-        end
-        raise ActiveRecord::Rollback
-      end
-      if saved
-        notice = " Reservation was removed from the list of recurring reservations." if unlink_from_series
-        unless is_admin?
-          ReservationMailer.with(reservation: @reservation, user: current_user, recurring: false).car_reservation_updated(admin: true).deliver_now
-          @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id).order(created_at: :desc)
-        end
-        redirect_to reservation_path(@reservation), notice: "Reservation was successfully updated." + notice, alert: alert
       else
+        # for students and managers - don't save if there is a conflict
         @programs = Program.includes(:term, :courses).where(unit_id: session[:unit_ids]).order(:title, :catalog_number, :class_section)
         @number_of_seats = 1..Car.available.maximum(:number_of_seats)
         @number_of_people_on_trip = Reservation.find(params[:id]).number_of_people_on_trip
@@ -543,13 +561,14 @@ class ReservationsController < ApplicationController
         @car_id = @reservation.car_id
         @start_time = params[:start_time]
         @end_time = params[:end_time]
-        flash.now[:alert] = alert if conflict_rejected
+        flash.now[:alert] = alert
         if params[:day_end].present?
           @day_end = params[:day_end].to_date
           render :edit_long, status: :unprocessable_entity
         else 
           render :edit, status: :unprocessable_entity
         end
+        return
       end
     end
   end
