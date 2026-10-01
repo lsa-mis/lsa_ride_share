@@ -242,7 +242,7 @@ RSpec.describe 'Reservation conflicts', type: :request do
           end_time: (day_time(16) + 15.minute).to_s
         },
         unit_id: unit.id,
-        car_id: car.id,
+        car_id: other_car.id,
         day_start: day.to_s,
         start_time: day_time(10).to_s,
         end_time: day_time(12).to_s,
@@ -250,7 +250,8 @@ RSpec.describe 'Reservation conflicts', type: :request do
       }
 
       expect(response).to have_http_status(302)
-      expect(reservation.reload.start_time).to eq(day_time(10) - 15.minute)
+      expect(reservation.reload.car_id).to eq(other_car.id)
+      expect(reservation.start_time).to eq(day_time(10) - 15.minute)
       expect(reservation.end_time).to eq(day_time(12) + 15.minute)
       expect(blocking.reload.status).to be_nil
     end
