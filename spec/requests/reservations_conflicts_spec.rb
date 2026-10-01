@@ -166,6 +166,21 @@ RSpec.describe 'Reservation conflicts', type: :request do
         expect(blocking.reload.status).to eq(CONFLICT_STATUS)
         expect(still_conflicting.reload.status).to eq(CONFLICT_STATUS)
       end
+
+      it 'rolls back the update when a conflicting reservation cannot be flagged' do
+        blocking_id = blocking.id
+        allow_any_instance_of(Reservation).to receive(:update!).and_wrap_original do |original, *args|
+          raise ActiveRecord::RecordInvalid.new(original.receiver) if original.receiver.id == blocking_id
+          original.call(*args)
+        end
+
+        update_reservation(reservation, 14, 16)
+
+        expect(response).to have_http_status(422)
+        expect(reservation.reload.start_time).to eq(day_time(8) - 15.minute)
+        expect(reservation.status).to be_nil
+        expect(blocking.reload.status).to be_nil
+      end
     end
 
     describe 'canceling a conflicting reservation' do

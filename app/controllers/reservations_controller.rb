@@ -514,9 +514,18 @@ class ReservationsController < ApplicationController
       # for admins - always save && display message about conflict
       # for non admins - save if there is no conflict
       if is_admin? || !is_admin? && no_conflict
-        if @reservation.save
-          conflicting.each { |conflicting_reservation| conflicting_reservation.update(status: CONFLICT_STATUS) }
+        saved = Reservation.transaction do
+          @reservation.save!
+          conflicting.each { |conflicting_reservation| conflicting_reservation.update!(status: CONFLICT_STATUS) }
           clear_resolved_conflicts(previously_conflicting - conflicting.to_a)
+          true
+        rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved => e
+          unless e.record == @reservation
+            @reservation.errors.add(:base, "Could not update the conflict status of reservation #{e.record.id}: " + e.record.errors.full_messages.join(', '))
+          end
+          raise ActiveRecord::Rollback
+        end
+        if saved
           unless is_admin?
             ReservationMailer.with(reservation: @reservation, user: current_user, recurring: false).car_reservation_updated(admin: true).deliver_now
             @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id).order(created_at: :desc)
