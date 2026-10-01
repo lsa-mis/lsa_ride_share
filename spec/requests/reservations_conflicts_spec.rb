@@ -195,6 +195,17 @@ RSpec.describe 'Reservation conflicts', type: :request do
         expect(blocking.reload.status).to be_nil
       end
 
+      it 'clears the conflict status even when the remaining reservation fails unrelated validations' do
+        blocking_id = blocking.id
+        allow_any_instance_of(Reservation).to receive(:valid?).and_wrap_original do |original, *args|
+          original.receiver.id == blocking_id ? false : original.call(*args)
+        end
+
+        get cancel_reservation_path(reservation), params: { reason_for_cancellation: 'No longer needed' }
+
+        expect(blocking.reload.status).to be_nil
+      end
+
       it 'keeps the conflict status of a reservation that still conflicts with another one' do
         still_conflicting = build_reservation(15, 17, status: CONFLICT_STATUS)
 

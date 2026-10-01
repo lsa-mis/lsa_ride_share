@@ -227,6 +227,23 @@ RSpec.describe RecurringReservation, type: :model do
       expect(blocking.reload.status).to be_nil
     end
 
+    it 'rolls back an occurrence and reports it when a conflicting reservation cannot be flagged' do
+      blocking = build_reservation(day_two, 14, 16)
+      blocking_id = blocking.id
+      allow_any_instance_of(Reservation).to receive(:update!).and_wrap_original do |original, *args|
+        raise ActiveRecord::RecordInvalid.new(original.receiver) if original.receiver.id == blocking_id
+        original.call(*args)
+      end
+
+      message = update_following(14, 16)
+
+      expect(message).to include("Reservation #{reservation_two.id} was not updated")
+      expect(reservation_two.reload.start_time).to eq(day_time(day_two, 10) - 15.minute)
+      expect(reservation_two.status).to be_nil
+      expect(blocking.reload.status).to be_nil
+      expect(reservation_one.reload.start_time).to eq(day_time(day_one, 14) - 15.minute)
+    end
+
     it 'lets non admins remove the car even when the old car is taken at the new time' do
       build_reservation(day_two, 14, 16)
 

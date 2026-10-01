@@ -130,13 +130,21 @@ class RecurringReservation
         update_params["start_time"] = start_time
         update_params["end_time"] = end_time
         previously_conflicting = conflicting_reservations(reservation.car, reservation.start_time..reservation.end_time, id).to_a
-        conflicting = conflicting_reservations(car_changed ? new_car : reservation.car, start_time..end_time, id)
+        conflicting = conflicting_reservations(car_changed ? new_car : reservation.car, start_time..end_time, id).to_a
         update_params["status"] = conflicting.present? ? CONFLICT_STATUS : nil
-        if reservation.update(update_params)
-          conflicting.each { |conflicting_reservation| conflicting_reservation.update(status: CONFLICT_STATUS) }
-          clear_resolved_conflicts(previously_conflicting - conflicting.to_a)
-        else
+        failed_record = nil
+        Reservation.transaction do
+          reservation.update!(update_params)
+          conflicting.each { |conflicting_reservation| conflicting_reservation.update!(status: CONFLICT_STATUS) }
+          clear_resolved_conflicts(previously_conflicting - conflicting)
+        rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved => e
+          failed_record = e.record
+          raise ActiveRecord::Rollback
+        end
+        if failed_record == reservation
           alert += "Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". "
+        elsif failed_record
+          alert += "Reservation #{id} was not updated: could not update the conflict status of reservation #{failed_record.id}: " + failed_record.errors.full_messages.join(',') + ". "
         end
       end
     end

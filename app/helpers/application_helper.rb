@@ -569,7 +569,8 @@ module ApplicationHelper
       reservation.reload
       next unless reservation.status == CONFLICT_STATUS
       next if conflicting_reservations(reservation.car, reservation.start_time..reservation.end_time, reservation.id).present?
-      reservation.update(status: nil)
+      # status is derived from overlaps, so unrelated validations must not block clearing it
+      reservation.update_columns(status: nil)
     end
   end
 
