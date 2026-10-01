@@ -1,9 +1,9 @@
 class ReservationsController < ApplicationController
   before_action :auth_user
   before_action :set_calendar_reservations, only: %i[ index week_calendar ]
-  before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger 
-    finish_reservation update_passengers send_reservation_updated_email cancel_reason cancel_reservation cancel_recurring_reservation 
-    add_drivers_later approve_all_recurring edit_long add_edit_drivers get_drivers_list]
+  before_action :set_reservation, only: %i[ show edit update
+    finish_reservation update_passengers send_reservation_updated_email cancel_reason cancel_reservation cancel_recurring_reservation
+    add_drivers_later approve_all_recurring edit_long ]
   before_action :set_terms_and_units
   before_action :set_programs
   before_action :set_cars, only: %i[ new new_long get_available_cars get_available_cars_long ]
