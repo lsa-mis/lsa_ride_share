@@ -429,7 +429,9 @@ class ReservationsController < ApplicationController
   def update
     notice = ""
     if params[:reservation][:approved].present?
-      if @reservation.update(reservation_params)
+      # drivers can update their reservations, but only admins can approve them
+      authorize @reservation, :approve?
+      if @reservation.update(approve_params)
         ReservationMailer.with(reservation: @reservation, user: current_user).car_reservation_approved.deliver_now unless @reservation.approved == false
         redirect_to reservation_path(@reservation), notice: "Reservation was updated."
         return
@@ -594,9 +596,9 @@ class ReservationsController < ApplicationController
       if params[:recurring] == "true"
         recurring_reservation = RecurringReservation.new(@reservation)
         reservations_to_update = recurring_reservation.get_following
-        Reservation.where(id: reservations_to_update).update_all(reservation_params.to_h)
+        Reservation.where(id: reservations_to_update).update_all(non_uofm_passengers_params.to_h)
       else
-        @reservation.update(reservation_params)
+        @reservation.update(non_uofm_passengers_params)
       end
       @reservation = Reservation.find(params[:reservation_id])
       @passengers = @reservation.passengers
@@ -929,5 +931,15 @@ class ReservationsController < ApplicationController
     def reservation_params
       params.require(:reservation).permit(:status, :start_time, :end_time, :recurring, :driver_id, :driver_manager_id, :driver_phone,
       :number_of_people_on_trip, :program_id, :site_id, :car_id, :reserved_by, :approved, :non_uofm_passengers, :number_of_non_uofm_passengers, :until_date, :updated_by, :reason_for_cancellation)
+    end
+
+    # the approve switch on the reservation page must not change car, time or other attributes
+    def approve_params
+      params.require(:reservation).permit(:approved)
+    end
+
+    # adding non UofM passengers must not change car, time or other attributes
+    def non_uofm_passengers_params
+      params.require(:reservation).permit(:number_of_non_uofm_passengers, :non_uofm_passengers)
     end
 end
