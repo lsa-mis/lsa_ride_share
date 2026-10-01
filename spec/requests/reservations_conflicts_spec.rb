@@ -126,6 +126,19 @@ RSpec.describe 'Reservation conflicts', type: :request do
       let!(:reservation) { build_reservation(8, 9, reserved_by: admin_user.id, updated_by: admin_user.id) }
       let!(:blocking) { build_reservation(14, 16) }
 
+      it 'approves the reservation without changing other attributes through the approve switch' do
+        reservation.update_columns(driver_id: FactoryBot.create(:student, program: program).id)
+        patch reservation_path(reservation), params: { reservation: {
+          approved: '1', car_id: other_car.id,
+          start_time: (day_time(14) - 15.minute).to_s, end_time: (day_time(16) + 15.minute).to_s
+        } }
+
+        expect(response).to have_http_status(302)
+        expect(reservation.reload.approved).to be(true)
+        expect(reservation.car_id).to eq(car.id)
+        expect(reservation.start_time).to eq(day_time(8) - 15.minute)
+      end
+
       it 'saves the reservation and flags both reservations when the update creates a conflict' do
         update_reservation(reservation, 14, 16)
 
@@ -307,6 +320,46 @@ RSpec.describe 'Reservation conflicts', type: :request do
       patch add_non_uofm_passengers_path(reservation), params: { reservation: { canceled: true } }, as: :turbo_stream
 
       expect(Reservation.find_by(id: reservation.id)).to be_present
+    end
+
+    it 'does not let the driver approve the reservation' do
+      patch reservation_path(reservation), params: { reservation: { approved: '1' } }
+
+      expect(response).to have_http_status(302)
+      expect(flash[:alert]).to eq('You are not authorized to perform this action.')
+      expect(reservation.reload.approved).to be_falsey
+    end
+
+    it 'does not move the reservation into a taken slot through the approve branch of the update action' do
+      patch reservation_path(reservation), params: { reservation: {
+        approved: 'false', car_id: car.id, status: nil,
+        start_time: (day_time(14) - 15.minute).to_s, end_time: (day_time(16) + 15.minute).to_s
+      } }
+
+      expect(reservation.reload.start_time).to eq(day_time(8) - 15.minute)
+      expect(reservation.end_time).to eq(day_time(9) + 15.minute)
+      expect(blocking.reload.status).to be_nil
+    end
+
+    it 'does not move the reservation into a taken slot through add_non_uofm_passengers' do
+      patch add_non_uofm_passengers_path(reservation), params: { reservation: {
+        car_id: other_car.id,
+        start_time: (day_time(14) - 15.minute).to_s, end_time: (day_time(16) + 15.minute).to_s
+      } }, as: :turbo_stream
+
+      expect(reservation.reload.car_id).to eq(car.id)
+      expect(reservation.start_time).to eq(day_time(8) - 15.minute)
+      expect(reservation.end_time).to eq(day_time(9) + 15.minute)
+      expect(blocking.reload.status).to be_nil
+    end
+
+    it 'saves non UofM passengers through add_non_uofm_passengers' do
+      patch add_non_uofm_passengers_path(reservation), params: { reservation: {
+        number_of_non_uofm_passengers: 1, non_uofm_passengers: 'Jane Doe'
+      } }, as: :turbo_stream
+
+      expect(reservation.reload.number_of_non_uofm_passengers).to eq(1)
+      expect(reservation.non_uofm_passengers).to eq('Jane Doe')
     end
 
     it 'cancels the reservation through the cancel_reservation action' do
