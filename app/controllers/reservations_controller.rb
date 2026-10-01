@@ -925,8 +925,9 @@ class ReservationsController < ApplicationController
     end
 
     # Only allow a list of trusted parameters through.
+    # :canceled is not permitted - reservations are canceled only by cancel_reservation and cancel_recurring_reservation
     def reservation_params
-      params.require(:reservation).permit(:status, :start_time, :end_time, :recurring, :driver_id, :driver_manager_id, :driver_phone, 
-      :number_of_people_on_trip, :program_id, :site_id, :car_id, :reserved_by, :approved, :non_uofm_passengers, :number_of_non_uofm_passengers, :until_date, :updated_by, :canceled, :reason_for_cancellation)
+      params.require(:reservation).permit(:status, :start_time, :end_time, :recurring, :driver_id, :driver_manager_id, :driver_phone,
+      :number_of_people_on_trip, :program_id, :site_id, :car_id, :reserved_by, :approved, :non_uofm_passengers, :number_of_non_uofm_passengers, :until_date, :updated_by, :reason_for_cancellation)
     end
 end

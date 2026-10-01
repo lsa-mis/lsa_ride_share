@@ -281,5 +281,39 @@ RSpec.describe 'Reservation conflicts', type: :request do
       expect(reservation.end_time).to eq(day_time(12) + 15.minute)
       expect(blocking.reload.status).to be_nil
     end
+
+    it 'does not cancel the reservation through the update action' do
+      update_reservation_params = {
+        reservation: { program_id: program.id, site_id: site.id, updated_by: student_user.id, canceled: true },
+        unit_id: unit.id,
+        car_id: car.id,
+        day_start: day.to_s,
+        start_time: day_time(8).to_s,
+        end_time: day_time(9).to_s,
+        number_of_people_on_trip: 1
+      }
+      patch reservation_path(reservation), params: update_reservation_params
+
+      expect(Reservation.find_by(id: reservation.id)).to be_present
+    end
+
+    it 'does not cancel the reservation through the approve branch of the update action' do
+      patch reservation_path(reservation), params: { reservation: { approved: 'false', canceled: true } }
+
+      expect(Reservation.find_by(id: reservation.id)).to be_present
+    end
+
+    it 'does not cancel the reservation through add_non_uofm_passengers' do
+      patch add_non_uofm_passengers_path(reservation), params: { reservation: { canceled: true } }, as: :turbo_stream
+
+      expect(Reservation.find_by(id: reservation.id)).to be_present
+    end
+
+    it 'cancels the reservation through the cancel_reservation action' do
+      get cancel_reservation_path(reservation), params: { reason_for_cancellation: 'not needed' }
+
+      expect(Reservation.find_by(id: reservation.id)).to be_nil
+      expect(Reservation.canceled.find(reservation.id).reason_for_cancellation).to eq('not needed')
+    end
   end
 end
