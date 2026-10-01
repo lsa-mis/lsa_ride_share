@@ -11,23 +11,23 @@ class RecurringReservation
   end
 
   def first_reservation
-    if @reservation.prev.present?
+    visited = [@reservation.id]
+    while @reservation.prev.present? && !visited.include?(@reservation.prev)
       previous_reservation = Reservation.find_by(id: @reservation.prev)
-      if previous_reservation&.next == @reservation.id
-        @reservation = previous_reservation
-        return first_reservation
-      end
+      break unless previous_reservation&.next == @reservation.id
+      @reservation = previous_reservation
+      visited << @reservation.id
     end
     @reservation
   end
 
   def last_reservation
-    if @reservation.next.present?
+    visited = [@reservation.id]
+    while @reservation.next.present? && !visited.include?(@reservation.next)
       next_reservation = Reservation.find_by(id: @reservation.next)
-      if next_reservation&.prev == @reservation.id
-        @reservation = next_reservation
-        return last_reservation
-      end
+      break unless next_reservation&.prev == @reservation.id
+      @reservation = next_reservation
+      visited << @reservation.id
     end
     @reservation
   end

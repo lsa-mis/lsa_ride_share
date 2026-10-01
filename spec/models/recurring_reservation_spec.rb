@@ -147,6 +147,14 @@ RSpec.describe RecurringReservation, type: :model do
       expect(RecurringReservation.new(reservation_two.reload).first_reservation).to eq(reservation_two)
       expect(RecurringReservation.new(reservation_two.reload).last_reservation).to eq(reservation_two)
     end
+
+    it 'stops before revisiting a reservation when reciprocal links form a cycle' do
+      reservation_one.update(prev: reservation_two.id, next: reservation_two.id)
+      reservation_two.update(prev: reservation_one.id, next: reservation_one.id)
+
+      expect(RecurringReservation.new(reservation_one.reload).first_reservation).to eq(reservation_two)
+      expect(RecurringReservation.new(reservation_one.reload).last_reservation).to eq(reservation_two)
+    end
   end
 
   describe '#update_this_and_following' do
