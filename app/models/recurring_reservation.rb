@@ -81,7 +81,7 @@ class RecurringReservation
         next_reservation.prev = prev_reserv.id
         # check if there are start_time..end_time for @reservation.car is available on start_day
         conflicting = conflicting_reservations(@reservation.car, next_reservation.start_time..next_reservation.end_time).to_a
-        next_reservation.status = CONFLICT_STATUS if conflicting.present?
+        next_reservation.status = conflicting.present? ? CONFLICT_STATUS : nil
         created = Reservation.transaction do
           next_reservation.save!
           conflicting.each { |reservation| reservation.update!(status: CONFLICT_STATUS) }
