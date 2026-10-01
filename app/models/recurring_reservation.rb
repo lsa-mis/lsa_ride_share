@@ -52,6 +52,7 @@ class RecurringReservation
 
   def create_all
     conflict_days_message = ""
+    failed_days_message = ""
     unless @reservation.recurring.empty?
       start_hour = @reservation.start_time.strftime("%H").to_i
       start_minute = @reservation.start_time.strftime("%M").to_i
@@ -79,25 +80,35 @@ class RecurringReservation
         end
         next_reservation.prev = prev_reserv.id
         # check if there are start_time..end_time for @reservation.car is available on start_day
-        conflicting = conflicting_reservations(@reservation.car, next_reservation.start_time..next_reservation.end_time)
-        if conflicting.present?
-          conflict_days_message += show_date_with_month_name(day) + "; "
-          next_reservation.status = CONFLICT_STATUS
-          conflicting.each { |reservation| reservation.update(status: CONFLICT_STATUS) }
+        conflicting = conflicting_reservations(@reservation.car, next_reservation.start_time..next_reservation.end_time).to_a
+        next_reservation.status = CONFLICT_STATUS if conflicting.present?
+        created = Reservation.transaction do
+          next_reservation.save!
+          conflicting.each { |reservation| reservation.update!(status: CONFLICT_STATUS) }
+          if prev_reserv.passengers.present?
+            next_reservation.passengers << prev_reserv.passengers
+          end
+          if prev_reserv.passengers_managers.present?
+            next_reservation.passengers_managers << prev_reserv.passengers_managers
+          end
+          prev_reserv.update!(next: next_reservation.id)
+          true
+        rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved
+          raise ActiveRecord::Rollback
         end
-        next_reservation.save
-        if prev_reserv.passengers.present?
-          next_reservation.passengers << prev_reserv.passengers
+        unless created
+          failed_days_message += show_date_with_month_name(day) + "; "
+          next
         end
-        if prev_reserv.passengers_managers.present?
-          next_reservation.passengers_managers << prev_reserv.passengers_managers
-        end
-        prev_reserv.update(next: next_reservation.id)
+        conflict_days_message += show_date_with_month_name(day) + "; " if conflicting.present?
         prev_reserv = Reservation.find(next_reservation.id)
       end
     end
     if conflict_days_message.present?
       conflict_days_message = "There are conflicts with other reservations on: " + conflict_days_message
+    end
+    if failed_days_message.present?
+      conflict_days_message += " Reservations were not created on: " + failed_days_message
     end
     return conflict_days_message
   end
