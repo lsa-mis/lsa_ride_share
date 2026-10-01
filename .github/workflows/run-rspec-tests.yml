@@ -63,11 +63,14 @@ jobs:
       - name: Run Model tests
         run: bundle exec rspec spec/models/*
 
-      - name: Run System tests
-        run: bundle exec rspec spec/system/*
+      - name: Run Policy tests
+        run: bundle exec rspec spec/policies/*
 
       - name: Run Request tests
         run: bundle exec rspec spec/requests/*
+
+      - name: Run System tests
+        run: bundle exec rspec spec/system/*
 
       - name: Keep screenshots from failed system tests
         uses: actions/upload-artifact@v5
