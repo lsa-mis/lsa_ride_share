@@ -414,7 +414,7 @@ class ReservationsController < ApplicationController
   # PATCH/PUT /reservations/1 or /reservations/1.json
   def update
     notice = ""
-    if params[:reservation][:approved].present?
+    if params[:reservation].key?(:approved)
       # drivers can update their reservations, but only admins can approve them
       authorize @reservation, :approve?
       if @reservation.update(approve_params)
@@ -914,9 +914,10 @@ class ReservationsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     # :canceled is not permitted - reservations are canceled only by cancel_reservation and cancel_recurring_reservation
+    # :approved is not permitted - only admins approve reservations, through approve_params in update
     def reservation_params
       params.require(:reservation).permit(:status, :start_time, :end_time, :recurring, :driver_id, :driver_manager_id, :driver_phone,
-      :number_of_people_on_trip, :program_id, :site_id, :car_id, :reserved_by, :approved, :non_uofm_passengers, :number_of_non_uofm_passengers, :until_date, :updated_by, :reason_for_cancellation)
+      :number_of_people_on_trip, :program_id, :site_id, :car_id, :reserved_by, :non_uofm_passengers, :number_of_non_uofm_passengers, :until_date, :updated_by, :reason_for_cancellation)
     end
 
     # the approve switch on the reservation page must not change car, time or other attributes
