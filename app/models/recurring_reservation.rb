@@ -228,30 +228,6 @@ class RecurringReservation
     end
   end
 
-  # def update_drivers(params)
-  #   list = get_following
-  #   note = ""
-  #   driver_param = params[:driver_id].split("-")
-  #   driver_type = driver_param[1]
-  #   driver_id = driver_param[0].to_i
-  #   if driver_type == "student"
-  #     params["driver_id"] = driver_id
-  #   elsif driver_type == "manager"
-  #     params["driver_manager_id"] = driver_id
-  #     params["driver_id"] = nil
-  #   end
-  #   list.each do |id|
-  #     reservation = Reservation.find(id)
-  #     unless reservation.update(params)
-  #       note += " Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". "
-  #     end
-  #   end
-  #   if note == ""
-  #     note = "Drivers were updated for this and following recurring reservations."
-  #   end
-  #   return note
-  # end
-
   def add_driver(driver, model, driver_emails, current_user)
     list = get_following
     note = ""
