@@ -515,6 +515,40 @@ RSpec.describe 'Reservation conflicts', type: :request do
       expect(reservation.reload.approved).to be_falsey
     end
 
+    it 'does not let the driver unapprove the reservation with an empty approved value' do
+      reservation.update_columns(approved: true)
+      update_reservation_params = {
+        reservation: { program_id: program.id, site_id: site.id, updated_by: student_user.id, approved: '' },
+        unit_id: unit.id,
+        car_id: car.id,
+        day_start: day.to_s,
+        start_time: day_time(10).to_s,
+        end_time: day_time(12).to_s,
+        number_of_people_on_trip: 1
+      }
+      patch reservation_path(reservation), params: update_reservation_params
+
+      expect(flash[:alert]).to eq('You are not authorized to perform this action.')
+      expect(reservation.reload.approved).to be(true)
+      expect(reservation.start_time).to eq(day_time(8) - 15.minute)
+    end
+
+    it 'does not let the student create an approved reservation' do
+      post reservations_path, params: {
+        reservation: { program_id: program.id, site_id: site.id, approved: '1' },
+        unit_id: unit.id,
+        car_id: other_car.id,
+        day_start: day.to_s,
+        start_time: day_time(11).to_s,
+        end_time: day_time(13).to_s,
+        number_of_people_on_trip: 1,
+        until_date: day.to_s
+      }
+
+      expect(Reservation.last).not_to eq(reservation)
+      expect(Reservation.last.approved).to be_falsey
+    end
+
     it 'does not move the reservation into a taken slot through the approve branch of the update action' do
       patch reservation_path(reservation), params: { reservation: {
         approved: 'false', car_id: car.id, status: nil,
