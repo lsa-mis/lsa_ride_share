@@ -41,7 +41,8 @@ class RecurringReservation
     while current.present? && !visited.include?(current.id)
       return current.rule if current.recurring.present?
       visited << current.id
-      current = current.next.present? ? Reservation.find_by(id: current.next) : nil
+      next_reservation = current.next.present? ? Reservation.find_by(id: current.next) : nil
+      current = next_reservation&.prev == current.id ? next_reservation : nil
     end
     nil
   end
