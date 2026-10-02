@@ -22,7 +22,7 @@
           </p>
           <p class="body-sm-text inline">
             Start on <%= show_date(@reservation.start_time) %>
-            <%= recurring_reservation.first_reservation.rule.to_s %>
+            <%= recurring_reservation.rule.to_s %>
           </p>
         </div>
       <% end %>

@@ -115,6 +115,11 @@ class ReservationPolicy < ApplicationPolicy
     return false
   end
 
+  def approve?
+    return false if @record.canceled
+    user_in_access_group?
+  end
+
   def approve_all_recurring?
     user_in_access_group?
   end

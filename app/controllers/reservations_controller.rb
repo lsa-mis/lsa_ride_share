@@ -1,9 +1,9 @@
 class ReservationsController < ApplicationController
   before_action :auth_user
   before_action :set_calendar_reservations, only: %i[ index week_calendar ]
-  before_action :set_reservation, only: %i[ show edit update destroy add_drivers add_passengers remove_passenger 
-    finish_reservation update_passengers send_reservation_updated_email cancel_reason cancel_reservation cancel_recurring_reservation 
-    add_drivers_later approve_all_recurring edit_long add_edit_drivers get_drivers_list]
+  before_action :set_reservation, only: %i[ show edit update
+    finish_reservation update_passengers send_reservation_updated_email cancel_reason cancel_reservation cancel_recurring_reservation
+    add_drivers_later approve_all_recurring edit_long ]
   before_action :set_terms_and_units
   before_action :set_programs
   before_action :set_cars, only: %i[ new new_long get_available_cars get_available_cars_long ]
@@ -283,22 +283,8 @@ class ReservationsController < ApplicationController
     if params[:number].present?
       @cars = @cars.where("number_of_seats >= ?", params[:number]).order(:car_number)
     end
-    if (@day_end.to_date - @day_start.to_date).to_i > 1
-
-      cars_reservations = Reservation.where(car_id: @cars)
-      day_start_beginning = unit_beginning_of_day(@day_start, @unit_id) - 15.minute
-      day_start_finish = unit_end_of_day(@day_start, @unit_id) + 15.minute
-
-      day_end_beginning = unit_beginning_of_day(@day_end, @unit_id) - 15.minute
-      day_end_finish = unit_end_of_day(@day_end, @unit_id) + 15.minute
-
-      long_reservations = cars_reservations.where("start_time < ? AND end_time > ?", day_start_finish, day_end_beginning).pluck(:car_id)
-      between_reservations = cars_reservations.where(start_time: (day_start_beginning + 1.day).., end_time: ..(day_end_finish - 1.day)).pluck(:car_id)
-      day_start_reservations = cars_reservations.where(start_time: day_start_beginning..day_start_finish, end_time: day_start_finish - 30.minute..day_start_finish).pluck(:car_id)
-      day_end_reservations = cars_reservations.where(start_time: day_end_beginning..day_end_beginning + 30.minute, end_time: day_end_beginning..day_end_finish).pluck(:car_id)
-      exclude_cars = (between_reservations + day_start_reservations + day_end_reservations + long_reservations).uniq
-      @cars = @cars.where.not(id: exclude_cars)
-    end
+    # same range (with 15 minutes before and after) that create checks for conflicts
+    @cars = available_cars(@cars, (@start_time.to_datetime - 15.minute)..(@end_time.to_datetime + 15.minute))
     if params[:until_date].present?
       @until_date = params[:until_date]
     else
@@ -377,7 +363,6 @@ class ReservationsController < ApplicationController
       end
     else
       flash[:alert] = "There is a conflict with another reservation. Please select different time."
-      @reservation.update(status: CONFLICT_STATUS)
       @program = Program.find(params[:reservation][:program_id])
       @term_id = params[:term_id]
       @sites = @program.sites.order(:title)
@@ -429,8 +414,10 @@ class ReservationsController < ApplicationController
   # PATCH/PUT /reservations/1 or /reservations/1.json
   def update
     notice = ""
-    if params[:reservation][:approved].present?
-      if @reservation.update(reservation_params)
+    if params[:reservation].key?(:approved)
+      # drivers can update their reservations, but only admins can approve them
+      authorize @reservation, :approve?
+      if @reservation.update(approve_params)
         ReservationMailer.with(reservation: @reservation, user: current_user).car_reservation_approved.deliver_now unless @reservation.approved == false
         redirect_to reservation_path(@reservation), notice: "Reservation was updated."
         return
@@ -445,7 +432,7 @@ class ReservationsController < ApplicationController
       update_params = {}
       update_params["site_id"] = reservation_params[:site_id]
       update_params["updated_by"] = reservation_params[:updated_by]
-      update_params["car_id"] = params[:car_id]
+      update_params["car_id"] = params[:car_id] if params.key?(:car_id)
       update_params["number_of_people_on_trip"] = params[:number_of_people_on_trip]
       start_time = params[:start_time].to_datetime - 15.minute
       end_time = params[:end_time].to_datetime + 15.minute
@@ -500,7 +487,9 @@ class ReservationsController < ApplicationController
       @reservation.end_time = params[:end_time].to_datetime + 15.minute
       @reservation.number_of_people_on_trip = params[:number_of_people_on_trip]
       # check if updated reservation has conflict with existing resertvations
-      no_conflict = available_edit?(@reservation.id, @reservation.car, @reservation.start_time..@reservation.end_time)
+      previously_conflicting = conflicting_reservations(Car.find_by(id: @reservation.car_id_was), @reservation.start_time_was..@reservation.end_time_was, @reservation.id).to_a
+      conflicting = conflicting_reservations(@reservation.car, @reservation.start_time..@reservation.end_time, @reservation.id)
+      no_conflict = conflicting.blank?
       if no_conflict
         alert = ""
         @reservation.status = nil
@@ -513,7 +502,18 @@ class ReservationsController < ApplicationController
       # for admins - always save && display message about conflict
       # for non admins - save if there is no conflict
       if is_admin? || !is_admin? && no_conflict
-        if @reservation.update(reservation_params)
+        saved = Reservation.transaction do
+          @reservation.save!
+          conflicting.each { |conflicting_reservation| conflicting_reservation.update!(status: CONFLICT_STATUS) }
+          clear_resolved_conflicts(previously_conflicting - conflicting.to_a)
+          true
+        rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved => e
+          unless e.record == @reservation
+            @reservation.errors.add(:base, "Could not update the conflict status of reservation #{e.record.id}: " + e.record.errors.full_messages.join(', '))
+          end
+          raise ActiveRecord::Rollback
+        end
+        if saved
           unless is_admin?
             ReservationMailer.with(reservation: @reservation, user: current_user, recurring: false).car_reservation_updated(admin: true).deliver_now
             @email_log_entries = EmailLog.where(sent_from_model: "Reservation", record_id: @reservation.id).order(created_at: :desc)
@@ -582,9 +582,9 @@ class ReservationsController < ApplicationController
       if params[:recurring] == "true"
         recurring_reservation = RecurringReservation.new(@reservation)
         reservations_to_update = recurring_reservation.get_following
-        Reservation.where(id: reservations_to_update).update_all(reservation_params.to_h)
+        Reservation.where(id: reservations_to_update).update_all(non_uofm_passengers_params.to_h)
       else
-        @reservation.update(reservation_params)
+        @reservation.update(non_uofm_passengers_params)
       end
       @reservation = Reservation.find(params[:reservation_id])
       @passengers = @reservation.passengers
@@ -679,7 +679,10 @@ class ReservationsController < ApplicationController
         ReservationMailer.with(reservation: @reservation, user: current_user, recurring: recurring).car_reservation_cancel_driver(@cancel_passengers, @cancel_emails, reason_for_cancellation).deliver_now
       end
       begin
-        @reservation.update(canceled: true, reason_for_cancellation: reason_for_cancellation, driver_id: nil, driver_manager_id: nil, updated_by: current_user.id)
+        conflicting_peers = conflicting_reservations(@reservation.car, @reservation.start_time..@reservation.end_time, @reservation.id).to_a
+        if @reservation.update(canceled: true, reason_for_cancellation: reason_for_cancellation, driver_id: nil, driver_manager_id: nil, updated_by: current_user.id)
+          clear_resolved_conflicts(conflicting_peers)
+        end
         if is_admin?
           start_date = @reservation.start_time.to_date
           redirect_to reservations_url(start_date: start_date), notice: "Reservation was canceled."
@@ -734,7 +737,11 @@ class ReservationsController < ApplicationController
       end
       recurring_reservation.destroy_passengers(result)
       authorize @reservation
+      conflicting_peers = Reservation.where(id: result).flat_map do |reservation|
+        conflicting_reservations(reservation.car, reservation.start_time..reservation.end_time, reservation.id).to_a
+      end.uniq.reject { |peer| result.include?(peer.id) }
       if Reservation.where(id: result).update_all(canceled: true, reason_for_cancellation: reason_for_cancellation, driver_id: nil, driver_manager_id: nil, updated_by: current_user.id, prev: nil, next: nil, updated_at: Time.now)
+        clear_resolved_conflicts(conflicting_peers)
         if is_admin?
           start_date = @reservation.start_time.to_date
           redirect_to reservations_url(start_date: start_date), notice: "Selected Reservation(s) were canceled."
@@ -906,8 +913,20 @@ class ReservationsController < ApplicationController
     end
 
     # Only allow a list of trusted parameters through.
+    # :canceled is not permitted - reservations are canceled only by cancel_reservation and cancel_recurring_reservation
+    # :approved is not permitted - only admins approve reservations, through approve_params in update
     def reservation_params
-      params.require(:reservation).permit(:status, :start_time, :end_time, :recurring, :driver_id, :driver_manager_id, :driver_phone, 
-      :number_of_people_on_trip, :program_id, :site_id, :car_id, :reserved_by, :approved, :non_uofm_passengers, :number_of_non_uofm_passengers, :until_date, :updated_by, :canceled, :reason_for_cancellation)
+      params.require(:reservation).permit(:status, :start_time, :end_time, :recurring, :driver_id, :driver_manager_id, :driver_phone,
+      :number_of_people_on_trip, :program_id, :site_id, :car_id, :reserved_by, :non_uofm_passengers, :number_of_non_uofm_passengers, :until_date, :updated_by, :reason_for_cancellation)
+    end
+
+    # the approve switch on the reservation page must not change car, time or other attributes
+    def approve_params
+      params.require(:reservation).permit(:approved)
+    end
+
+    # adding non UofM passengers must not change car, time or other attributes
+    def non_uofm_passengers_params
+      params.require(:reservation).permit(:number_of_non_uofm_passengers, :non_uofm_passengers)
     end
 end
