@@ -11,21 +11,40 @@ class RecurringReservation
   end
 
   def first_reservation
-    if @reservation.prev.present?
-      @reservation = Reservation.find(@reservation.prev)
-      first_reservation
-    else
-      return @reservation
+    current = @reservation
+    visited = [current.id]
+    while current.prev.present? && !visited.include?(current.prev)
+      previous_reservation = Reservation.find_by(id: current.prev)
+      break unless previous_reservation&.next == current.id
+      current = previous_reservation
+      visited << current.id
     end
+    current
   end
 
   def last_reservation
-    if @reservation.next.present?
-      @reservation = Reservation.find(@reservation.next)
-      last_reservation
-    else
-      return @reservation
+    current = @reservation
+    visited = [current.id]
+    while current.next.present? && !visited.include?(current.next)
+      next_reservation = Reservation.find_by(id: current.next)
+      break unless next_reservation&.prev == current.id
+      current = next_reservation
+      visited << current.id
     end
+    current
+  end
+
+  # the rule of the first reservation in the chain that has one; a corrupted reservation can lose its rule
+  def rule
+    current = first_reservation
+    visited = []
+    while current.present? && !visited.include?(current.id)
+      return current.rule if current.recurring.present?
+      visited << current.id
+      next_reservation = current.next.present? ? Reservation.find_by(id: current.next) : nil
+      current = next_reservation&.prev == current.id ? next_reservation : nil
+    end
+    nil
   end
 
   def prev_reservation
@@ -48,6 +67,9 @@ class RecurringReservation
 
   def create_all
     conflict_days_message = ""
+    failed_days_message = ""
+    # the series was already created for this reservation (e.g. a double submit)
+    return conflict_days_message if @reservation.next.present?
     unless @reservation.recurring.empty?
       start_hour = @reservation.start_time.strftime("%H").to_i
       start_minute = @reservation.start_time.strftime("%M").to_i
@@ -75,23 +97,35 @@ class RecurringReservation
         end
         next_reservation.prev = prev_reserv.id
         # check if there are start_time..end_time for @reservation.car is available on start_day
-        unless available?(@reservation.car, next_reservation.start_time..next_reservation.end_time)
-          conflict_days_message += show_date_with_month_name(day) + "; "
-          next_reservation.status = CONFLICT_STATUS
+        conflicting = conflicting_reservations(@reservation.car, next_reservation.start_time..next_reservation.end_time).to_a
+        next_reservation.status = conflicting.present? ? CONFLICT_STATUS : nil
+        created = Reservation.transaction do
+          next_reservation.save!
+          conflicting.each { |reservation| reservation.update!(status: CONFLICT_STATUS) }
+          if prev_reserv.passengers.present?
+            next_reservation.passengers << prev_reserv.passengers
+          end
+          if prev_reserv.passengers_managers.present?
+            next_reservation.passengers_managers << prev_reserv.passengers_managers
+          end
+          prev_reserv.update!(next: next_reservation.id)
+          true
+        rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved
+          raise ActiveRecord::Rollback
         end
-        next_reservation.save
-        if prev_reserv.passengers.present?
-          next_reservation.passengers << prev_reserv.passengers
+        unless created
+          failed_days_message += show_date_with_month_name(day) + "; "
+          next
         end
-        if prev_reserv.passengers_managers.present?
-          next_reservation.passengers_managers << prev_reserv.passengers_managers
-        end
-        prev_reserv.update(next: next_reservation.id)
+        conflict_days_message += show_date_with_month_name(day) + "; " if conflicting.present?
         prev_reserv = Reservation.find(next_reservation.id)
       end
     end
     if conflict_days_message.present?
       conflict_days_message = "There are conflicts with other reservations on: " + conflict_days_message
+    end
+    if failed_days_message.present?
+      conflict_days_message += " Reservations were not created on: " + failed_days_message
     end
     return conflict_days_message
   end
@@ -100,7 +134,9 @@ class RecurringReservation
     conflict_days_message = ""
     alert = ""
     list = get_following
-    conflict_days_message = conflicts_updating_recurring(start_time, end_time)
+    car_changed = update_params.key?("car_id")
+    new_car = Car.find_by(id: update_params["car_id"].presence) if car_changed
+    conflict_days_message = conflicts_updating_recurring(start_time, end_time, new_car, car_changed)
     if admin || (!admin && conflict_days_message == "")
       list.each do |id|
         reservation = Reservation.find(id)
@@ -110,15 +146,29 @@ class RecurringReservation
         end_time = combine_day_and_time(day_end, end_time)
         update_params["start_time"] = start_time
         update_params["end_time"] = end_time
-        unless reservation.update(update_params)
+        previously_conflicting = conflicting_reservations(reservation.car, reservation.start_time..reservation.end_time, id).to_a
+        conflicting = conflicting_reservations(car_changed ? new_car : reservation.car, start_time..end_time, id).to_a
+        update_params["status"] = conflicting.present? ? CONFLICT_STATUS : nil
+        failed_record = nil
+        Reservation.transaction do
+          reservation.update!(update_params)
+          conflicting.each { |conflicting_reservation| conflicting_reservation.update!(status: CONFLICT_STATUS) }
+          clear_resolved_conflicts(previously_conflicting - conflicting)
+        rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved => e
+          failed_record = e.record
+          raise ActiveRecord::Rollback
+        end
+        if failed_record == reservation
           alert += "Reservation #{id} was not updated: " + reservation.errors.full_messages.join(',') + ". "
+        elsif failed_record
+          alert += "Reservation #{id} was not updated: could not update the conflict status of reservation #{failed_record.id}: " + failed_record.errors.full_messages.join(',') + ". "
         end
       end
     end
     return conflict_days_message + alert
   end
 
-  def conflicts_updating_recurring(start_time, end_time)
+  def conflicts_updating_recurring(start_time, end_time, new_car = nil, car_changed = false)
     conflict_days_message = ""
     list = get_following
     list.each do |id|
@@ -127,7 +177,7 @@ class RecurringReservation
       day_end = reservation.end_time.beginning_of_day
       start_time = combine_day_and_time(day_start, start_time)
       end_time = combine_day_and_time(day_end, end_time)
-      unless available_edit?(id, reservation.car, start_time..end_time)
+      unless available_edit?(id, car_changed ? new_car : reservation.car, start_time..end_time)
         conflict_days_message += show_date_with_month_name(day_start) + "; "
       end
     end
@@ -299,31 +349,22 @@ class RecurringReservation
     if prev_reservation.present?
       prev_reservation.update(next: nil)
     end
-    list = Array(@reservation.id)
-    next_id = @reservation.next
-    until next_id.nil? do
-      reserv = Reservation.find(next_id)
-      list << reserv.id
-      next_id = reserv.next
-    end
-    return list
+    following_ids(@reservation)
   end
 
   def get_following
-    list = Array(@reservation.id)
-    next_id = @reservation.next
-    until next_id.nil? do
-      reserv = Reservation.find(next_id)
-      list << reserv.id
-      next_id = reserv.next
-    end
-    return list
+    following_ids(@reservation)
   end
 
   def get_all_reservations
-    list = Array(first_reservation.id)
-    next_id = first_reservation.next
-    until next_id.nil? do
+    following_ids(first_reservation)
+  end
+
+  # ids of start and every reservation linked after it; stops before revisiting an id
+  def following_ids(start)
+    list = Array(start.id)
+    next_id = start.next
+    until next_id.nil? || list.include?(next_id) do
       reserv = Reservation.find(next_id)
       list << reserv.id
       next_id = reserv.next

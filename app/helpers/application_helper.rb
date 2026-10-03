@@ -552,6 +552,28 @@ module ApplicationHelper
     return true
   end
 
+  def conflicting_reservations(car, range, except_id = nil)
+    return Reservation.none unless car.present?
+    range_begin = range.begin + 1.minute
+    range_end = range.end - 1.minute
+    conflicts = car.reservations.where(
+      "(start_time BETWEEN ? AND ? OR end_time BETWEEN ? AND ?) OR (start_time < ? AND end_time > ?)",
+      range_begin, range_end, range_begin, range_end, range_begin, range_end
+    )
+    conflicts = conflicts.where.not(id: except_id) if except_id.present?
+    conflicts
+  end
+
+  def clear_resolved_conflicts(reservations)
+    reservations.each do |reservation|
+      reservation.reload
+      next unless reservation.status == CONFLICT_STATUS
+      next if conflicting_reservations(reservation.car, reservation.start_time..reservation.end_time, reservation.id).present?
+      # status is derived from overlaps, so unrelated validations must not block clearing it
+      reservation.update_columns(status: nil)
+    end
+  end
+
   def all_day_available_time(day, unit_id)
     # all day time renges for unit
     day_begin = unit_beginning_of_day(day, unit_id)
