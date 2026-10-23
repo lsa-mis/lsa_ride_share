@@ -8,7 +8,7 @@ The scope of this application is to support and simplify LSA departments busines
 
 ### Prerequisites
 - postgresql (correct version and running without errors)
-- This application uses University of Michigan Shibboleth + DUO authentication
+- This application uses University of Michigan Okta authentication
 
 To get a local copy up and running clone the repo, navigate to the local instance and start the application
 ```
@@ -22,7 +22,7 @@ bin/dev
 
   ## Authentication
   - Omniauth-SAML
-    - Shibboleth + DUO
+    - Okta
     - Devise
 
 ## Support / Questions
