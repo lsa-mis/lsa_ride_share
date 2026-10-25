@@ -324,6 +324,14 @@ RSpec.describe RecurringReservation, type: :model do
       expect(reservation_two.status).to be_nil
       expect(blocking.reload.status).to be_nil
     end
+
+    it 'rejects a car id that does not exist instead of removing the car' do
+      expect { update_following(14, 16, car_id: Car.maximum(:id).to_i + 1) }.to raise_error(ActiveRecord::RecordNotFound)
+
+      expect(reservation_one.reload.car_id).to eq(car.id)
+      expect(reservation_two.reload.car_id).to eq(car.id)
+      expect(reservation_two.start_time).to eq(day_time(day_two, 10) - 15.minute)
+    end
   end
 
   describe 'overnight recurring reservations' do
