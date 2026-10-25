@@ -123,7 +123,8 @@ class Programs::StudentsController < ApplicationController
       updated_count = 0
       updated_count = students.update_all(canvas_course_complete_date: student_params[:canvas_course_complete_date],
           meeting_with_admin_date: student_params[:meeting_with_admin_date],
-          phone_number: student_params[:phone_number], mvr_status: mvr_status)
+          phone_number: student_params[:phone_number], preferred_name: student_params[:preferred_name].presence,
+          mvr_status: mvr_status)
       if updated_count == students.count
         notice = "#{students.count} student record(s) with this uniqname are updated."
         redirect_to program_student_path(@student_program, @student), notice: notice
@@ -281,7 +282,7 @@ class Programs::StudentsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def student_params
-      params.require(:student).permit(:uniqname, :program_id, :registered, :last_name, :first_name, :mvr_expiration_date, :canvas_course_complete_date, :meeting_with_admin_date, :phone_number)
+      params.require(:student).permit(:uniqname, :program_id, :registered, :last_name, :first_name, :mvr_expiration_date, :canvas_course_complete_date, :meeting_with_admin_date, :phone_number, :preferred_name)
     end
 
 end

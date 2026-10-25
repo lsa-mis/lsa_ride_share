@@ -16,6 +16,7 @@
 #  registered                  :boolean          default(TRUE)
 #  course_id                   :bigint
 #  phone_number                :string
+#  preferred_name              :string
 #
 class Student < ApplicationRecord
   belongs_to :program
@@ -25,6 +26,7 @@ class Student < ApplicationRecord
   has_many :notes, as: :noteable, dependent: :destroy
 
   encrypts :phone_number
+  normalizes :preferred_name, with: -> preferred_name { preferred_name.strip.presence }
 
   validates :uniqname, uniqueness: { scope: :program, message: "is already in the program list" }
 
@@ -73,11 +75,12 @@ class Student < ApplicationRecord
   end
 
   def display_name
-    "#{self.first_name} #{self.last_name} - #{self.uniqname}" 
+    "#{self.name} - #{self.uniqname}" 
   end
 
   def name
-    "#{self.first_name} #{self.last_name}" 
+    return self.preferred_name if self.preferred_name.present?
+    "#{self.first_name} #{self.last_name}"
   end
 
   def can_reserve_car?
