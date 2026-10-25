@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_05_233618) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_25_025007) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -289,6 +289,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_05_233618) do
     t.date "meeting_with_admin_date"
     t.string "mvr_status"
     t.string "phone_number"
+    t.string "preferred_name"
     t.bigint "program_id"
     t.boolean "registered", default: true
     t.string "uniqname"
