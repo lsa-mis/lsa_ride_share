@@ -136,7 +136,7 @@ class RecurringReservation
     alert = ""
     reservations = following_reservations
     car_changed = update_params.key?("car_id")
-    new_car = Car.find_by(id: update_params["car_id"].presence) if car_changed
+    new_car = Car.find(update_params["car_id"]) if car_changed && update_params["car_id"].present?
     # assign associations, not ids, so validations don't reload the same car and site for every reservation
     attributes = update_params.except("car_id", "site_id")
     attributes["car"] = new_car if car_changed
@@ -191,7 +191,7 @@ class RecurringReservation
   # this and following reservations, in order, with what their validations load
   def following_reservations
     ids = get_following
-    Reservation.includes(:car, :program, :site, :passengers, :passengers_managers).where(id: ids).index_by(&:id).values_at(*ids).compact
+    Reservation.includes(:car, :program, :site, :passengers, :passengers_managers, :driver, :driver_manager).where(id: ids).index_by(&:id).values_at(*ids).compact
   end
 
   # the reservation's own days at the times of day of start_time and end_time
