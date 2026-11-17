@@ -56,7 +56,7 @@ gem 'bootsnap', require: false
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 gem 'image_processing', '~> 2.0'
-gem 'mini_magick', '~> 4.13'
+gem 'mini_magick', '~> 5.1'
 
 # Use OmniAuth gems to implement Shibboleth SAML authentication
 gem 'omniauth-saml', '~> 2.1'
