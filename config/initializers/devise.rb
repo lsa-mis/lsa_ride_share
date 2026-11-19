@@ -38,7 +38,19 @@ Devise.setup do |config|
     idp_cert = Rails.application.credentials.dig(:okta, :production_idp_cert)
   end
 
+  # Pin OmniAuth's callback host to the configured ACS host instead of trusting
+  # the request's Host / X-Forwarded-Host header (GHSA-m27g-v28p-f9fx).
+  # Skipped in test, where Capybara serves the app on a random host/port.
+  if (Rails.env.staging? || Rails.env.production?) && consumer_service_url.blank?
+    raise ArgumentError, "SAML assertion consumer service URL is required in #{Rails.env}"
+  end
+  full_host = if consumer_service_url.present? && !Rails.env.test?
+    uri = URI.parse(consumer_service_url)
+    "#{uri.scheme}://#{uri.host}#{":#{uri.port}" unless uri.port == uri.default_port}"
+  end
+
   saml_options = {
+    full_host: full_host,
     assertion_consumer_service_url: consumer_service_url,
     issuer: entity_id,
     idp_entity_id: idp_entity_id,
